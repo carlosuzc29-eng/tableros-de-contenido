@@ -884,6 +884,13 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
         buttons:[{label:label + ' igual', fn:pendingStep}, {label:'Escribir comentario', primary:true, fn:function(){ f = 'all'; applyFilter(); sinComentario[0].card.scrollIntoView({behavior:'smooth', block:'center'}); sinComentario[0].card.querySelector('textarea').focus({preventScroll:true}); }}]});
       return;
     }
+    var comentadosSinEstado = cards.filter(function(c){ return c.it.estado === 'pendiente' && c.it.comentario.trim(); });
+    if (comentadosSinEstado.length) {
+      comentadosSinEstado.forEach(function(c){ c.card.classList.add('warn'); });
+      modal({kind:'warn', icon:'✓', title:'Marca tu respuesta', text:'Dejaste comentario pero falta marcar si apruebas o pides cambios en:', list:comentadosSinEstado.map(function(c){ return c.nav.textContent.replace(/^(\d+)/, '$1 · '); }),
+        buttons:[{label:label + ' igual', fn:pendingStep}, {label:'Elegir respuesta', primary:true, fn:function(){ f = 'all'; applyFilter(); comentadosSinEstado[0].card.scrollIntoView({behavior:'smooth', block:'center'}); }}]});
+      return;
+    }
     pendingStep();
   }
 

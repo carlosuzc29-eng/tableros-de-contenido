@@ -1,0 +1,5 @@
+borradores/
+.DS_Store
+*.rtf
+.nexo-config.json
+.github-token

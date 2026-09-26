@@ -23,8 +23,9 @@ header .shell{display:flex;align-items:center;justify-content:space-between;gap:
 .logo svg{height:64px;width:auto;display:block}
 header h1{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);font-weight:500;text-align:right}
 header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:none;color:var(--ink)}
-.hero{background:var(--azul);color:#fff;padding:28px 0 80px;border-radius:30px 30px 0 0}
-.hero .shell{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap}
+.hero{position:relative;background:var(--azul);color:#fff;overflow:hidden;padding:28px 0 80px;border-radius:30px 30px 0 0}
+.hero-network-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;mask-image:linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.96) 65%, rgba(0,0,0,0.4) 88%, rgba(0,0,0,0) 100%);-webkit-mask-image:linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.96) 65%, rgba(0,0,0,0.4) 88%, rgba(0,0,0,0) 100%)}
+.hero .shell{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap}
 .hero h2{font-size:clamp(28px,5vw,48px);line-height:1;letter-spacing:-.03em}
 .hero h2 span{color:transparent;-webkit-text-stroke:1.2px #fff}
 .hero p{color:#B9C6D2;font-size:14px;margin-top:8px}
@@ -209,6 +210,329 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
   <div id="app"></div>
 </main>
 <div class="toast" id="toast"></div>
+
+<script id="fondo-red-script">
+/**
+ * NEXO · Fondo Dinámico de Red de Conexiones (Canvas 2D)
+ * Componente frontend para red sutil y elegante de puntos y conexiones orgánicas.
+ */
+(function(global){
+  'use strict';
+  var DEFAULT_CONFIG = {
+    pointCountDesktop: 32,
+    pointCountMobile: 14,
+    maxDistanceDesktop: 135,
+    maxDistanceMobile: 90,
+    maxConnectionsPerPoint: 3,
+    baseSpeed: 13,
+    speedVariance: 6,
+    minRadius: 1.1,
+    maxRadius: 2.2,
+    lineWidth: 0.75,
+    colorDotDefault: 'rgba(230, 238, 246, ',
+    colorDotAccent: 'rgba(92, 184, 62, ',
+    colorLineDefault: 'rgba(200, 218, 235, ',
+    colorLineAccent: 'rgba(92, 184, 62, ',
+    accentRatio: 0.18,
+    baseLineAlpha: 0.13,
+    baseDotAlpha: 0.65,
+    pulseEnabled: true,
+    pulseMaxConcurrent: 2,
+    pulseIntervalMin: 3.5,
+    pulseIntervalMax: 7.0,
+    pulseSpeed: 105,
+    pulseColor: 'rgba(92, 184, 62, 0.95)',
+    mouseRadius: 140,
+    mousePushStrength: 15,
+    mouseGlowFactor: 1.45
+  };
+
+  function createNetworkBackground(container, options){
+    if (!container) return null;
+    var config = Object.assign({}, DEFAULT_CONFIG, options || {});
+
+    var canvas = container.querySelector('.hero-network-canvas');
+    if (!canvas) {
+      canvas = document.createElement('canvas');
+      canvas.className = 'hero-network-canvas';
+      canvas.setAttribute('aria-hidden', 'true');
+      canvas.style.position = 'absolute';
+      canvas.style.inset = '0';
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
+      canvas.style.pointerEvents = 'none';
+      canvas.style.zIndex = '0';
+      canvas.style.maskImage = 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.96) 65%, rgba(0,0,0,0.4) 88%, rgba(0,0,0,0) 100%)';
+      canvas.style.webkitMaskImage = 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.96) 65%, rgba(0,0,0,0.4) 88%, rgba(0,0,0,0) 100%)';
+      if (container.firstChild) container.insertBefore(canvas, container.firstChild);
+      else container.appendChild(canvas);
+    }
+
+    var ctx = canvas.getContext('2d', { alpha: true });
+    if (!ctx) return null;
+
+    var width = 0, height = 0, dpr = 1, points = [], pulses = [];
+    var nextPulseTime = performance.now() + 2500;
+    var animationFrameId = null, lastTime = performance.now(), isRunning = false, isVisible = true, isInView = true;
+    var mouse = { x: -9999, y: -9999, active: false };
+    var reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    function isMobile(){ return (width <= 768) || (window.innerWidth <= 768); }
+    function getPointCount(){ return isMobile() ? config.pointCountMobile : config.pointCountDesktop; }
+    function getMaxDistance(){ return isMobile() ? config.maxDistanceMobile : config.maxDistanceDesktop; }
+
+    function calculateClearance(px, py){
+      var focalX = width * 0.28, focalY = height * 0.46;
+      var rx = width * 0.24, ry = height * 0.36;
+      if (rx <= 0 || ry <= 0) return 1.0;
+      var dx = (px - focalX) / rx, dy = (py - focalY) / ry;
+      return Math.min(1.0, Math.max(0.16, Math.sqrt(dx * dx + dy * dy)));
+    }
+
+    function initPoints(){
+      points = []; pulses = [];
+      var count = getPointCount();
+      for (var i = 0; i < count; i++) {
+        var x, y;
+        if (Math.random() < 0.65) {
+          var side = Math.random();
+          if (side < 0.35) { x = width * (0.60 + Math.random() * 0.38); y = height * (0.05 + Math.random() * 0.90); }
+          else if (side < 0.60) { x = width * (0.02 + Math.random() * 0.22); y = height * (0.05 + Math.random() * 0.90); }
+          else if (side < 0.80) { x = width * (0.05 + Math.random() * 0.90); y = height * (0.02 + Math.random() * 0.25); }
+          else { x = Math.random() < 0.5 ? width * (0.02 + Math.random() * 0.25) : width * (0.75 + Math.random() * 0.23); y = height * (0.65 + Math.random() * 0.30); }
+        } else {
+          x = width * (0.05 + Math.random() * 0.90); y = height * (0.08 + Math.random() * 0.84);
+        }
+        var isAccent = Math.random() < config.accentRatio;
+        var depth = 0.55 + Math.random() * 0.45;
+        var speed = (config.baseSpeed + (Math.random() - 0.5) * config.speedVariance) * depth;
+        var angle = Math.random() * Math.PI * 2;
+        var radius = (config.minRadius + Math.random() * (config.maxRadius - config.minRadius)) * depth;
+        points.push({
+          x: x, y: y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
+          angle: angle, va: (Math.random() - 0.5) * 0.5, speed: speed, radius: radius,
+          depth: depth, isAccent: isAccent, offsetX: 0, offsetY: 0, targetOffsetX: 0,
+          targetOffsetY: 0, glow: 1.0, targetGlow: 1.0, connections: []
+        });
+      }
+    }
+
+    function resize(){
+      var rect = container.getBoundingClientRect();
+      var w = Math.round(rect.width), h = Math.round(rect.height);
+      if (w <= 0 || h <= 0) return;
+      width = w; height = h;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+      ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.scale(dpr, dpr);
+      if (!points.length || Math.abs(points.length - getPointCount()) > 5) initPoints();
+      else { points.forEach(function(p){ if (p.x > width) p.x = width * Math.random(); if (p.y > height) p.y = height * Math.random(); }); }
+      if (reducedMotionQuery.matches) drawStaticFrame();
+    }
+
+    function updatePhysics(dt){
+      var maxDist = getMaxDistance();
+      points.forEach(function(p){
+        p.angle += p.va * dt;
+        p.x += (Math.cos(p.angle) * p.speed) * dt;
+        p.y += (Math.sin(p.angle) * p.speed) * dt;
+        var pad = 12;
+        if (p.x < pad) { p.x = pad; p.angle = Math.PI - p.angle; }
+        else if (p.x > width - pad) { p.x = width - pad; p.angle = Math.PI - p.angle; }
+        if (p.y < pad) { p.y = pad; p.angle = -p.angle; }
+        else if (p.y > height - pad) { p.y = height - pad; p.angle = -p.angle; }
+
+        if (mouse.active && !isMobile()) {
+          var curX = p.x + p.offsetX, curY = p.y + p.offsetY;
+          var mdx = curX - mouse.x, mdy = curY - mouse.y;
+          var mdist = Math.hypot(mdx, mdy);
+          if (mdist < config.mouseRadius && mdist > 1) {
+            var pushFactor = (1 - mdist / config.mouseRadius);
+            p.targetOffsetX = (mdx / mdist) * pushFactor * config.mousePushStrength;
+            p.targetOffsetY = (mdy / mdist) * pushFactor * config.mousePushStrength;
+            p.targetGlow = 1 + pushFactor * (config.mouseGlowFactor - 1);
+          } else { p.targetOffsetX = 0; p.targetOffsetY = 0; p.targetGlow = 1.0; }
+        } else { p.targetOffsetX = 0; p.targetOffsetY = 0; p.targetGlow = 1.0; }
+
+        p.offsetX += (p.targetOffsetX - p.offsetX) * 0.08;
+        p.offsetY += (p.targetOffsetY - p.offsetY) * 0.08;
+        p.glow += (p.targetGlow - p.glow) * 0.08;
+        p.connections = [];
+      });
+
+      var n = points.length, activeConnections = [];
+      for (var i = 0; i < n; i++) {
+        var pi = points[i];
+        if (pi.connections.length >= config.maxConnectionsPerPoint) continue;
+        for (var j = i + 1; j < n; j++) {
+          var pj = points[j];
+          if (pj.connections.length >= config.maxConnectionsPerPoint) continue;
+          var xi = pi.x + pi.offsetX, yi = pi.y + pi.offsetY;
+          var xj = pj.x + pj.offsetX, yj = pj.y + pj.offsetY;
+          var dist = Math.hypot(xj - xi, yj - yi);
+          if (dist < maxDist) {
+            pi.connections.push(j); pj.connections.push(i);
+            activeConnections.push({ i: i, j: j, dist: dist, xi: xi, yi: yi, xj: xj, yj: yj, isAccent: pi.isAccent || pj.isAccent, glow: Math.max(pi.glow, pj.glow) });
+            if (pi.connections.length >= config.maxConnectionsPerPoint) break;
+          }
+        }
+      }
+
+      var now = performance.now();
+      if (config.pulseEnabled && !reducedMotionQuery.matches && activeConnections.length > 0) {
+        if (pulses.length < config.pulseMaxConcurrent && now >= nextPulseTime) {
+          var conn = activeConnections[Math.floor(Math.random() * activeConnections.length)];
+          pulses.push({ pFrom: points[conn.i], pTo: points[conn.j], progress: 0, duration: conn.dist / config.pulseSpeed, color: config.pulseColor });
+          nextPulseTime = now + (config.pulseIntervalMin + Math.random() * (config.pulseIntervalMax - config.pulseIntervalMin)) * 1000;
+        }
+      }
+
+      for (var k = pulses.length - 1; k >= 0; k--) {
+        pulses[k].progress += dt / Math.max(0.2, pulses[k].duration);
+        if (pulses[k].progress >= 1.0) pulses.splice(k, 1);
+      }
+      return activeConnections;
+    }
+
+    function draw(activeConnections){
+      ctx.clearRect(0, 0, width, height);
+      var maxDist = getMaxDistance();
+      ctx.lineWidth = config.lineWidth;
+
+      for (var k = 0; k < activeConnections.length; k++) {
+        var c = activeConnections[k];
+        var distRatio = 1 - (c.dist / maxDist);
+        if (distRatio <= 0) continue;
+        var midX = (c.xi + c.xj) * 0.5, midY = (c.yi + c.yj) * 0.5;
+        var clearance = calculateClearance(midX, midY);
+        var alpha = config.baseLineAlpha * distRatio * clearance * c.glow;
+        alpha = Math.max(0.02, Math.min(0.28, alpha));
+        ctx.strokeStyle = (c.isAccent ? config.colorLineAccent : config.colorLineDefault) + alpha.toFixed(3) + ')';
+        ctx.beginPath(); ctx.moveTo(c.xi, c.yi); ctx.lineTo(c.xj, c.yj); ctx.stroke();
+      }
+
+      for (var pIdx = 0; pIdx < pulses.length; pIdx++) {
+        var pls = pulses[pIdx];
+        var pFromX = pls.pFrom.x + pls.pFrom.offsetX, pFromY = pls.pFrom.y + pls.pFrom.offsetY;
+        var pToX = pls.pTo.x + pls.pTo.offsetX, pToY = pls.pTo.y + pls.pTo.offsetY;
+        var prg = pls.progress;
+        var curPx = pFromX + (pToX - pFromX) * prg, curPy = pFromY + (pToY - pFromY) * prg;
+        var pAlpha = Math.sin(prg * Math.PI) * calculateClearance(curPx, curPy);
+        if (pAlpha > 0.05) {
+          ctx.beginPath(); ctx.arc(curPx, curPy, 3.8, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(92, 184, 62, ' + (0.28 * pAlpha).toFixed(3) + ')'; ctx.fill();
+          ctx.beginPath(); ctx.arc(curPx, curPy, 1.6, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(255, 255, 255, ' + (0.90 * pAlpha).toFixed(3) + ')'; ctx.fill();
+        }
+      }
+
+      for (var i = 0; i < points.length; i++) {
+        var pt = points[i];
+        var posX = pt.x + pt.offsetX, posY = pt.y + pt.offsetY;
+        var ptClearance = calculateClearance(posX, posY);
+        var ptAlpha = config.baseDotAlpha * pt.depth * ptClearance * Math.min(1.3, pt.glow);
+        ptAlpha = Math.max(0.08, Math.min(0.95, ptAlpha));
+        ctx.beginPath(); ctx.arc(posX, posY, pt.radius, 0, Math.PI * 2);
+        ctx.fillStyle = (pt.isAccent ? config.colorDotAccent : config.colorDotDefault) + ptAlpha.toFixed(3) + ')';
+        ctx.fill();
+      }
+    }
+
+    function drawStaticFrame(){
+      if (!points.length) initPoints();
+      var activeConnections = updatePhysics(0.016);
+      draw(activeConnections);
+    }
+
+    function loop(now){
+      if (!isRunning) return;
+      var dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
+      if (isVisible && isInView && !reducedMotionQuery.matches) {
+        var activeConnections = updatePhysics(dt);
+        draw(activeConnections);
+      }
+      animationFrameId = window.requestAnimationFrame(loop);
+    }
+
+    function start(){
+      if (reducedMotionQuery.matches) { drawStaticFrame(); return; }
+      if (!isRunning) {
+        isRunning = true; lastTime = performance.now();
+        animationFrameId = window.requestAnimationFrame(loop);
+      }
+    }
+
+    function stop(){
+      isRunning = false;
+      if (animationFrameId) { window.cancelAnimationFrame(animationFrameId); animationFrameId = null; }
+    }
+
+    function onPointerMove(e){
+      if (e.pointerType === 'touch') return;
+      var rect = container.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left; mouse.y = e.clientY - rect.top; mouse.active = true;
+    }
+    function onPointerLeave(){ mouse.active = false; }
+    container.addEventListener('pointermove', onPointerMove, { passive: true });
+    container.addEventListener('pointerleave', onPointerLeave, { passive: true });
+
+    var observer = null;
+    if ('IntersectionObserver' in window) {
+      observer = new IntersectionObserver(function(entries){
+        if (!entries || !entries.length) return;
+        isInView = entries[0].isIntersecting;
+        if (isInView && isRunning) lastTime = performance.now();
+      }, { threshold: 0.05 });
+      observer.observe(container);
+    }
+
+    function onVisibilityChange(){
+      isVisible = !document.hidden;
+      if (isVisible && isRunning) lastTime = performance.now();
+    }
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    var resizeObserver = null;
+    if ('ResizeObserver' in window) {
+      resizeObserver = new ResizeObserver(function(){ resize(); });
+      resizeObserver.observe(container);
+    } else {
+      window.addEventListener('resize', resize, { passive: true });
+    }
+
+    function onReducedMotionChange(e){
+      if (e.matches) { stop(); drawStaticFrame(); } else { start(); }
+    }
+    try { reducedMotionQuery.addEventListener('change', onReducedMotionChange); }
+    catch(err) { try { reducedMotionQuery.addListener(onReducedMotionChange); } catch(e){} }
+
+    resize();
+    start();
+
+    return {
+      canvas: canvas, config: config, start: start, stop: stop, resize: resize,
+      setOptions: function(newOpts){ Object.assign(config, newOpts || {}); initPoints(); if (reducedMotionQuery.matches) drawStaticFrame(); },
+      destroy: function(){
+        stop();
+        container.removeEventListener('pointermove', onPointerMove);
+        container.removeEventListener('pointerleave', onPointerLeave);
+        document.removeEventListener('visibilitychange', onVisibilityChange);
+        if (observer) observer.disconnect();
+        if (resizeObserver) resizeObserver.disconnect();
+        else window.removeEventListener('resize', resize);
+        try { reducedMotionQuery.removeEventListener('change', onReducedMotionChange); } catch(e){ try { reducedMotionQuery.removeListener(onReducedMotionChange); } catch(err){} }
+        if (canvas.parentNode) canvas.parentNode.removeChild(canvas);
+      }
+    };
+  }
+
+  global.NexoNetworkBackground = {
+    init: createNetworkBackground,
+    DEFAULT_CONFIG: DEFAULT_CONFIG
+  };
+})(typeof globalThis !== 'undefined' ? globalThis : (typeof window !== 'undefined' ? window : this));
+</script>
 
 <script>
 (function(){
@@ -1259,6 +1583,10 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
     document.getElementById('upd').textContent = 'Sin configurar';
   } else {
     load();
+  }
+
+  if (typeof NexoNetworkBackground !== 'undefined') {
+    NexoNetworkBackground.init(document.querySelector('.hero'));
   }
 })();
 </script>

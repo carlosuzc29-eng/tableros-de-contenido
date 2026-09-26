@@ -31,8 +31,10 @@ button{font:inherit;cursor:pointer}
 
 /* HERO */
 .hero{position:relative;background:var(--azul);color:#fff;overflow:hidden;padding:8px 16px 120px;border-radius:36px 36px 0 0}
-.hero::before{content:"";position:absolute;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(92,184,62,.35),transparent 65%);right:-140px;top:-180px;pointer-events:none}
-.hero::after{content:"N";position:absolute;right:4%;bottom:-120px;font-size:420px;font-weight:800;line-height:1;color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.07);pointer-events:none}
+.hero-network-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;mask-image:linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.96) 65%, rgba(0,0,0,0.4) 88%, rgba(0,0,0,0) 100%);-webkit-mask-image:linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.96) 65%, rgba(0,0,0,0.4) 88%, rgba(0,0,0,0) 100%)}
+.hero::before{content:"";position:absolute;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(92,184,62,.35),transparent 65%);right:-140px;top:-180px;pointer-events:none;z-index:1}
+.hero::after{content:"N";position:absolute;right:4%;bottom:-120px;font-size:420px;font-weight:800;line-height:1;color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.07);pointer-events:none;z-index:1}
+.hero .shell{position:relative;z-index:2}
 .hero-grid{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:end;margin-top:56px}
 .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--verde)}
 .eyebrow::before{content:"";width:28px;height:2px;background:var(--verde)}
@@ -268,7 +270,7 @@ footer .logo svg{height:84px;margin:0 auto 14px}
   .box{padding:24px;border-radius:24px}
 }
 @media (prefers-reduced-motion:reduce){.card{opacity:1;transform:none;transition:none}}
-@media print{.dock,.index,.modal,.toast{display:none!important}.layout{grid-template-columns:1fr}.card{opacity:1;transform:none;break-inside:avoid}}
+@media print{.dock,.index,.modal,.toast,.hero-network-canvas{display:none!important}.layout{grid-template-columns:1fr}.card{opacity:1;transform:none;break-inside:avoid}}
 </style>
 </head>
 <body class="has-send">
@@ -278,7 +280,7 @@ footer .logo svg{height:84px;margin:0 auto 14px}
   <div class="meta">Parrilla de contenidos<b id="metaTitle">Trina Hot Sauce · <i>Octubre 2026</i></b></div>
 </div></div>
 
-<header class="hero"><div class="shell">
+<header class="hero"><canvas class="hero-network-canvas" aria-hidden="true" style="position: absolute; inset: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 0; mask-image: linear-gradient(rgb(0, 0, 0) 0%, rgba(0, 0, 0, 0.96) 65%, rgba(0, 0, 0, 0.4) 88%, rgba(0, 0, 0, 0) 100%);" width="756" height="415"></canvas><div class="shell">
   <div class="hero-grid">
     <div>
       <div class="eyebrow">Revisión y aprobación</div>
@@ -454,6 +456,329 @@ La intención es utilizar el comentario como punto de partida para que la comuni
 
 <template id="nexo-logo"><svg role="img" aria-label="NEXO Agencia Creativa" xmlns="http://www.w3.org/2000/svg" viewBox="758 532 862 1350"><g transform="translate(0,2364) scale(1,-1)"><path fill="#1F3549" d="M763 1617 l0 -210 47 0 46 0 0 129 0 129 3 -4 c3 -4 29 -32 31 -34 1 -1 5 -6 10 -11 4 -4 15 -16 23 -25 9 -10 17 -20 20 -22 2 -2 11 -12 19 -21 9 -10 16 -18 16 -19 1 0 5 -5 10 -10 17 -18 28 -32 29 -33 2 -1 15 -15 33 -35 9 -10 16 -18 16 -19 5 -4 18 -19 20 -22 l3 -3 47 0 46 0 0 210 0 209 -46 0 -46 0 0 -129 c0 -106 0 -128 -1 -127 -1 1 -4 5 -8 8 -6 7 -21 24 -24 27 -2 2 -6 7 -44 49 -15 15 -28 31 -31 33 -2 2 -5 5 -6 7 -1 1 -5 6 -10 11 -5 5 -9 10 -10 11 -1 1 -5 6 -10 11 -37 41 -53 58 -60 66 -5 5 -10 11 -11 12 -1 1 -6 6 -10 11 l-9 10 -47 0 -46 0 0 -209z M1238 1825 c-1 0 -1 -21 -1 -46 l0 -46 182 0 182 0 0 47 0 46 -181 0 c-100 0 -182 0 -182 -1z M1237 1615 l0 -46 182 0 182 0 0 46 0 46 -182 0 -182 0 0 -46z M1237 1454 l0 -47 182 0 182 0 0 47 0 46 -182 0 -182 0 0 -46z M764 1351 c0 -1 31 -48 69 -105 38 -57 69 -104 69 -104 -1 -1 -32 -48 -70 -105 l-69 -104 70 0 71 0 34 52 c19 28 35 51 35 51 0 0 16 -23 35 -52 l34 -51 70 0 c60 0 70 0 70 1 -1 1 -32 48 -69 104 -37 56 -68 103 -69 104 0 0 31 47 69 104 38 57 69 104 69 105 0 1 -22 1 -65 1 l-64 0 -40 -59 c-22 -33 -40 -60 -40 -60 0 0 -18 27 -40 60 l-39 59 -66 0 c-52 0 -65 0 -64 -1z M1372 1351 c-96 -9 -175 -84 -188 -180 -21 -147 116 -269 261 -231 109 28 177 142 149 252 -25 101 -119 168 -222 159z m38 -91 c102 -17 136 -150 53 -212 -79 -59 -190 -4 -190 95 0 72 65 128 137 117z"></path><path fill="#5CB83E" d="M803 774 c-18 -40 -32 -73 -33 -74 0 -2 0 -2 10 -2 l9 1 10 21 9 22 27 0 28 0 9 -22 9 -22 10 0 c6 0 9 0 9 1 0 2 -64 148 -65 148 0 0 -15 -33 -32 -73z m43 9 l11 -25 -22 0 c-20 0 -21 0 -21 2 3 6 21 47 21 47 0 0 5 -11 11 -24z M1145 773 l0 -75 8 0 9 0 0 53 1 53 51 -56 c28 -30 51 -55 51 -55 1 0 1 34 1 75 l0 74 -8 0 -9 0 0 -54 0 -53 -52 56 c-28 31 -51 56 -52 56 0 0 0 -34 0 -74z M1480 773 c-18 -40 -32 -74 -32 -74 0 -1 4 -1 10 -1 l9 1 9 21 10 22 27 0 28 0 9 -22 9 -22 10 0 c8 0 9 0 9 2 -1 3 -64 147 -65 147 0 0 -15 -33 -33 -74z m44 10 c5 -13 10 -24 10 -24 0 -1 -9 -1 -21 -1 -12 0 -21 0 -21 1 0 1 20 48 21 48 0 0 5 -11 11 -24z M952 844 c-36 -6 -58 -35 -58 -75 0 -36 18 -61 49 -71 12 -4 38 -4 50 0 27 10 43 32 45 64 l0 11 -30 0 -30 0 0 -8 0 -8 21 0 20 0 -1 -4 c-5 -34 -42 -52 -75 -36 -38 18 -41 80 -4 104 15 10 39 10 55 1 5 -2 15 -12 18 -17 l2 -2 7 5 c4 3 7 7 7 8 0 3 -16 17 -24 21 -14 7 -35 10 -52 7z M1338 843 c-25 -6 -45 -25 -53 -48 -3 -12 -4 -32 -1 -44 12 -50 70 -72 115 -44 l6 3 0 12 0 12 -7 -6 c-24 -23 -58 -22 -81 0 -12 13 -16 24 -16 42 0 51 59 77 96 43 4 -3 7 -6 7 -6 1 0 1 5 1 11 l0 12 -6 3 c-18 11 -41 15 -61 10z M1051 770 l0 -72 38 0 39 1 0 8 0 8 -29 0 -30 0 0 27 0 27 30 0 29 0 0 8 0 8 -29 0 -30 0 0 20 0 20 30 0 29 0 0 9 0 8 -38 0 -39 0 0 -72z M1422 770 l0 -72 9 0 9 0 0 72 0 72 -9 0 -9 0 0 -72z M825 688 c-33 -5 -57 -31 -61 -65 -6 -61 47 -101 104 -78 l6 2 0 22 c0 11 0 21 -1 21 0 0 -3 -3 -7 -6 -29 -25 -68 -2 -62 36 3 21 16 33 36 33 12 0 16 -2 28 -12 l6 -5 0 22 0 22 -7 2 c-13 6 -29 8 -42 6z M1128 687 c-21 -7 -32 -25 -32 -52 0 -25 8 -42 25 -50 6 -3 7 -3 18 -3 16 0 22 2 30 11 l6 6 0 -7 0 -7 17 0 16 0 0 50 0 50 -16 0 -17 0 0 -7 0 -7 -3 3 c-4 5 -8 8 -13 11 -6 3 -25 4 -31 2z m37 -30 c14 -7 15 -34 2 -42 -13 -9 -30 -4 -34 11 -7 23 12 41 32 31z M883 614 l0 -72 19 0 19 0 0 27 0 26 16 -26 15 -27 23 0 c12 0 22 0 22 0 0 1 -9 14 -19 29 -21 30 -20 29 -17 29 7 0 20 10 25 20 3 7 3 7 3 20 0 18 -4 28 -16 37 -11 7 -14 7 -54 8 l-36 0 0 -71z m60 37 c7 -4 10 -15 6 -23 -3 -7 -8 -9 -19 -10 l-9 0 0 18 0 18 9 0 c7 0 10 -1 13 -3z M1000 614 l0 -72 44 0 44 0 0 17 0 16 -25 0 -25 0 0 12 0 11 24 0 23 0 0 16 0 15 -23 0 -24 0 0 12 0 12 25 0 25 0 0 16 0 16 -44 0 -44 0 0 -71z M1220 631 l0 -55 -23 0 -23 0 0 -17 1 -16 58 -1 59 0 0 17 0 17 -16 0 -16 0 0 55 0 54 -20 0 -20 0 0 -54z M1302 614 l0 -72 20 0 20 0 0 72 0 71 -20 0 -20 0 0 -71z M1349 685 c0 0 13 -32 30 -71 l30 -71 15 -1 16 0 29 70 c16 38 29 70 30 71 0 2 -1 2 -21 2 l-21 0 -16 -42 c-9 -22 -17 -41 -17 -41 0 0 -8 19 -16 42 l-16 41 -22 0 c-11 0 -21 0 -21 0z M1510 684 c-1 -1 -14 -33 -30 -71 -16 -38 -29 -70 -29 -70 0 -1 9 -1 21 -1 l21 0 2 5 c1 3 8 21 16 41 7 19 14 35 14 36 0 2 6 -11 17 -40 l16 -42 22 0 21 0 -4 9 c-2 5 -16 37 -30 72 l-26 62 -15 0 c-12 0 -16 0 -16 -1z"></path></g></svg></template>
 <template id="nexo-iso"><svg xmlns="http://www.w3.org/2000/svg" viewBox="540 610 1300 1160"><g transform="translate(0,2364) scale(1,-1)"><path fill="#5CB83E" d="M1266 1638 c-67 -59 -123 -108 -123 -108 0 -1 129 -214 131 -216 1 -1 2 4 18 65 l17 64 116 0 115 0 0 -3 c-1 -1 -43 -157 -94 -347 -51 -189 -93 -344 -93 -345 0 0 51 0 114 0 l113 1 14 51 c8 28 51 188 96 355 109 402 124 459 124 460 0 1 -62 1 -229 1 -218 0 -229 0 -229 2 1 2 34 127 34 128 0 1 -17 -13 -124 -108z M759 1528 c-147 -548 -209 -778 -209 -779 0 -1 73 -1 229 -1 125 0 228 0 228 0 0 0 -8 -30 -17 -65 -9 -35 -17 -65 -16 -65 0 0 1 1 3 2 1 2 56 50 122 107 66 58 120 106 120 106 1 1 -18 34 -63 108 -75 123 -67 110 -67 109 -1 0 -9 -29 -18 -65 l-17 -64 -115 0 -115 0 0 3 c1 2 184 687 186 690 0 2 -6 2 -114 2 l-114 0 -23 -88z"></path></g></svg></template>
+
+<script id="fondo-red-script">
+/**
+ * NEXO · Fondo Dinámico de Red de Conexiones (Canvas 2D)
+ * Componente frontend para red sutil y elegante de puntos y conexiones orgánicas.
+ */
+(function(global){
+  'use strict';
+  var DEFAULT_CONFIG = {
+    pointCountDesktop: 32,
+    pointCountMobile: 14,
+    maxDistanceDesktop: 135,
+    maxDistanceMobile: 90,
+    maxConnectionsPerPoint: 3,
+    baseSpeed: 13,
+    speedVariance: 6,
+    minRadius: 1.1,
+    maxRadius: 2.2,
+    lineWidth: 0.75,
+    colorDotDefault: 'rgba(230, 238, 246, ',
+    colorDotAccent: 'rgba(92, 184, 62, ',
+    colorLineDefault: 'rgba(200, 218, 235, ',
+    colorLineAccent: 'rgba(92, 184, 62, ',
+    accentRatio: 0.18,
+    baseLineAlpha: 0.13,
+    baseDotAlpha: 0.65,
+    pulseEnabled: true,
+    pulseMaxConcurrent: 2,
+    pulseIntervalMin: 3.5,
+    pulseIntervalMax: 7.0,
+    pulseSpeed: 105,
+    pulseColor: 'rgba(92, 184, 62, 0.95)',
+    mouseRadius: 140,
+    mousePushStrength: 15,
+    mouseGlowFactor: 1.45
+  };
+
+  function createNetworkBackground(container, options){
+    if (!container) return null;
+    var config = Object.assign({}, DEFAULT_CONFIG, options || {});
+
+    var canvas = container.querySelector('.hero-network-canvas');
+    if (!canvas) {
+      canvas = document.createElement('canvas');
+      canvas.className = 'hero-network-canvas';
+      canvas.setAttribute('aria-hidden', 'true');
+      canvas.style.position = 'absolute';
+      canvas.style.inset = '0';
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
+      canvas.style.pointerEvents = 'none';
+      canvas.style.zIndex = '0';
+      canvas.style.maskImage = 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.96) 65%, rgba(0,0,0,0.4) 88%, rgba(0,0,0,0) 100%)';
+      canvas.style.webkitMaskImage = 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.96) 65%, rgba(0,0,0,0.4) 88%, rgba(0,0,0,0) 100%)';
+      if (container.firstChild) container.insertBefore(canvas, container.firstChild);
+      else container.appendChild(canvas);
+    }
+
+    var ctx = canvas.getContext('2d', { alpha: true });
+    if (!ctx) return null;
+
+    var width = 0, height = 0, dpr = 1, points = [], pulses = [];
+    var nextPulseTime = performance.now() + 2500;
+    var animationFrameId = null, lastTime = performance.now(), isRunning = false, isVisible = true, isInView = true;
+    var mouse = { x: -9999, y: -9999, active: false };
+    var reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    function isMobile(){ return (width <= 768) || (window.innerWidth <= 768); }
+    function getPointCount(){ return isMobile() ? config.pointCountMobile : config.pointCountDesktop; }
+    function getMaxDistance(){ return isMobile() ? config.maxDistanceMobile : config.maxDistanceDesktop; }
+
+    function calculateClearance(px, py){
+      var focalX = width * 0.28, focalY = height * 0.46;
+      var rx = width * 0.24, ry = height * 0.36;
+      if (rx <= 0 || ry <= 0) return 1.0;
+      var dx = (px - focalX) / rx, dy = (py - focalY) / ry;
+      return Math.min(1.0, Math.max(0.16, Math.sqrt(dx * dx + dy * dy)));
+    }
+
+    function initPoints(){
+      points = []; pulses = [];
+      var count = getPointCount();
+      for (var i = 0; i < count; i++) {
+        var x, y;
+        if (Math.random() < 0.65) {
+          var side = Math.random();
+          if (side < 0.35) { x = width * (0.60 + Math.random() * 0.38); y = height * (0.05 + Math.random() * 0.90); }
+          else if (side < 0.60) { x = width * (0.02 + Math.random() * 0.22); y = height * (0.05 + Math.random() * 0.90); }
+          else if (side < 0.80) { x = width * (0.05 + Math.random() * 0.90); y = height * (0.02 + Math.random() * 0.25); }
+          else { x = Math.random() < 0.5 ? width * (0.02 + Math.random() * 0.25) : width * (0.75 + Math.random() * 0.23); y = height * (0.65 + Math.random() * 0.30); }
+        } else {
+          x = width * (0.05 + Math.random() * 0.90); y = height * (0.08 + Math.random() * 0.84);
+        }
+        var isAccent = Math.random() < config.accentRatio;
+        var depth = 0.55 + Math.random() * 0.45;
+        var speed = (config.baseSpeed + (Math.random() - 0.5) * config.speedVariance) * depth;
+        var angle = Math.random() * Math.PI * 2;
+        var radius = (config.minRadius + Math.random() * (config.maxRadius - config.minRadius)) * depth;
+        points.push({
+          x: x, y: y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
+          angle: angle, va: (Math.random() - 0.5) * 0.5, speed: speed, radius: radius,
+          depth: depth, isAccent: isAccent, offsetX: 0, offsetY: 0, targetOffsetX: 0,
+          targetOffsetY: 0, glow: 1.0, targetGlow: 1.0, connections: []
+        });
+      }
+    }
+
+    function resize(){
+      var rect = container.getBoundingClientRect();
+      var w = Math.round(rect.width), h = Math.round(rect.height);
+      if (w <= 0 || h <= 0) return;
+      width = w; height = h;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+      ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.scale(dpr, dpr);
+      if (!points.length || Math.abs(points.length - getPointCount()) > 5) initPoints();
+      else { points.forEach(function(p){ if (p.x > width) p.x = width * Math.random(); if (p.y > height) p.y = height * Math.random(); }); }
+      if (reducedMotionQuery.matches) drawStaticFrame();
+    }
+
+    function updatePhysics(dt){
+      var maxDist = getMaxDistance();
+      points.forEach(function(p){
+        p.angle += p.va * dt;
+        p.x += (Math.cos(p.angle) * p.speed) * dt;
+        p.y += (Math.sin(p.angle) * p.speed) * dt;
+        var pad = 12;
+        if (p.x < pad) { p.x = pad; p.angle = Math.PI - p.angle; }
+        else if (p.x > width - pad) { p.x = width - pad; p.angle = Math.PI - p.angle; }
+        if (p.y < pad) { p.y = pad; p.angle = -p.angle; }
+        else if (p.y > height - pad) { p.y = height - pad; p.angle = -p.angle; }
+
+        if (mouse.active && !isMobile()) {
+          var curX = p.x + p.offsetX, curY = p.y + p.offsetY;
+          var mdx = curX - mouse.x, mdy = curY - mouse.y;
+          var mdist = Math.hypot(mdx, mdy);
+          if (mdist < config.mouseRadius && mdist > 1) {
+            var pushFactor = (1 - mdist / config.mouseRadius);
+            p.targetOffsetX = (mdx / mdist) * pushFactor * config.mousePushStrength;
+            p.targetOffsetY = (mdy / mdist) * pushFactor * config.mousePushStrength;
+            p.targetGlow = 1 + pushFactor * (config.mouseGlowFactor - 1);
+          } else { p.targetOffsetX = 0; p.targetOffsetY = 0; p.targetGlow = 1.0; }
+        } else { p.targetOffsetX = 0; p.targetOffsetY = 0; p.targetGlow = 1.0; }
+
+        p.offsetX += (p.targetOffsetX - p.offsetX) * 0.08;
+        p.offsetY += (p.targetOffsetY - p.offsetY) * 0.08;
+        p.glow += (p.targetGlow - p.glow) * 0.08;
+        p.connections = [];
+      });
+
+      var n = points.length, activeConnections = [];
+      for (var i = 0; i < n; i++) {
+        var pi = points[i];
+        if (pi.connections.length >= config.maxConnectionsPerPoint) continue;
+        for (var j = i + 1; j < n; j++) {
+          var pj = points[j];
+          if (pj.connections.length >= config.maxConnectionsPerPoint) continue;
+          var xi = pi.x + pi.offsetX, yi = pi.y + pi.offsetY;
+          var xj = pj.x + pj.offsetX, yj = pj.y + pj.offsetY;
+          var dist = Math.hypot(xj - xi, yj - yi);
+          if (dist < maxDist) {
+            pi.connections.push(j); pj.connections.push(i);
+            activeConnections.push({ i: i, j: j, dist: dist, xi: xi, yi: yi, xj: xj, yj: yj, isAccent: pi.isAccent || pj.isAccent, glow: Math.max(pi.glow, pj.glow) });
+            if (pi.connections.length >= config.maxConnectionsPerPoint) break;
+          }
+        }
+      }
+
+      var now = performance.now();
+      if (config.pulseEnabled && !reducedMotionQuery.matches && activeConnections.length > 0) {
+        if (pulses.length < config.pulseMaxConcurrent && now >= nextPulseTime) {
+          var conn = activeConnections[Math.floor(Math.random() * activeConnections.length)];
+          pulses.push({ pFrom: points[conn.i], pTo: points[conn.j], progress: 0, duration: conn.dist / config.pulseSpeed, color: config.pulseColor });
+          nextPulseTime = now + (config.pulseIntervalMin + Math.random() * (config.pulseIntervalMax - config.pulseIntervalMin)) * 1000;
+        }
+      }
+
+      for (var k = pulses.length - 1; k >= 0; k--) {
+        pulses[k].progress += dt / Math.max(0.2, pulses[k].duration);
+        if (pulses[k].progress >= 1.0) pulses.splice(k, 1);
+      }
+      return activeConnections;
+    }
+
+    function draw(activeConnections){
+      ctx.clearRect(0, 0, width, height);
+      var maxDist = getMaxDistance();
+      ctx.lineWidth = config.lineWidth;
+
+      for (var k = 0; k < activeConnections.length; k++) {
+        var c = activeConnections[k];
+        var distRatio = 1 - (c.dist / maxDist);
+        if (distRatio <= 0) continue;
+        var midX = (c.xi + c.xj) * 0.5, midY = (c.yi + c.yj) * 0.5;
+        var clearance = calculateClearance(midX, midY);
+        var alpha = config.baseLineAlpha * distRatio * clearance * c.glow;
+        alpha = Math.max(0.02, Math.min(0.28, alpha));
+        ctx.strokeStyle = (c.isAccent ? config.colorLineAccent : config.colorLineDefault) + alpha.toFixed(3) + ')';
+        ctx.beginPath(); ctx.moveTo(c.xi, c.yi); ctx.lineTo(c.xj, c.yj); ctx.stroke();
+      }
+
+      for (var pIdx = 0; pIdx < pulses.length; pIdx++) {
+        var pls = pulses[pIdx];
+        var pFromX = pls.pFrom.x + pls.pFrom.offsetX, pFromY = pls.pFrom.y + pls.pFrom.offsetY;
+        var pToX = pls.pTo.x + pls.pTo.offsetX, pToY = pls.pTo.y + pls.pTo.offsetY;
+        var prg = pls.progress;
+        var curPx = pFromX + (pToX - pFromX) * prg, curPy = pFromY + (pToY - pFromY) * prg;
+        var pAlpha = Math.sin(prg * Math.PI) * calculateClearance(curPx, curPy);
+        if (pAlpha > 0.05) {
+          ctx.beginPath(); ctx.arc(curPx, curPy, 3.8, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(92, 184, 62, ' + (0.28 * pAlpha).toFixed(3) + ')'; ctx.fill();
+          ctx.beginPath(); ctx.arc(curPx, curPy, 1.6, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(255, 255, 255, ' + (0.90 * pAlpha).toFixed(3) + ')'; ctx.fill();
+        }
+      }
+
+      for (var i = 0; i < points.length; i++) {
+        var pt = points[i];
+        var posX = pt.x + pt.offsetX, posY = pt.y + pt.offsetY;
+        var ptClearance = calculateClearance(posX, posY);
+        var ptAlpha = config.baseDotAlpha * pt.depth * ptClearance * Math.min(1.3, pt.glow);
+        ptAlpha = Math.max(0.08, Math.min(0.95, ptAlpha));
+        ctx.beginPath(); ctx.arc(posX, posY, pt.radius, 0, Math.PI * 2);
+        ctx.fillStyle = (pt.isAccent ? config.colorDotAccent : config.colorDotDefault) + ptAlpha.toFixed(3) + ')';
+        ctx.fill();
+      }
+    }
+
+    function drawStaticFrame(){
+      if (!points.length) initPoints();
+      var activeConnections = updatePhysics(0.016);
+      draw(activeConnections);
+    }
+
+    function loop(now){
+      if (!isRunning) return;
+      var dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
+      if (isVisible && isInView && !reducedMotionQuery.matches) {
+        var activeConnections = updatePhysics(dt);
+        draw(activeConnections);
+      }
+      animationFrameId = window.requestAnimationFrame(loop);
+    }
+
+    function start(){
+      if (reducedMotionQuery.matches) { drawStaticFrame(); return; }
+      if (!isRunning) {
+        isRunning = true; lastTime = performance.now();
+        animationFrameId = window.requestAnimationFrame(loop);
+      }
+    }
+
+    function stop(){
+      isRunning = false;
+      if (animationFrameId) { window.cancelAnimationFrame(animationFrameId); animationFrameId = null; }
+    }
+
+    function onPointerMove(e){
+      if (e.pointerType === 'touch') return;
+      var rect = container.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left; mouse.y = e.clientY - rect.top; mouse.active = true;
+    }
+    function onPointerLeave(){ mouse.active = false; }
+    container.addEventListener('pointermove', onPointerMove, { passive: true });
+    container.addEventListener('pointerleave', onPointerLeave, { passive: true });
+
+    var observer = null;
+    if ('IntersectionObserver' in window) {
+      observer = new IntersectionObserver(function(entries){
+        if (!entries || !entries.length) return;
+        isInView = entries[0].isIntersecting;
+        if (isInView && isRunning) lastTime = performance.now();
+      }, { threshold: 0.05 });
+      observer.observe(container);
+    }
+
+    function onVisibilityChange(){
+      isVisible = !document.hidden;
+      if (isVisible && isRunning) lastTime = performance.now();
+    }
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    var resizeObserver = null;
+    if ('ResizeObserver' in window) {
+      resizeObserver = new ResizeObserver(function(){ resize(); });
+      resizeObserver.observe(container);
+    } else {
+      window.addEventListener('resize', resize, { passive: true });
+    }
+
+    function onReducedMotionChange(e){
+      if (e.matches) { stop(); drawStaticFrame(); } else { start(); }
+    }
+    try { reducedMotionQuery.addEventListener('change', onReducedMotionChange); }
+    catch(err) { try { reducedMotionQuery.addListener(onReducedMotionChange); } catch(e){} }
+
+    resize();
+    start();
+
+    return {
+      canvas: canvas, config: config, start: start, stop: stop, resize: resize,
+      setOptions: function(newOpts){ Object.assign(config, newOpts || {}); initPoints(); if (reducedMotionQuery.matches) drawStaticFrame(); },
+      destroy: function(){
+        stop();
+        container.removeEventListener('pointermove', onPointerMove);
+        container.removeEventListener('pointerleave', onPointerLeave);
+        document.removeEventListener('visibilitychange', onVisibilityChange);
+        if (observer) observer.disconnect();
+        if (resizeObserver) resizeObserver.disconnect();
+        else window.removeEventListener('resize', resize);
+        try { reducedMotionQuery.removeEventListener('change', onReducedMotionChange); } catch(e){ try { reducedMotionQuery.removeListener(onReducedMotionChange); } catch(err){} }
+        if (canvas.parentNode) canvas.parentNode.removeChild(canvas);
+      }
+    };
+  }
+
+  global.NexoNetworkBackground = {
+    init: createNetworkBackground,
+    DEFAULT_CONFIG: DEFAULT_CONFIG
+  };
+})(typeof globalThis !== 'undefined' ? globalThis : (typeof window !== 'undefined' ? window : this));
+</script>
 
 <script id="board-data" type="application/json">
 {
@@ -1183,6 +1508,9 @@ La intención es utilizar el comentario como punto de partida para que la comuni
   $('dlMini').onclick = function(){ doDownload(); };
 
   refresh(); applyFilter();
+  if (typeof NexoNetworkBackground !== 'undefined') {
+    NexoNetworkBackground.init(document.querySelector('.hero'));
+  }
 })();
 </script>
 

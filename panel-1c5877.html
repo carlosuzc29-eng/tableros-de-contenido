@@ -7,7 +7,13 @@
 <title>Panel de tableros · Nexo</title>
 <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--azul:#1F3549;--azul-2:#2B4661;--azul-soft:#E6EBF0;--verde:#5CB83E;--verde-dk:#3F8A27;--verde-soft:#EAF6E4;--naranja:#E64A00;--naranja-soft:#FCEBE2;--gris:#979797;--bg:#EEF1F4;--ink:#1F3549;--ink-2:#5B6B7A;--line:#E1E6EB}
+:root{
+  --azul:#1F3549;--azul-2:#2B4661;--azul-3:#3D5A77;--azul-soft:#E6EBF0;
+  --verde:#5CB83E;--verde-dk:#3F8A27;--verde-soft:#EAF6E4;
+  --naranja:#E64A00;--naranja-soft:#FCEBE2;
+  --gris:#979797;--bg:#EEF1F4;--paper:#FFFFFF;--ink:#1F3549;--ink-2:#5B6B7A;--line:#E1E6EB;
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Futura','Jost','Century Gothic',sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased}
 button,input{font:inherit}
@@ -22,8 +28,18 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
 .hero h2{font-size:clamp(28px,5vw,48px);line-height:1;letter-spacing:-.03em}
 .hero h2 span{color:transparent;-webkit-text-stroke:1.2px #fff}
 .hero p{color:#B9C6D2;font-size:14px;margin-top:8px}
-.btn{border:0;border-radius:99px;padding:11px 18px;font-weight:600;cursor:pointer;background:var(--verde);color:#fff}
+.btn{border:0;border-radius:99px;padding:11px 18px;font-weight:600;cursor:pointer;background:var(--verde);color:#fff;transition:background .2s,transform .1s;display:inline-flex;align-items:center;gap:6px}
+.btn:active{transform:scale(.97)}
 .btn.sec{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2)}
+.btn.sec:hover{background:rgba(255,255,255,.18)}
+.btn-doc{background:var(--azul);color:#fff;border:0;border-radius:99px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .2s,transform .1s}
+.btn-doc:hover{background:var(--azul-2)}
+.btn-doc:active{transform:scale(.97)}
+.btn-doc.pri{background:var(--verde)}
+.btn-doc.pri:hover{background:var(--verde-dk)}
+.btn-doc.sec{background:var(--bg);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+.btn-doc.sec:hover{background:var(--azul-soft)}
+
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:-52px}
 .stat{background:#fff;border-radius:20px;padding:16px 18px;box-shadow:0 20px 40px -24px rgba(31,53,73,.3);cursor:pointer;transition:transform .15s ease,box-shadow .15s ease,outline .15s ease}
 .stat:hover{transform:translateY(-2px);box-shadow:0 10px 24px -10px rgba(31,53,73,.2)}
@@ -31,45 +47,122 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
 .stat b{display:block;font-size:28px;line-height:1.1}
 .stat span{font-size:12.5px;color:var(--ink-2)}
 .stat.ok b{color:var(--verde-dk)} .stat.fix b{color:var(--naranja)}
-.btn-tag{border:0;background:none;font-size:13px;color:var(--ink-2);font-weight:600;cursor:pointer;padding:2px 8px;border-radius:99px;transition:background .15s;text-align:left;display:inline-flex;align-items:center;gap:4px}
+
+.btn-tag{border:0;background:none;font-size:13px;color:var(--ink-2);font-weight:600;cursor:pointer;padding:3px 10px;border-radius:99px;transition:background .15s;text-align:left;display:inline-flex;align-items:center;gap:4px}
 .btn-tag:hover{background:var(--bg)}
 .btn-tag.ok{color:var(--verde-dk);background:var(--verde-soft)}
 .btn-tag.fix{color:var(--naranja);background:var(--naranja-soft)}
-.det-tools{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center;font-size:12.5px;color:var(--ink-2)}
-.det-chip{border:0;background:var(--bg);font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px;cursor:pointer;color:var(--ink-2)}
-.det-chip.on{background:var(--azul);color:#fff}
+
 .tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:26px 0 14px}
 .chip{border:0;background:#fff;color:var(--ink-2);font-size:13px;font-weight:500;padding:8px 14px;border-radius:99px;cursor:pointer;box-shadow:inset 0 0 0 1px var(--line)}
 .chip.on{background:var(--azul);color:#fff;box-shadow:none}
 .search{margin-left:auto;border:0;border-radius:99px;padding:9px 16px;box-shadow:inset 0 0 0 1px var(--line);background:#fff;min-width:200px}
-.list{display:grid;gap:12px;padding-bottom:60px}
-.row{background:#fff;border-radius:22px;padding:18px 20px;box-shadow:0 1px 0 var(--line);position:relative;overflow:hidden}
-.row::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--line)}
-.row[data-e="Aprobado"]::before{background:var(--verde)} .row[data-e="Con cambios"]::before{background:var(--naranja)} .row[data-e="Parcial"]::before{background:#8FA3B6}
+.list{display:grid;gap:16px;padding-bottom:60px}
+
+/* FILAS DE TABLEROS */
+.row{background:#fff;border-radius:24px;padding:20px 24px;box-shadow:0 1px 0 var(--line),0 20px 40px -20px rgba(31,53,73,.15);position:relative;overflow:hidden;transition:box-shadow .2s}
+.row::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--line)}
+.row[data-e="Aprobado"]::before{background:var(--verde)}
+.row[data-e="Con cambios"]::before{background:var(--naranja)}
+.row[data-e="Parcial"]::before{background:#8FA3B6}
 .r-top{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
-.r-top h3{font-size:18px;line-height:1.2}
+.r-top h3{font-size:20px;line-height:1.2;font-weight:700}
 .r-top small{display:block;color:var(--ink-2);font-size:13px;margin-top:2px}
-.badge{font-size:12px;font-weight:600;padding:6px 12px;border-radius:99px;background:var(--bg);color:var(--ink-2);white-space:nowrap}
+.badge{font-size:12px;font-weight:600;padding:6px 14px;border-radius:99px;background:var(--bg);color:var(--ink-2);white-space:nowrap}
 .row[data-e="Aprobado"] .badge{background:var(--verde-soft);color:var(--verde-dk)}
 .row[data-e="Con cambios"] .badge{background:var(--naranja-soft);color:var(--naranja)}
-.bar{display:flex;height:8px;border-radius:99px;background:var(--azul-soft);overflow:hidden;margin:14px 0 8px}
+.bar{display:flex;height:8px;border-radius:99px;background:var(--azul-soft);overflow:hidden;margin:14px 0 10px}
 .bar i{display:block;height:100%} .bar .a{background:var(--verde)} .bar .c{background:var(--naranja)}
-.meta{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--ink-2)}
+.meta{display:flex;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--ink-2);align-items:center}
 .meta a{color:var(--azul);font-weight:600;text-decoration:none}
-.meta button{border:0;background:none;color:var(--azul);font-weight:600;cursor:pointer;padding:0}
-.det{display:none;margin-top:14px;border-top:1px dashed var(--line);padding-top:12px}
-.row.open .det{display:grid;gap:8px}
-.it{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:start;font-size:14px}
-.it .n{font-weight:700;color:var(--ink-2)}
-.it .c{color:var(--ink-2);font-size:13px;margin-top:2px;white-space:pre-line}
-.it .fc{color:var(--naranja);font-size:12.5px;font-weight:600}
-.pill{font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:99px;background:var(--bg);color:var(--ink-2);white-space:nowrap}
-.pill.aprobado{background:var(--verde-soft);color:var(--verde-dk)} .pill.cambios{background:var(--naranja-soft);color:var(--naranja)}
+.meta button.link{border:0;background:none;color:var(--azul);font-weight:600;cursor:pointer;padding:0}
+.meta-right{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+/* CONTENEDOR EXPANDIDO DE CONTENIDOS COMPLETOS */
+.board-contents{display:none;margin-top:20px;border-top:1px dashed var(--line);padding-top:20px}
+.row.open .board-contents{display:grid;gap:20px}
+.board-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:var(--bg);padding:10px 14px;border-radius:18px}
+.board-filters{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.board-filters span{font-size:12px;font-weight:600;color:var(--ink-2);margin-right:2px}
+.b-chip{border:0;background:#fff;color:var(--ink-2);font-size:12px;font-weight:600;padding:5px 12px;border-radius:99px;cursor:pointer;box-shadow:inset 0 0 0 1px var(--line);transition:all .15s}
+.b-chip:hover{background:var(--azul-soft)}
+.b-chip.on{background:var(--azul);color:#fff;box-shadow:none}
+.b-chip.ok.on{background:var(--verde)}
+.b-chip.fix.on{background:var(--naranja)}
+.board-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+.cards-grid{display:grid;gap:22px}
+
+/* TARJETA DE CONTENIDO COMPLETO (TAL CUAL EL TABLERO DEL CLIENTE) */
+.p-card{background:#fff;border:1px solid var(--line);border-radius:26px;padding:26px 28px;position:relative;overflow:hidden;box-shadow:0 12px 30px -15px rgba(31,53,73,.12)}
+.p-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--line)}
+.p-card[data-state="aprobado"]::before{background:var(--verde)}
+.p-card[data-state="cambios"]::before{background:var(--naranja)}
+.p-card[data-state="pendiente"]::before{background:#8FA3B6}
+.p-card-top{display:grid;grid-template-columns:auto 1fr auto;gap:22px;align-items:start}
+.p-big{font-size:72px;font-weight:800;line-height:.8;letter-spacing:-.06em;color:transparent;-webkit-text-stroke:2px var(--azul)}
+.p-card[data-state="aprobado"] .p-big{color:var(--verde);-webkit-text-stroke-color:var(--verde)}
+.p-card[data-state="cambios"] .p-big{color:var(--naranja);-webkit-text-stroke-color:var(--naranja)}
+.p-tags{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.p-tag{font-size:12px;font-weight:600;padding:4px 12px;border-radius:99px;background:var(--azul-soft);color:var(--azul)}
+.p-tag.fmt{background:var(--azul);color:#fff}
+.p-tag.changed{background:var(--naranja);color:#fff}
+.p-tag.orig{background:var(--naranja-soft);color:var(--naranja)}
+.p-tag.date{background:transparent;box-shadow:inset 0 0 0 1px var(--line);color:var(--ink-2)}
+.p-card-top h4{font-size:22px;font-weight:700;line-height:1.25;color:var(--ink);margin-top:10px}
+.p-badge{font-size:12px;font-weight:600;padding:6px 14px;border-radius:99px;background:var(--bg);color:var(--ink-2);white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.p-card[data-state="aprobado"] .p-badge{background:var(--verde-soft);color:var(--verde-dk)}
+.p-card[data-state="cambios"] .p-badge{background:var(--naranja-soft);color:var(--naranja)}
+.p-card-body{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:24px}
+.p-card-body.single{grid-template-columns:1fr}
+.p-lbl{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gris);margin-bottom:8px;display:block}
+.p-guion{font-size:15px;line-height:1.65;white-space:pre-line;color:var(--ink)}
+.p-refs{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.p-refs a{font-size:12px;font-weight:600;color:var(--azul);text-decoration:none;padding:6px 12px;border-radius:10px;background:var(--bg);display:inline-flex;gap:5px;align-items:center;transition:background .15s}
+.p-refs a:hover{background:var(--azul-soft)}
+.p-refs a::after{content:"↗";color:var(--verde);font-weight:700}
+.p-post{background:var(--bg);border-radius:20px;padding:18px}
+.p-post-h{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.p-av{width:34px;height:34px;border-radius:50%;background:var(--azul);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
+.p-post-h b{font-size:14px;font-weight:600;display:block;line-height:1.2}
+.p-post-h small{font-size:11.5px;color:var(--gris)}
+.p-copy{font-size:14.5px;line-height:1.6;white-space:pre-line;word-break:break-word;color:var(--ink)}
+.p-hash{display:block;margin-top:8px;color:var(--azul-2);font-weight:600;font-size:13px}
+
+/* BANNER DE REVISIÓN Y AJUSTES */
+.p-feedback{margin-top:22px;border-radius:20px;padding:16px 20px;display:grid;gap:8px}
+.p-feedback.cambios{background:var(--naranja-soft);border:1.5px solid rgba(230,74,0,.4);color:#7A2800}
+.p-feedback.aprobado{background:var(--verde-soft);border:1.5px solid rgba(92,184,62,.4);color:var(--verde-dk)}
+.p-feedback.pendiente{background:var(--bg);border:1px solid var(--line);color:var(--ink-2)}
+.p-fb-title{font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:6px}
+.p-fb-text{font-size:14.5px;line-height:1.55;white-space:pre-line;font-weight:500}
+.p-card-foot{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line);flex-wrap:wrap}
+.btn-mini{border:0;background:var(--bg);color:var(--ink-2);font-size:12px;font-weight:600;padding:6px 12px;border-radius:99px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .15s}
+.btn-mini:hover{background:var(--azul-soft);color:var(--azul)}
+.btn-mini.accent{background:rgba(230,74,0,.12);color:var(--naranja)}
+.btn-mini.accent:hover{background:rgba(230,74,0,.22)}
+
+.loading-box{background:var(--bg);border-radius:18px;padding:32px;text-align:center;color:var(--ink-2);font-weight:500}
 .empty,.msg{background:#fff;border-radius:22px;padding:30px;text-align:center;color:var(--ink-2)}
 .login{max-width:420px;margin:30px auto;background:#fff;border-radius:24px;padding:26px;box-shadow:0 20px 40px -24px rgba(31,53,73,.3)}
 .login h3{font-size:20px} .login p{color:var(--ink-2);font-size:14px;margin:6px 0 14px}
 .login input{width:100%;border:0;border-radius:14px;padding:12px 14px;box-shadow:inset 0 0 0 1px var(--line);margin-bottom:12px}
-@media (max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}.search{margin-left:0;width:100%}.logo svg{height:48px}}
+
+/* TOAST */
+.toast{position:fixed;left:50%;top:20px;transform:translate(-50%,-200px);background:var(--azul);color:#fff;padding:12px 20px;border-radius:14px;font-size:14px;font-weight:500;z-index:100;transition:transform .35s var(--ease);box-shadow:0 20px 40px -16px rgba(31,53,73,.6);pointer-events:none}
+.toast.show{transform:translate(-50%,0)}
+
+@media (max-width:850px){
+  .p-card-body{grid-template-columns:1fr}
+  .p-card-top{grid-template-columns:auto 1fr}
+  .p-card-top .p-badge{grid-column:1 / -1;justify-self:start}
+  .p-big{font-size:52px}
+  .board-toolbar{flex-direction:column;align-items:stretch}
+  .meta-right{margin-left:0;width:100%;justify-content:flex-start}
+}
+@media (max-width:700px){
+  .stats{grid-template-columns:repeat(2,1fr)}.search{margin-left:0;width:100%}.logo svg{height:48px}
+}
 </style>
 </head>
 <body>
@@ -81,14 +174,48 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
 <main class="shell">
   <div id="app"></div>
 </main>
+<div class="toast" id="toast"></div>
+
 <script>
 (function(){
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycbyLYC8p_iglMhPuXMaPRZ4TOA_2fPTRCe3V2EmVnwotm2v5vll39e7X2AuBC-9eNcp7Jg/exec';
   var KEY = 'nexo-panel-clave', clave = '';
   try { clave = localStorage.getItem(KEY) || ''; } catch (e) {}
   var app = document.getElementById('app'), f = 'Todos', q = '', DB = null;
+  var boardCache = {}; // Cache de contenidos completos por tablero id
+  var toastTimer = null;
+
+  function toast(msg){
+    var t = document.getElementById('toast');
+    if (!t) return;
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 3400);
+  }
+
+  function copyText(txt, okMsg){
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(function(){ toast(okMsg || 'Copiado al portapapeles'); }).catch(function(){ legacyCopy(txt, okMsg); });
+    } else {
+      legacyCopy(txt, okMsg);
+    }
+  }
+
+  function legacyCopy(txt, okMsg){
+    var ta = document.createElement('textarea');
+    ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); toast(okMsg || 'Copiado al portapapeles'); } catch (e) { toast('No se pudo copiar'); }
+    document.body.removeChild(ta);
+  }
+
   function el(t, c, x){ var e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; }
-  function fecha(s){ if (!s) return ''; var d = new Date(s); return isNaN(d) ? String(s) : d.toLocaleDateString('es-VE', {day:'2-digit', month:'short'}) + ' ' + d.toLocaleTimeString('es-VE', {hour:'2-digit', minute:'2-digit'}); }
+  function fecha(s){
+    if (!s) return '';
+    var d = new Date(s);
+    return isNaN(d) ? String(s) : d.toLocaleDateString('es-VE', {day:'2-digit', month:'short'}) + ' ' + d.toLocaleTimeString('es-VE', {hour:'2-digit', minute:'2-digit'});
+  }
 
   function login(msg){
     app.innerHTML = '';
@@ -123,6 +250,254 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
     return t.estado === filter;
   }
 
+  // Obtiene los datos completos del tablero (extrayendo board-data del HTML)
+  function getBoardData(t, callback){
+    if (boardCache[t.id]) return callback(null, boardCache[t.id]);
+    var url = t.url;
+    if (!url) return callback(new Error('Sin URL de tablero'));
+
+    function extractFromHtml(html){
+      var m = html.match(/<script id=["']board-data["'] type=["']application\/json["']>([\s\S]*?)<\/script>/);
+      if (!m) throw new Error('No se encontró el bloque board-data en el tablero.');
+      return JSON.parse(m[1]);
+    }
+
+    fetch(url)
+      .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+      .catch(function(err){
+        // Si falla por CORS o modo local, intentar con ruta relativa
+        var filename = url.split('/').pop();
+        if (filename && filename !== url) {
+          return fetch('./' + filename).then(function(r){ if (!r.ok) throw err; return r.text(); });
+        }
+        throw err;
+      })
+      .then(function(html){
+        var data = extractFromHtml(html);
+        boardCache[t.id] = data;
+        callback(null, data);
+      })
+      .catch(function(err){
+        callback(err);
+      });
+  }
+
+  // Fusiona los contenidos del tablero con las respuestas más recientes de Google Sheets
+  function getMergedItems(t, boardData){
+    var raw = (boardData && boardData.contenidos) ? boardData.contenidos : [];
+    var detalles = (DB.detalle || []).filter(function(d){ return String(d.id) === String(t.id); });
+
+    return raw.map(function(item, idx){
+      var n = idx + 1;
+      var copy = Object.assign({}, item);
+      copy.n = n;
+      copy.titulo = copy.titulo || 'Contenido ' + (n < 10 ? '0' : '') + n;
+      copy.estado = copy.estado || 'pendiente';
+      copy.comentario = copy.comentario || '';
+      copy.formatoOriginal = copy.formatoOriginal || copy.formato || '';
+
+      var d = detalles.find(function(x){ return +x.n === n || (x.titulo && x.titulo === copy.titulo); });
+      if (d) {
+        if (d.estado) copy.estado = d.estado;
+        if (d.comentario != null && d.comentario !== '') copy.comentario = d.comentario;
+        if (d.formato) copy.formato = d.formato;
+        if (d.formatoOriginal) copy.formatoOriginal = d.formatoOriginal;
+        if (d.revisadoPor) copy.revisadoPor = d.revisadoPor;
+        if (d.fecha) copy.fechaRevision = d.fecha;
+      }
+      return copy;
+    });
+  }
+
+  // DESCARGA DEL DOCUMENTO WORD (.DOC)
+  function descargarWord(t, boardData, mode){
+    var items = getMergedItems(t, boardData);
+    var filterMode = mode || 'aprobados'; // 'aprobados', 'cambios', 'todos'
+
+    var list = items.filter(function(it){
+      if (filterMode === 'cambios') return it.estado === 'cambios';
+      if (filterMode === 'todos') return true;
+      return it.estado === 'aprobado';
+    });
+
+    if (!list.length) {
+      if (filterMode === 'cambios') {
+        toast('Este tablero no tiene contenidos marcados con cambios.');
+      } else if (filterMode === 'todos') {
+        toast('Este tablero no tiene contenidos.');
+      } else {
+        toast('Este tablero aún no tiene contenidos marcados como aprobados.');
+      }
+      return;
+    }
+
+    list.sort(function(a, b){ return a.n - b.n; });
+
+    var tituloDoc = (filterMode === 'cambios') ? 'CONTENIDOS CON AJUSTES SOLICITADOS' :
+                    (filterMode === 'todos') ? 'PARRILLA COMPLETA DE CONTENIDOS' :
+                    'CONTENIDOS APROBADOS';
+    var filePrefix = (filterMode === 'cambios') ? 'Ajustes' :
+                     (filterMode === 'todos') ? 'Parrilla-Completa' :
+                     'Aprobados';
+
+    function escapeHtml(s){
+      if (s == null) return '';
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function nl2br(s){
+      if (!s) return '';
+      return escapeHtml(s).replace(/\n/g, '<br style="mso-data-placement:same-cell;"/>');
+    }
+
+    var fechaStr = t.ultimaRevision ? fecha(t.ultimaRevision) : (t.registrado ? fecha(t.registrado) : '');
+    var revisor = t.revisadoPor || (boardData && boardData.revision && boardData.revision.revisadoPor) || '';
+    var cuenta = (boardData && boardData.cuenta) || t.cuenta || '';
+
+    var docHtml = [
+      '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">',
+      '<head>',
+      '<meta charset="utf-8">',
+      '<!--[if gte mso 9]>',
+      '<xml>',
+      '<w:WordDocument>',
+      '<w:View>Print</w:View>',
+      '<w:Zoom>100</w:Zoom>',
+      '<w:DoNotOptimizeForBrowser/>',
+      '</w:WordDocument>',
+      '</xml>',
+      '<![endif]-->',
+      '<style>',
+      '@page Section1 { size: 8.5in 11.0in; margin: 1.0in 1.0in 1.0in 1.0in; mso-header-margin:.5in; mso-footer-margin:.5in; mso-paper-source:0; }',
+      'div.Section1 { page: Section1; }',
+      'body { font-family: "Calibri", "Segoe UI", Arial, sans-serif; font-size: 11pt; color: #1F3549; line-height: 1.45; }',
+      'h1 { font-family: "Calibri", Arial, sans-serif; font-size: 20pt; font-weight: bold; color: #1F3549; margin: 0 0 6pt 0; line-height: 1.2; }',
+      '.agency { font-size: 10pt; font-weight: bold; letter-spacing: 1.5pt; color: #5CB83E; text-transform: uppercase; margin: 0 0 4pt 0; }',
+      '.header-box { border-bottom: 2.5pt solid #5CB83E; padding-bottom: 12pt; margin-bottom: 24pt; }',
+      '.meta-grid { width: 100%; border-collapse: collapse; margin-top: 8pt; font-size: 10pt; color: #5B6B7A; }',
+      '.meta-grid td { padding: 3pt 0; vertical-align: top; }',
+      '.item-card { margin-bottom: 26pt; border: 1pt solid #D9E1E8; background: #FFFFFF; page-break-inside: avoid; }',
+      '.item-header { background: #F0F4F8; border-bottom: 1.5pt solid #5CB83E; padding: 10pt 14pt; }',
+      '.item-title { font-size: 13pt; font-weight: bold; color: #1F3549; margin: 0; }',
+      '.item-meta { font-size: 9.5pt; color: #5B6B7A; margin-top: 4pt; }',
+      '.item-body { padding: 12pt 14pt; }',
+      '.sec-label { font-size: 9pt; font-weight: bold; color: #5B6B7A; text-transform: uppercase; letter-spacing: 0.8pt; margin-top: 12pt; margin-bottom: 4pt; border-bottom: 0.5pt solid #E1E6EB; padding-bottom: 2pt; }',
+      '.text-block { font-size: 10.5pt; line-height: 1.5; color: #1F3549; margin: 0 0 8pt 0; }',
+      '.copy-card { background: #F8FAFC; border: 0.75pt solid #E1E6EB; padding: 10pt 12pt; margin-top: 4pt; margin-bottom: 8pt; }',
+      '.copy-user { font-size: 9.5pt; font-weight: bold; color: #1F3549; margin-bottom: 6pt; }',
+      '.hashtags { font-size: 9.5pt; color: #2B4661; margin-top: 8pt; }',
+      '.refs-list { margin: 4pt 0 8pt 18pt; font-size: 10pt; color: #1F3549; }',
+      '.refs-list li { margin-bottom: 3pt; }',
+      '.client-comment { background: #EAF6E4; border-left: 3pt solid #5CB83E; padding: 8pt 12pt; margin-top: 10pt; font-size: 10pt; color: #2D6319; }',
+      '.client-change { background: #FCEBE2; border-left: 3pt solid #E64A00; padding: 8pt 12pt; margin-top: 10pt; font-size: 10pt; color: #8F2E00; }',
+      '</style>',
+      '</head>',
+      '<body>',
+      '<div class="Section1">',
+      '<div class="header-box">',
+      '<div class="agency">NEXO AGENCIA CREATIVA</div>',
+      '<h1>' + escapeHtml(tituloDoc) + ' · ' + escapeHtml(t.cliente) + '</h1>',
+      '<table class="meta-grid">',
+      '<tr><td style="width:50%;"><b>Período:</b> ' + escapeHtml(t.mes + ' ' + t.anio) + (cuenta ? ' &nbsp;|&nbsp; <b>Cuenta:</b> @' + escapeHtml(cuenta) : '') + '</td>',
+      '<td style="width:50%;text-align:right;"><b>Total piezas:</b> ' + list.length + ' ' + (filterMode === 'cambios' ? 'con cambios' : filterMode === 'todos' ? 'totales' : 'aprobadas') + ' de ' + (t.total || items.length) + ' contenidos</td></tr>',
+      (revisor || fechaStr) ? '<tr><td>' + (revisor ? '<b>Revisado por:</b> ' + escapeHtml(revisor) : '') + '</td><td style="text-align:right;">' + (fechaStr ? '<b>Fecha de revisión:</b> ' + escapeHtml(fechaStr) : '') + '</td></tr>' : '',
+      t.url ? '<tr><td colspan="2" style="padding-top:4pt;"><b>Enlace del tablero:</b> <a href="' + escapeHtml(t.url) + '" style="color:#1F3549;">' + escapeHtml(t.url) + '</a></td></tr>' : '',
+      '</table>',
+      '</div>'
+    ];
+
+    list.forEach(function(it){
+      var num = (it.n < 10 ? '0' : '') + it.n;
+      var metaPieces = [];
+      if (it.formato) metaPieces.push('<b>Formato:</b> ' + escapeHtml(it.formato));
+      if (it.pilar) metaPieces.push('<b>Pilar:</b> ' + escapeHtml(it.pilar));
+      if (it.fechaPublicacion) metaPieces.push('<b>Fecha de publicación:</b> ' + escapeHtml(it.fechaPublicacion));
+
+      docHtml.push(
+        '<div class="item-card">',
+        '<div class="item-header">',
+        '<div class="item-title">Contenido ' + num + ' · ' + escapeHtml(it.titulo || 'Sin título') + '</div>',
+        metaPieces.length ? '<div class="item-meta">' + metaPieces.join(' &nbsp;|&nbsp; ') + '</div>' : '',
+        '</div>',
+        '<div class="item-body">'
+      );
+
+      if (it.guion && it.guion.trim()) {
+        var gl = it.guionLabel || 'Guion / Descripción';
+        docHtml.push(
+          '<div class="sec-label">' + escapeHtml(gl) + '</div>',
+          '<div class="text-block">' + nl2br(it.guion.trim()) + '</div>'
+        );
+      }
+
+      if (it.referencias && it.referencias.length) {
+        var validRefs = it.referencias.filter(function(r){ return r && (r.url || r.label); });
+        if (validRefs.length) {
+          docHtml.push('<div class="sec-label">Referencias</div><ul class="refs-list">');
+          validRefs.forEach(function(r){
+            var lbl = r.label || r.url || 'Referencia';
+            var u = r.url || '#';
+            docHtml.push('<li><a href="' + escapeHtml(u) + '" style="color:#1F3549;">' + escapeHtml(lbl) + '</a> (' + escapeHtml(u) + ')</li>');
+          });
+          docHtml.push('</ul>');
+        }
+      }
+
+      if ((it.copy && it.copy.trim()) || (it.hashtags && it.hashtags.trim())) {
+        docHtml.push(
+          '<div class="sec-label">Copy (Texto de la publicación)</div>',
+          '<div class="copy-card">'
+        );
+        if (cuenta || t.cliente) {
+          docHtml.push('<div class="copy-user">@' + escapeHtml(cuenta || t.cliente) + '</div>');
+        }
+        if (it.copy && it.copy.trim()) {
+          docHtml.push('<div class="text-block" style="margin:0;">' + nl2br(it.copy.trim()) + '</div>');
+        }
+        if (it.hashtags && it.hashtags.trim()) {
+          docHtml.push('<div class="hashtags">' + escapeHtml(it.hashtags.trim()) + '</div>');
+        }
+        docHtml.push('</div>');
+      }
+
+      if (it.comentario && it.comentario.trim()) {
+        var isChange = it.estado === 'cambios';
+        var cls = isChange ? 'client-change' : 'client-comment';
+        var lbl = isChange ? 'Ajuste solicitado por el cliente:' : 'Nota / comentario de aprobación del cliente:';
+        docHtml.push(
+          '<div class="' + cls + '">',
+          '<b>' + lbl + '</b> “' + escapeHtml(it.comentario.trim()) + '”',
+          (it.formato && it.formatoOriginal && it.formato !== it.formatoOriginal) ? '<div style="margin-top:4pt;"><b>Cambio de formato solicitado:</b> ' + escapeHtml(it.formatoOriginal) + ' → ' + escapeHtml(it.formato) + '</div>' : '',
+          '</div>'
+        );
+      }
+
+      docHtml.push('</div></div>');
+    });
+
+    docHtml.push('</div></body></html>');
+
+    var fullDoc = '\ufeff' + docHtml.join('\n');
+    var blob = new Blob([fullDoc], { type: 'application/msword;charset=utf-8' });
+    var safeCliente = (t.cliente || 'Cliente').replace(/[^a-zA-Z0-9_\u00C0-\u017F-]+/g, '-');
+    var safeMes = (t.mes || 'Mes').replace(/[^a-zA-Z0-9_\u00C0-\u017F-]+/g, '-');
+    var filename = filePrefix + '-' + safeCliente + '-' + safeMes + '-' + (t.anio || '') + '.doc';
+
+    var dlUrl = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = dlUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(dlUrl); a.remove(); }, 1500);
+    toast('✓ Descargando ' + filename + ' (' + list.length + ' contenidos)');
+  }
+
   function render(){
     app.innerHTML = '';
     var T = (DB.tableros || []).slice().sort(function(a, b){ return String(b.ultimaRevision || b.registrado).localeCompare(String(a.ultimaRevision || a.registrado)); });
@@ -133,6 +508,7 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
       if (c > 0 || t.estado === 'Con cambios') cnt.fix++;
       if (a > 0 || t.estado === 'Aprobado') cnt.ok++;
     });
+
     var st = el('section', 'stats');
     [['Tableros', cnt.total, '', 'Todos'], ['Sin respuesta', cnt.sin, '', 'Sin respuesta'], ['Con cambios', cnt.fix, 'fix', 'Con cambios'], ['Aprobados', cnt.ok, 'ok', 'Aprobados']].forEach(function(x){
       var d = el('div', 'stat ' + x[2] + (f === x[3] ? ' on' : ''));
@@ -150,112 +526,329 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
       c.onclick = function(){ f = n; render(); };
       tools.appendChild(c);
     });
-    var s = el('input', 'search'); s.placeholder = 'Buscar cliente…'; s.value = q; s.oninput = function(){ q = s.value; draw(); }; tools.appendChild(s);
+    var s = el('input', 'search'); s.placeholder = 'Buscar cliente…'; s.value = q;
+    s.oninput = function(){ q = s.value; draw(); }; tools.appendChild(s);
     app.appendChild(tools);
+
     var list = el('div', 'list'); app.appendChild(list);
 
     function draw(){
       list.innerHTML = '';
       var rows = T.filter(function(t){ return matchesFilter(t, f) && (!q || String(t.cliente).toLowerCase().indexOf(q.toLowerCase()) >= 0); });
-      if (!rows.length) { list.appendChild(el('div', 'empty', T.length ? 'No hay tableros en este filtro.' : 'Aún no hay tableros registrados.')); return; }
+      if (!rows.length) {
+        list.appendChild(el('div', 'empty', T.length ? 'No hay tableros en este filtro.' : 'Aún no hay tableros registrados.'));
+        return;
+      }
+
       rows.forEach(function(t){
         var e = t.estado || 'Sin respuesta', tot = +t.total || 0, a = +t.aprobados || 0, c = +t.cambios || 0;
         var r = el('article', 'row'); r.dataset.e = e;
-        var top = el('div', 'r-top'); var h = el('div'); h.appendChild(el('h3', null, t.cliente + ' · ' + t.mes + ' ' + t.anio));
-        h.appendChild(el('small', null, tot + ' contenidos' + (t.revisadoPor ? ' · revisó ' + t.revisadoPor : ''))); top.appendChild(h); top.appendChild(el('span', 'badge', e)); r.appendChild(top);
-        var bar = el('div', 'bar'); var ia = el('i', 'a'); ia.style.width = (tot ? a / tot * 100 : 0) + '%'; var ic = el('i', 'c'); ic.style.width = (tot ? c / tot * 100 : 0) + '%'; bar.appendChild(ia); bar.appendChild(ic); r.appendChild(bar);
-        var m = el('div', 'meta');
-        
-        var det = (DB.detalle || []).filter(function(d){ return String(d.id) === String(t.id); }).sort(function(x, y){ return x.n - y.n; });
-        var detFilter = 'Todos';
 
+        var top = el('div', 'r-top');
+        var h = el('div');
+        h.appendChild(el('h3', null, t.cliente + ' · ' + t.mes + ' ' + t.anio));
+        h.appendChild(el('small', null, tot + ' contenidos' + (t.revisadoPor ? ' · revisó ' + t.revisadoPor : '')));
+        top.appendChild(h);
+        top.appendChild(el('span', 'badge', e));
+        r.appendChild(top);
+
+        var bar = el('div', 'bar');
+        var ia = el('i', 'a'); ia.style.width = (tot ? a / tot * 100 : 0) + '%';
+        var ic = el('i', 'c'); ic.style.width = (tot ? c / tot * 100 : 0) + '%';
+        bar.appendChild(ia); bar.appendChild(ic);
+        r.appendChild(bar);
+
+        var m = el('div', 'meta');
         var bOk = el('button', 'btn-tag ok', '✓ ' + a + ' aprobados');
         var bFix = el('button', 'btn-tag fix', '✎ ' + c + ' con cambios');
         var bPend = el('button', 'btn-tag', '• ' + (tot - a - c) + ' pendientes');
         m.appendChild(bOk); m.appendChild(bFix); m.appendChild(bPend);
 
-        if (t.ultimaRevision) m.appendChild(el('span', null, 'Última respuesta: ' + fecha(t.ultimaRevision))); else if (t.registrado) m.appendChild(el('span', null, 'Enviado: ' + fecha(t.registrado)));
-        if (t.url) { var l = el('a', null, 'Abrir tablero ↗'); l.href = t.url; l.target = '_blank'; l.rel = 'noopener'; m.appendChild(l); }
-        
-        var tg = null;
-        if (det.length) {
-          tg = el('button', null, 'Ver respuestas');
-          tg.onclick = function(){
-            detFilter = 'Todos';
-            r.classList.toggle('open');
-            tg.textContent = r.classList.contains('open') ? 'Ocultar respuestas' : 'Ver respuestas';
-            renderDet();
-          };
-          m.appendChild(tg);
+        if (t.ultimaRevision) m.appendChild(el('span', null, 'Última respuesta: ' + fecha(t.ultimaRevision)));
+        else if (t.registrado) m.appendChild(el('span', null, 'Enviado: ' + fecha(t.registrado)));
+
+        var mr = el('div', 'meta-right');
+
+        // Botón directo para descargar Word de aprobados
+        var btnDoc = el('button', 'btn-doc pri', '📄 Descargar .doc (Aprobados)');
+        btnDoc.title = 'Descargar documento Word (.doc) con los contenidos aprobados en orden';
+        btnDoc.onclick = function(ev){
+          ev.stopPropagation();
+          btnDoc.textContent = 'Generando .doc…';
+          getBoardData(t, function(err, bData){
+            btnDoc.textContent = '📄 Descargar .doc (Aprobados)';
+            if (err) { toast('No se pudieron leer los contenidos del tablero.'); return; }
+            descargarWord(t, bData, 'aprobados');
+          });
+        };
+        mr.appendChild(btnDoc);
+
+        // Botón para ver/ocultar contenidos completos
+        var tg = el('button', 'btn-doc sec', '👁 Ver contenidos');
+        mr.appendChild(tg);
+
+        if (t.url) {
+          var l = el('a', null, 'Abrir tablero ↗');
+          l.href = t.url; l.target = '_blank'; l.rel = 'noopener';
+          mr.appendChild(l);
         }
+
+        m.appendChild(mr);
         r.appendChild(m);
 
-        var dv = el('div', 'det');
-        function renderDet(){
-          dv.innerHTML = '';
-          if (!det.length) return;
-          var dt = el('div', 'det-tools');
-          dt.appendChild(el('span', null, 'Filtrar respuestas:'));
-          ['Todos', 'Aprobados', 'Con cambios', 'Pendientes'].forEach(function(df){
-            var dc = el('button', 'det-chip' + (detFilter === df ? ' on' : ''), df);
-            dc.onclick = function(ev){
-              ev.stopPropagation();
-              detFilter = df;
-              renderDet();
-            };
-            dt.appendChild(dc);
-          });
-          dv.appendChild(dt);
-          var filtered = det.filter(function(d){
-            if (detFilter === 'Aprobados') return d.estado === 'aprobado';
-            if (detFilter === 'Con cambios') return d.estado === 'cambios';
-            if (detFilter === 'Pendientes') return d.estado === 'pendiente' || !d.estado;
-            return true;
-          });
-          if (!filtered.length) {
-            dv.appendChild(el('div', 'empty', 'No hay contenidos con este estado (' + detFilter + ').'));
-            return;
-          }
-          filtered.forEach(function(d){
-            var it = el('div', 'it'); it.appendChild(el('span', 'n', (d.n < 10 ? '0' : '') + d.n));
-            var mid = el('div'); mid.appendChild(el('div', null, d.titulo));
-            if (d.formato && d.formatoOriginal && d.formato !== d.formatoOriginal) mid.appendChild(el('div', 'fc', 'Formato: ' + d.formatoOriginal + ' → ' + d.formato));
-            if (d.comentario) mid.appendChild(el('div', 'c', '“' + d.comentario + '”'));
-            it.appendChild(mid); it.appendChild(el('span', 'pill ' + d.estado, d.estado === 'aprobado' ? 'Aprobado' : d.estado === 'cambios' ? 'Cambios' : 'Pendiente'));
-            dv.appendChild(it);
+        // Contenedor expandido de contenidos
+        var bCont = el('div', 'board-contents');
+        var cardFilter = 'Todos';
+
+        function renderBoardDetails(){
+          bCont.innerHTML = '';
+          var loadingDiv = el('div', 'loading-box', 'Cargando contenidos completos de ' + t.cliente + '…');
+          bCont.appendChild(loadingDiv);
+
+          getBoardData(t, function(err, bData){
+            bCont.innerHTML = '';
+            if (err) {
+              bCont.appendChild(el('div', 'empty', 'No se pudieron cargar los contenidos completos: ' + (err.message || 'error de conexión.')));
+              return;
+            }
+
+            var allItems = getMergedItems(t, bData);
+            var cuenta = (bData && bData.cuenta) || t.cuenta || t.cliente || '';
+
+            // Barra de herramientas del tablero expandido
+            var tb = el('div', 'board-toolbar');
+            var fltWrap = el('div', 'board-filters');
+            fltWrap.appendChild(el('span', null, 'Filtrar:'));
+
+            var kOk = allItems.filter(function(x){ return x.estado === 'aprobado'; }).length;
+            var kFix = allItems.filter(function(x){ return x.estado === 'cambios'; }).length;
+            var kPend = allItems.filter(function(x){ return x.estado === 'pendiente'; }).length;
+
+            [
+              ['Todos', 'Todos (' + allItems.length + ')', ''],
+              ['Aprobados', '✓ Aprobados (' + kOk + ')', 'ok'],
+              ['Con cambios', '✎ Con cambios (' + kFix + ')', 'fix'],
+              ['Pendientes', '• Pendientes (' + kPend + ')', '']
+            ].forEach(function(item){
+              var chip = el('button', 'b-chip ' + item[2] + (cardFilter === item[0] ? ' on' : ''), item[1]);
+              chip.onclick = function(e){
+                e.stopPropagation();
+                cardFilter = item[0];
+                renderCards();
+              };
+              fltWrap.appendChild(chip);
+            });
+            tb.appendChild(fltWrap);
+
+            var bActions = el('div', 'board-actions');
+            var dlDocAprob = el('button', 'btn-doc pri', '📄 Descargar .doc (Aprobados)');
+            dlDocAprob.onclick = function(e){ e.stopPropagation(); descargarWord(t, bData, 'aprobados'); };
+            bActions.appendChild(dlDocAprob);
+
+            var dlDocTodos = el('button', 'btn-doc sec', 'Descargar todos (.doc)');
+            dlDocTodos.onclick = function(e){ e.stopPropagation(); descargarWord(t, bData, 'todos'); };
+            bActions.appendChild(dlDocTodos);
+
+            tb.appendChild(bActions);
+            bCont.appendChild(tb);
+
+            var cardsGrid = el('div', 'cards-grid');
+            bCont.appendChild(cardsGrid);
+
+            function renderCards(){
+              cardsGrid.innerHTML = '';
+              [].forEach.call(fltWrap.querySelectorAll('.b-chip'), function(c, idx){
+                var modes = ['Todos', 'Aprobados', 'Con cambios', 'Pendientes'];
+                c.classList.toggle('on', modes[idx] === cardFilter);
+              });
+
+              var filtered = allItems.filter(function(item){
+                if (cardFilter === 'Aprobados') return item.estado === 'aprobado';
+                if (cardFilter === 'Con cambios') return item.estado === 'cambios';
+                if (cardFilter === 'Pendientes') return item.estado === 'pendiente';
+                return true;
+              });
+
+              if (!filtered.length) {
+                cardsGrid.appendChild(el('div', 'empty', 'No hay contenidos con el filtro seleccionado (' + cardFilter + ').'));
+                return;
+              }
+
+              filtered.forEach(function(item){
+                var card = el('article', 'p-card');
+                card.dataset.state = item.estado;
+
+                // Cabecera de la tarjeta
+                var cTop = el('div', 'p-card-top');
+                var numStr = (item.n < 10 ? '0' : '') + item.n;
+                cTop.appendChild(el('div', 'p-big', numStr));
+
+                var cMeta = el('div');
+                var tags = el('div', 'p-tags');
+
+                var isFmtChanged = !!item.formatoOriginal && item.formato !== item.formatoOriginal;
+                if (item.formato) {
+                  tags.appendChild(el('span', 'p-tag fmt' + (isFmtChanged ? ' changed' : ''), (isFmtChanged ? 'Cambiado a: ' : '') + item.formato));
+                }
+                if (isFmtChanged) {
+                  tags.appendChild(el('span', 'p-tag orig', 'Propuesto: ' + item.formatoOriginal));
+                }
+                if (item.pilar) {
+                  tags.appendChild(el('span', 'p-tag', item.pilar));
+                }
+                if (item.fechaPublicacion) {
+                  tags.appendChild(el('span', 'p-tag date', '📅 ' + item.fechaPublicacion));
+                }
+                cMeta.appendChild(tags);
+                cMeta.appendChild(el('h4', null, item.titulo || 'Contenido ' + numStr));
+                cTop.appendChild(cMeta);
+
+                var badgeTxt = item.estado === 'aprobado' ? '✓ Aprobado' : (item.estado === 'cambios' ? '✎ Con cambios' : '• Pendiente');
+                cTop.appendChild(el('span', 'p-badge', badgeTxt));
+                card.appendChild(cTop);
+
+                // Cuerpo de la tarjeta
+                var hasCopy = (item.copy && item.copy.trim()) || (item.hashtags && item.hashtags.trim());
+                var cBody = el('div', 'p-card-body' + (hasCopy ? '' : ' single'));
+
+                // Columna 1: Guion / Descripción
+                var gWrap = el('div');
+                gWrap.appendChild(el('span', 'p-lbl', item.guionLabel || 'Guion / Descripción'));
+                gWrap.appendChild(el('div', 'p-guion', item.guion || '—'));
+
+                if (item.referencias && item.referencias.length) {
+                  var rw = el('div', 'p-refs');
+                  item.referencias.forEach(function(ref){
+                    if (ref && (ref.url || ref.label)) {
+                      var aRef = el('a', null, ref.label || 'Referencia');
+                      aRef.href = ref.url; aRef.target = '_blank'; aRef.rel = 'noopener';
+                      rw.appendChild(aRef);
+                    }
+                  });
+                  gWrap.appendChild(rw);
+                }
+                cBody.appendChild(gWrap);
+
+                // Columna 2: Copy (mockup de publicación)
+                if (hasCopy) {
+                  var cpWrap = el('div');
+                  cpWrap.appendChild(el('span', 'p-lbl', 'Copy'));
+
+                  var post = el('div', 'p-post');
+                  var postH = el('div', 'p-post-h');
+                  postH.appendChild(el('div', 'p-av', (cuenta || 'N').charAt(0).toUpperCase()));
+                  var pUser = el('div');
+                  pUser.appendChild(el('b', null, cuenta ? '@' + cuenta.replace(/^@/, '') : 'tu cuenta'));
+                  pUser.appendChild(el('small', null, 'Vista previa de la publicación'));
+                  postH.appendChild(pUser);
+                  post.appendChild(postH);
+
+                  var cpP = el('div', 'p-copy', item.copy || '');
+                  if (item.hashtags) {
+                    cpP.appendChild(el('span', 'p-hash', item.hashtags));
+                  }
+                  post.appendChild(cpP);
+                  cpWrap.appendChild(post);
+                  cBody.appendChild(cpWrap);
+                }
+
+                card.appendChild(cBody);
+
+                // Bloque de Revisión / Ajustes solicitados
+                var fb = el('div', 'p-feedback ' + item.estado);
+                if (item.estado === 'cambios') {
+                  fb.appendChild(el('div', 'p-fb-title', '✎ AJUSTE SOLICITADO POR EL CLIENTE:'));
+                  var fbTxt = item.comentario ? '“' + item.comentario + '”' : '(El cliente marcó pedir cambios pero no detalló comentario escrito)';
+                  fb.appendChild(el('div', 'p-fb-text', fbTxt));
+                  if (isFmtChanged) {
+                    fb.appendChild(el('div', 'p-fb-text', '• Cambio de formato solicitado: de ' + item.formatoOriginal + ' a ' + item.formato));
+                  }
+                } else if (item.estado === 'aprobado') {
+                  fb.appendChild(el('div', 'p-fb-title', '✓ APROBADO POR EL CLIENTE'));
+                  if (item.comentario) {
+                    fb.appendChild(el('div', 'p-fb-text', 'Comentario del cliente: “' + item.comentario + '”'));
+                  }
+                } else {
+                  fb.appendChild(el('div', 'p-fb-title', '• PENDIENTE DE RESPUESTA'));
+                  fb.appendChild(el('div', 'p-fb-text', 'El cliente aún no ha revisado ni emitido respuesta para esta pieza.'));
+                }
+                card.appendChild(fb);
+
+                // Botones de acción rápida por tarjeta
+                var cFoot = el('div', 'p-card-foot');
+                if (item.estado === 'cambios' && item.comentario) {
+                  var btnCpAjuste = el('button', 'btn-mini accent', '📋 Copiar ajuste');
+                  btnCpAjuste.onclick = function(){ copyText(item.comentario, '✓ Ajuste copiado al portapapeles'); };
+                  cFoot.appendChild(btnCpAjuste);
+                }
+                if (item.guion) {
+                  var btnCpGuion = el('button', 'btn-mini', '📋 Copiar guion');
+                  btnCpGuion.onclick = function(){ copyText(item.guion, '✓ Guion copiado al portapapeles'); };
+                  cFoot.appendChild(btnCpGuion);
+                }
+                if (item.copy) {
+                  var btnCpCopy = el('button', 'btn-mini', '📋 Copiar copy');
+                  btnCpCopy.onclick = function(){
+                    var fullCopy = item.copy + (item.hashtags ? '\n\n' + item.hashtags : '');
+                    copyText(fullCopy, '✓ Copy copiado al portapapeles');
+                  };
+                  cFoot.appendChild(btnCpCopy);
+                }
+                card.appendChild(cFoot);
+
+                cardsGrid.appendChild(card);
+              });
+            }
+
+            renderCards();
           });
         }
 
-        bOk.onclick = function(){
-          detFilter = 'Aprobados';
-          r.classList.add('open');
-          if (tg) tg.textContent = 'Ocultar respuestas';
-          renderDet();
-        };
-        bFix.onclick = function(){
-          detFilter = 'Con cambios';
-          r.classList.add('open');
-          if (tg) tg.textContent = 'Ocultar respuestas';
-          renderDet();
-        };
-        bPend.onclick = function(){
-          detFilter = 'Pendientes';
-          r.classList.add('open');
-          if (tg) tg.textContent = 'Ocultar respuestas';
-          renderDet();
+        tg.onclick = function(){
+          var isOpen = r.classList.toggle('open');
+          tg.textContent = isOpen ? 'Ocultar contenidos' : '👁 Ver contenidos';
+          if (isOpen) {
+            renderBoardDetails();
+          }
         };
 
-        renderDet();
-        r.appendChild(dv); list.appendChild(r);
+        bOk.onclick = function(){
+          cardFilter = 'Aprobados';
+          r.classList.add('open');
+          tg.textContent = 'Ocultar contenidos';
+          renderBoardDetails();
+        };
+
+        bFix.onclick = function(){
+          cardFilter = 'Con cambios';
+          r.classList.add('open');
+          tg.textContent = 'Ocultar contenidos';
+          renderBoardDetails();
+        };
+
+        bPend.onclick = function(){
+          cardFilter = 'Pendientes';
+          r.classList.add('open');
+          tg.textContent = 'Ocultar contenidos';
+          renderBoardDetails();
+        };
+
+        r.appendChild(bCont);
+        list.appendChild(r);
       });
     }
+
     draw();
   }
 
   document.getElementById('reload').onclick = load;
   document.getElementById('out').onclick = function(){ try { localStorage.removeItem(KEY); } catch (e) {} clave = ''; login(); };
-  if (ENDPOINT.indexOf('__') === 0) { app.appendChild(el('div', 'msg', 'Falta configurar la dirección de la hoja de Google (ENDPOINT).')); document.getElementById('upd').textContent = 'Sin configurar'; }
-  else load();
+  if (ENDPOINT.indexOf('__') === 0) {
+    app.appendChild(el('div', 'msg', 'Falta configurar la dirección de la hoja de Google (ENDPOINT).'));
+    document.getElementById('upd').textContent = 'Sin configurar';
+  } else {
+    load();
+  }
 })();
 </script>
 </body>

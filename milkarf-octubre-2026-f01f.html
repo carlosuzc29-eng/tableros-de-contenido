@@ -1306,6 +1306,7 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
   "mes": "Octubre",
   "anio": 2026,
   "intro": "",
+  "resetAt": 1790436000000,
   "revision": {
     "revisadoPor": "",
     "fecha": ""
@@ -1554,6 +1555,11 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
   if (!DATA.revision.fecha) {
     try {
       var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (saved && DATA.resetAt && (!saved.resetAt || saved.resetAt < DATA.resetAt)) {
+        localStorage.removeItem(KEY);
+        saved = null;
+        if ($('who')) $('who').value = '';
+      }
       if (saved && saved.items) {
         items.forEach(function(it){
           var s = saved.items[it.id];
@@ -1576,7 +1582,7 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
   function saveDraft(){
     try {
       var whoVal = getReviewerName();
-      var o = {who: whoVal, items: {}};
+      var o = {who: whoVal, items: {}, resetAt: DATA.resetAt || 0};
       items.forEach(function(it){
         o.items[it.id] = {
           estado: it.estado,

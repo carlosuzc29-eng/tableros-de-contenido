@@ -16,7 +16,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Futura','Jost','Century Gothic',sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased}
-button,input{font:inherit}
+button,input,select,textarea{font:inherit}
 .shell{max-width:1100px;margin:0 auto;padding:0 16px}
 header{background:#fff;padding:16px 0}
 header .shell{display:flex;align-items:center;justify-content:space-between;gap:16px}
@@ -75,7 +75,6 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
 .bar i{display:block;height:100%} .bar .a{background:var(--verde)} .bar .c{background:var(--naranja)}
 .meta{display:flex;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--ink-2);align-items:center}
 .meta a{color:var(--azul);font-weight:600;text-decoration:none}
-.meta button.link{border:0;background:none;color:var(--azul);font-weight:600;cursor:pointer;padding:0}
 .meta-right{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 
 /* CONTENEDOR EXPANDIDO DE CONTENIDOS COMPLETOS */
@@ -94,7 +93,7 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
 .cards-grid{display:grid;gap:22px}
 
 /* TARJETA DE CONTENIDO COMPLETO (TAL CUAL EL TABLERO DEL CLIENTE) */
-.p-card{background:#fff;border:1px solid var(--line);border-radius:26px;padding:26px 28px;position:relative;overflow:hidden;box-shadow:0 12px 30px -15px rgba(31,53,73,.12)}
+.p-card{background:#fff;border:1px solid var(--line);border-radius:26px;padding:26px 28px;position:relative;overflow:hidden;box-shadow:0 12px 30px -15px rgba(31,53,73,.12);transition:border-color .2s}
 .p-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--line)}
 .p-card[data-state="aprobado"]::before{background:var(--verde)}
 .p-card[data-state="cambios"]::before{background:var(--naranja)}
@@ -109,6 +108,7 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
 .p-tag.changed{background:var(--naranja);color:#fff}
 .p-tag.orig{background:var(--naranja-soft);color:var(--naranja)}
 .p-tag.date{background:transparent;box-shadow:inset 0 0 0 1px var(--line);color:var(--ink-2)}
+.p-tag.edited{background:#E8F0FE;color:#1A73E8;border:1px solid rgba(26,115,232,.35)}
 .p-card-top h4{font-size:22px;font-weight:700;line-height:1.25;color:var(--ink);margin-top:10px}
 .p-badge{font-size:12px;font-weight:600;padding:6px 14px;border-radius:99px;background:var(--bg);color:var(--ink-2);white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
 .p-card[data-state="aprobado"] .p-badge{background:var(--verde-soft);color:var(--verde-dk)}
@@ -136,11 +136,32 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
 .p-feedback.pendiente{background:var(--bg);border:1px solid var(--line);color:var(--ink-2)}
 .p-fb-title{font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:6px}
 .p-fb-text{font-size:14.5px;line-height:1.55;white-space:pre-line;font-weight:500}
-.p-card-foot{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line);flex-wrap:wrap}
-.btn-mini{border:0;background:var(--bg);color:var(--ink-2);font-size:12px;font-weight:600;padding:6px 12px;border-radius:99px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .15s}
+.p-card-foot{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line);flex-wrap:wrap;align-items:center}
+.btn-mini{border:0;background:var(--bg);color:var(--ink-2);font-size:12px;font-weight:600;padding:6px 14px;border-radius:99px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .15s}
 .btn-mini:hover{background:var(--azul-soft);color:var(--azul)}
+.btn-mini.pri{background:var(--azul);color:#fff}
+.btn-mini.pri:hover{background:var(--azul-2)}
 .btn-mini.accent{background:rgba(230,74,0,.12);color:var(--naranja)}
 .btn-mini.accent:hover{background:rgba(230,74,0,.22)}
+
+/* FORMULARIO DE EDICIÓN INTEGRADO EN TARJETA */
+.p-edit-form{margin-top:20px;background:#F8FAFC;border:1.5px solid var(--line);border-radius:22px;padding:22px 24px;display:grid;gap:16px;box-shadow:inset 0 2px 4px rgba(31,53,73,.03)}
+.p-edit-form-head{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:12px}
+.p-edit-form-head h5{font-size:16px;font-weight:700;color:var(--azul);display:flex;align-items:center;gap:8px}
+.p-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.p-field{display:grid;gap:5px}
+.p-field.full{grid-column:1 / -1}
+.p-field-lbl{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-2)}
+.p-input,.p-select,.p-ta{width:100%;border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 14px;font-family:inherit;font-size:14px;color:var(--ink);transition:border-color .2s,box-shadow .2s}
+.p-input:focus,.p-select:focus,.p-ta:focus{outline:none;border-color:var(--azul);box-shadow:0 0 0 3px rgba(31,53,73,.12)}
+.p-ta{min-height:120px;line-height:1.55;resize:vertical}
+.p-status-picker{display:flex;gap:8px;flex-wrap:wrap}
+.p-st-btn{border:1px solid var(--line);background:#fff;border-radius:99px;padding:7px 16px;font-size:12.5px;font-weight:600;cursor:pointer;color:var(--ink-2);transition:all .15s}
+.p-st-btn.on.aprobado{background:var(--verde);color:#fff;border-color:var(--verde)}
+.p-st-btn.on.cambios{background:var(--naranja);color:#fff;border-color:var(--naranja)}
+.p-st-btn.on.pendiente{background:var(--azul);color:#fff;border-color:var(--azul)}
+.p-edit-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding-top:14px;flex-wrap:wrap}
+.p-edit-actions-left,.p-edit-actions-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 
 .loading-box{background:var(--bg);border-radius:18px;padding:32px;text-align:center;color:var(--ink-2);font-weight:500}
 .empty,.msg{background:#fff;border-radius:22px;padding:30px;text-align:center;color:var(--ink-2)}
@@ -159,6 +180,7 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
   .p-big{font-size:52px}
   .board-toolbar{flex-direction:column;align-items:stretch}
   .meta-right{margin-left:0;width:100%;justify-content:flex-start}
+  .p-edit-grid{grid-template-columns:1fr}
 }
 @media (max-width:700px){
   .stats{grid-template-columns:repeat(2,1fr)}.search{margin-left:0;width:100%}.logo svg{height:48px}
@@ -180,6 +202,7 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
 (function(){
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycbyLYC8p_iglMhPuXMaPRZ4TOA_2fPTRCe3V2EmVnwotm2v5vll39e7X2AuBC-9eNcp7Jg/exec';
   var KEY = 'nexo-panel-clave', clave = '';
+  var EDITS_KEY = 'nexo-panel-edits-';
   try { clave = localStorage.getItem(KEY) || ''; } catch (e) {}
   var app = document.getElementById('app'), f = 'Todos', q = '', DB = null;
   var boardCache = {}; // Cache de contenidos completos por tablero id
@@ -215,6 +238,37 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
     if (!s) return '';
     var d = new Date(s);
     return isNaN(d) ? String(s) : d.toLocaleDateString('es-VE', {day:'2-digit', month:'short'}) + ' ' + d.toLocaleTimeString('es-VE', {hour:'2-digit', minute:'2-digit'});
+  }
+
+  // GESTIÓN DE EDICIONES LOCALES PERSISTENTES
+  function getSavedEdits(tableroId){
+    try {
+      return JSON.parse(localStorage.getItem(EDITS_KEY + tableroId) || '{}');
+    } catch(e) {
+      return {};
+    }
+  }
+
+  function saveItemEdit(tableroId, itemKey, fields){
+    var edits = getSavedEdits(tableroId);
+    edits[itemKey] = Object.assign(edits[itemKey] || {}, fields, {_editedAt: new Date().toISOString()});
+    try {
+      localStorage.setItem(EDITS_KEY + tableroId, JSON.stringify(edits));
+    } catch(e) {}
+  }
+
+  function removeItemEdit(tableroId, itemKey){
+    var edits = getSavedEdits(tableroId);
+    delete edits[itemKey];
+    try {
+      localStorage.setItem(EDITS_KEY + tableroId, JSON.stringify(edits));
+    } catch(e) {}
+  }
+
+  function clearAllBoardEdits(tableroId){
+    try {
+      localStorage.removeItem(EDITS_KEY + tableroId);
+    } catch(e) {}
   }
 
   function login(msg){
@@ -265,7 +319,6 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
     fetch(url)
       .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
       .catch(function(err){
-        // Si falla por CORS o modo local, intentar con ruta relativa
         var filename = url.split('/').pop();
         if (filename && filename !== url) {
           return fetch('./' + filename).then(function(r){ if (!r.ok) throw err; return r.text(); });
@@ -282,20 +335,23 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
       });
   }
 
-  // Fusiona los contenidos del tablero con las respuestas más recientes de Google Sheets
+  // Fusiona los contenidos del tablero con las respuestas de Google Sheets y las ediciones locales
   function getMergedItems(t, boardData){
     var raw = (boardData && boardData.contenidos) ? boardData.contenidos : [];
     var detalles = (DB.detalle || []).filter(function(d){ return String(d.id) === String(t.id); });
+    var edits = getSavedEdits(t.id);
 
     return raw.map(function(item, idx){
       var n = idx + 1;
       var copy = Object.assign({}, item);
       copy.n = n;
+      copy.id = copy.id || 'c' + n;
       copy.titulo = copy.titulo || 'Contenido ' + (n < 10 ? '0' : '') + n;
       copy.estado = copy.estado || 'pendiente';
       copy.comentario = copy.comentario || '';
       copy.formatoOriginal = copy.formatoOriginal || copy.formato || '';
 
+      // Fusionar desde Google Sheets
       var d = detalles.find(function(x){ return +x.n === n || (x.titulo && x.titulo === copy.titulo); });
       if (d) {
         if (d.estado) copy.estado = d.estado;
@@ -304,6 +360,23 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
         if (d.formatoOriginal) copy.formatoOriginal = d.formatoOriginal;
         if (d.revisadoPor) copy.revisadoPor = d.revisadoPor;
         if (d.fecha) copy.fechaRevision = d.fecha;
+      }
+
+      // Fusionar desde las ediciones locales en panel
+      var editKey = copy.id || String(n);
+      var saved = edits[editKey] || edits[String(n)];
+      if (saved) {
+        copy._isEdited = true;
+        if (saved.titulo != null) copy.titulo = saved.titulo;
+        if (saved.formato != null) copy.formato = saved.formato;
+        if (saved.pilar != null) copy.pilar = saved.pilar;
+        if (saved.fechaPublicacion != null) copy.fechaPublicacion = saved.fechaPublicacion;
+        if (saved.guion != null) copy.guion = saved.guion;
+        if (saved.guionLabel != null) copy.guionLabel = saved.guionLabel;
+        if (saved.copy != null) copy.copy = saved.copy;
+        if (saved.hashtags != null) copy.hashtags = saved.hashtags;
+        if (saved.estado != null) copy.estado = saved.estado;
+        if (saved.comentario != null) copy.comentario = saved.comentario;
       }
       return copy;
     });
@@ -498,6 +571,32 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
     toast('✓ Descargando ' + filename + ' (' + list.length + ' contenidos)');
   }
 
+  // DESCARGA DE JSON ACTUALIZADO CON EDICIONES
+  function descargarJsonActualizado(t, boardData){
+    var items = getMergedItems(t, boardData);
+    var exportData = Object.assign({}, boardData);
+    exportData.contenidos = items.map(function(it){
+      var clean = Object.assign({}, it);
+      delete clean._isEdited;
+      delete clean.n;
+      delete clean.fechaRevision;
+      return clean;
+    });
+
+    var jsonStr = JSON.stringify(exportData, null, 2);
+    var blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8' });
+    var safeCliente = (t.cliente || 'cliente').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    var safeMes = (t.mes || 'mes').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    var filename = safeCliente + '-' + safeMes + '-' + (t.anio || '') + '-actualizado.json';
+
+    var dlUrl = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = dlUrl; a.download = filename;
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(dlUrl); a.remove(); }, 1500);
+    toast('✓ Archivo JSON descargado: ' + filename);
+  }
+
   function render(){
     app.innerHTML = '';
     var T = (DB.tableros || []).slice().sort(function(a, b){ return String(b.ultimaRevision || b.registrado).localeCompare(String(a.ultimaRevision || a.registrado)); });
@@ -599,6 +698,7 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
         // Contenedor expandido de contenidos
         var bCont = el('div', 'board-contents');
         var cardFilter = 'Todos';
+        var editingMap = {}; // id -> boolean
 
         function renderBoardDetails(){
           bCont.innerHTML = '';
@@ -623,6 +723,7 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
             var kOk = allItems.filter(function(x){ return x.estado === 'aprobado'; }).length;
             var kFix = allItems.filter(function(x){ return x.estado === 'cambios'; }).length;
             var kPend = allItems.filter(function(x){ return x.estado === 'pendiente'; }).length;
+            var kEdited = allItems.filter(function(x){ return x._isEdited; }).length;
 
             [
               ['Todos', 'Todos (' + allItems.length + ')', ''],
@@ -641,13 +742,44 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
             tb.appendChild(fltWrap);
 
             var bActions = el('div', 'board-actions');
+
+            if (kEdited > 0) {
+              var btnRevertAll = el('button', 'btn-doc sec', '↺ Revertir ' + kEdited + ' edición' + (kEdited > 1 ? 'es' : ''));
+              btnRevertAll.title = 'Restablecer todos los contenidos editados a su estado original';
+              btnRevertAll.onclick = function(e){
+                e.stopPropagation();
+                if (confirm('¿Deseas restaurar todos los contenidos editados de ' + t.cliente + ' a su versión original?')) {
+                  clearAllBoardEdits(t.id);
+                  editingMap = {};
+                  toast('✓ Se restauraron todos los contenidos al original');
+                  renderBoardDetails();
+                }
+              };
+              bActions.appendChild(btnRevertAll);
+            }
+
             var dlDocAprob = el('button', 'btn-doc pri', '📄 Descargar .doc (Aprobados)');
             dlDocAprob.onclick = function(e){ e.stopPropagation(); descargarWord(t, bData, 'aprobados'); };
             bActions.appendChild(dlDocAprob);
 
-            var dlDocTodos = el('button', 'btn-doc sec', 'Descargar todos (.doc)');
-            dlDocTodos.onclick = function(e){ e.stopPropagation(); descargarWord(t, bData, 'todos'); };
-            bActions.appendChild(dlDocTodos);
+            var btnDlJson = el('button', 'btn-doc sec', '💾 Descargar JSON');
+            btnDlJson.title = 'Descargar el archivo JSON actualizado con todos los cambios y ediciones';
+            btnDlJson.onclick = function(e){ e.stopPropagation(); descargarJsonActualizado(t, bData); };
+            bActions.appendChild(btnDlJson);
+
+            var btnCpJson = el('button', 'btn-doc sec', '📋 Copiar JSON');
+            btnCpJson.title = 'Copiar el JSON completo actualizado al portapapeles';
+            btnCpJson.onclick = function(e){
+              e.stopPropagation();
+              var exportData = Object.assign({}, bData);
+              exportData.contenidos = getMergedItems(t, bData).map(function(it){
+                var clean = Object.assign({}, it);
+                delete clean._isEdited; delete clean.n; delete clean.fechaRevision;
+                return clean;
+              });
+              copyText(JSON.stringify(exportData, null, 2), '✓ JSON completo copiado al portapapeles');
+            };
+            bActions.appendChild(btnCpJson);
 
             tb.appendChild(bActions);
             bCont.appendChild(tb);
@@ -662,7 +794,8 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
                 c.classList.toggle('on', modes[idx] === cardFilter);
               });
 
-              var filtered = allItems.filter(function(item){
+              var currentItems = getMergedItems(t, bData);
+              var filtered = currentItems.filter(function(item){
                 if (cardFilter === 'Aprobados') return item.estado === 'aprobado';
                 if (cardFilter === 'Con cambios') return item.estado === 'cambios';
                 if (cardFilter === 'Pendientes') return item.estado === 'pendiente';
@@ -675,7 +808,11 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
               }
 
               filtered.forEach(function(item){
+                var itemKey = item.id || String(item.n);
+                var isEditingThis = !!editingMap[itemKey];
+
                 var card = el('article', 'p-card');
+                card.id = 'card-' + itemKey;
                 card.dataset.state = item.estado;
 
                 // Cabecera de la tarjeta
@@ -699,6 +836,9 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
                 if (item.fechaPublicacion) {
                   tags.appendChild(el('span', 'p-tag date', '📅 ' + item.fechaPublicacion));
                 }
+                if (item._isEdited) {
+                  tags.appendChild(el('span', 'p-tag edited', '✎ Editado'));
+                }
                 cMeta.appendChild(tags);
                 cMeta.appendChild(el('h4', null, item.titulo || 'Contenido ' + numStr));
                 cTop.appendChild(cMeta);
@@ -707,94 +847,254 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
                 cTop.appendChild(el('span', 'p-badge', badgeTxt));
                 card.appendChild(cTop);
 
-                // Cuerpo de la tarjeta
-                var hasCopy = (item.copy && item.copy.trim()) || (item.hashtags && item.hashtags.trim());
-                var cBody = el('div', 'p-card-body' + (hasCopy ? '' : ' single'));
+                // Si está en MODO EDICIÓN: mostramos el formulario de edición
+                if (isEditingThis) {
+                  var form = el('div', 'p-edit-form');
+                  var fHead = el('div', 'p-edit-form-head');
+                  fHead.appendChild(el('h5', null, '✎ Editando Contenido ' + numStr + ' · ' + (item.titulo || '')));
+                  var btnCloseX = el('button', 'btn-mini', '✕');
+                  btnCloseX.title = 'Cerrar edición';
+                  btnCloseX.onclick = function(){ editingMap[itemKey] = false; renderCards(); };
+                  fHead.appendChild(btnCloseX);
+                  form.appendChild(fHead);
 
-                // Columna 1: Guion / Descripción
-                var gWrap = el('div');
-                gWrap.appendChild(el('span', 'p-lbl', item.guionLabel || 'Guion / Descripción'));
-                gWrap.appendChild(el('div', 'p-guion', item.guion || '—'));
+                  var grid = el('div', 'p-edit-grid');
 
-                if (item.referencias && item.referencias.length) {
-                  var rw = el('div', 'p-refs');
-                  item.referencias.forEach(function(ref){
-                    if (ref && (ref.url || ref.label)) {
-                      var aRef = el('a', null, ref.label || 'Referencia');
-                      aRef.href = ref.url; aRef.target = '_blank'; aRef.rel = 'noopener';
-                      rw.appendChild(aRef);
-                    }
+                  // Campo: Título
+                  var fTitle = el('div', 'p-field full');
+                  fTitle.appendChild(el('label', 'p-field-lbl', 'Título del contenido'));
+                  var inTitle = el('input', 'p-input'); inTitle.value = item.titulo || '';
+                  fTitle.appendChild(inTitle); grid.appendChild(fTitle);
+
+                  // Campo: Formato
+                  var fFmt = el('div', 'p-field');
+                  fFmt.appendChild(el('label', 'p-field-lbl', 'Tipo de formato'));
+                  var selFmt = el('select', 'p-select');
+                  ['Reel', 'Carrusel', 'Post', 'Story', 'Video', 'TikTok', 'Post estático', 'Post meme'].forEach(function(fmtOpt){
+                    var opt = el('option', null, fmtOpt); opt.value = fmtOpt;
+                    if (item.formato === fmtOpt) opt.selected = true;
+                    selFmt.appendChild(opt);
                   });
-                  gWrap.appendChild(rw);
-                }
-                cBody.appendChild(gWrap);
-
-                // Columna 2: Copy (mockup de publicación)
-                if (hasCopy) {
-                  var cpWrap = el('div');
-                  cpWrap.appendChild(el('span', 'p-lbl', 'Copy'));
-
-                  var post = el('div', 'p-post');
-                  var postH = el('div', 'p-post-h');
-                  postH.appendChild(el('div', 'p-av', (cuenta || 'N').charAt(0).toUpperCase()));
-                  var pUser = el('div');
-                  pUser.appendChild(el('b', null, cuenta ? '@' + cuenta.replace(/^@/, '') : 'tu cuenta'));
-                  pUser.appendChild(el('small', null, 'Vista previa de la publicación'));
-                  postH.appendChild(pUser);
-                  post.appendChild(postH);
-
-                  var cpP = el('div', 'p-copy', item.copy || '');
-                  if (item.hashtags) {
-                    cpP.appendChild(el('span', 'p-hash', item.hashtags));
+                  if (!['Reel', 'Carrusel', 'Post', 'Story', 'Video', 'TikTok', 'Post estático', 'Post meme'].includes(item.formato) && item.formato) {
+                    var customOpt = el('option', null, item.formato); customOpt.value = item.formato; customOpt.selected = true;
+                    selFmt.appendChild(customOpt);
                   }
-                  post.appendChild(cpP);
-                  cpWrap.appendChild(post);
-                  cBody.appendChild(cpWrap);
-                }
+                  fFmt.appendChild(selFmt); grid.appendChild(fFmt);
 
-                card.appendChild(cBody);
+                  // Campo: Pilar
+                  var fPilar = el('div', 'p-field');
+                  fPilar.appendChild(el('label', 'p-field-lbl', 'Pilar de contenido (opcional)'));
+                  var inPilar = el('input', 'p-input'); inPilar.placeholder = 'Ej: Educación, Producto...'; inPilar.value = item.pilar || '';
+                  fPilar.appendChild(inPilar); grid.appendChild(fPilar);
 
-                // Bloque de Revisión / Ajustes solicitados
-                var fb = el('div', 'p-feedback ' + item.estado);
-                if (item.estado === 'cambios') {
-                  fb.appendChild(el('div', 'p-fb-title', '✎ AJUSTE SOLICITADO POR EL CLIENTE:'));
-                  var fbTxt = item.comentario ? '“' + item.comentario + '”' : '(El cliente marcó pedir cambios pero no detalló comentario escrito)';
-                  fb.appendChild(el('div', 'p-fb-text', fbTxt));
-                  if (isFmtChanged) {
-                    fb.appendChild(el('div', 'p-fb-text', '• Cambio de formato solicitado: de ' + item.formatoOriginal + ' a ' + item.formato));
+                  // Campo: Fecha de publicación
+                  var fDate = el('div', 'p-field full');
+                  fDate.appendChild(el('label', 'p-field-lbl', 'Fecha programada / de publicación (opcional)'));
+                  var inDate = el('input', 'p-input'); inDate.placeholder = 'Ej: 15 de Octubre'; inDate.value = item.fechaPublicacion || '';
+                  fDate.appendChild(inDate); grid.appendChild(fDate);
+
+                  // Campo: Guion
+                  var fGuion = el('div', 'p-field full');
+                  fGuion.appendChild(el('label', 'p-field-lbl', item.guionLabel || 'Guion / Descripción'));
+                  var taGuion = el('textarea', 'p-ta'); taGuion.value = item.guion || '';
+                  fGuion.appendChild(taGuion); grid.appendChild(fGuion);
+
+                  // Campo: Copy
+                  var fCopy = el('div', 'p-field full');
+                  fCopy.appendChild(el('label', 'p-field-lbl', 'Copy (Texto para el post)'));
+                  var taCopy = el('textarea', 'p-ta'); taCopy.value = item.copy || '';
+                  fCopy.appendChild(taCopy); grid.appendChild(fCopy);
+
+                  // Campo: Hashtags
+                  var fHash = el('div', 'p-field full');
+                  fHash.appendChild(el('label', 'p-field-lbl', 'Hashtags'));
+                  var inHash = el('input', 'p-input'); inHash.placeholder = '#nexo #marca...'; inHash.value = item.hashtags || '';
+                  fHash.appendChild(inHash); grid.appendChild(fHash);
+
+                  // Campo: Estado
+                  var fSt = el('div', 'p-field full');
+                  fSt.appendChild(el('label', 'p-field-lbl', 'Estado de la pieza'));
+                  var stPicker = el('div', 'p-status-picker');
+                  var curState = item.estado;
+
+                  var bStOk = el('button', 'p-st-btn aprobado' + (curState === 'aprobado' ? ' on' : ''), '✓ Aprobado');
+                  var bStFix = el('button', 'p-st-btn cambios' + (curState === 'cambios' ? ' on' : ''), '✎ Con cambios');
+                  var bStPend = el('button', 'p-st-btn pendiente' + (curState === 'pendiente' ? ' on' : ''), '• Pendiente');
+
+                  function updateStUI(val){
+                    curState = val;
+                    bStOk.classList.toggle('on', curState === 'aprobado');
+                    bStFix.classList.toggle('on', curState === 'cambios');
+                    bStPend.classList.toggle('on', curState === 'pendiente');
                   }
-                } else if (item.estado === 'aprobado') {
-                  fb.appendChild(el('div', 'p-fb-title', '✓ APROBADO POR EL CLIENTE'));
-                  if (item.comentario) {
-                    fb.appendChild(el('div', 'p-fb-text', 'Comentario del cliente: “' + item.comentario + '”'));
-                  }
-                } else {
-                  fb.appendChild(el('div', 'p-fb-title', '• PENDIENTE DE RESPUESTA'));
-                  fb.appendChild(el('div', 'p-fb-text', 'El cliente aún no ha revisado ni emitido respuesta para esta pieza.'));
-                }
-                card.appendChild(fb);
+                  bStOk.onclick = function(e){ e.preventDefault(); updateStUI('aprobado'); };
+                  bStFix.onclick = function(e){ e.preventDefault(); updateStUI('cambios'); };
+                  bStPend.onclick = function(e){ e.preventDefault(); updateStUI('pendiente'); };
 
-                // Botones de acción rápida por tarjeta
-                var cFoot = el('div', 'p-card-foot');
-                if (item.estado === 'cambios' && item.comentario) {
-                  var btnCpAjuste = el('button', 'btn-mini accent', '📋 Copiar ajuste');
-                  btnCpAjuste.onclick = function(){ copyText(item.comentario, '✓ Ajuste copiado al portapapeles'); };
-                  cFoot.appendChild(btnCpAjuste);
-                }
-                if (item.guion) {
-                  var btnCpGuion = el('button', 'btn-mini', '📋 Copiar guion');
-                  btnCpGuion.onclick = function(){ copyText(item.guion, '✓ Guion copiado al portapapeles'); };
-                  cFoot.appendChild(btnCpGuion);
-                }
-                if (item.copy) {
-                  var btnCpCopy = el('button', 'btn-mini', '📋 Copiar copy');
-                  btnCpCopy.onclick = function(){
-                    var fullCopy = item.copy + (item.hashtags ? '\n\n' + item.hashtags : '');
-                    copyText(fullCopy, '✓ Copy copiado al portapapeles');
+                  stPicker.appendChild(bStOk); stPicker.appendChild(bStFix); stPicker.appendChild(bStPend);
+                  fSt.appendChild(stPicker); grid.appendChild(fSt);
+
+                  // Campo: Comentario / Notas
+                  var fCom = el('div', 'p-field full');
+                  fCom.appendChild(el('label', 'p-field-lbl', 'Comentario / Notas de ajuste'));
+                  var taCom = el('textarea', 'p-ta'); taCom.style.minHeight = '70px';
+                  taCom.placeholder = 'Comentarios o instrucciones para el equipo...';
+                  taCom.value = item.comentario || '';
+                  fCom.appendChild(taCom); grid.appendChild(fCom);
+
+                  form.appendChild(grid);
+
+                  // Acciones del formulario de edición
+                  var fActions = el('div', 'p-edit-actions');
+                  var fActLeft = el('div', 'p-edit-actions-left');
+
+                  if (item._isEdited) {
+                    var btnResetThis = el('button', 'btn-mini', '↺ Restaurar original');
+                    btnResetThis.title = 'Eliminar los cambios locales de este contenido y volver a los datos originales';
+                    btnResetThis.onclick = function(e){
+                      e.preventDefault();
+                      if (confirm('¿Restaurar Contenido ' + numStr + ' a su versión original?')) {
+                        removeItemEdit(t.id, itemKey);
+                        editingMap[itemKey] = false;
+                        toast('✓ Contenido ' + numStr + ' restaurado al original');
+                        renderBoardDetails();
+                      }
+                    };
+                    fActLeft.appendChild(btnResetThis);
+                  }
+                  fActions.appendChild(fActLeft);
+
+                  var fActRight = el('div', 'p-edit-actions-right');
+                  var btnCancel = el('button', 'btn-mini', 'Cancelar');
+                  btnCancel.onclick = function(e){ e.preventDefault(); editingMap[itemKey] = false; renderCards(); };
+                  fActRight.appendChild(btnCancel);
+
+                  var btnSave = el('button', 'btn-mini pri', 'Guardar cambios ✓');
+                  btnSave.onclick = function(e){
+                    e.preventDefault();
+                    var updated = {
+                      titulo: inTitle.value.trim(),
+                      formato: selFmt.value,
+                      pilar: inPilar.value.trim(),
+                      fechaPublicacion: inDate.value.trim(),
+                      guion: taGuion.value,
+                      copy: taCopy.value,
+                      hashtags: inHash.value.trim(),
+                      estado: curState,
+                      comentario: taCom.value.trim()
+                    };
+                    saveItemEdit(t.id, itemKey, updated);
+                    editingMap[itemKey] = false;
+                    toast('✓ Cambios guardados en Contenido ' + numStr);
+                    renderBoardDetails();
                   };
-                  cFoot.appendChild(btnCpCopy);
+                  fActRight.appendChild(btnSave);
+
+                  fActions.appendChild(fActRight);
+                  form.appendChild(fActions);
+                  card.appendChild(form);
+
+                } else {
+                  // MODO NORMAL DE VISUALIZACIÓN
+                  var hasCopy = (item.copy && item.copy.trim()) || (item.hashtags && item.hashtags.trim());
+                  var cBody = el('div', 'p-card-body' + (hasCopy ? '' : ' single'));
+
+                  // Columna 1: Guion / Descripción
+                  var gWrap = el('div');
+                  gWrap.appendChild(el('span', 'p-lbl', item.guionLabel || 'Guion / Descripción'));
+                  gWrap.appendChild(el('div', 'p-guion', item.guion || '—'));
+
+                  if (item.referencias && item.referencias.length) {
+                    var rw = el('div', 'p-refs');
+                    item.referencias.forEach(function(ref){
+                      if (ref && (ref.url || ref.label)) {
+                        var aRef = el('a', null, ref.label || 'Referencia');
+                        aRef.href = ref.url; aRef.target = '_blank'; aRef.rel = 'noopener';
+                        rw.appendChild(aRef);
+                      }
+                    });
+                    gWrap.appendChild(rw);
+                  }
+                  cBody.appendChild(gWrap);
+
+                  // Columna 2: Copy (mockup de publicación)
+                  if (hasCopy) {
+                    var cpWrap = el('div');
+                    cpWrap.appendChild(el('span', 'p-lbl', 'Copy'));
+
+                    var post = el('div', 'p-post');
+                    var postH = el('div', 'p-post-h');
+                    postH.appendChild(el('div', 'p-av', (cuenta || 'N').charAt(0).toUpperCase()));
+                    var pUser = el('div');
+                    pUser.appendChild(el('b', null, cuenta ? '@' + cuenta.replace(/^@/, '') : 'tu cuenta'));
+                    pUser.appendChild(el('small', null, 'Vista previa de la publicación'));
+                    postH.appendChild(pUser);
+                    post.appendChild(postH);
+
+                    var cpP = el('div', 'p-copy', item.copy || '');
+                    if (item.hashtags) {
+                      cpP.appendChild(el('span', 'p-hash', item.hashtags));
+                    }
+                    post.appendChild(cpP);
+                    cpWrap.appendChild(post);
+                    cBody.appendChild(cpWrap);
+                  }
+
+                  card.appendChild(cBody);
+
+                  // Bloque de Revisión / Ajustes solicitados
+                  var fb = el('div', 'p-feedback ' + item.estado);
+                  if (item.estado === 'cambios') {
+                    fb.appendChild(el('div', 'p-fb-title', '✎ AJUSTE SOLICITADO POR EL CLIENTE:'));
+                    var fbTxt = item.comentario ? '“' + item.comentario + '”' : '(El cliente marcó pedir cambios pero no detalló comentario escrito)';
+                    fb.appendChild(el('div', 'p-fb-text', fbTxt));
+                    if (isFmtChanged) {
+                      fb.appendChild(el('div', 'p-fb-text', '• Cambio de formato solicitado: de ' + item.formatoOriginal + ' a ' + item.formato));
+                    }
+                  } else if (item.estado === 'aprobado') {
+                    fb.appendChild(el('div', 'p-fb-title', '✓ APROBADO POR EL CLIENTE'));
+                    if (item.comentario) {
+                      fb.appendChild(el('div', 'p-fb-text', 'Comentario del cliente: “' + item.comentario + '”'));
+                    }
+                  } else {
+                    fb.appendChild(el('div', 'p-fb-title', '• PENDIENTE DE RESPUESTA'));
+                    fb.appendChild(el('div', 'p-fb-text', 'El cliente aún no ha revisado ni emitido respuesta para esta pieza.'));
+                  }
+                  card.appendChild(fb);
+
+                  // Botones de acción rápida por tarjeta
+                  var cFoot = el('div', 'p-card-foot');
+
+                  // Botón principal de Edición
+                  var btnEdit = el('button', 'btn-mini pri', '✎ Editar contenido');
+                  btnEdit.onclick = function(){
+                    editingMap[itemKey] = true;
+                    renderCards();
+                    var elCard = document.getElementById('card-' + itemKey);
+                    if (elCard) elCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                  };
+                  cFoot.appendChild(btnEdit);
+
+                  if (item.estado === 'cambios' && item.comentario) {
+                    var btnCpAjuste = el('button', 'btn-mini accent', '📋 Copiar ajuste');
+                    btnCpAjuste.onclick = function(){ copyText(item.comentario, '✓ Ajuste copiado al portapapeles'); };
+                    cFoot.appendChild(btnCpAjuste);
+                  }
+                  if (item.guion) {
+                    var btnCpGuion = el('button', 'btn-mini', '📋 Copiar guion');
+                    btnCpGuion.onclick = function(){ copyText(item.guion, '✓ Guion copiado al portapapeles'); };
+                    cFoot.appendChild(btnCpGuion);
+                  }
+                  if (item.copy) {
+                    var btnCpCopy = el('button', 'btn-mini', '📋 Copiar copy');
+                    btnCpCopy.onclick = function(){
+                      var fullCopy = item.copy + (item.hashtags ? '\n\n' + item.hashtags : '');
+                      copyText(fullCopy, '✓ Copy copiado al portapapeles');
+                    };
+                    cFoot.appendChild(btnCpCopy);
+                  }
+                  card.appendChild(cFoot);
                 }
-                card.appendChild(cFoot);
 
                 cardsGrid.appendChild(card);
               });

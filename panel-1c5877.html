@@ -1029,7 +1029,11 @@ main.shell{position:relative;z-index:2}
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycbyLYC8p_iglMhPuXMaPRZ4TOA_2fPTRCe3V2EmVnwotm2v5vll39e7X2AuBC-9eNcp7Jg/exec';
   var KEY = 'nexo-panel-clave', clave = '';
   var EDITS_KEY = 'nexo-panel-edits-';
-  try { clave = localStorage.getItem(KEY) || ''; } catch (e) {}
+  try {
+    var qpClave = new URLSearchParams(window.location.search).get('clave');
+    if (qpClave) { clave = qpClave; localStorage.setItem(KEY, clave); }
+    else { clave = localStorage.getItem(KEY) || ''; }
+  } catch (e) {}
   var app = document.getElementById('app'), f = 'Todos', q = '', DB = null;
   var boardCache = {}; // Cache de contenidos completos por tablero id
   var toastTimer = null;

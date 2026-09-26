@@ -17,7 +17,7 @@ Qué hace:
   6. Con --publicar: hace git add + commit + push.
 No usa IA: no gasta créditos.
 """
-import json, os, re, sys, secrets, subprocess, unicodedata, urllib.request, tempfile, shutil
+import json, os, re, sys, secrets, subprocess, time, unicodedata, urllib.request, tempfile, shutil
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(AQUI)
@@ -71,9 +71,12 @@ def main():
         data['revision'] = {'revisadoPor': '', 'fecha': ''}
         for c in data.get('contenidos', []):
             for k in ('id', 'estado', 'comentario', 'comentarios', 'revisadoPor', 'formatoOriginal'): c.pop(k, None)
+    data['id'] = id_mes
     data['url'] = base + data['archivo']
     if cfg.get('endpoint'): data['endpoint'] = cfg['endpoint']
     data.setdefault('revision', {'revisadoPor': '', 'fecha': ''})
+    if not data['revision'].get('fecha'):
+        data['resetAt'] = int(time.time() * 1000)
     for i, c in enumerate(data['contenidos']):
         c.setdefault('id', f'c{i + 1}'); c.setdefault('estado', 'pendiente'); c.setdefault('comentario', '')
     json.dump(data, open(ruta, 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
@@ -107,7 +110,8 @@ def main():
     if '--publicar' in sys.argv:
         subprocess.run(['git', '-C', REPO, 'add', data['archivo']], check=True)
         subprocess.run(['git', '-C', REPO, 'commit', '-m', f"Tablero {data['cliente']} {data['mes']} {data['anio']}"], check=False)
-        subprocess.run(['git', '-C', REPO, 'push'], check=True)
+        subprocess.run(['git', '-C', REPO, 'pull', '--rebase', 'origin', 'main'], check=False)
+        subprocess.run(['git', '-C', REPO, 'push', 'origin', 'main'], check=True)
         print('✓ Publicado (GitHub tarda 1-2 minutos en actualizar)')
 
     print('\nEnlace:', data['url'])

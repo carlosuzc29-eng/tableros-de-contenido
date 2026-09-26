@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="es" class="no-js"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Revisión de contenidos · Trina Hot Sauce · Octubre 2026</title>
+<link rel="icon" id="fav" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%22540%20610%201300%201160%22%3E%3Cg%20transform%3D%22translate(0%2C2364)%20scale(1%2C-1)%22%3E%3Cpath%20fill%3D%22%235CB83E%22%20d%3D%22M1266%201638%20c-67%20-59%20-123%20-108%20-123%20-108%200%20-1%20129%20-214%20131%20-216%201%20-1%202%204%2018%2065%20l17%2064%20116%200%20115%200%200%20-3%20c-1%20-1%20-43%20-157%20-94%20-347%20-51%20-189%20-93%20-344%20-93%20-345%200%200%2051%200%20114%200%20l113%201%2014%2051%20c8%2028%2051%20188%2096%20355%20109%20402%20124%20459%20124%20460%200%201%20-62%201%20-229%201%20-218%200%20-229%200%20-229%202%201%202%2034%20127%2034%20128%200%201%20-17%20-13%20-124%20-108z%20M759%201528%20c-147%20-548%20-209%20-778%20-209%20-779%200%20-1%2073%20-1%20229%20-1%20125%200%20228%200%20228%200%200%200%20-8%20-30%20-17%20-65%20-9%20-35%20-17%20-65%20-16%20-65%200%200%201%201%203%202%201%202%2056%2050%20122%20107%2066%2058%20120%20106%20120%20106%201%201%20-18%2034%20-63%20108%20-75%20123%20-67%20110%20-67%20109%20-1%200%20-9%20-29%20-18%20-65%20l-17%20-64%20-115%200%20-115%200%200%203%20c1%202%20184%20687%20186%20690%200%202%20-6%202%20-114%202%20l-114%200%20-23%20-88z%22%3E%3C%2Fpath%3E%3C%2Fg%3E%3C%2Fsvg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+:root{
+  --azul:#1F3549;--azul-2:#2B4661;--azul-3:#3D5A77;--azul-soft:#E6EBF0;
+  --verde:#5CB83E;--verde-dk:#3F8A27;--verde-soft:#EAF6E4;
+  --naranja:#E64A00;--naranja-soft:#FCEBE2;
+  --gris:#979797;--bg:#EEF1F4;--paper:#FFFFFF;--ink:#1F3549;--ink-2:#5B6B7A;--line:#E1E6EB;
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:linear-gradient(#fff 0 360px,var(--bg) 360px);font-family:'Futura','Futura Md BT','Jost','Century Gothic',sans-serif;color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+button{font:inherit;cursor:pointer}
+.shell{max-width:1180px;margin:0 auto;position:relative;z-index:1}
+
+/* TOPBAR */
+.topbar{background:#fff;padding:18px 16px}
+.topbar .shell{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.logo svg{height:92px;width:auto;display:block}
+.meta{text-align:right;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);font-weight:500}
+.meta b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:none;color:var(--ink);font-weight:700;margin-top:2px}
+.meta i{font-style:normal;color:var(--verde-dk)}
+
+/* HERO */
+.hero{position:relative;background:var(--azul);color:#fff;overflow:hidden;padding:8px 16px 120px;border-radius:36px 36px 0 0}
+.hero::before{content:"";position:absolute;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(92,184,62,.35),transparent 65%);right:-140px;top:-180px;pointer-events:none}
+.hero::after{content:"N";position:absolute;right:4%;bottom:-120px;font-size:420px;font-weight:800;line-height:1;color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.07);pointer-events:none}
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:end;margin-top:56px}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--verde)}
+.eyebrow::before{content:"";width:28px;height:2px;background:var(--verde)}
+.hero h1{font-size:clamp(40px,7.5vw,92px);font-weight:700;line-height:.95;letter-spacing:-.035em;margin-top:18px}
+.hero h1 .out{color:transparent;-webkit-text-stroke:1.5px #fff}
+.sub{color:#B9C6D2;font-size:17px;max-width:540px;margin-top:22px}
+.reviewed{display:none;margin-top:18px;font-size:14px;background:rgba(92,184,62,.16);border:1px solid rgba(92,184,62,.45);color:#DDF3D4;padding:9px 14px;border-radius:12px;width:fit-content;max-width:100%}
+.hero-grid>div{min-width:0}
+.reviewed.show{display:block}
+.ring{position:relative;width:188px;height:188px;flex:none}
+.ring svg{transform:rotate(-90deg);width:100%;height:100%}
+.ring circle{transition:stroke-dasharray .6s var(--ease),stroke-dashoffset .6s var(--ease)}
+.ring .center{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.ring .center b{display:block;font-size:44px;font-weight:700;letter-spacing:-.03em;line-height:1}
+.ring .center small{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#B9C6D2}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:-64px;position:relative;z-index:2}
+.stat{background:var(--paper);border-radius:22px;padding:20px 22px;display:flex;align-items:center;gap:14px;box-shadow:0 20px 40px -20px rgba(31,53,73,.25)}
+.stat i{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-style:normal;font-weight:700;font-size:18px;flex:none}
+.stat.ok i{background:var(--verde-soft);color:var(--verde-dk)}
+.stat.fix i{background:var(--naranja-soft);color:var(--naranja)}
+.stat.pend i{background:var(--azul-soft);color:var(--azul)}
+.stat b{display:block;font-size:30px;font-weight:700;line-height:1;letter-spacing:-.02em}
+.stat span{font-size:13px;color:var(--ink-2)}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:230px 1fr;gap:40px;margin-top:48px;padding-bottom:140px}
+.layout>*{min-width:0}
+.index{position:sticky;top:24px;align-self:start}
+.index h3{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--gris);margin-bottom:14px}
+.index nav{max-height:calc(100vh - 220px);overflow-y:auto}
+.index a{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink-2);padding:10px 12px;border-radius:14px;font-size:14px;font-weight:500;transition:background .2s,color .2s}
+.index a:hover{background:rgba(31,53,73,.05)}
+.index a.active{background:var(--paper);color:var(--ink);box-shadow:0 8px 20px -12px rgba(31,53,73,.3)}
+.index .n{font-weight:700;font-size:13px;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:var(--azul-soft);color:var(--azul);flex:none;transition:background .25s,color .25s}
+.index a[data-state="aprobado"] .n{background:var(--verde);color:#fff}
+.index a[data-state="cambios"] .n{background:var(--naranja);color:#fff}
+.index .t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.filters{display:flex;flex-wrap:wrap;gap:6px;margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+.chip{border:0;background:transparent;color:var(--ink-2);font-size:12.5px;font-weight:500;padding:6px 12px;border-radius:99px}
+.chip.on{background:var(--azul);color:#fff}
+
+/* CARD */
+.card{background:var(--paper);border-radius:32px;padding:40px;margin-bottom:28px;position:relative;overflow:hidden;scroll-margin-top:24px;box-shadow:0 1px 0 var(--line),0 30px 60px -40px rgba(31,53,73,.25);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.js .card:not(.in){opacity:0;transform:translateY(24px)}
+.nojs-note{display:none;background:var(--paper);border-left:4px solid var(--naranja);border-radius:18px;padding:16px 18px;margin-top:18px;font-size:14.5px;color:var(--ink-2);box-shadow:0 20px 40px -24px rgba(31,53,73,.3)}
+.nojs-note b{color:var(--ink)}
+.nojs-btn{display:none;margin-top:12px;background:var(--verde);color:#fff;text-decoration:none;font-weight:600;padding:11px 18px;border-radius:99px;width:fit-content}
+.nojs-btn.show{display:block}
+.no-js .nojs-note{display:block}
+.no-js .dock{display:none}
+.no-js .seg,.no-js .fmt-sel,.no-js textarea{pointer-events:none}
+.no-js .layout{padding-bottom:40px}
+.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--line);transition:background .3s}
+.card[data-state="aprobado"]::before{background:var(--verde)}
+.card[data-state="cambios"]::before{background:var(--naranja)}
+.c-top{display:grid;grid-template-columns:auto 1fr auto;gap:28px;align-items:start}
+.big{font-size:104px;font-weight:800;line-height:.8;letter-spacing:-.06em;color:transparent;-webkit-text-stroke:2px var(--azul);transition:color .35s,-webkit-text-stroke-color .35s}
+.card[data-state="aprobado"] .big{color:var(--verde);-webkit-text-stroke-color:var(--verde)}
+.card[data-state="cambios"] .big{color:var(--naranja);-webkit-text-stroke-color:var(--naranja)}
+.tags{display:flex;gap:8px;flex-wrap:wrap}
+.tag{font-size:12px;font-weight:600;padding:5px 12px;border-radius:99px;background:var(--azul-soft);color:var(--azul)}
+.tag.fmt{background:var(--azul);color:#fff}
+.fmt-wrap{position:relative;display:inline-flex}
+.fmt-sel{-webkit-appearance:none;appearance:none;border:0;background:var(--azul);color:#fff;font:inherit;font-size:12px;font-weight:600;line-height:1.5;padding:5px 30px 5px 12px;border-radius:99px;cursor:pointer;transition:background .2s}
+.fmt-sel:hover{background:var(--azul-2)}
+.fmt-sel:focus{outline:2px solid var(--verde);outline-offset:2px}
+.fmt-sel option{color:var(--ink);background:#fff}
+.fmt-wrap::after{content:"";position:absolute;right:12px;top:50%;width:6px;height:6px;border-right:1.5px solid #fff;border-bottom:1.5px solid #fff;transform:translateY(-70%) rotate(45deg);pointer-events:none}
+.fmt-wrap.changed .fmt-sel{background:var(--naranja)}
+.tag.orig{display:none;background:var(--naranja-soft);color:var(--naranja)}
+.tag.orig.show{display:inline-block}
+.tag.date{background:transparent;box-shadow:inset 0 0 0 1px var(--line);color:var(--ink-2)}
+.c-top h2{font-size:clamp(22px,2.6vw,30px);font-weight:600;line-height:1.2;letter-spacing:-.015em;margin-top:14px}
+.badge{font-size:12px;font-weight:600;padding:7px 14px;border-radius:99px;background:var(--bg);color:var(--ink-2);display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.badge::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.card[data-state="aprobado"] .badge{background:var(--verde-soft);color:var(--verde-dk)}
+.card[data-state="cambios"] .badge{background:var(--naranja-soft);color:var(--naranja)}
+.c-body{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:34px}
+.c-body.single{grid-template-columns:1fr}
+.lbl{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--gris);margin-bottom:10px;display:block}
+.guion p{font-size:16px;line-height:1.7;white-space:pre-line}
+.refs{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+.refs a{font-size:13px;font-weight:500;color:var(--azul);text-decoration:none;padding:8px 14px;border-radius:12px;background:var(--bg);display:inline-flex;gap:6px;align-items:center;transition:background .2s;word-break:break-word}
+.refs a:hover{background:var(--azul-soft)}
+.refs a::after{content:"↗";color:var(--verde);font-weight:700}
+.post{background:var(--bg);border-radius:22px;padding:18px}
+.post-h{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.av{width:34px;height:34px;border-radius:50%;background:var(--azul);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
+.post-h b{font-size:14px;font-weight:600;display:block;line-height:1.2}
+.post-h small{font-size:12px;color:var(--gris)}
+.post p{font-size:15px;white-space:pre-line;line-height:1.65;word-break:break-word}
+.post .hash{display:block;margin-top:8px;color:var(--azul-3);font-weight:500}
+.review{margin-top:34px;padding:26px;border-radius:24px;background:linear-gradient(180deg,#F7F9FA,#F2F5F7)}
+.review-h{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.review-h h4{font-size:17px;font-weight:600}
+.seg{display:inline-flex;background:var(--paper);padding:5px;border-radius:18px;box-shadow:inset 0 0 0 1px var(--line);gap:4px}
+.seg button{border:0;background:transparent;padding:12px 20px;border-radius:14px;font-size:14px;font-weight:600;color:var(--ink-2);display:inline-flex;align-items:center;gap:8px;transition:background .25s var(--ease),color .25s,transform .15s}
+.seg button:active{transform:scale(.97)}
+.seg .ic{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:12px;line-height:1}
+.seg .approve .ic{background:var(--verde-soft);color:var(--verde-dk)}
+.seg .change .ic{background:var(--naranja-soft);color:var(--naranja)}
+.seg .approve.on{background:var(--verde);color:#fff}
+.seg .change.on{background:var(--naranja);color:#fff}
+.seg .on .ic{background:rgba(255,255,255,.25);color:#fff}
+.comment{margin-top:18px}
+.comment textarea{width:100%;border:0;background:var(--paper);border-radius:18px;padding:18px 20px;font:inherit;font-size:15px;color:var(--ink);min-height:96px;resize:vertical;box-shadow:inset 0 0 0 1px var(--line);transition:box-shadow .2s}
+.comment textarea:focus{outline:none;box-shadow:inset 0 0 0 2px var(--azul)}
+.card[data-state="cambios"] .comment textarea{box-shadow:inset 0 0 0 1.5px rgba(230,74,0,.45)}
+.card.warn .comment textarea{box-shadow:inset 0 0 0 2px var(--naranja)}
+.hint{font-size:12.5px;color:var(--ink-2);margin-top:8px;display:none}
+.card[data-state="cambios"] .hint{display:block}
+.empty{display:none;text-align:center;color:var(--ink-2);padding:60px 20px;background:var(--paper);border-radius:28px}
+
+/* DOCK */
+.dock{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:20;display:flex;align-items:center;gap:10px;background:rgba(31,53,73,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:8px 8px 8px 20px;border-radius:99px;box-shadow:0 20px 50px -12px rgba(31,53,73,.55);color:#fff;width:max-content;max-width:calc(100% - 32px)}
+.dock .prog{font-size:13px;color:#C8D3DD;white-space:nowrap}
+.dock .prog b{color:#fff;font-weight:700}
+.dock .sep{width:1px;height:26px;background:rgba(255,255,255,.18)}
+.dock input{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#fff;font:inherit;font-size:14px;padding:10px 16px;border-radius:99px;width:190px}
+.dock input::placeholder{color:#8FA3B6}
+.dock input:focus{outline:none;border-color:var(--verde)}
+.dock input.err{border-color:var(--naranja);animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.dl{border:0;background:var(--verde);color:#fff;font-weight:600;font-size:14.5px;padding:12px 22px;border-radius:99px;display:inline-flex;gap:8px;align-items:center;white-space:nowrap;transition:transform .15s,background .2s}
+.dl:hover{background:var(--verde-dk)}
+.dl:active{transform:scale(.97)}
+.dl[disabled]{opacity:.6;cursor:wait}
+.dl-mini{border:1px solid rgba(255,255,255,.22);background:transparent;color:#fff;width:44px;height:44px;border-radius:99px;font-size:17px;display:none;align-items:center;justify-content:center;flex:none}
+.dl-mini:hover{background:rgba(255,255,255,.1)}
+.has-send .dl-mini{display:inline-flex}
+
+/* MODAL + TOAST */
+.modal{position:fixed;inset:0;background:rgba(31,53,73,.45);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal.show{display:flex}
+.box{background:#fff;border-radius:28px;max-width:440px;width:100%;padding:32px;box-shadow:0 40px 80px -20px rgba(31,53,73,.5);animation:pop .3s var(--ease)}
+@keyframes pop{from{transform:scale(.94);opacity:0}}
+.box .ico{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-size:24px;font-weight:700;margin-bottom:16px}
+.box .ico.ok{background:var(--verde-soft);color:var(--verde-dk)}
+.box .ico.warn{background:var(--naranja-soft);color:var(--naranja)}
+.box h3{font-size:22px;font-weight:700;letter-spacing:-.01em;line-height:1.25}
+.box p{color:var(--ink-2);margin-top:8px;font-size:15px}
+.box ul{margin:12px 0 0 18px;color:var(--ink-2);font-size:14px}
+.box .row{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap}
+.box .row button{flex:1;border:0;border-radius:14px;padding:13px 16px;font-weight:600;font-size:14.5px}
+.b-sec{background:var(--bg);color:var(--ink)}
+.b-pri{background:var(--verde);color:#fff}
+.toast{position:fixed;left:50%;top:20px;transform:translate(-50%,-200px);background:var(--azul);color:#fff;padding:12px 18px;border-radius:14px;font-size:14px;z-index:60;transition:transform .35s var(--ease);box-shadow:0 20px 40px -16px rgba(31,53,73,.6);max-width:calc(100% - 32px)}
+.toast.show{transform:translate(-50%,0)}
+
+footer{margin-top:40px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gris);text-align:center}
+footer .logo svg{height:84px;margin:0 auto 14px}
+
+@media (max-width:980px){
+  .layout{grid-template-columns:1fr;gap:18px}
+  .index{position:sticky;top:0;z-index:10;background:rgba(238,241,244,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);margin:0 -16px;padding:12px 16px}
+  .index h3,.filters{display:none}
+  .index nav{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;max-height:none}
+  .index nav::-webkit-scrollbar{display:none}
+  .index a{padding:4px;flex:none}
+  .index a .t{display:none}
+  .index a.active{background:transparent;box-shadow:none}
+  .index a.active .n{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--azul)}
+  .c-body{grid-template-columns:1fr}
+  .card{scroll-margin-top:84px}
+}
+@media (max-width:640px){
+  .topbar{padding:14px 16px}
+  .topbar .logo svg{height:66px}
+  .meta{font-size:10.5px}
+  .meta b{font-size:16px}
+  .hero{padding:4px 16px 96px;border-radius:26px 26px 0 0}
+  .hero-grid{grid-template-columns:1fr;margin-top:40px;gap:28px}
+  .ring{width:132px;height:132px}
+  .ring .center b{font-size:32px}
+  .stats{gap:8px}
+  .stat{flex-direction:column;align-items:flex-start;padding:14px;gap:8px;border-radius:18px}
+  .stat i{width:34px;height:34px;border-radius:10px;font-size:15px}
+  .stat b{font-size:24px}
+  .stat span{font-size:12px}
+  .card{padding:24px 20px;border-radius:26px}
+  .c-top{grid-template-columns:auto 1fr;gap:16px}
+  .c-top .badge{display:none}
+  .big{font-size:64px}
+  .review{padding:18px;margin-top:26px}
+  .seg{width:100%}
+  .seg button{flex:1;justify-content:center;padding:12px 6px;font-size:13.5px;white-space:nowrap;gap:6px}
+  .dock{bottom:12px;padding:6px;gap:6px;border-radius:22px;justify-content:space-between}
+  .dock .prog,.dock .sep{display:none}
+  .dock input{flex:1;min-width:0;width:auto}
+  .dl{padding:11px 16px}
+  .box{padding:24px;border-radius:24px}
+}
+@media (prefers-reduced-motion:reduce){.card{opacity:1;transform:none;transition:none}}
+@media print{.dock,.index,.modal,.toast{display:none!important}.layout{grid-template-columns:1fr}.card{opacity:1;transform:none;break-inside:avoid}}
+</style>
+</head>
+<body class="has-send">
+
+<div class="topbar"><div class="shell">
+  <div class="logo" data-logo=""><svg role="img" aria-label="NEXO Agencia Creativa" xmlns="http://www.w3.org/2000/svg" viewBox="758 532 862 1350"><g transform="translate(0,2364) scale(1,-1)"><path fill="#1F3549" d="M763 1617 l0 -210 47 0 46 0 0 129 0 129 3 -4 c3 -4 29 -32 31 -34 1 -1 5 -6 10 -11 4 -4 15 -16 23 -25 9 -10 17 -20 20 -22 2 -2 11 -12 19 -21 9 -10 16 -18 16 -19 1 0 5 -5 10 -10 17 -18 28 -32 29 -33 2 -1 15 -15 33 -35 9 -10 16 -18 16 -19 5 -4 18 -19 20 -22 l3 -3 47 0 46 0 0 210 0 209 -46 0 -46 0 0 -129 c0 -106 0 -128 -1 -127 -1 1 -4 5 -8 8 -6 7 -21 24 -24 27 -2 2 -6 7 -44 49 -15 15 -28 31 -31 33 -2 2 -5 5 -6 7 -1 1 -5 6 -10 11 -5 5 -9 10 -10 11 -1 1 -5 6 -10 11 -37 41 -53 58 -60 66 -5 5 -10 11 -11 12 -1 1 -6 6 -10 11 l-9 10 -47 0 -46 0 0 -209z M1238 1825 c-1 0 -1 -21 -1 -46 l0 -46 182 0 182 0 0 47 0 46 -181 0 c-100 0 -182 0 -182 -1z M1237 1615 l0 -46 182 0 182 0 0 46 0 46 -182 0 -182 0 0 -46z M1237 1454 l0 -47 182 0 182 0 0 47 0 46 -182 0 -182 0 0 -46z M764 1351 c0 -1 31 -48 69 -105 38 -57 69 -104 69 -104 -1 -1 -32 -48 -70 -105 l-69 -104 70 0 71 0 34 52 c19 28 35 51 35 51 0 0 16 -23 35 -52 l34 -51 70 0 c60 0 70 0 70 1 -1 1 -32 48 -69 104 -37 56 -68 103 -69 104 0 0 31 47 69 104 38 57 69 104 69 105 0 1 -22 1 -65 1 l-64 0 -40 -59 c-22 -33 -40 -60 -40 -60 0 0 -18 27 -40 60 l-39 59 -66 0 c-52 0 -65 0 -64 -1z M1372 1351 c-96 -9 -175 -84 -188 -180 -21 -147 116 -269 261 -231 109 28 177 142 149 252 -25 101 -119 168 -222 159z m38 -91 c102 -17 136 -150 53 -212 -79 -59 -190 -4 -190 95 0 72 65 128 137 117z"></path><path fill="#5CB83E" d="M803 774 c-18 -40 -32 -73 -33 -74 0 -2 0 -2 10 -2 l9 1 10 21 9 22 27 0 28 0 9 -22 9 -22 10 0 c6 0 9 0 9 1 0 2 -64 148 -65 148 0 0 -15 -33 -32 -73z m43 9 l11 -25 -22 0 c-20 0 -21 0 -21 2 3 6 21 47 21 47 0 0 5 -11 11 -24z M1145 773 l0 -75 8 0 9 0 0 53 1 53 51 -56 c28 -30 51 -55 51 -55 1 0 1 34 1 75 l0 74 -8 0 -9 0 0 -54 0 -53 -52 56 c-28 31 -51 56 -52 56 0 0 0 -34 0 -74z M1480 773 c-18 -40 -32 -74 -32 -74 0 -1 4 -1 10 -1 l9 1 9 21 10 22 27 0 28 0 9 -22 9 -22 10 0 c8 0 9 0 9 2 -1 3 -64 147 -65 147 0 0 -15 -33 -33 -74z m44 10 c5 -13 10 -24 10 -24 0 -1 -9 -1 -21 -1 -12 0 -21 0 -21 1 0 1 20 48 21 48 0 0 5 -11 11 -24z M952 844 c-36 -6 -58 -35 -58 -75 0 -36 18 -61 49 -71 12 -4 38 -4 50 0 27 10 43 32 45 64 l0 11 -30 0 -30 0 0 -8 0 -8 21 0 20 0 -1 -4 c-5 -34 -42 -52 -75 -36 -38 18 -41 80 -4 104 15 10 39 10 55 1 5 -2 15 -12 18 -17 l2 -2 7 5 c4 3 7 7 7 8 0 3 -16 17 -24 21 -14 7 -35 10 -52 7z M1338 843 c-25 -6 -45 -25 -53 -48 -3 -12 -4 -32 -1 -44 12 -50 70 -72 115 -44 l6 3 0 12 0 12 -7 -6 c-24 -23 -58 -22 -81 0 -12 13 -16 24 -16 42 0 51 59 77 96 43 4 -3 7 -6 7 -6 1 0 1 5 1 11 l0 12 -6 3 c-18 11 -41 15 -61 10z M1051 770 l0 -72 38 0 39 1 0 8 0 8 -29 0 -30 0 0 27 0 27 30 0 29 0 0 8 0 8 -29 0 -30 0 0 20 0 20 30 0 29 0 0 9 0 8 -38 0 -39 0 0 -72z M1422 770 l0 -72 9 0 9 0 0 72 0 72 -9 0 -9 0 0 -72z M825 688 c-33 -5 -57 -31 -61 -65 -6 -61 47 -101 104 -78 l6 2 0 22 c0 11 0 21 -1 21 0 0 -3 -3 -7 -6 -29 -25 -68 -2 -62 36 3 21 16 33 36 33 12 0 16 -2 28 -12 l6 -5 0 22 0 22 -7 2 c-13 6 -29 8 -42 6z M1128 687 c-21 -7 -32 -25 -32 -52 0 -25 8 -42 25 -50 6 -3 7 -3 18 -3 16 0 22 2 30 11 l6 6 0 -7 0 -7 17 0 16 0 0 50 0 50 -16 0 -17 0 0 -7 0 -7 -3 3 c-4 5 -8 8 -13 11 -6 3 -25 4 -31 2z m37 -30 c14 -7 15 -34 2 -42 -13 -9 -30 -4 -34 11 -7 23 12 41 32 31z M883 614 l0 -72 19 0 19 0 0 27 0 26 16 -26 15 -27 23 0 c12 0 22 0 22 0 0 1 -9 14 -19 29 -21 30 -20 29 -17 29 7 0 20 10 25 20 3 7 3 7 3 20 0 18 -4 28 -16 37 -11 7 -14 7 -54 8 l-36 0 0 -71z m60 37 c7 -4 10 -15 6 -23 -3 -7 -8 -9 -19 -10 l-9 0 0 18 0 18 9 0 c7 0 10 -1 13 -3z M1000 614 l0 -72 44 0 44 0 0 17 0 16 -25 0 -25 0 0 12 0 11 24 0 23 0 0 16 0 15 -23 0 -24 0 0 12 0 12 25 0 25 0 0 16 0 16 -44 0 -44 0 0 -71z M1220 631 l0 -55 -23 0 -23 0 0 -17 1 -16 58 -1 59 0 0 17 0 17 -16 0 -16 0 0 55 0 54 -20 0 -20 0 0 -54z M1302 614 l0 -72 20 0 20 0 0 72 0 71 -20 0 -20 0 0 -71z M1349 685 c0 0 13 -32 30 -71 l30 -71 15 -1 16 0 29 70 c16 38 29 70 30 71 0 2 -1 2 -21 2 l-21 0 -16 -42 c-9 -22 -17 -41 -17 -41 0 0 -8 19 -16 42 l-16 41 -22 0 c-11 0 -21 0 -21 0z M1510 684 c-1 -1 -14 -33 -30 -71 -16 -38 -29 -70 -29 -70 0 -1 9 -1 21 -1 l21 0 2 5 c1 3 8 21 16 41 7 19 14 35 14 36 0 2 6 -11 17 -40 l16 -42 22 0 21 0 -4 9 c-2 5 -16 37 -30 72 l-26 62 -15 0 c-12 0 -16 0 -16 -1z"></path></g></svg></div>
+  <div class="meta">Parrilla de contenidos<b id="metaTitle">Trina Hot Sauce · <i>Octubre 2026</i></b></div>
+</div></div>
+
+<header class="hero"><div class="shell">
+  <div class="hero-grid">
+    <div>
+      <div class="eyebrow">Revisión y aprobación</div>
+      <h1>Tus contenidos<br><span class="out">del mes</span></h1>
+      <p class="sub" id="intro">Revisa cada pieza con calma. Apruébala o cuéntanos qué ajustar, y al terminar descarga el tablero para enviárnoslo.</p>
+      <div class="reviewed" id="reviewed"></div>
+    </div>
+    <div class="ring">
+      <svg viewBox="0 0 188 188">
+        <circle cx="94" cy="94" r="82" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="12"></circle>
+        <circle id="rOk" cx="94" cy="94" r="82" fill="none" stroke="#5CB83E" stroke-width="12" stroke-linecap="round" stroke-dasharray="0 515.221195188726" stroke-opacity="0"></circle>
+        <circle id="rFix" cx="94" cy="94" r="82" fill="none" stroke="#E64A00" stroke-width="12" stroke-linecap="round" stroke-dasharray="0 515.221195188726" stroke-dashoffset="0" stroke-opacity="0"></circle>
+      </svg>
+      <div class="center"><div><b id="pct">0%</b><small>revisado</small></div></div>
+    </div>
+  </div>
+</div></header>
+
+<div class="shell" style="padding:0 16px">
+  <section class="stats">
+    <div class="stat ok"><i>✓</i><div><b id="sOk">0</b><span>Aprobados</span></div></div>
+    <div class="stat fix"><i>✎</i><div><b id="sFix">0</b><span>Con cambios</span></div></div>
+    <div class="stat pend"><i>•</i><div><b id="sPend">9</b><span>Pendientes</span></div></div>
+  </section>
+  <div class="nojs-note"><b>Estás viendo una vista previa.</b> Para aprobar, comentar y descargar tu revisión, abre este archivo en el navegador (Safari o Chrome). Las vistas previas de WhatsApp o de la app Archivos del iPhone no permiten interactuar.<a class="nojs-btn show" id="openLink" href="https://carlosuzc29-eng.github.io/tableros-de-contenido/trina-hot-sauce-octubre-2026-a39c.html">Abrir en Safari para revisar ↗</a></div>
+  <div class="layout">
+    <aside class="index">
+      <h3>Contenidos</h3>
+      <nav id="nav"><a href="#c1" data-state="pendiente"><span class="n">01</span><span class="t">Trina en Jack BBQ</span></a><a href="#c2" data-state="pendiente"><span class="n">02</span><span class="t">Dinámica con los parrilleros</span></a><a href="#c3" data-state="pendiente"><span class="n">03</span><span class="t">El sabor es el protagonista</span></a><a href="#c4" data-state="pendiente"><span class="n">04</span><span class="t">Prueba a ciegas</span></a><a href="#c5" data-state="pendiente"><span class="n">05</span><span class="t">El comentario anónimo</span></a><a href="#c6" data-state="pendiente"><span class="n">06</span><span class="t">Halloween</span></a><a href="#c7" data-state="pendiente"><span class="n">07</span><span class="t">Día del Taco</span></a><a href="#c8" data-state="pendiente"><span class="n">08</span><span class="t">Jack BBQ</span></a><a href="#c9" data-state="pendiente"><span class="n">09</span><span class="t">Trina con helado</span></a></nav>
+      <div class="filters">
+        <button class="chip on" data-f="all">Todos</button>
+        <button class="chip" data-f="pendiente">Pendientes</button>
+        <button class="chip" data-f="aprobado">Aprobados</button>
+        <button class="chip" data-f="cambios">Cambios</button>
+      </div>
+    </aside>
+    <main>
+      <div id="list"><article class="card in" id="c1" data-state="pendiente"><div class="c-top"><div class="big">01</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option></select></label><span class="tag orig">Propuesto: Reel</span></div><h2>Trina en Jack BBQ</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><p>Escena 1:Eduardo entra a cuadro sosteniendo una caja vacía.
+“We’re bringing creamy flavor to Jack BBQ.”
+Texto en pantalla:
+TRINA IS HEADING TO JACK BBQ
+
+Escena 2: Colocar la caja sobre una mesa. Grabar planos rápidos de diferentes manos guardando:
+- Andina.
+- Original.
+- Fuego.
+- Más botellas.
+- Materiales para la degustación.
+- Camisetas o elementos de TRINA.
+Intentar grabar de diferentes angulos y que se vean que hay varias personas guardando
+
+Escena 3: Eduardo intenta cerrar la maleta o caja, pero alguien añade otra botella de TRINA. Intenta cerrarla nuevamente y otra mano coloca una botella más.
+Eduardo mira a cámara y dice:
+We might need a bigger suitcase (or box) dependiendo de lo que usen para la toma
+Find us at Jack BBQ and discover your TRINA.</p></div></div><div class="review"><div class="review-h"><h4>¿Qué te parece este contenido?</h4><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div></div><div class="comment"><textarea placeholder="Déjanos un comentario o sugerencia (opcional si apruebas)"></textarea><div class="hint">✎ Cuéntanos qué te gustaría ajustar: mientras más detalle, más rápido lo resolvemos.</div></div></div></article><article class="card in" id="c2" data-state="pendiente"><div class="c-top"><div class="big">02</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option></select></label><span class="tag orig">Propuesto: Reel</span></div><h2>Dinámica con los parrilleros</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><p>Durante Jack BBQ se les presentarán las tres variedades de TRINA a diferentes parrilleros o asistentes. Cada participante deberá probarlas, escoger su favorita y decir claramente el nombre de la variedad elegida. En edición, cada respuesta se convertirá en un voto hasta revelar cuál fue la favorita del evento.
+Inicio: Eduardo a camara
+Which TRINA belongs at a serious BBQ?
+Let the pitmasters decide.
+Respuesta obligatoria del participante:
+DEBE DECIR EL NOMBRE DE LA QUE ESCOGE POR ESO CUANDO SE LES DEN ES IMPORTANTE RESALTAR CUAL ES CUAL
+Cierre:
+The votes are in.
+Jack BBQ chose [variedad ganadora].
+Which TRINA gets your vote?
+Indicaciones de grabación
+- Grabar en formato vertical 9:16.
+- Presentar las tres botellas juntas a cada participante.
+- Grabar a cada persona probando TRINA.
+- Después de probar, debe mirar a cámara y decir claramente el nombre de su elección.
+- No aceptar respuestas como “this one” ni únicamente señalar la botella.
+- Grabar entre seis y diez participantes.
+- Solicitar autorización para grabar y publicar cada reacción.
+Grabar tomas adicionales del fuego, parrillas, carnes, botellas, salsa y ambiente del evento.</p></div></div><div class="review"><div class="review-h"><h4>¿Qué te parece este contenido?</h4><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div></div><div class="comment"><textarea placeholder="Déjanos un comentario o sugerencia (opcional si apruebas)"></textarea><div class="hint">✎ Cuéntanos qué te gustaría ajustar: mientras más detalle, más rápido lo resolvemos.</div></div></div></article><article class="card in" id="c3" data-state="pendiente"><div class="c-top"><div class="big">03</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel" selected="">Carrusel</option><option value="Post">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option></select></label><span class="tag orig">Propuesto: Carrusel</span></div><h2>El sabor es el protagonista</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><p>SLIDE 1
+YOUR FOOD SHOULDN’T DISAPPEAR UNDER THE HEAT.
+
+SLIDE 2
+GOOD HEAT DOESN’T COVER THE FLAVOR.
+IT BRINGS OUT MORE OF IT.
+
+SLIDE 3
+THAT’S WHY TRINA IS FLAVOR FIRST.
+Creamy texture.
+Three levels of heat.
+Made to complement every bite.
+Mostrar las tres variedades:
+ANDINA · ORIGINAL · FUEGO
+Cierre:
+TASTE YOUR FOOD. THEN TASTE THE HEAT.</p></div></div><div class="review"><div class="review-h"><h4>¿Qué te parece este contenido?</h4><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div></div><div class="comment"><textarea placeholder="Déjanos un comentario o sugerencia (opcional si apruebas)"></textarea><div class="hint">✎ Cuéntanos qué te gustaría ajustar: mientras más detalle, más rápido lo resolvemos.</div></div></div></article><article class="card in" id="c4" data-state="pendiente"><div class="c-top"><div class="big">04</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option></select></label><span class="tag orig">Propuesto: Reel</span></div><h2>Prueba a ciegas</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><p>Hook de Eduardo a cámara:
+Everyone on the TRINA team thinks they know our sauces. Today, we’re putting that to the test.
+Dinámica:
+Cada participante prueba tres bocados con los ojos cerrados. Debe decir claramente el nombre de la salsa después de cada prueba:
+- this is Andina.
+- this is Original.
+- this is Fuego.
+Pero hay una trampa: una de las salsas aparece dos veces. La combinación puede cambiar para cada participante:
+- Persona 1: Andina – Fuego – Fuego
+- Persona 2: Original – Andina – Original
+- Persona 3: Fuego – Original – Fuego
+Después de las respuestas, Eduardo dice
+And that’s how well the TRINA team knows our sauces. How many would you get right?</p></div></div><div class="review"><div class="review-h"><h4>¿Qué te parece este contenido?</h4><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div></div><div class="comment"><textarea placeholder="Déjanos un comentario o sugerencia (opcional si apruebas)"></textarea><div class="hint">✎ Cuéntanos qué te gustaría ajustar: mientras más detalle, más rápido lo resolvemos.</div></div></div></article><article class="card in" id="c5" data-state="pendiente"><div class="c-top"><div class="big">05</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option></select></label><span class="tag orig">Propuesto: Reel</span></div><h2>El comentario anónimo</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><p>Escena 1: Eduardo entra rápidamente a cuadro sosteniendo el teléfono hacia la cámara.
+Diálogo:
+Someone said TRINA is a hot sauce for novices.
+
+Escena 2: Close-up del teléfono mostrando claramente el comentario. Hacer un acercamiento rápido con la cámara.
+No hablar. La reseña debe poder leerse durante dos o tres segundos.
+
+Escena 3: Eduardo baja el teléfono, mira directamente a cámara y dice:
+The problem is… they left the review anonymously.
+Después, señala donde aparece la palabra Anonymous en la pantalla.
+
+Escena 4: pegar el cartel (TE ENVIAREMOS PARA QUE LO IMPRIMAS)
+Eduardo camina con el cartel y lo pega en una pared o superficie visible.
+Después de pegarlo, lo observa y dice:
+“So, whoever you are, we’re looking for you.”
+
+Escena 5: Plano cerrado de una mano colocando la botella de TRINA Fuego con fuerza sobre una mesa.
+Grabar también:
+- Close-up de la etiqueta.
+- Giro lento de la botella.
+- Eduardo tomando la botella.
+- Botella acercándose hacia la cámara.
+
+Escena 7: Eduardo sostiene Fuego y habla directamente a cámara:
+If you see us, come find us and try TRINA Fuego on camera.
+If you still think TRINA is for novices after trying it, we’ll accept the review.
+You wanted hot-hot sauce. Let’s see if you can handle Fuego.
+Luego mira el cartel y termina:
+Anonymous, the challenge is on.
+Debe decirlo con seguridad y una ligera sonrisa, como un reto amistoso.</p></div></div><div class="review"><div class="review-h"><h4>¿Qué te parece este contenido?</h4><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div></div><div class="comment"><textarea placeholder="Déjanos un comentario o sugerencia (opcional si apruebas)"></textarea><div class="hint">✎ Cuéntanos qué te gustaría ajustar: mientras más detalle, más rápido lo resolvemos.</div></div></div></article><article class="card in" id="c6" data-state="pendiente"><div class="c-top"><div class="big">06</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Post" selected="">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option></select></label><span class="tag orig">Propuesto: Post</span></div><h2>Halloween</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><p>La botella de Fuego aparece disfrazada de fantasma con una pequeña sábana blanca. Sin embargo, el disfraz no logra ocultarla completamente: se ve la etiqueta roja por debajo y salen pequeñas llamas alrededor.
+A su lado pueden aparecer Andina y Original mirándola, como si supieran perfectamente quién está debajo del disfraz.
+Texto principal del lado donde estan Original y Andina
+NICE TRY, FUEGO.
+Texto secundario:
+We know it’s you.
+Detalle inferior:
+TRICK OR TRINA?
+We choose the second one
+En el lado de Fuego se ve un elemento como de que esta hablando y dice “I am Trina Original”
+El humor está en que Fuego intenta hacerse pasar por una salsa inofensiva, pero su intensidad la delata.</p></div></div><div class="review"><div class="review-h"><h4>¿Qué te parece este contenido?</h4><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div></div><div class="comment"><textarea placeholder="Déjanos un comentario o sugerencia (opcional si apruebas)"></textarea><div class="hint">✎ Cuéntanos qué te gustaría ajustar: mientras más detalle, más rápido lo resolvemos.</div></div></div></article><article class="card in" id="c7" data-state="pendiente"><div class="c-top"><div class="big">07</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story" selected="">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option></select></label><span class="tag orig">Propuesto: Story</span></div><h2>Día del Taco</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><p>Texto principal:
+OCTOBER 6 · NATIONAL TACO DAY
+GIVE YOUR TACOS THE TRINA TREATMENT.
+Texto secundario:
+Andina, Original or Fuego…
+Which one are you putting on your tacos?
+ESPACIO PARA ENCUESTA
+Visual: Taco en primer plano recibiendo TRINA, con las tres botellas visibles al fondo.</p></div></div><div class="review"><div class="review-h"><h4>¿Qué te parece este contenido?</h4><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div></div><div class="comment"><textarea placeholder="Déjanos un comentario o sugerencia (opcional si apruebas)"></textarea><div class="hint">✎ Cuéntanos qué te gustaría ajustar: mientras más detalle, más rápido lo resolvemos.</div></div></div></article><article class="card in" id="c8" data-state="pendiente"><div class="c-top"><div class="big">08</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story" selected="">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option></select></label><span class="tag orig">Propuesto: Story</span></div><h2>Jack BBQ</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><p>Creamy flavor is heading to one of bbq’s biggest stages.
+THE JACK
+Parte inferior:
+October 10
+lynchburg, tennessee
+FIND US THERE</p></div></div><div class="review"><div class="review-h"><h4>¿Qué te parece este contenido?</h4><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div></div><div class="comment"><textarea placeholder="Déjanos un comentario o sugerencia (opcional si apruebas)"></textarea><div class="hint">✎ Cuéntanos qué te gustaría ajustar: mientras más detalle, más rápido lo resolvemos.</div></div></div></article><article class="card in" id="c9" data-state="pendiente"><div class="c-top"><div class="big">09</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story" selected="">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option></select></label><span class="tag orig">Propuesto: Story</span></div><h2>Trina con helado</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><p>SOMEONE PUT TRINA ON ICE CREAM…
+Texto SECUNDARIO
+WHAT’S THE WEIRDEST FOOD YOU’D PUT TRINA ON?
+Sticker de preguntas:
+TRINA + ______
+La intención es utilizar el comentario como punto de partida para que la comunidad comparta sus combinaciones más inesperadas.</p></div></div><div class="review"><div class="review-h"><h4>¿Qué te parece este contenido?</h4><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div></div><div class="comment"><textarea placeholder="Déjanos un comentario o sugerencia (opcional si apruebas)"></textarea><div class="hint">✎ Cuéntanos qué te gustaría ajustar: mientras más detalle, más rápido lo resolvemos.</div></div></div></article></div>
+      <div class="empty" id="empty" style="display: none;">No hay contenidos en este filtro.</div>
+      <footer><div class="logo" data-logo=""><svg role="img" aria-label="NEXO Agencia Creativa" xmlns="http://www.w3.org/2000/svg" viewBox="758 532 862 1350"><g transform="translate(0,2364) scale(1,-1)"><path fill="#1F3549" d="M763 1617 l0 -210 47 0 46 0 0 129 0 129 3 -4 c3 -4 29 -32 31 -34 1 -1 5 -6 10 -11 4 -4 15 -16 23 -25 9 -10 17 -20 20 -22 2 -2 11 -12 19 -21 9 -10 16 -18 16 -19 1 0 5 -5 10 -10 17 -18 28 -32 29 -33 2 -1 15 -15 33 -35 9 -10 16 -18 16 -19 5 -4 18 -19 20 -22 l3 -3 47 0 46 0 0 210 0 209 -46 0 -46 0 0 -129 c0 -106 0 -128 -1 -127 -1 1 -4 5 -8 8 -6 7 -21 24 -24 27 -2 2 -6 7 -44 49 -15 15 -28 31 -31 33 -2 2 -5 5 -6 7 -1 1 -5 6 -10 11 -5 5 -9 10 -10 11 -1 1 -5 6 -10 11 -37 41 -53 58 -60 66 -5 5 -10 11 -11 12 -1 1 -6 6 -10 11 l-9 10 -47 0 -46 0 0 -209z M1238 1825 c-1 0 -1 -21 -1 -46 l0 -46 182 0 182 0 0 47 0 46 -181 0 c-100 0 -182 0 -182 -1z M1237 1615 l0 -46 182 0 182 0 0 46 0 46 -182 0 -182 0 0 -46z M1237 1454 l0 -47 182 0 182 0 0 47 0 46 -182 0 -182 0 0 -46z M764 1351 c0 -1 31 -48 69 -105 38 -57 69 -104 69 -104 -1 -1 -32 -48 -70 -105 l-69 -104 70 0 71 0 34 52 c19 28 35 51 35 51 0 0 16 -23 35 -52 l34 -51 70 0 c60 0 70 0 70 1 -1 1 -32 48 -69 104 -37 56 -68 103 -69 104 0 0 31 47 69 104 38 57 69 104 69 105 0 1 -22 1 -65 1 l-64 0 -40 -59 c-22 -33 -40 -60 -40 -60 0 0 -18 27 -40 60 l-39 59 -66 0 c-52 0 -65 0 -64 -1z M1372 1351 c-96 -9 -175 -84 -188 -180 -21 -147 116 -269 261 -231 109 28 177 142 149 252 -25 101 -119 168 -222 159z m38 -91 c102 -17 136 -150 53 -212 -79 -59 -190 -4 -190 95 0 72 65 128 137 117z"></path><path fill="#5CB83E" d="M803 774 c-18 -40 -32 -73 -33 -74 0 -2 0 -2 10 -2 l9 1 10 21 9 22 27 0 28 0 9 -22 9 -22 10 0 c6 0 9 0 9 1 0 2 -64 148 -65 148 0 0 -15 -33 -32 -73z m43 9 l11 -25 -22 0 c-20 0 -21 0 -21 2 3 6 21 47 21 47 0 0 5 -11 11 -24z M1145 773 l0 -75 8 0 9 0 0 53 1 53 51 -56 c28 -30 51 -55 51 -55 1 0 1 34 1 75 l0 74 -8 0 -9 0 0 -54 0 -53 -52 56 c-28 31 -51 56 -52 56 0 0 0 -34 0 -74z M1480 773 c-18 -40 -32 -74 -32 -74 0 -1 4 -1 10 -1 l9 1 9 21 10 22 27 0 28 0 9 -22 9 -22 10 0 c8 0 9 0 9 2 -1 3 -64 147 -65 147 0 0 -15 -33 -33 -74z m44 10 c5 -13 10 -24 10 -24 0 -1 -9 -1 -21 -1 -12 0 -21 0 -21 1 0 1 20 48 21 48 0 0 5 -11 11 -24z M952 844 c-36 -6 -58 -35 -58 -75 0 -36 18 -61 49 -71 12 -4 38 -4 50 0 27 10 43 32 45 64 l0 11 -30 0 -30 0 0 -8 0 -8 21 0 20 0 -1 -4 c-5 -34 -42 -52 -75 -36 -38 18 -41 80 -4 104 15 10 39 10 55 1 5 -2 15 -12 18 -17 l2 -2 7 5 c4 3 7 7 7 8 0 3 -16 17 -24 21 -14 7 -35 10 -52 7z M1338 843 c-25 -6 -45 -25 -53 -48 -3 -12 -4 -32 -1 -44 12 -50 70 -72 115 -44 l6 3 0 12 0 12 -7 -6 c-24 -23 -58 -22 -81 0 -12 13 -16 24 -16 42 0 51 59 77 96 43 4 -3 7 -6 7 -6 1 0 1 5 1 11 l0 12 -6 3 c-18 11 -41 15 -61 10z M1051 770 l0 -72 38 0 39 1 0 8 0 8 -29 0 -30 0 0 27 0 27 30 0 29 0 0 8 0 8 -29 0 -30 0 0 20 0 20 30 0 29 0 0 9 0 8 -38 0 -39 0 0 -72z M1422 770 l0 -72 9 0 9 0 0 72 0 72 -9 0 -9 0 0 -72z M825 688 c-33 -5 -57 -31 -61 -65 -6 -61 47 -101 104 -78 l6 2 0 22 c0 11 0 21 -1 21 0 0 -3 -3 -7 -6 -29 -25 -68 -2 -62 36 3 21 16 33 36 33 12 0 16 -2 28 -12 l6 -5 0 22 0 22 -7 2 c-13 6 -29 8 -42 6z M1128 687 c-21 -7 -32 -25 -32 -52 0 -25 8 -42 25 -50 6 -3 7 -3 18 -3 16 0 22 2 30 11 l6 6 0 -7 0 -7 17 0 16 0 0 50 0 50 -16 0 -17 0 0 -7 0 -7 -3 3 c-4 5 -8 8 -13 11 -6 3 -25 4 -31 2z m37 -30 c14 -7 15 -34 2 -42 -13 -9 -30 -4 -34 11 -7 23 12 41 32 31z M883 614 l0 -72 19 0 19 0 0 27 0 26 16 -26 15 -27 23 0 c12 0 22 0 22 0 0 1 -9 14 -19 29 -21 30 -20 29 -17 29 7 0 20 10 25 20 3 7 3 7 3 20 0 18 -4 28 -16 37 -11 7 -14 7 -54 8 l-36 0 0 -71z m60 37 c7 -4 10 -15 6 -23 -3 -7 -8 -9 -19 -10 l-9 0 0 18 0 18 9 0 c7 0 10 -1 13 -3z M1000 614 l0 -72 44 0 44 0 0 17 0 16 -25 0 -25 0 0 12 0 11 24 0 23 0 0 16 0 15 -23 0 -24 0 0 12 0 12 25 0 25 0 0 16 0 16 -44 0 -44 0 0 -71z M1220 631 l0 -55 -23 0 -23 0 0 -17 1 -16 58 -1 59 0 0 17 0 17 -16 0 -16 0 0 55 0 54 -20 0 -20 0 0 -54z M1302 614 l0 -72 20 0 20 0 0 72 0 71 -20 0 -20 0 0 -71z M1349 685 c0 0 13 -32 30 -71 l30 -71 15 -1 16 0 29 70 c16 38 29 70 30 71 0 2 -1 2 -21 2 l-21 0 -16 -42 c-9 -22 -17 -41 -17 -41 0 0 -8 19 -16 42 l-16 41 -22 0 c-11 0 -21 0 -21 0z M1510 684 c-1 -1 -14 -33 -30 -71 -16 -38 -29 -70 -29 -70 0 -1 9 -1 21 -1 l21 0 2 5 c1 3 8 21 16 41 7 19 14 35 14 36 0 2 6 -11 17 -40 l16 -42 22 0 21 0 -4 9 c-2 5 -16 37 -30 72 l-26 62 -15 0 c-12 0 -16 0 -16 -1z"></path></g></svg></div>Mérida, Venezuela</footer>
+    </main>
+  </div>
+</div>
+
+<div class="dock">
+  <span class="prog"><b id="dN">0/9</b> revisados</span>
+  <span class="sep"></span>
+  <input id="who" placeholder="Tu nombre" autocomplete="name">
+  <button class="dl" id="dl">Enviar revisión ✓</button>
+  <button class="dl-mini" id="dlMini" title="Descargar una copia" aria-label="Descargar una copia">↓</button>
+</div>
+
+<div class="modal" id="modal"><div class="box" id="box"></div></div>
+<div class="toast" id="toast"></div>
+
+<template id="nexo-logo"><svg role="img" aria-label="NEXO Agencia Creativa" xmlns="http://www.w3.org/2000/svg" viewBox="758 532 862 1350"><g transform="translate(0,2364) scale(1,-1)"><path fill="#1F3549" d="M763 1617 l0 -210 47 0 46 0 0 129 0 129 3 -4 c3 -4 29 -32 31 -34 1 -1 5 -6 10 -11 4 -4 15 -16 23 -25 9 -10 17 -20 20 -22 2 -2 11 -12 19 -21 9 -10 16 -18 16 -19 1 0 5 -5 10 -10 17 -18 28 -32 29 -33 2 -1 15 -15 33 -35 9 -10 16 -18 16 -19 5 -4 18 -19 20 -22 l3 -3 47 0 46 0 0 210 0 209 -46 0 -46 0 0 -129 c0 -106 0 -128 -1 -127 -1 1 -4 5 -8 8 -6 7 -21 24 -24 27 -2 2 -6 7 -44 49 -15 15 -28 31 -31 33 -2 2 -5 5 -6 7 -1 1 -5 6 -10 11 -5 5 -9 10 -10 11 -1 1 -5 6 -10 11 -37 41 -53 58 -60 66 -5 5 -10 11 -11 12 -1 1 -6 6 -10 11 l-9 10 -47 0 -46 0 0 -209z M1238 1825 c-1 0 -1 -21 -1 -46 l0 -46 182 0 182 0 0 47 0 46 -181 0 c-100 0 -182 0 -182 -1z M1237 1615 l0 -46 182 0 182 0 0 46 0 46 -182 0 -182 0 0 -46z M1237 1454 l0 -47 182 0 182 0 0 47 0 46 -182 0 -182 0 0 -46z M764 1351 c0 -1 31 -48 69 -105 38 -57 69 -104 69 -104 -1 -1 -32 -48 -70 -105 l-69 -104 70 0 71 0 34 52 c19 28 35 51 35 51 0 0 16 -23 35 -52 l34 -51 70 0 c60 0 70 0 70 1 -1 1 -32 48 -69 104 -37 56 -68 103 -69 104 0 0 31 47 69 104 38 57 69 104 69 105 0 1 -22 1 -65 1 l-64 0 -40 -59 c-22 -33 -40 -60 -40 -60 0 0 -18 27 -40 60 l-39 59 -66 0 c-52 0 -65 0 -64 -1z M1372 1351 c-96 -9 -175 -84 -188 -180 -21 -147 116 -269 261 -231 109 28 177 142 149 252 -25 101 -119 168 -222 159z m38 -91 c102 -17 136 -150 53 -212 -79 -59 -190 -4 -190 95 0 72 65 128 137 117z"></path><path fill="#5CB83E" d="M803 774 c-18 -40 -32 -73 -33 -74 0 -2 0 -2 10 -2 l9 1 10 21 9 22 27 0 28 0 9 -22 9 -22 10 0 c6 0 9 0 9 1 0 2 -64 148 -65 148 0 0 -15 -33 -32 -73z m43 9 l11 -25 -22 0 c-20 0 -21 0 -21 2 3 6 21 47 21 47 0 0 5 -11 11 -24z M1145 773 l0 -75 8 0 9 0 0 53 1 53 51 -56 c28 -30 51 -55 51 -55 1 0 1 34 1 75 l0 74 -8 0 -9 0 0 -54 0 -53 -52 56 c-28 31 -51 56 -52 56 0 0 0 -34 0 -74z M1480 773 c-18 -40 -32 -74 -32 -74 0 -1 4 -1 10 -1 l9 1 9 21 10 22 27 0 28 0 9 -22 9 -22 10 0 c8 0 9 0 9 2 -1 3 -64 147 -65 147 0 0 -15 -33 -33 -74z m44 10 c5 -13 10 -24 10 -24 0 -1 -9 -1 -21 -1 -12 0 -21 0 -21 1 0 1 20 48 21 48 0 0 5 -11 11 -24z M952 844 c-36 -6 -58 -35 -58 -75 0 -36 18 -61 49 -71 12 -4 38 -4 50 0 27 10 43 32 45 64 l0 11 -30 0 -30 0 0 -8 0 -8 21 0 20 0 -1 -4 c-5 -34 -42 -52 -75 -36 -38 18 -41 80 -4 104 15 10 39 10 55 1 5 -2 15 -12 18 -17 l2 -2 7 5 c4 3 7 7 7 8 0 3 -16 17 -24 21 -14 7 -35 10 -52 7z M1338 843 c-25 -6 -45 -25 -53 -48 -3 -12 -4 -32 -1 -44 12 -50 70 -72 115 -44 l6 3 0 12 0 12 -7 -6 c-24 -23 -58 -22 -81 0 -12 13 -16 24 -16 42 0 51 59 77 96 43 4 -3 7 -6 7 -6 1 0 1 5 1 11 l0 12 -6 3 c-18 11 -41 15 -61 10z M1051 770 l0 -72 38 0 39 1 0 8 0 8 -29 0 -30 0 0 27 0 27 30 0 29 0 0 8 0 8 -29 0 -30 0 0 20 0 20 30 0 29 0 0 9 0 8 -38 0 -39 0 0 -72z M1422 770 l0 -72 9 0 9 0 0 72 0 72 -9 0 -9 0 0 -72z M825 688 c-33 -5 -57 -31 -61 -65 -6 -61 47 -101 104 -78 l6 2 0 22 c0 11 0 21 -1 21 0 0 -3 -3 -7 -6 -29 -25 -68 -2 -62 36 3 21 16 33 36 33 12 0 16 -2 28 -12 l6 -5 0 22 0 22 -7 2 c-13 6 -29 8 -42 6z M1128 687 c-21 -7 -32 -25 -32 -52 0 -25 8 -42 25 -50 6 -3 7 -3 18 -3 16 0 22 2 30 11 l6 6 0 -7 0 -7 17 0 16 0 0 50 0 50 -16 0 -17 0 0 -7 0 -7 -3 3 c-4 5 -8 8 -13 11 -6 3 -25 4 -31 2z m37 -30 c14 -7 15 -34 2 -42 -13 -9 -30 -4 -34 11 -7 23 12 41 32 31z M883 614 l0 -72 19 0 19 0 0 27 0 26 16 -26 15 -27 23 0 c12 0 22 0 22 0 0 1 -9 14 -19 29 -21 30 -20 29 -17 29 7 0 20 10 25 20 3 7 3 7 3 20 0 18 -4 28 -16 37 -11 7 -14 7 -54 8 l-36 0 0 -71z m60 37 c7 -4 10 -15 6 -23 -3 -7 -8 -9 -19 -10 l-9 0 0 18 0 18 9 0 c7 0 10 -1 13 -3z M1000 614 l0 -72 44 0 44 0 0 17 0 16 -25 0 -25 0 0 12 0 11 24 0 23 0 0 16 0 15 -23 0 -24 0 0 12 0 12 25 0 25 0 0 16 0 16 -44 0 -44 0 0 -71z M1220 631 l0 -55 -23 0 -23 0 0 -17 1 -16 58 -1 59 0 0 17 0 17 -16 0 -16 0 0 55 0 54 -20 0 -20 0 0 -54z M1302 614 l0 -72 20 0 20 0 0 72 0 71 -20 0 -20 0 0 -71z M1349 685 c0 0 13 -32 30 -71 l30 -71 15 -1 16 0 29 70 c16 38 29 70 30 71 0 2 -1 2 -21 2 l-21 0 -16 -42 c-9 -22 -17 -41 -17 -41 0 0 -8 19 -16 42 l-16 41 -22 0 c-11 0 -21 0 -21 0z M1510 684 c-1 -1 -14 -33 -30 -71 -16 -38 -29 -70 -29 -70 0 -1 9 -1 21 -1 l21 0 2 5 c1 3 8 21 16 41 7 19 14 35 14 36 0 2 6 -11 17 -40 l16 -42 22 0 21 0 -4 9 c-2 5 -16 37 -30 72 l-26 62 -15 0 c-12 0 -16 0 -16 -1z"></path></g></svg></template>
+<template id="nexo-iso"><svg xmlns="http://www.w3.org/2000/svg" viewBox="540 610 1300 1160"><g transform="translate(0,2364) scale(1,-1)"><path fill="#5CB83E" d="M1266 1638 c-67 -59 -123 -108 -123 -108 0 -1 129 -214 131 -216 1 -1 2 4 18 65 l17 64 116 0 115 0 0 -3 c-1 -1 -43 -157 -94 -347 -51 -189 -93 -344 -93 -345 0 0 51 0 114 0 l113 1 14 51 c8 28 51 188 96 355 109 402 124 459 124 460 0 1 -62 1 -229 1 -218 0 -229 0 -229 2 1 2 34 127 34 128 0 1 -17 -13 -124 -108z M759 1528 c-147 -548 -209 -778 -209 -779 0 -1 73 -1 229 -1 125 0 228 0 228 0 0 0 -8 -30 -17 -65 -9 -35 -17 -65 -16 -65 0 0 1 1 3 2 1 2 56 50 122 107 66 58 120 106 120 106 1 1 -18 34 -63 108 -75 123 -67 110 -67 109 -1 0 -9 -29 -18 -65 l-17 -64 -115 0 -115 0 0 3 c1 2 184 687 186 690 0 2 -6 2 -114 2 l-114 0 -23 -88z"></path></g></svg></template>
+
+<script id="board-data" type="application/json">
+{
+  "cliente": "Trina Hot Sauce",
+  "cuenta": "trinahotsauce",
+  "mes": "Octubre",
+  "anio": 2026,
+  "intro": "",
+  "contenidos": [
+    {
+      "id": "c1",
+      "formato": "Reel",
+      "pilar": "",
+      "fechaPublicacion": "",
+      "titulo": "Trina en Jack BBQ",
+      "guion": "Escena 1:Eduardo entra a cuadro sosteniendo una caja vacía.\n“We’re bringing creamy flavor to Jack BBQ.”\nTexto en pantalla:\nTRINA IS HEADING TO JACK BBQ\n\nEscena 2: Colocar la caja sobre una mesa. Grabar planos rápidos de diferentes manos guardando:\n- Andina.\n- Original.\n- Fuego.\n- Más botellas.\n- Materiales para la degustación.\n- Camisetas o elementos de TRINA.\nIntentar grabar de diferentes angulos y que se vean que hay varias personas guardando\n\nEscena 3: Eduardo intenta cerrar la maleta o caja, pero alguien añade otra botella de TRINA. Intenta cerrarla nuevamente y otra mano coloca una botella más.\nEduardo mira a cámara y dice:\nWe might need a bigger suitcase (or box) dependiendo de lo que usen para la toma\nFind us at Jack BBQ and discover your TRINA.",
+      "copy": "",
+      "hashtags": "",
+      "referencias": [],
+      "estado": "pendiente",
+      "comentario": ""
+    },
+    {
+      "id": "c2",
+      "formato": "Reel",
+      "pilar": "",
+      "fechaPublicacion": "",
+      "titulo": "Dinámica con los parrilleros",
+      "guion": "Durante Jack BBQ se les presentarán las tres variedades de TRINA a diferentes parrilleros o asistentes. Cada participante deberá probarlas, escoger su favorita y decir claramente el nombre de la variedad elegida. En edición, cada respuesta se convertirá en un voto hasta revelar cuál fue la favorita del evento.\nInicio: Eduardo a camara\nWhich TRINA belongs at a serious BBQ?\nLet the pitmasters decide.\nRespuesta obligatoria del participante:\nDEBE DECIR EL NOMBRE DE LA QUE ESCOGE POR ESO CUANDO SE LES DEN ES IMPORTANTE RESALTAR CUAL ES CUAL\nCierre:\nThe votes are in.\nJack BBQ chose [variedad ganadora].\nWhich TRINA gets your vote?\nIndicaciones de grabación\n- Grabar en formato vertical 9:16.\n- Presentar las tres botellas juntas a cada participante.\n- Grabar a cada persona probando TRINA.\n- Después de probar, debe mirar a cámara y decir claramente el nombre de su elección.\n- No aceptar respuestas como “this one” ni únicamente señalar la botella.\n- Grabar entre seis y diez participantes.\n- Solicitar autorización para grabar y publicar cada reacción.\nGrabar tomas adicionales del fuego, parrillas, carnes, botellas, salsa y ambiente del evento.",
+      "copy": "",
+      "hashtags": "",
+      "referencias": [],
+      "estado": "pendiente",
+      "comentario": ""
+    },
+    {
+      "id": "c3",
+      "formato": "Carrusel",
+      "pilar": "",
+      "fechaPublicacion": "",
+      "titulo": "El sabor es el protagonista",
+      "guion": "SLIDE 1\nYOUR FOOD SHOULDN’T DISAPPEAR UNDER THE HEAT.\n\nSLIDE 2\nGOOD HEAT DOESN’T COVER THE FLAVOR.\nIT BRINGS OUT MORE OF IT.\n\nSLIDE 3\nTHAT’S WHY TRINA IS FLAVOR FIRST.\nCreamy texture.\nThree levels of heat.\nMade to complement every bite.\nMostrar las tres variedades:\nANDINA · ORIGINAL · FUEGO\nCierre:\nTASTE YOUR FOOD. THEN TASTE THE HEAT.",
+      "copy": "",
+      "hashtags": "",
+      "referencias": [],
+      "estado": "pendiente",
+      "comentario": ""
+    },
+    {
+      "id": "c4",
+      "formato": "Reel",
+      "pilar": "",
+      "fechaPublicacion": "",
+      "titulo": "Prueba a ciegas",
+      "guion": "Hook de Eduardo a cámara:\nEveryone on the TRINA team thinks they know our sauces. Today, we’re putting that to the test.\nDinámica:\nCada participante prueba tres bocados con los ojos cerrados. Debe decir claramente el nombre de la salsa después de cada prueba:\n- this is Andina.\n- this is Original.\n- this is Fuego.\nPero hay una trampa: una de las salsas aparece dos veces. La combinación puede cambiar para cada participante:\n- Persona 1: Andina – Fuego – Fuego\n- Persona 2: Original – Andina – Original\n- Persona 3: Fuego – Original – Fuego\nDespués de las respuestas, Eduardo dice\nAnd that’s how well the TRINA team knows our sauces. How many would you get right?",
+      "copy": "",
+      "hashtags": "",
+      "referencias": [],
+      "estado": "pendiente",
+      "comentario": ""
+    },
+    {
+      "id": "c5",
+      "formato": "Reel",
+      "pilar": "",
+      "fechaPublicacion": "",
+      "titulo": "El comentario anónimo",
+      "guion": "Escena 1: Eduardo entra rápidamente a cuadro sosteniendo el teléfono hacia la cámara.\nDiálogo:\nSomeone said TRINA is a hot sauce for novices.\n\nEscena 2: Close-up del teléfono mostrando claramente el comentario. Hacer un acercamiento rápido con la cámara.\nNo hablar. La reseña debe poder leerse durante dos o tres segundos.\n\nEscena 3: Eduardo baja el teléfono, mira directamente a cámara y dice:\nThe problem is… they left the review anonymously.\nDespués, señala donde aparece la palabra Anonymous en la pantalla.\n\nEscena 4: pegar el cartel (TE ENVIAREMOS PARA QUE LO IMPRIMAS)\nEduardo camina con el cartel y lo pega en una pared o superficie visible.\nDespués de pegarlo, lo observa y dice:\n“So, whoever you are, we’re looking for you.”\n\nEscena 5: Plano cerrado de una mano colocando la botella de TRINA Fuego con fuerza sobre una mesa.\nGrabar también:\n- Close-up de la etiqueta.\n- Giro lento de la botella.\n- Eduardo tomando la botella.\n- Botella acercándose hacia la cámara.\n\nEscena 7: Eduardo sostiene Fuego y habla directamente a cámara:\nIf you see us, come find us and try TRINA Fuego on camera.\nIf you still think TRINA is for novices after trying it, we’ll accept the review.\nYou wanted hot-hot sauce. Let’s see if you can handle Fuego.\nLuego mira el cartel y termina:\nAnonymous, the challenge is on.\nDebe decirlo con seguridad y una ligera sonrisa, como un reto amistoso.",
+      "copy": "",
+      "hashtags": "",
+      "referencias": [],
+      "estado": "pendiente",
+      "comentario": ""
+    },
+    {
+      "id": "c6",
+      "formato": "Post",
+      "pilar": "",
+      "fechaPublicacion": "",
+      "titulo": "Halloween",
+      "guion": "La botella de Fuego aparece disfrazada de fantasma con una pequeña sábana blanca. Sin embargo, el disfraz no logra ocultarla completamente: se ve la etiqueta roja por debajo y salen pequeñas llamas alrededor.\nA su lado pueden aparecer Andina y Original mirándola, como si supieran perfectamente quién está debajo del disfraz.\nTexto principal del lado donde estan Original y Andina\nNICE TRY, FUEGO.\nTexto secundario:\nWe know it’s you.\nDetalle inferior:\nTRICK OR TRINA?\nWe choose the second one\nEn el lado de Fuego se ve un elemento como de que esta hablando y dice “I am Trina Original”\nEl humor está en que Fuego intenta hacerse pasar por una salsa inofensiva, pero su intensidad la delata.",
+      "copy": "",
+      "hashtags": "",
+      "referencias": [],
+      "estado": "pendiente",
+      "comentario": ""
+    },
+    {
+      "id": "c7",
+      "formato": "Story",
+      "pilar": "",
+      "fechaPublicacion": "",
+      "titulo": "Día del Taco",
+      "guion": "Texto principal:\nOCTOBER 6 · NATIONAL TACO DAY\nGIVE YOUR TACOS THE TRINA TREATMENT.\nTexto secundario:\nAndina, Original or Fuego…\nWhich one are you putting on your tacos?\nESPACIO PARA ENCUESTA\nVisual: Taco en primer plano recibiendo TRINA, con las tres botellas visibles al fondo.",
+      "copy": "",
+      "hashtags": "",
+      "referencias": [],
+      "estado": "pendiente",
+      "comentario": ""
+    },
+    {
+      "id": "c8",
+      "formato": "Story",
+      "pilar": "",
+      "fechaPublicacion": "",
+      "titulo": "Jack BBQ",
+      "guion": "Creamy flavor is heading to one of bbq’s biggest stages.\nTHE JACK\nParte inferior:\nOctober 10\nlynchburg, tennessee\nFIND US THERE",
+      "copy": "",
+      "hashtags": "",
+      "referencias": [],
+      "estado": "pendiente",
+      "comentario": ""
+    },
+    {
+      "id": "c9",
+      "formato": "Story",
+      "pilar": "",
+      "fechaPublicacion": "",
+      "titulo": "Trina con helado",
+      "guion": "SOMEONE PUT TRINA ON ICE CREAM…\nTexto SECUNDARIO\nWHAT’S THE WEIRDEST FOOD YOU’D PUT TRINA ON?\nSticker de preguntas:\nTRINA + ______\nLa intención es utilizar el comentario como punto de partida para que la comunidad comparta sus combinaciones más inesperadas.",
+      "copy": "",
+      "hashtags": "",
+      "referencias": [],
+      "estado": "pendiente",
+      "comentario": ""
+    }
+  ],
+  "id": "trina-hot-sauce-2026-octubre",
+  "url": "https://carlosuzc29-eng.github.io/tableros-de-contenido/trina-hot-sauce-octubre-2026-a39c.html",
+  "endpoint": "https://script.google.com/macros/s/AKfycbyLYC8p_iglMhPuXMaPRZ4TOA_2fPTRCe3V2EmVnwotm2v5vll39e7X2AuBC-9eNcp7Jg/exec",
+  "revision": {
+    "revisadoPor": "",
+    "fecha": ""
+  }
+}
+</script>
+<script>
+(function(){
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/, 'js');
+  var DATA = JSON.parse(document.getElementById('board-data').textContent);
+  var items = DATA.contenidos || [];
+  var LBL = {pendiente:'Pendiente', aprobado:'Aprobado', cambios:'Con cambios'};
+  var KEY = 'nexo-revision-' + (DATA.id || (DATA.cliente + '-' + DATA.mes + '-' + DATA.anio));
+  var C = 2 * Math.PI * 82;
+  var $ = function(id){ return document.getElementById(id); };
+  [].forEach.call(document.querySelectorAll('[data-logo]'), function(d){ d.innerHTML = $('nexo-logo').innerHTML; });
+  try { $('fav').href = 'data:image/svg+xml,' + encodeURIComponent($('nexo-iso').innerHTML.trim()); } catch (e) {}
+
+  items.forEach(function(it, i){
+    if (!it.id) it.id = 'c' + (i + 1);
+    if (['pendiente','aprobado','cambios'].indexOf(it.estado) < 0) it.estado = 'pendiente';
+    if (typeof it.comentario !== 'string') it.comentario = '';
+    if (typeof it.formatoOriginal !== 'string') it.formatoOriginal = it.formato || '';
+  });
+  DATA.revision = DATA.revision || {revisadoPor:'', fecha:''};
+
+  // Borrador local (solo comodidad del cliente; el archivo descargado es la fuente oficial)
+  if (!DATA.revision.fecha) {
+    try {
+      var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (saved && saved.items) {
+        items.forEach(function(it){ var s = saved.items[it.id]; if (s) { it.estado = s.estado; it.comentario = s.comentario; if (s.formato) it.formato = s.formato; } });
+        if (saved.who) DATA.revision.revisadoPor = saved.who;
+        setTimeout(function(){ toast('Recuperamos tu revisión en curso'); }, 600);
+      }
+    } catch (e) {}
+  }
+  function saveDraft(){
+    try {
+      var o = {who: $('who').value, items: {}};
+      items.forEach(function(it){ o.items[it.id] = {estado: it.estado, comentario: it.comentario, formato: it.formato}; });
+      localStorage.setItem(KEY, JSON.stringify(o));
+    } catch (e) {}
+  }
+
+  function el(tag, cls, txt){ var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  function pad(n){ return (n < 10 ? '0' : '') + n; }
+  function safeUrl(u){ return /^https?:\/\//i.test(u || '') ? u : null; }
+
+  // Cabecera
+  var periodo = [DATA.mes, DATA.anio].filter(Boolean).join(' ');
+  var mt = $('metaTitle'); mt.textContent = (DATA.cliente || '') + ' · '; var ii = el('i', null, periodo); mt.appendChild(ii);
+  document.title = 'Revisión de contenidos · ' + (DATA.cliente || '') + ' · ' + periodo;
+  $('intro').textContent = DATA.intro || 'Revisa cada pieza con calma. Apruébala o cuéntanos qué ajustar, y al terminar descarga el tablero para enviárnoslo.';
+  $('who').value = DATA.revision.revisadoPor || '';
+  if (DATA.url) { $('openLink').href = DATA.url; $('openLink').classList.add('show'); }
+  if (DATA.revision.fecha) {
+    var d = new Date(DATA.revision.fecha);
+    $('reviewed').textContent = '✓ Revisado por ' + (DATA.revision.revisadoPor || 'el cliente') + ' el ' + d.toLocaleDateString('es-VE', {day:'2-digit', month:'long', year:'numeric'}) + ' a las ' + d.toLocaleTimeString('es-VE', {hour:'2-digit', minute:'2-digit'});
+    $('reviewed').classList.add('show');
+  }
+
+  // Tarjetas
+  var list = $('list'), nav = $('nav'), cards = [];
+  list.innerHTML = ''; nav.innerHTML = '';
+  var FORMATOS = [];
+  (DATA.formatos || ['Reel','Carrusel','Post','Story','Video','TikTok']).concat(items.map(function(it){ return it.formatoOriginal; }), items.map(function(it){ return it.formato; })).forEach(function(x){ if (x && FORMATOS.indexOf(x) < 0) FORMATOS.push(x); });
+  var handle = (DATA.cuenta || DATA.cliente || '').replace(/^@/, '');
+  items.forEach(function(it, i){
+    var num = pad(i + 1);
+    var card = el('article', 'card'); card.id = it.id; card.dataset.state = it.estado;
+
+    var top = el('div', 'c-top');
+    top.appendChild(el('div', 'big', num));
+    var tw = el('div'); var tags = el('div', 'tags');
+    var fw = el('label', 'fmt-wrap'); var fs = el('select', 'fmt-sel'); fs.setAttribute('aria-label', 'Tipo de contenido');
+    FORMATOS.forEach(function(x){ var o = el('option', null, x); o.value = x; fs.appendChild(o); });
+    if (!it.formato) { var o0 = el('option', null, 'Tipo de contenido'); o0.value = ''; fs.insertBefore(o0, fs.firstChild); }
+    fs.value = it.formato || '';
+    [].forEach.call(fs.options, function(o){ if (o.value === fs.value) o.setAttribute('selected', ''); });
+    fw.appendChild(fs); tags.appendChild(fw);
+    var orig = el('span', 'tag orig', 'Propuesto: ' + (it.formatoOriginal || '—')); tags.appendChild(orig);
+    function paintFmt(){ var ch = !!it.formatoOriginal && it.formato !== it.formatoOriginal; fw.classList.toggle('changed', ch); orig.classList.toggle('show', ch); }
+    fs.addEventListener('change', function(){ it.formato = fs.value; paintFmt(); saveDraft(); toast(it.formato === it.formatoOriginal ? 'Volviste al formato propuesto' : 'Formato cambiado a ' + it.formato); });
+    paintFmt();
+    if (it.pilar) tags.appendChild(el('span', 'tag', it.pilar));
+    if (it.fechaPublicacion) tags.appendChild(el('span', 'tag date', '📅 ' + it.fechaPublicacion));
+    tw.appendChild(tags); tw.appendChild(el('h2', null, it.titulo || 'Contenido ' + num));
+    top.appendChild(tw);
+    var badge = el('span', 'badge', LBL[it.estado]); top.appendChild(badge);
+    card.appendChild(top);
+
+    var hasCopy = (it.copy || it.hashtags);
+    var body = el('div', 'c-body' + (hasCopy ? '' : ' single'));
+    var g = el('div', 'guion');
+    if (it.guion) { g.appendChild(el('span', 'lbl', it.guionLabel || 'Guion / descripción')); g.appendChild(el('p', null, it.guion)); }
+    var refs = (it.referencias || []).filter(function(r){ return safeUrl(r.url); });
+    if (refs.length) {
+      var rw = el('div', 'refs');
+      refs.forEach(function(r){ var a = el('a', null, r.label || 'Referencia'); a.href = r.url; a.target = '_blank'; a.rel = 'noopener'; rw.appendChild(a); });
+      g.appendChild(rw);
+    }
+    body.appendChild(g);
+    if (hasCopy) {
+      var cw = el('div'); cw.appendChild(el('span', 'lbl', 'Copy'));
+      var post = el('div', 'post'); var ph = el('div', 'post-h');
+      ph.appendChild(el('div', 'av', (handle || 'N').charAt(0).toUpperCase()));
+      var pn = el('div'); pn.appendChild(el('b', null, handle || 'tu cuenta')); pn.appendChild(el('small', null, 'Vista previa del copy'));
+      ph.appendChild(pn); post.appendChild(ph);
+      var p = el('p', null, it.copy || '');
+      if (it.hashtags) p.appendChild(el('span', 'hash', it.hashtags));
+      post.appendChild(p); cw.appendChild(post); body.appendChild(cw);
+    }
+    card.appendChild(body);
+
+    var rv = el('div', 'review'); var rh = el('div', 'review-h');
+    rh.appendChild(el('h4', null, '¿Qué te parece este contenido?'));
+    var seg = el('div', 'seg');
+    var ap = el('button', 'approve'); ap.type = 'button'; ap.innerHTML = '<span class="ic">✓</span>Aprobar';
+    var ch = el('button', 'change'); ch.type = 'button'; ch.innerHTML = '<span class="ic">✎</span>Pedir cambios';
+    seg.appendChild(ap); seg.appendChild(ch); rh.appendChild(seg); rv.appendChild(rh);
+    var cm = el('div', 'comment'); var ta = el('textarea'); ta.textContent = it.comentario; ta.value = it.comentario;
+    ta.placeholder = 'Déjanos un comentario o sugerencia (opcional si apruebas)';
+    cm.appendChild(ta); cm.appendChild(el('div', 'hint', '✎ Cuéntanos qué te gustaría ajustar: mientras más detalle, más rápido lo resolvemos.'));
+    rv.appendChild(cm); card.appendChild(rv);
+    list.appendChild(card);
+
+    var a = el('a'); a.href = '#' + it.id; a.dataset.state = it.estado;
+    a.appendChild(el('span', 'n', num)); a.appendChild(el('span', 't', it.titulo || 'Contenido ' + num));
+    nav.appendChild(a);
+
+    function paint(){
+      card.dataset.state = it.estado; a.dataset.state = it.estado; badge.textContent = LBL[it.estado];
+      ap.classList.toggle('on', it.estado === 'aprobado'); ch.classList.toggle('on', it.estado === 'cambios');
+      ap.setAttribute('aria-pressed', it.estado === 'aprobado'); ch.setAttribute('aria-pressed', it.estado === 'cambios');
+      ta.placeholder = it.estado === 'cambios' ? 'Cuéntanos qué te gustaría ajustar' : 'Déjanos un comentario o sugerencia (opcional si apruebas)';
+    }
+    function set(s){
+      it.estado = it.estado === s ? 'pendiente' : s; card.classList.remove('warn');
+      paint(); refresh(); applyFilter(); saveDraft();
+      if (it.estado === 'cambios') ta.focus({preventScroll:true});
+    }
+    ap.onclick = function(){ set('aprobado'); };
+    ch.onclick = function(){ set('cambios'); };
+    ta.addEventListener('input', function(){ it.comentario = ta.value; card.classList.remove('warn'); saveDraft(); });
+    paint();
+    cards.push({card: card, nav: a, it: it});
+  });
+
+  function counts(){ var o = {aprobado:0, cambios:0, pendiente:0}; items.forEach(function(it){ o[it.estado]++; }); return o; }
+  function refresh(){
+    var n = items.length || 1, k = counts();
+    $('sOk').textContent = k.aprobado; $('sFix').textContent = k.cambios; $('sPend').textContent = k.pendiente;
+    $('dN').textContent = (k.aprobado + k.cambios) + '/' + items.length;
+    $('pct').textContent = Math.round((k.aprobado + k.cambios) / n * 100) + '%';
+    var lo = C * k.aprobado / n, lf = C * k.cambios / n;
+    $('rOk').setAttribute('stroke-dasharray', lo + ' ' + C);
+    $('rFix').setAttribute('stroke-dasharray', lf + ' ' + C);
+    $('rFix').setAttribute('stroke-dashoffset', -lo);
+    $('rOk').setAttribute('stroke-opacity', k.aprobado ? 1 : 0); $('rFix').setAttribute('stroke-opacity', k.cambios ? 1 : 0);
+  }
+
+  var f = 'all';
+  function applyFilter(){
+    var vis = 0;
+    cards.forEach(function(c){ var v = (f === 'all' || c.it.estado === f); c.card.style.display = v ? '' : 'none'; c.nav.style.display = v ? '' : 'none'; if (v) vis++; });
+    $('empty').style.display = vis ? 'none' : 'block';
+  }
+  [].forEach.call(document.querySelectorAll('.chip'), function(b){
+    b.onclick = function(){ [].forEach.call(document.querySelectorAll('.chip'), function(x){ x.classList.remove('on'); }); b.classList.add('on'); f = b.dataset.f; applyFilter(); };
+  });
+
+  try {
+    var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) e.target.classList.add('in'); }); }, {threshold:.05});
+    var act = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { cards.forEach(function(c){ c.nav.classList.remove('active'); if (c.card === e.target) { c.nav.classList.add('active'); if (c.nav.scrollIntoView && window.innerWidth <= 980) c.nav.scrollIntoView({block:'nearest', inline:'center'}); } }); } }); }, {rootMargin:'-45% 0px -50% 0px'});
+    cards.forEach(function(c){ io.observe(c.card); act.observe(c.card); });
+  } catch (e) {}
+  setTimeout(function(){ cards.forEach(function(c){ c.card.classList.add('in'); }); }, 1200);
+
+  $('who').addEventListener('input', function(){ this.classList.remove('err'); saveDraft(); });
+
+  // Modal / toast
+  var tt;
+  function toast(msg){ var t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(tt); tt = setTimeout(function(){ t.classList.remove('show'); }, 3200); }
+  function modal(opts){
+    var b = $('box'); b.innerHTML = '';
+    b.appendChild(el('div', 'ico ' + (opts.kind || 'ok'), opts.icon || '✓'));
+    b.appendChild(el('h3', null, opts.title));
+    if (opts.text) b.appendChild(el('p', null, opts.text));
+    if (opts.list && opts.list.length) { var ul = el('ul'); opts.list.forEach(function(x){ ul.appendChild(el('li', null, x)); }); b.appendChild(ul); }
+    var row = el('div', 'row');
+    (opts.buttons || []).forEach(function(bt){ var x = el('button', bt.primary ? 'b-pri' : 'b-sec', bt.label); x.type = 'button'; x.onclick = function(){ closeModal(); if (bt.fn) bt.fn(); }; row.appendChild(x); });
+    b.appendChild(row); $('modal').classList.add('show');
+  }
+  function closeModal(){ $('modal').classList.remove('show'); }
+  $('modal').addEventListener('click', function(e){ if (e.target === this) closeModal(); });
+
+  function slug(s){ return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+
+  // Copia estática del tablero (se ve aunque el visor no ejecute JavaScript, p. ej. vista previa del iPhone)
+  function buildHTML(){
+    DATA.contenidos = items;
+    var root = document.documentElement.cloneNode(true);
+    root.className = root.className.replace(/\bjs\b/, 'no-js');
+    var liveTa = document.querySelectorAll('#list textarea'), cloneTa = root.querySelectorAll('#list textarea');
+    for (var i = 0; i < liveTa.length; i++) cloneTa[i].textContent = liveTa[i].value;
+    var liveSel = document.querySelectorAll('#list select'), cloneSel = root.querySelectorAll('#list select');
+    for (var j = 0; j < liveSel.length; j++) { var v = liveSel[j].value; [].forEach.call(cloneSel[j].options, function(o){ if (o.value === v) o.setAttribute('selected', ''); else o.removeAttribute('selected'); }); }
+    [].forEach.call(root.querySelectorAll('.card, #nav a'), function(n){ n.removeAttribute('style'); n.classList.remove('warn'); });
+    [].forEach.call(root.querySelectorAll('.card'), function(n){ n.classList.add('in'); });
+    root.querySelector('#empty').removeAttribute('style');
+    root.querySelector('#modal').classList.remove('show');
+    var tc = root.querySelector('#toast'); tc.classList.remove('show'); tc.textContent = '';
+    root.querySelector('#who').setAttribute('value', $('who').value);
+    [].forEach.call(root.querySelectorAll('.chip'), function(c, k){ c.classList.toggle('on', k === 0); });
+    root.querySelector('#board-data').textContent = '\n' + JSON.stringify(DATA, null, 2).replace(/</g, '\\u003c') + '\n';
+    return '<!DOCTYPE html>\n' + root.outerHTML;
+  }
+  window.__nexoSnapshot = buildHTML;
+
+  var SEND = !!DATA.endpoint;
+  if (SEND) { document.body.classList.add('has-send'); $('dl').textContent = 'Enviar revisión ✓'; }
+
+  function doDownload(){
+    if (!DATA.revision.fecha) DATA.revision = {revisadoPor: $('who').value.trim(), fecha: new Date().toISOString()};
+    var html = buildHTML();
+    var name = 'Revision-' + slug(DATA.cliente) + '-' + slug(DATA.mes) + '-' + (DATA.anio || '') + '.html';
+    var blob = new Blob([html], {type:'text/html;charset=utf-8'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 1500);
+    var k = counts();
+    modal({kind:'ok', icon:'✓', title:'¡Revisión descargada!', text:'Se guardó el archivo "' + name + '" con ' + k.aprobado + ' aprobados y ' + k.cambios + ' con cambios.' + (SEND ? ' Es una copia para ti: tu revisión se registra al tocar "Enviar revisión".' : ' Envíanoslo por WhatsApp o correo para empezar a producir.'), buttons:[{label:'Entendido', primary:true}]});
+  }
+
+  // Envío automático a la hoja de Google de Nexo (Apps Script)
+  function doSend(){
+    DATA.revision = {revisadoPor: $('who').value.trim(), fecha: new Date().toISOString()};
+    var payload = {action:'revision', id: DATA.id, cliente: DATA.cliente, mes: DATA.mes, anio: DATA.anio, url: DATA.url || location.href,
+      revisadoPor: DATA.revision.revisadoPor, fecha: DATA.revision.fecha,
+      contenidos: items.map(function(it, i){ return {n: i + 1, titulo: it.titulo || '', formatoOriginal: it.formatoOriginal || '', formato: it.formato || '', estado: it.estado, comentario: it.comentario || ''}; })};
+    var body = JSON.stringify(payload), btn = $('dl');
+    btn.disabled = true; btn.textContent = 'Enviando…';
+    function ok(){
+      btn.disabled = false; btn.textContent = 'Enviar revisión ✓'; saveDraft();
+      var k = counts();
+      modal({kind:'ok', icon:'✓', title:'¡Revisión enviada!', text:'Nexo ya recibió tus respuestas: ' + k.aprobado + ' aprobados, ' + k.cambios + ' con cambios' + (k.pendiente ? ' y ' + k.pendiente + ' pendientes' : '') + '. Si cambias algo, puedes volver a enviarla.', buttons:[{label:'Descargar una copia', fn:doDownload}, {label:'Listo', primary:true}]});
+    }
+    function fail(){
+      btn.disabled = false; btn.textContent = 'Enviar revisión ✓';
+      modal({kind:'warn', icon:'!', title:'No pudimos enviarla', text:'Revisa tu conexión e inténtalo de nuevo. Si el problema sigue, descarga una copia y envíanosla por WhatsApp.', buttons:[{label:'Descargar copia', fn:doDownload}, {label:'Reintentar', primary:true, fn:doSend}]});
+    }
+    fetch(DATA.endpoint, {method:'POST', body: body})
+      .then(function(r){ return r.json(); })
+      .then(function(j){ if (j && j.ok) ok(); else fail(); })
+      .catch(function(){
+        // Si el navegador no puede leer la respuesta, se reenvía sin leerla (la hoja igual la registra)
+        fetch(DATA.endpoint, {method:'POST', mode:'no-cors', body: body}).then(ok).catch(fail);
+      });
+  }
+
+  function validate(next, label){
+    var who = $('who');
+    if (!who.value.trim()) { who.classList.remove('err'); void who.offsetWidth; who.classList.add('err'); who.focus(); toast('Escribe tu nombre para firmar la revisión'); return; }
+    var sinComentario = cards.filter(function(c){ return c.it.estado === 'cambios' && !c.it.comentario.trim(); });
+    function pendingStep(){
+      var pend = cards.filter(function(c){ return c.it.estado === 'pendiente'; });
+      if (pend.length) {
+        modal({kind:'warn', icon:'!', title:pend.length === 1 ? 'Te falta 1 contenido por revisar' : 'Te faltan ' + pend.length + ' contenidos por revisar', text:'Puedes continuar y los pendientes quedarán sin respuesta, o terminar de revisarlos primero.',
+          buttons:[{label:label + ' igual', fn:next}, {label:'Seguir revisando', primary:true, fn:function(){ f = 'all'; applyFilter(); pend[0].card.scrollIntoView({behavior:'smooth', block:'center'}); }}]});
+        return;
+      }
+      next();
+    }
+    if (sinComentario.length) {
+      sinComentario.forEach(function(c){ c.card.classList.add('warn'); });
+      modal({kind:'warn', icon:'✎', title:'Cuéntanos qué cambiar', text:'Pediste cambios en estos contenidos pero no dejaste comentario:', list:sinComentario.map(function(c){ return c.nav.textContent.replace(/^(\d+)/, '$1 · '); }),
+        buttons:[{label:label + ' igual', fn:pendingStep}, {label:'Escribir comentario', primary:true, fn:function(){ f = 'all'; applyFilter(); sinComentario[0].card.scrollIntoView({behavior:'smooth', block:'center'}); sinComentario[0].card.querySelector('textarea').focus({preventScroll:true}); }}]});
+      return;
+    }
+    var comentadosSinEstado = cards.filter(function(c){ return c.it.estado === 'pendiente' && c.it.comentario.trim(); });
+    if (comentadosSinEstado.length) {
+      comentadosSinEstado.forEach(function(c){ c.card.classList.add('warn'); });
+      modal({kind:'warn', icon:'✓', title:'Marca tu respuesta', text:'Dejaste comentario pero falta marcar si apruebas o pides cambios en:', list:comentadosSinEstado.map(function(c){ return c.nav.textContent.replace(/^(\d+)/, '$1 · '); }),
+        buttons:[{label:label + ' igual', fn:pendingStep}, {label:'Elegir respuesta', primary:true, fn:function(){ f = 'all'; applyFilter(); comentadosSinEstado[0].card.scrollIntoView({behavior:'smooth', block:'center'}); }}]});
+      return;
+    }
+    pendingStep();
+  }
+
+  $('dl').onclick = function(){ if (SEND) validate(doSend, 'Enviar'); else validate(doDownload, 'Descargar'); };
+  $('dlMini').onclick = function(){ doDownload(); };
+
+  refresh(); applyFilter();
+})();
+</script>
+
+
+</body></html>

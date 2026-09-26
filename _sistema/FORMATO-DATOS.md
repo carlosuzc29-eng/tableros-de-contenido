@@ -25,7 +25,9 @@ Un archivo por tablero en `borradores/` (esa carpeta no se publica). Ejemplo: `b
 }
 ```
 
-`construir.py` agrega solo: `archivo` (nombre con código aleatorio; se conserva en correcciones para no cambiar el enlace), `id`, `url`, `endpoint`, `estado`, `comentario` y `revision`.
+**Un enlace por cliente.** El JSON de un mes nuevo se crea sin `archivo`: `construir.py` toma el del mes anterior del mismo cliente (buscándolo en `borradores/`), así el cliente siempre usa el mismo enlace y ve el mes nuevo al recargar. Si el JSON se copió de otro mes, el script limpia la revisión anterior. Para forzar un enlace distinto: `--nuevo-enlace`.
+
+`construir.py` agrega solo: `archivo` (nombre con código aleatorio, uno por cliente), `id`, `url`, `endpoint`, `estado`, `comentario` y `revision`.
 
 ## Reglas para pasar el documento del mes a este JSON
 

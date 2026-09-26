@@ -5,11 +5,12 @@ NEXO · Construye (y opcionalmente publica) un tablero de aprobación de conteni
 Uso (desde la carpeta del repositorio, en la terminal de Antigravity):
     python3 _sistema/construir.py borradores/milkarf-noviembre-2026.json
     python3 _sistema/construir.py borradores/milkarf-noviembre-2026.json --publicar
+    (--nuevo-enlace: fuerza un enlace distinto en vez de reutilizar el del cliente)
 
 Qué hace:
   1. Lee el JSON con los contenidos (formato en _sistema/FORMATO-DATOS.md).
-  2. Le asigna nombre de archivo y enlace (la primera vez) y los guarda en el mismo JSON,
-     así las correcciones conservan el mismo enlace.
+  2. Le asigna nombre de archivo y enlace y los guarda en el mismo JSON. Cada cliente tiene
+     UN solo enlace: el mes nuevo reemplaza al anterior en la misma dirección.
   3. Inserta los datos en _sistema/plantilla-tablero.html.
   4. Pre-renderiza con Google Chrome (para que se vea en la vista previa del iPhone).
   5. Registra el tablero en la hoja de Google (panel de aprobaciones).
@@ -33,6 +34,18 @@ def chrome():
         if c and os.path.exists(c): return c
     sys.exit('No encontré Google Chrome. Instálalo o indica la ruta con la variable CHROME.')
 
+def enlace_previo(ruta, cliente):
+    """Busca en borradores/ otro JSON del mismo cliente y devuelve su archivo (el más reciente)."""
+    carpeta, propio, hallados = os.path.dirname(os.path.abspath(ruta)), os.path.abspath(ruta), []
+    for f in os.listdir(carpeta):
+        r = os.path.join(carpeta, f)
+        if not f.endswith('.json') or r == propio: continue
+        try: d = json.load(open(r, encoding='utf-8'))
+        except Exception: continue
+        if slug(d.get('cliente', '')) == slug(cliente) and d.get('archivo'):
+            hallados.append((os.path.getmtime(r), d['archivo']))
+    return max(hallados)[1] if hallados else None
+
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith('--')]
     if not args: sys.exit(__doc__)
@@ -43,9 +56,21 @@ def main():
     n = len(data.get('contenidos', []))
     if not n: sys.exit('El JSON no tiene contenidos.')
 
+    # Un solo enlace por cliente: cada mes nuevo reutiliza el archivo del tablero anterior.
+    if not data.get('archivo') and '--nuevo-enlace' not in sys.argv:
+        previo = enlace_previo(ruta, data['cliente'])
+        if previo:
+            data['archivo'] = previo
+            print(f'↻ Mismo enlace que el mes anterior: {previo}')
     if not data.get('archivo'):
-        data['archivo'] = f"{slug(data['cliente'])}-{slug(data['mes'])}-{data['anio']}-{secrets.token_hex(2)}.html"
-    data.setdefault('id', f"{slug(data['cliente'])}-{data['anio']}-{slug(data['mes'])}")
+        data['archivo'] = f"{slug(data['cliente'])}-{secrets.token_hex(3)}.html"
+    id_mes = f"{slug(data['cliente'])}-{data['anio']}-{slug(data['mes'])}"
+    if not str(data.get('id', '')).startswith(id_mes):
+        # JSON copiado de otro mes: se limpia la revisión para que el tablero salga como nuevo.
+        data['id'] = id_mes
+        data['revision'] = {'revisadoPor': '', 'fecha': ''}
+        for c in data.get('contenidos', []):
+            for k in ('id', 'estado', 'comentario', 'comentarios', 'revisadoPor', 'formatoOriginal'): c.pop(k, None)
     data['url'] = base + data['archivo']
     if cfg.get('endpoint'): data['endpoint'] = cfg['endpoint']
     data.setdefault('revision', {'revisadoPor': '', 'fecha': ''})

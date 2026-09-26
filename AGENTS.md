@@ -19,7 +19,7 @@ Responde siempre en español latinoamericano neutro, con "tú". Sé breve.
 3. Ejecutar `python3 _sistema/construir.py borradores/<archivo>.json --publicar`.
 4. Entregar el enlace y el mensaje de WhatsApp que imprime el script.
 
-Para corregir un tablero ya enviado, edita su JSON y vuelve a ejecutar el mismo comando: el enlace se mantiene.
+Cada cliente tiene **un solo enlace**: el tablero del mes nuevo reemplaza al anterior en la misma dirección (el script lo resuelve solo; no pongas `archivo` en el JSON nuevo). Para corregir un tablero ya enviado, edita su JSON y vuelve a ejecutar el mismo comando.
 
 ## No tocar en la plantilla
 

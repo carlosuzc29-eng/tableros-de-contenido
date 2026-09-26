@@ -236,11 +236,21 @@
       }
     }
 
+    var lastW = 0;
+    var lastH = 0;
+
     function resize(){
       var w = window.innerWidth || document.documentElement.clientWidth || 1024;
       var h = window.innerHeight || document.documentElement.clientHeight || 768;
 
       if (w <= 0 || h <= 0) return;
+
+      // En dispositivos móviles, evitar recalcular canvas en cambios menores de altura causados por el colapso de la barra de navegación al hacer scroll
+      if (isTouchDevice && lastW === w && Math.abs(h - lastH) < 150) {
+        return;
+      }
+      lastW = w;
+      lastH = h;
 
       width = w;
       height = h;

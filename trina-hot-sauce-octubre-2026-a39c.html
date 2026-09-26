@@ -16,8 +16,8 @@
   --ease:cubic-bezier(.2,.8,.2,1);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;overflow-x:hidden;max-width:100%}
-body{background:linear-gradient(#fff 0 360px,var(--bg) 360px);font-family:'Futura','Futura Md BT','Jost','Century Gothic',sans-serif;color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;max-width:100%}
+html{scroll-behavior:smooth}
+body{background:linear-gradient(#fff 0 360px,var(--bg) 360px);font-family:'Futura','Futura Md BT','Jost','Century Gothic',sans-serif;color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:clip;max-width:100%}
 button{font:inherit;cursor:pointer}
 .shell{max-width:1180px;margin:0 auto;position:relative;z-index:1}
 
@@ -709,11 +709,21 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       }
     }
 
+    var lastW = 0;
+    var lastH = 0;
+
     function resize(){
       var w = window.innerWidth || document.documentElement.clientWidth || 1024;
       var h = window.innerHeight || document.documentElement.clientHeight || 768;
 
       if (w <= 0 || h <= 0) return;
+
+      // En dispositivos móviles, evitar recalcular canvas en cambios menores de altura causados por el colapso de la barra de navegación al hacer scroll
+      if (isTouchDevice && lastW === w && Math.abs(h - lastH) < 150) {
+        return;
+      }
+      lastW = w;
+      lastH = h;
 
       width = w;
       height = h;
@@ -1494,6 +1504,11 @@ La intención es utilizar el comentario como punto de partida para que la comuni
   if (!DATA.revision.fecha) {
     try {
       var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (saved && DATA.resetAt && (!saved.resetAt || saved.resetAt < DATA.resetAt)) {
+        localStorage.removeItem(KEY);
+        saved = null;
+        if ($('who')) $('who').value = '';
+      }
       if (saved && saved.items) {
         items.forEach(function(it){
           var s = saved.items[it.id];
@@ -1516,7 +1531,7 @@ La intención es utilizar el comentario como punto de partida para que la comuni
   function saveDraft(){
     try {
       var whoVal = getReviewerName();
-      var o = {who: whoVal, items: {}};
+      var o = {who: whoVal, items: {}, resetAt: DATA.resetAt || 0};
       items.forEach(function(it){
         o.items[it.id] = {
           estado: it.estado,
@@ -1768,7 +1783,28 @@ La intención es utilizar el comentario como punto de partida para que la comuni
 
   try {
     var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) e.target.classList.add('in'); }); }, {threshold:.05});
-    var act = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { cards.forEach(function(c){ c.nav.classList.remove('active'); if (c.card === e.target) { c.nav.classList.add('active'); if (c.nav.scrollIntoView && window.innerWidth <= 980) c.nav.scrollIntoView({block:'nearest', inline:'center'}); } }); } }); }, {rootMargin:'-45% 0px -50% 0px'});
+    var navContainer = $('nav');
+    var act = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if (e.isIntersecting) {
+          cards.forEach(function(c){
+            c.nav.classList.remove('active');
+            if (c.card === e.target) {
+              c.nav.classList.add('active');
+              // Centrar el chip activo únicamente en el contenedor horizontal sin mover el scroll vertical de la ventana
+              if (navContainer && window.innerWidth <= 980) {
+                var targetLeft = c.nav.offsetLeft - (navContainer.clientWidth - c.nav.clientWidth) / 2;
+                if (navContainer.scrollTo) {
+                  navContainer.scrollTo({ left: targetLeft, behavior: 'smooth' });
+                } else {
+                  navContainer.scrollLeft = targetLeft;
+                }
+              }
+            }
+          });
+        }
+      });
+    }, {rootMargin:'-45% 0px -50% 0px'});
     cards.forEach(function(c){ io.observe(c.card); act.observe(c.card); });
   } catch (e) {}
   setTimeout(function(){ cards.forEach(function(c){ c.card.classList.add('in'); }); }, 1200);

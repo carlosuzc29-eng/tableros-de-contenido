@@ -988,7 +988,29 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
 
   function render(){
     app.innerHTML = '';
-    var T = (DB.tableros || []).slice().sort(function(a, b){ return String(b.ultimaRevision || b.registrado).localeCompare(String(a.ultimaRevision || a.registrado)); });
+
+    // Deduplicación inteligente: cada cliente y URL solo debe tener UN tablero activo en el panel.
+    // Si la base de datos contiene registros duplicados o históricos (por ejemplo, tras reiniciar un tablero),
+    // se agrupan y se conserva exclusivamente la versión más reciente según su fecha de actividad.
+    var boardMap = {};
+    (DB.tableros || []).forEach(function(t){
+      var key = (t.url || (String(t.cliente || '').trim() + '-' + String(t.mes || '').trim() + '-' + String(t.anio || '').trim())).toLowerCase();
+      var score = Math.max(
+        t.ultimaRevision ? new Date(t.ultimaRevision).getTime() : 0,
+        t.registrado ? new Date(t.registrado).getTime() : 0
+      );
+      if (!boardMap[key] || score >= boardMap[key].score) {
+        boardMap[key] = { board: t, score: score };
+      }
+    });
+
+    var T = Object.keys(boardMap).map(function(k){ return boardMap[k].board; });
+    T.sort(function(a, b){
+      var da = Math.max(a.ultimaRevision ? new Date(a.ultimaRevision).getTime() : 0, a.registrado ? new Date(a.registrado).getTime() : 0);
+      var db = Math.max(b.ultimaRevision ? new Date(b.ultimaRevision).getTime() : 0, b.registrado ? new Date(b.registrado).getTime() : 0);
+      return db - da;
+    });
+
     var cnt = {total:T.length, sin:0, fix:0, ok:0};
     T.forEach(function(t){
       var a = +t.aprobados || 0, c = +t.cambios || 0;

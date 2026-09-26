@@ -86,6 +86,7 @@ button{font:inherit;cursor:pointer}
 .no-js .nojs-note{display:block}
 .no-js .dock{display:none}
 .no-js .seg,.no-js .fmt-sel,.no-js textarea{pointer-events:none}
+.no-js .cm-form,.no-js .cm-del{display:none!important}
 .no-js .layout{padding-bottom:40px}
 .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--line);transition:background .3s}
 .card[data-state="aprobado"]::before{background:var(--verde)}
@@ -127,25 +128,61 @@ button{font:inherit;cursor:pointer}
 .post-h small{font-size:12px;color:var(--gris)}
 .post p{font-size:15px;white-space:pre-line;line-height:1.65;word-break:break-word}
 .post .hash{display:block;margin-top:8px;color:var(--azul-3);font-weight:500}
-.review{margin-top:34px;padding:26px;border-radius:24px;background:linear-gradient(180deg,#F7F9FA,#F2F5F7)}
-.review-h{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
-.review-h h4{font-size:17px;font-weight:600}
-.seg{display:inline-flex;background:var(--paper);padding:5px;border-radius:18px;box-shadow:inset 0 0 0 1px var(--line);gap:4px}
-.seg button{border:0;background:transparent;padding:12px 20px;border-radius:14px;font-size:14px;font-weight:600;color:var(--ink-2);display:inline-flex;align-items:center;gap:8px;transition:background .25s var(--ease),color .25s,transform .15s}
-.seg button:active{transform:scale(.97)}
-.seg .ic{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:12px;line-height:1}
+/* REVIEW & MULTI-COMMENT */
+.review{margin-top:34px;padding:26px;border-radius:24px;background:linear-gradient(180deg,#F7F9FA,#F2F5F7);border:1px solid var(--line)}
+.cm-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.cm-head h4{font-size:16px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:6px}
+.cm-sub{font-size:12px;color:var(--gris);font-weight:500}
+
+/* THREAD DE COMENTARIOS */
+.cm-thread{display:grid;gap:10px;margin-bottom:14px}
+.cm-bubble{background:#fff;border-radius:18px;padding:12px 16px;box-shadow:0 1px 3px rgba(31,53,73,.05);border:1px solid rgba(31,53,73,.08);display:flex;gap:12px;align-items:flex-start}
+.cm-av{width:32px;height:32px;border-radius:50%;background:var(--azul);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
+.cm-right{flex:1;min-width:0}
+.cm-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px}
+.cm-author{font-size:13.5px;font-weight:700;color:var(--ink)}
+.cm-date{font-size:11.5px;color:var(--gris)}
+.cm-txt{font-size:14px;line-height:1.55;color:var(--ink);white-space:pre-line;word-break:break-word;margin:0}
+.cm-del{border:0;background:transparent;color:var(--gris);font-size:18px;line-height:1;cursor:pointer;padding:0 4px;border-radius:6px;transition:color .15s}
+.cm-del:hover{color:var(--naranja)}
+
+/* FORMULARIO DE COMENTARIO */
+.cm-form{display:grid;gap:10px}
+.cm-author-input{width:240px;max-width:100%;background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 14px;font:inherit;font-size:13.5px;color:var(--ink);transition:border-color .2s}
+.cm-author-input:focus{outline:none;border-color:var(--azul)}
+.cm-author-input.err{border-color:var(--naranja);animation:shake .4s}
+.cm-textarea{width:100%;border:0;background:#fff;border-radius:16px;padding:14px 18px;font:inherit;font-size:14px;color:var(--ink);min-height:84px;resize:vertical;box-shadow:inset 0 0 0 1px var(--line);transition:box-shadow .2s}
+.cm-textarea:focus{outline:none;box-shadow:inset 0 0 0 2px var(--azul)}
+.card[data-state="cambios"] .cm-textarea{box-shadow:inset 0 0 0 1.5px rgba(230,74,0,.45)}
+.card.warn .cm-textarea{box-shadow:inset 0 0 0 2px var(--naranja)}
+.cm-form-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.hint{font-size:12.5px;color:var(--ink-2);margin:0}
+.card[data-state="cambios"] .hint{color:var(--naranja);font-weight:600}
+.btn-add-cm{border:0;background:var(--azul);color:#fff;font-weight:600;font-size:13px;padding:9px 18px;border-radius:99px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .15s,transform .15s}
+.btn-add-cm:hover{background:var(--azul-2)}
+.btn-add-cm:active{transform:scale(.97)}
+
+/* SECCIÓN DE DECISIÓN (DEBAJO DEL COMENTARIO) */
+.review-decision{margin-top:22px;padding-top:20px;border-top:1.5px dashed rgba(31,53,73,.14);display:grid;gap:12px}
+.dec-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.dec-head h4{font-size:16px;font-weight:700;color:var(--ink)}
+.req-badge{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;background:var(--naranja-soft);color:var(--naranja);padding:4px 10px;border-radius:99px}
+.seg{display:flex;background:#fff;padding:6px;border-radius:18px;box-shadow:inset 0 0 0 1px var(--line);gap:6px;width:100%}
+.seg button{flex:1;border:0;background:transparent;padding:14px 20px;border-radius:14px;font-size:15px;font-weight:700;color:var(--ink-2);display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background .2s var(--ease),color .2s,transform .15s;cursor:pointer}
+.seg button:active{transform:scale(.98)}
+.seg .ic{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:13px;line-height:1}
 .seg .approve .ic{background:var(--verde-soft);color:var(--verde-dk)}
 .seg .change .ic{background:var(--naranja-soft);color:var(--naranja)}
 .seg .approve.on{background:var(--verde);color:#fff}
 .seg .change.on{background:var(--naranja);color:#fff}
 .seg .on .ic{background:rgba(255,255,255,.25);color:#fff}
-.comment{margin-top:18px}
-.comment textarea{width:100%;border:0;background:var(--paper);border-radius:18px;padding:18px 20px;font:inherit;font-size:15px;color:var(--ink);min-height:96px;resize:vertical;box-shadow:inset 0 0 0 1px var(--line);transition:box-shadow .2s}
-.comment textarea:focus{outline:none;box-shadow:inset 0 0 0 2px var(--azul)}
-.card[data-state="cambios"] .comment textarea{box-shadow:inset 0 0 0 1.5px rgba(230,74,0,.45)}
-.card.warn .comment textarea{box-shadow:inset 0 0 0 2px var(--naranja)}
-.hint{font-size:12.5px;color:var(--ink-2);margin-top:8px;display:none}
-.card[data-state="cambios"] .hint{display:block}
+.dec-status{font-size:12.5px;color:var(--gris);text-align:center;font-weight:500}
+.dec-status.ok{color:var(--verde-dk);font-weight:600}
+.dec-status.fix{color:var(--naranja);font-weight:600}
+
+/* RESALTE OBLIGATORIO DE TARJETA */
+.card.warn{box-shadow:0 0 0 3px var(--naranja), 0 30px 60px -40px rgba(230,74,0,.4);animation:shake .4s}
+.card.warn .review-decision{background:rgba(230,74,0,.08);border-radius:18px;padding:14px;border-top-color:transparent}
 .empty{display:none;text-align:center;color:var(--ink-2);padding:60px 20px;background:var(--paper);border-radius:28px}
 
 /* DOCK */
@@ -219,8 +256,11 @@ footer .logo svg{height:84px;margin:0 auto 14px}
   .c-top .badge{display:none}
   .big{font-size:64px}
   .review{padding:18px;margin-top:26px}
-  .seg{width:100%}
-  .seg button{flex:1;justify-content:center;padding:12px 6px;font-size:13.5px;white-space:nowrap;gap:6px}
+  .cm-author-input{width:100%}
+  .cm-form-foot{flex-direction:column;align-items:stretch}
+  .btn-add-cm{justify-content:center;width:100%}
+  .seg{width:100%;flex-direction:row}
+  .seg button{flex:1;justify-content:center;padding:12px 6px;font-size:13px;white-space:nowrap;gap:6px}
   .dock{bottom:12px;padding:6px;gap:6px;border-radius:22px;justify-content:space-between}
   .dock .prog,.dock .sep{display:none}
   .dock input{flex:1;min-width:0;width:auto}
@@ -293,7 +333,7 @@ Intentar grabar de diferentes angulos y que se vean que hay varias personas guar
 Escena 3: Eduardo intenta cerrar la maleta o caja, pero alguien añade otra botella de TRINA. Intenta cerrarla nuevamente y otra mano coloca una botella más.
 Eduardo mira a cámara y dice:
 We might need a bigger suitcase (or box) dependiendo de lo que usen para la toma
-Find us at Jack BBQ and discover your TRINA.</p></div></div><div class="review"><div class="review-h"><h4>¿Qué te parece este contenido?</h4><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div></div><div class="comment"><textarea placeholder="Déjanos un comentario o sugerencia (opcional si apruebas)"></textarea><div class="hint">✎ Cuéntanos qué te gustaría ajustar: mientras más detalle, más rápido lo resolvemos.</div></div></div></article><article class="card in" id="c2" data-state="pendiente"><div class="c-top"><div class="big">02</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option></select></label><span class="tag orig">Propuesto: Reel</span></div><h2>Dinámica con los parrilleros</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><p>Durante Jack BBQ se les presentarán las tres variedades de TRINA a diferentes parrilleros o asistentes. Cada participante deberá probarlas, escoger su favorita y decir claramente el nombre de la variedad elegida. En edición, cada respuesta se convertirá en un voto hasta revelar cuál fue la favorita del evento.
+Find us at Jack BBQ and discover your TRINA.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><input class="cm-author-input" type="text" placeholder="Tu nombre (ej: Carlos, María)"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status">• Pendiente de evaluación (obligatorio)</div></div></div></article><article class="card in" id="c2" data-state="pendiente"><div class="c-top"><div class="big">02</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option></select></label><span class="tag orig">Propuesto: Reel</span></div><h2>Dinámica con los parrilleros</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><p>Durante Jack BBQ se les presentarán las tres variedades de TRINA a diferentes parrilleros o asistentes. Cada participante deberá probarlas, escoger su favorita y decir claramente el nombre de la variedad elegida. En edición, cada respuesta se convertirá en un voto hasta revelar cuál fue la favorita del evento.
 Inicio: Eduardo a camara
 Which TRINA belongs at a serious BBQ?
 Let the pitmasters decide.
@@ -311,7 +351,7 @@ Indicaciones de grabación
 - No aceptar respuestas como “this one” ni únicamente señalar la botella.
 - Grabar entre seis y diez participantes.
 - Solicitar autorización para grabar y publicar cada reacción.
-Grabar tomas adicionales del fuego, parrillas, carnes, botellas, salsa y ambiente del evento.</p></div></div><div class="review"><div class="review-h"><h4>¿Qué te parece este contenido?</h4><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div></div><div class="comment"><textarea placeholder="Déjanos un comentario o sugerencia (opcional si apruebas)"></textarea><div class="hint">✎ Cuéntanos qué te gustaría ajustar: mientras más detalle, más rápido lo resolvemos.</div></div></div></article><article class="card in" id="c3" data-state="pendiente"><div class="c-top"><div class="big">03</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel" selected="">Carrusel</option><option value="Post">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option></select></label><span class="tag orig">Propuesto: Carrusel</span></div><h2>El sabor es el protagonista</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><p>SLIDE 1
+Grabar tomas adicionales del fuego, parrillas, carnes, botellas, salsa y ambiente del evento.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><input class="cm-author-input" type="text" placeholder="Tu nombre (ej: Carlos, María)"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status">• Pendiente de evaluación (obligatorio)</div></div></div></article><article class="card in" id="c3" data-state="pendiente"><div class="c-top"><div class="big">03</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel" selected="">Carrusel</option><option value="Post">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option></select></label><span class="tag orig">Propuesto: Carrusel</span></div><h2>El sabor es el protagonista</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><p>SLIDE 1
 YOUR FOOD SHOULDN’T DISAPPEAR UNDER THE HEAT.
 
 SLIDE 2
@@ -326,7 +366,7 @@ Made to complement every bite.
 Mostrar las tres variedades:
 ANDINA · ORIGINAL · FUEGO
 Cierre:
-TASTE YOUR FOOD. THEN TASTE THE HEAT.</p></div></div><div class="review"><div class="review-h"><h4>¿Qué te parece este contenido?</h4><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div></div><div class="comment"><textarea placeholder="Déjanos un comentario o sugerencia (opcional si apruebas)"></textarea><div class="hint">✎ Cuéntanos qué te gustaría ajustar: mientras más detalle, más rápido lo resolvemos.</div></div></div></article><article class="card in" id="c4" data-state="pendiente"><div class="c-top"><div class="big">04</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option></select></label><span class="tag orig">Propuesto: Reel</span></div><h2>Prueba a ciegas</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><p>Hook de Eduardo a cámara:
+TASTE YOUR FOOD. THEN TASTE THE HEAT.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><input class="cm-author-input" type="text" placeholder="Tu nombre (ej: Carlos, María)"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status">• Pendiente de evaluación (obligatorio)</div></div></div></article><article class="card in" id="c4" data-state="pendiente"><div class="c-top"><div class="big">04</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option></select></label><span class="tag orig">Propuesto: Reel</span></div><h2>Prueba a ciegas</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><p>Hook de Eduardo a cámara:
 Everyone on the TRINA team thinks they know our sauces. Today, we’re putting that to the test.
 Dinámica:
 Cada participante prueba tres bocados con los ojos cerrados. Debe decir claramente el nombre de la salsa después de cada prueba:
@@ -338,7 +378,7 @@ Pero hay una trampa: una de las salsas aparece dos veces. La combinación puede 
 - Persona 2: Original – Andina – Original
 - Persona 3: Fuego – Original – Fuego
 Después de las respuestas, Eduardo dice
-And that’s how well the TRINA team knows our sauces. How many would you get right?</p></div></div><div class="review"><div class="review-h"><h4>¿Qué te parece este contenido?</h4><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div></div><div class="comment"><textarea placeholder="Déjanos un comentario o sugerencia (opcional si apruebas)"></textarea><div class="hint">✎ Cuéntanos qué te gustaría ajustar: mientras más detalle, más rápido lo resolvemos.</div></div></div></article><article class="card in" id="c5" data-state="pendiente"><div class="c-top"><div class="big">05</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option></select></label><span class="tag orig">Propuesto: Reel</span></div><h2>El comentario anónimo</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><p>Escena 1: Eduardo entra rápidamente a cuadro sosteniendo el teléfono hacia la cámara.
+And that’s how well the TRINA team knows our sauces. How many would you get right?</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><input class="cm-author-input" type="text" placeholder="Tu nombre (ej: Carlos, María)"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status">• Pendiente de evaluación (obligatorio)</div></div></div></article><article class="card in" id="c5" data-state="pendiente"><div class="c-top"><div class="big">05</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option></select></label><span class="tag orig">Propuesto: Reel</span></div><h2>El comentario anónimo</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><p>Escena 1: Eduardo entra rápidamente a cuadro sosteniendo el teléfono hacia la cámara.
 Diálogo:
 Someone said TRINA is a hot sauce for novices.
 
@@ -367,7 +407,7 @@ If you still think TRINA is for novices after trying it, we’ll accept the revi
 You wanted hot-hot sauce. Let’s see if you can handle Fuego.
 Luego mira el cartel y termina:
 Anonymous, the challenge is on.
-Debe decirlo con seguridad y una ligera sonrisa, como un reto amistoso.</p></div></div><div class="review"><div class="review-h"><h4>¿Qué te parece este contenido?</h4><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div></div><div class="comment"><textarea placeholder="Déjanos un comentario o sugerencia (opcional si apruebas)"></textarea><div class="hint">✎ Cuéntanos qué te gustaría ajustar: mientras más detalle, más rápido lo resolvemos.</div></div></div></article><article class="card in" id="c6" data-state="pendiente"><div class="c-top"><div class="big">06</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Post" selected="">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option></select></label><span class="tag orig">Propuesto: Post</span></div><h2>Halloween</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><p>La botella de Fuego aparece disfrazada de fantasma con una pequeña sábana blanca. Sin embargo, el disfraz no logra ocultarla completamente: se ve la etiqueta roja por debajo y salen pequeñas llamas alrededor.
+Debe decirlo con seguridad y una ligera sonrisa, como un reto amistoso.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><input class="cm-author-input" type="text" placeholder="Tu nombre (ej: Carlos, María)"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status">• Pendiente de evaluación (obligatorio)</div></div></div></article><article class="card in" id="c6" data-state="pendiente"><div class="c-top"><div class="big">06</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Post" selected="">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option></select></label><span class="tag orig">Propuesto: Post</span></div><h2>Halloween</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><p>La botella de Fuego aparece disfrazada de fantasma con una pequeña sábana blanca. Sin embargo, el disfraz no logra ocultarla completamente: se ve la etiqueta roja por debajo y salen pequeñas llamas alrededor.
 A su lado pueden aparecer Andina y Original mirándola, como si supieran perfectamente quién está debajo del disfraz.
 Texto principal del lado donde estan Original y Andina
 NICE TRY, FUEGO.
@@ -377,24 +417,24 @@ Detalle inferior:
 TRICK OR TRINA?
 We choose the second one
 En el lado de Fuego se ve un elemento como de que esta hablando y dice “I am Trina Original”
-El humor está en que Fuego intenta hacerse pasar por una salsa inofensiva, pero su intensidad la delata.</p></div></div><div class="review"><div class="review-h"><h4>¿Qué te parece este contenido?</h4><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div></div><div class="comment"><textarea placeholder="Déjanos un comentario o sugerencia (opcional si apruebas)"></textarea><div class="hint">✎ Cuéntanos qué te gustaría ajustar: mientras más detalle, más rápido lo resolvemos.</div></div></div></article><article class="card in" id="c7" data-state="pendiente"><div class="c-top"><div class="big">07</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story" selected="">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option></select></label><span class="tag orig">Propuesto: Story</span></div><h2>Día del Taco</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><p>Texto principal:
+El humor está en que Fuego intenta hacerse pasar por una salsa inofensiva, pero su intensidad la delata.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><input class="cm-author-input" type="text" placeholder="Tu nombre (ej: Carlos, María)"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status">• Pendiente de evaluación (obligatorio)</div></div></div></article><article class="card in" id="c7" data-state="pendiente"><div class="c-top"><div class="big">07</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story" selected="">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option></select></label><span class="tag orig">Propuesto: Story</span></div><h2>Día del Taco</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><p>Texto principal:
 OCTOBER 6 · NATIONAL TACO DAY
 GIVE YOUR TACOS THE TRINA TREATMENT.
 Texto secundario:
 Andina, Original or Fuego…
 Which one are you putting on your tacos?
 ESPACIO PARA ENCUESTA
-Visual: Taco en primer plano recibiendo TRINA, con las tres botellas visibles al fondo.</p></div></div><div class="review"><div class="review-h"><h4>¿Qué te parece este contenido?</h4><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div></div><div class="comment"><textarea placeholder="Déjanos un comentario o sugerencia (opcional si apruebas)"></textarea><div class="hint">✎ Cuéntanos qué te gustaría ajustar: mientras más detalle, más rápido lo resolvemos.</div></div></div></article><article class="card in" id="c8" data-state="pendiente"><div class="c-top"><div class="big">08</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story" selected="">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option></select></label><span class="tag orig">Propuesto: Story</span></div><h2>Jack BBQ</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><p>Creamy flavor is heading to one of bbq’s biggest stages.
+Visual: Taco en primer plano recibiendo TRINA, con las tres botellas visibles al fondo.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><input class="cm-author-input" type="text" placeholder="Tu nombre (ej: Carlos, María)"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status">• Pendiente de evaluación (obligatorio)</div></div></div></article><article class="card in" id="c8" data-state="pendiente"><div class="c-top"><div class="big">08</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story" selected="">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option></select></label><span class="tag orig">Propuesto: Story</span></div><h2>Jack BBQ</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><p>Creamy flavor is heading to one of bbq’s biggest stages.
 THE JACK
 Parte inferior:
 October 10
 lynchburg, tennessee
-FIND US THERE</p></div></div><div class="review"><div class="review-h"><h4>¿Qué te parece este contenido?</h4><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div></div><div class="comment"><textarea placeholder="Déjanos un comentario o sugerencia (opcional si apruebas)"></textarea><div class="hint">✎ Cuéntanos qué te gustaría ajustar: mientras más detalle, más rápido lo resolvemos.</div></div></div></article><article class="card in" id="c9" data-state="pendiente"><div class="c-top"><div class="big">09</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story" selected="">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option></select></label><span class="tag orig">Propuesto: Story</span></div><h2>Trina con helado</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><p>SOMEONE PUT TRINA ON ICE CREAM…
+FIND US THERE</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><input class="cm-author-input" type="text" placeholder="Tu nombre (ej: Carlos, María)"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status">• Pendiente de evaluación (obligatorio)</div></div></div></article><article class="card in" id="c9" data-state="pendiente"><div class="c-top"><div class="big">09</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story" selected="">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option></select></label><span class="tag orig">Propuesto: Story</span></div><h2>Trina con helado</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><p>SOMEONE PUT TRINA ON ICE CREAM…
 Texto SECUNDARIO
 WHAT’S THE WEIRDEST FOOD YOU’D PUT TRINA ON?
 Sticker de preguntas:
 TRINA + ______
-La intención es utilizar el comentario como punto de partida para que la comunidad comparta sus combinaciones más inesperadas.</p></div></div><div class="review"><div class="review-h"><h4>¿Qué te parece este contenido?</h4><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div></div><div class="comment"><textarea placeholder="Déjanos un comentario o sugerencia (opcional si apruebas)"></textarea><div class="hint">✎ Cuéntanos qué te gustaría ajustar: mientras más detalle, más rápido lo resolvemos.</div></div></div></article></div>
+La intención es utilizar el comentario como punto de partida para que la comunidad comparta sus combinaciones más inesperadas.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><input class="cm-author-input" type="text" placeholder="Tu nombre (ej: Carlos, María)"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status">• Pendiente de evaluación (obligatorio)</div></div></div></article></div>
       <div class="empty" id="empty" style="display: none;">No hay contenidos en este filtro.</div>
       <footer><div class="logo" data-logo=""><svg role="img" aria-label="NEXO Agencia Creativa" xmlns="http://www.w3.org/2000/svg" viewBox="758 532 862 1350"><g transform="translate(0,2364) scale(1,-1)"><path fill="#1F3549" d="M763 1617 l0 -210 47 0 46 0 0 129 0 129 3 -4 c3 -4 29 -32 31 -34 1 -1 5 -6 10 -11 4 -4 15 -16 23 -25 9 -10 17 -20 20 -22 2 -2 11 -12 19 -21 9 -10 16 -18 16 -19 1 0 5 -5 10 -10 17 -18 28 -32 29 -33 2 -1 15 -15 33 -35 9 -10 16 -18 16 -19 5 -4 18 -19 20 -22 l3 -3 47 0 46 0 0 210 0 209 -46 0 -46 0 0 -129 c0 -106 0 -128 -1 -127 -1 1 -4 5 -8 8 -6 7 -21 24 -24 27 -2 2 -6 7 -44 49 -15 15 -28 31 -31 33 -2 2 -5 5 -6 7 -1 1 -5 6 -10 11 -5 5 -9 10 -10 11 -1 1 -5 6 -10 11 -37 41 -53 58 -60 66 -5 5 -10 11 -11 12 -1 1 -6 6 -10 11 l-9 10 -47 0 -46 0 0 -209z M1238 1825 c-1 0 -1 -21 -1 -46 l0 -46 182 0 182 0 0 47 0 46 -181 0 c-100 0 -182 0 -182 -1z M1237 1615 l0 -46 182 0 182 0 0 46 0 46 -182 0 -182 0 0 -46z M1237 1454 l0 -47 182 0 182 0 0 47 0 46 -182 0 -182 0 0 -46z M764 1351 c0 -1 31 -48 69 -105 38 -57 69 -104 69 -104 -1 -1 -32 -48 -70 -105 l-69 -104 70 0 71 0 34 52 c19 28 35 51 35 51 0 0 16 -23 35 -52 l34 -51 70 0 c60 0 70 0 70 1 -1 1 -32 48 -69 104 -37 56 -68 103 -69 104 0 0 31 47 69 104 38 57 69 104 69 105 0 1 -22 1 -65 1 l-64 0 -40 -59 c-22 -33 -40 -60 -40 -60 0 0 -18 27 -40 60 l-39 59 -66 0 c-52 0 -65 0 -64 -1z M1372 1351 c-96 -9 -175 -84 -188 -180 -21 -147 116 -269 261 -231 109 28 177 142 149 252 -25 101 -119 168 -222 159z m38 -91 c102 -17 136 -150 53 -212 -79 -59 -190 -4 -190 95 0 72 65 128 137 117z"></path><path fill="#5CB83E" d="M803 774 c-18 -40 -32 -73 -33 -74 0 -2 0 -2 10 -2 l9 1 10 21 9 22 27 0 28 0 9 -22 9 -22 10 0 c6 0 9 0 9 1 0 2 -64 148 -65 148 0 0 -15 -33 -32 -73z m43 9 l11 -25 -22 0 c-20 0 -21 0 -21 2 3 6 21 47 21 47 0 0 5 -11 11 -24z M1145 773 l0 -75 8 0 9 0 0 53 1 53 51 -56 c28 -30 51 -55 51 -55 1 0 1 34 1 75 l0 74 -8 0 -9 0 0 -54 0 -53 -52 56 c-28 31 -51 56 -52 56 0 0 0 -34 0 -74z M1480 773 c-18 -40 -32 -74 -32 -74 0 -1 4 -1 10 -1 l9 1 9 21 10 22 27 0 28 0 9 -22 9 -22 10 0 c8 0 9 0 9 2 -1 3 -64 147 -65 147 0 0 -15 -33 -33 -74z m44 10 c5 -13 10 -24 10 -24 0 -1 -9 -1 -21 -1 -12 0 -21 0 -21 1 0 1 20 48 21 48 0 0 5 -11 11 -24z M952 844 c-36 -6 -58 -35 -58 -75 0 -36 18 -61 49 -71 12 -4 38 -4 50 0 27 10 43 32 45 64 l0 11 -30 0 -30 0 0 -8 0 -8 21 0 20 0 -1 -4 c-5 -34 -42 -52 -75 -36 -38 18 -41 80 -4 104 15 10 39 10 55 1 5 -2 15 -12 18 -17 l2 -2 7 5 c4 3 7 7 7 8 0 3 -16 17 -24 21 -14 7 -35 10 -52 7z M1338 843 c-25 -6 -45 -25 -53 -48 -3 -12 -4 -32 -1 -44 12 -50 70 -72 115 -44 l6 3 0 12 0 12 -7 -6 c-24 -23 -58 -22 -81 0 -12 13 -16 24 -16 42 0 51 59 77 96 43 4 -3 7 -6 7 -6 1 0 1 5 1 11 l0 12 -6 3 c-18 11 -41 15 -61 10z M1051 770 l0 -72 38 0 39 1 0 8 0 8 -29 0 -30 0 0 27 0 27 30 0 29 0 0 8 0 8 -29 0 -30 0 0 20 0 20 30 0 29 0 0 9 0 8 -38 0 -39 0 0 -72z M1422 770 l0 -72 9 0 9 0 0 72 0 72 -9 0 -9 0 0 -72z M825 688 c-33 -5 -57 -31 -61 -65 -6 -61 47 -101 104 -78 l6 2 0 22 c0 11 0 21 -1 21 0 0 -3 -3 -7 -6 -29 -25 -68 -2 -62 36 3 21 16 33 36 33 12 0 16 -2 28 -12 l6 -5 0 22 0 22 -7 2 c-13 6 -29 8 -42 6z M1128 687 c-21 -7 -32 -25 -32 -52 0 -25 8 -42 25 -50 6 -3 7 -3 18 -3 16 0 22 2 30 11 l6 6 0 -7 0 -7 17 0 16 0 0 50 0 50 -16 0 -17 0 0 -7 0 -7 -3 3 c-4 5 -8 8 -13 11 -6 3 -25 4 -31 2z m37 -30 c14 -7 15 -34 2 -42 -13 -9 -30 -4 -34 11 -7 23 12 41 32 31z M883 614 l0 -72 19 0 19 0 0 27 0 26 16 -26 15 -27 23 0 c12 0 22 0 22 0 0 1 -9 14 -19 29 -21 30 -20 29 -17 29 7 0 20 10 25 20 3 7 3 7 3 20 0 18 -4 28 -16 37 -11 7 -14 7 -54 8 l-36 0 0 -71z m60 37 c7 -4 10 -15 6 -23 -3 -7 -8 -9 -19 -10 l-9 0 0 18 0 18 9 0 c7 0 10 -1 13 -3z M1000 614 l0 -72 44 0 44 0 0 17 0 16 -25 0 -25 0 0 12 0 11 24 0 23 0 0 16 0 15 -23 0 -24 0 0 12 0 12 25 0 25 0 0 16 0 16 -44 0 -44 0 0 -71z M1220 631 l0 -55 -23 0 -23 0 0 -17 1 -16 58 -1 59 0 0 17 0 17 -16 0 -16 0 0 55 0 54 -20 0 -20 0 0 -54z M1302 614 l0 -72 20 0 20 0 0 72 0 71 -20 0 -20 0 0 -71z M1349 685 c0 0 13 -32 30 -71 l30 -71 15 -1 16 0 29 70 c16 38 29 70 30 71 0 2 -1 2 -21 2 l-21 0 -16 -42 c-9 -22 -17 -41 -17 -41 0 0 -8 19 -16 42 l-16 41 -22 0 c-11 0 -21 0 -21 0z M1510 684 c-1 -1 -14 -33 -30 -71 -16 -38 -29 -70 -29 -70 0 -1 9 -1 21 -1 l21 0 2 5 c1 3 8 21 16 41 7 19 14 35 14 36 0 2 6 -11 17 -40 l16 -42 22 0 21 0 -4 9 c-2 5 -16 37 -30 72 l-26 62 -15 0 c-12 0 -16 0 -16 -1z"></path></g></svg></div>Mérida, Venezuela</footer>
     </main>
@@ -562,30 +602,115 @@ La intención es utilizar el comentario como punto de partida para que la comuni
   [].forEach.call(document.querySelectorAll('[data-logo]'), function(d){ d.innerHTML = $('nexo-logo').innerHTML; });
   try { $('fav').href = 'data:image/svg+xml,' + encodeURIComponent($('nexo-iso').innerHTML.trim()); } catch (e) {}
 
+  function parseComentarios(str, defaultAuthor){
+    if (!str || !String(str).trim()) return [];
+    var lines = String(str).split(/\r?\n/);
+    var result = [], cur = null;
+    lines.forEach(function(line){
+      var t = line.trim();
+      if (!t) return;
+      var m = t.match(/^\[(.*?)\]:\s*(.*)$/);
+      if (m) {
+        if (cur) result.push(cur);
+        cur = { autor: m[1].trim(), texto: m[2].trim(), fecha: '' };
+      } else {
+        if (cur) { cur.texto += '\n' + t; }
+        else { cur = { autor: defaultAuthor || 'Cliente', texto: t, fecha: '' }; }
+      }
+    });
+    if (cur) result.push(cur);
+    return result.length ? result : [{ autor: defaultAuthor || 'Cliente', texto: String(str).trim(), fecha: '' }];
+  }
+
+  function formatComentariosString(list){
+    if (!list || !list.length) return '';
+    return list.map(function(c){
+      return (c.autor ? '[' + c.autor + ']: ' : '') + (c.texto || '');
+    }).join('\n\n');
+  }
+
+  function formatRelTime(isoStr){
+    if (!isoStr) return '';
+    try {
+      var d = new Date(isoStr);
+      if (isNaN(d.getTime())) return '';
+      return d.toLocaleDateString('es-VE', {day:'2-digit', month:'short'}) + ' ' + d.toLocaleTimeString('es-VE', {hour:'2-digit', minute:'2-digit'});
+    } catch(e){ return ''; }
+  }
+
+  function getReviewerName(){
+    var whoEl = $('who');
+    var w = whoEl ? whoEl.value.trim() : '';
+    if (w) return w;
+    try {
+      var stored = localStorage.getItem('nexo_reviewer_name') || '';
+      if (stored) return stored;
+    } catch(e){}
+    return DATA.revision.revisadoPor || '';
+  }
+
+  function setReviewerName(name){
+    if (!name || !name.trim()) return;
+    var trimmed = name.trim();
+    DATA.revision.revisadoPor = trimmed;
+    var whoEl = $('who');
+    if (whoEl) whoEl.value = trimmed;
+    try { localStorage.setItem('nexo_reviewer_name', trimmed); } catch(e){}
+    document.querySelectorAll('.cm-author-input').forEach(function(inp){
+      if (!inp.value.trim()) inp.value = trimmed;
+    });
+  }
+
   items.forEach(function(it, i){
     if (!it.id) it.id = 'c' + (i + 1);
     if (['pendiente','aprobado','cambios'].indexOf(it.estado) < 0) it.estado = 'pendiente';
     if (typeof it.comentario !== 'string') it.comentario = '';
+    if (!Array.isArray(it.comentarios)) it.comentarios = [];
     if (typeof it.formatoOriginal !== 'string') it.formatoOriginal = it.formato || '';
+    if (it.comentario && !it.comentarios.length) {
+      it.comentarios = parseComentarios(it.comentario, it.revisadoPor || DATA.revision.revisadoPor || '');
+    }
   });
   DATA.revision = DATA.revision || {revisadoPor:'', fecha:''};
 
-  // Borrador local (solo comodidad del cliente; el archivo descargado es la fuente oficial)
+  // Borrador local (recuperar revisión en curso)
   if (!DATA.revision.fecha) {
     try {
       var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
       if (saved && saved.items) {
-        items.forEach(function(it){ var s = saved.items[it.id]; if (s) { it.estado = s.estado; it.comentario = s.comentario; if (s.formato) it.formato = s.formato; } });
-        if (saved.who) DATA.revision.revisadoPor = saved.who;
+        items.forEach(function(it){
+          var s = saved.items[it.id];
+          if (s) {
+            it.estado = s.estado;
+            it.comentario = s.comentario;
+            if (s.formato) it.formato = s.formato;
+            if (Array.isArray(s.comentarios) && s.comentarios.length) it.comentarios = s.comentarios;
+            if (s.revisadoPor) it.revisadoPor = s.revisadoPor;
+          }
+        });
+        if (saved.who) {
+          DATA.revision.revisadoPor = saved.who;
+          setReviewerName(saved.who);
+        }
         setTimeout(function(){ toast('Recuperamos tu revisión en curso'); }, 600);
       }
     } catch (e) {}
   }
   function saveDraft(){
     try {
-      var o = {who: $('who').value, items: {}};
-      items.forEach(function(it){ o.items[it.id] = {estado: it.estado, comentario: it.comentario, formato: it.formato}; });
+      var whoVal = getReviewerName();
+      var o = {who: whoVal, items: {}};
+      items.forEach(function(it){
+        o.items[it.id] = {
+          estado: it.estado,
+          comentario: it.comentario,
+          formato: it.formato,
+          comentarios: it.comentarios,
+          revisadoPor: it.revisadoPor
+        };
+      });
       localStorage.setItem(KEY, JSON.stringify(o));
+      if (whoVal) localStorage.setItem('nexo_reviewer_name', whoVal);
     } catch (e) {}
   }
 
@@ -659,38 +784,163 @@ La intención es utilizar el comentario como punto de partida para que la comuni
     }
     card.appendChild(body);
 
-    var rv = el('div', 'review'); var rh = el('div', 'review-h');
-    rh.appendChild(el('h4', null, '¿Qué te parece este contenido?'));
+    var rv = el('div', 'review');
+
+    // 1. BLOQUE DE COMENTARIOS (ARRIBA)
+    var cmBox = el('div', 'comment-box');
+    var cmHead = el('div', 'cm-head');
+    cmHead.appendChild(el('h4', null, '💬 Comentarios y observaciones'));
+    cmHead.appendChild(el('span', 'cm-sub', 'Cualquier persona del equipo puede dejar comentarios'));
+    cmBox.appendChild(cmHead);
+
+    var cmThread = el('div', 'cm-thread');
+    cmBox.appendChild(cmThread);
+
+    function renderThread(){
+      cmThread.innerHTML = '';
+      (it.comentarios || []).forEach(function(cm, idx){
+        var bubble = el('div', 'cm-bubble');
+        var initial = (cm.autor || 'C').trim().charAt(0).toUpperCase();
+        bubble.appendChild(el('div', 'cm-av', initial || 'C'));
+        var r = el('div', 'cm-right');
+        var topRow = el('div', 'cm-top');
+        topRow.appendChild(el('b', 'cm-author', cm.autor || 'Cliente'));
+        if (cm.fecha) topRow.appendChild(el('span', 'cm-date', formatRelTime(cm.fecha)));
+        var delBtn = el('button', 'cm-del', '×');
+        delBtn.type = 'button';
+        delBtn.title = 'Eliminar este comentario';
+        delBtn.onclick = function(){
+          it.comentarios.splice(idx, 1);
+          it.comentario = formatComentariosString(it.comentarios);
+          renderThread(); saveDraft();
+        };
+        topRow.appendChild(delBtn);
+        r.appendChild(topRow);
+        r.appendChild(el('p', 'cm-txt', cm.texto));
+        bubble.appendChild(r);
+        cmThread.appendChild(bubble);
+      });
+      cmThread.style.display = (it.comentarios && it.comentarios.length) ? 'grid' : 'none';
+    }
+
+    var cmForm = el('div', 'cm-form');
+    var authorInp = el('input', 'cm-author-input');
+    authorInp.type = 'text';
+    authorInp.placeholder = 'Tu nombre (ej: Carlos, María)';
+    authorInp.value = getReviewerName();
+    authorInp.addEventListener('input', function(){
+      if (authorInp.value.trim()) setReviewerName(authorInp.value.trim());
+      authorInp.classList.remove('err');
+    });
+    cmForm.appendChild(authorInp);
+
+    var ta = el('textarea', 'cm-textarea');
+    ta.placeholder = 'Escribe aquí tu comentario, ajuste o sugerencia…';
+    cmForm.appendChild(ta);
+
+    var formFoot = el('div', 'cm-form-foot');
+    var hint = el('span', 'hint', '✎ Si pides cambios, debes detallar qué ajustar para poder enviar.');
+    formFoot.appendChild(hint);
+
+    var btnAdd = el('button', 'btn-add-cm', '+ Agregar comentario');
+    btnAdd.type = 'button';
+
+    function addCommentFromInput(){
+      var txt = ta.value.trim();
+      if (!txt) return false;
+      var auth = authorInp.value.trim() || getReviewerName();
+      if (!auth) {
+        authorInp.classList.add('err');
+        authorInp.focus();
+        toast('Escribe tu nombre para firmar el comentario');
+        return false;
+      }
+      setReviewerName(auth);
+      it.comentarios = it.comentarios || [];
+      it.comentarios.push({ autor: auth, texto: txt, fecha: new Date().toISOString() });
+      it.comentario = formatComentariosString(it.comentarios);
+      it.revisadoPor = auth;
+      ta.value = '';
+      card.classList.remove('warn');
+      renderThread();
+      saveDraft();
+      toast('✓ Comentario agregado');
+      return true;
+    }
+
+    btnAdd.onclick = function(){ addCommentFromInput(); };
+    formFoot.appendChild(btnAdd);
+    cmForm.appendChild(formFoot);
+    cmBox.appendChild(cmForm);
+    rv.appendChild(cmBox);
+
+    // 2. BLOQUE DE DECISIÓN (ABAJO DEL COMENTARIO — PASO OBLIGATORIO)
+    var decSec = el('div', 'review-decision');
+    var decHead = el('div', 'dec-head');
+    decHead.appendChild(el('h4', null, '¿Cuál es tu decisión sobre este contenido?'));
+    decHead.appendChild(el('span', 'req-badge', '* Paso obligatorio'));
+    decSec.appendChild(decHead);
+
     var seg = el('div', 'seg');
     var ap = el('button', 'approve'); ap.type = 'button'; ap.innerHTML = '<span class="ic">✓</span>Aprobar';
     var ch = el('button', 'change'); ch.type = 'button'; ch.innerHTML = '<span class="ic">✎</span>Pedir cambios';
-    seg.appendChild(ap); seg.appendChild(ch); rh.appendChild(seg); rv.appendChild(rh);
-    var cm = el('div', 'comment'); var ta = el('textarea'); ta.textContent = it.comentario; ta.value = it.comentario;
-    ta.placeholder = 'Déjanos un comentario o sugerencia (opcional si apruebas)';
-    cm.appendChild(ta); cm.appendChild(el('div', 'hint', '✎ Cuéntanos qué te gustaría ajustar: mientras más detalle, más rápido lo resolvemos.'));
-    rv.appendChild(cm); card.appendChild(rv);
+    seg.appendChild(ap); seg.appendChild(ch);
+    decSec.appendChild(seg);
+
+    var decStatus = el('div', 'dec-status', '• Pendiente de evaluación (obligatorio)');
+    decSec.appendChild(decStatus);
+    rv.appendChild(decSec);
+    card.appendChild(rv);
+
     list.appendChild(card);
 
     var a = el('a'); a.href = '#' + it.id; a.dataset.state = it.estado;
     a.appendChild(el('span', 'n', num)); a.appendChild(el('span', 't', it.titulo || 'Contenido ' + num));
     nav.appendChild(a);
 
+    renderThread();
+
     function paint(){
       card.dataset.state = it.estado; a.dataset.state = it.estado; badge.textContent = LBL[it.estado];
       ap.classList.toggle('on', it.estado === 'aprobado'); ch.classList.toggle('on', it.estado === 'cambios');
       ap.setAttribute('aria-pressed', it.estado === 'aprobado'); ch.setAttribute('aria-pressed', it.estado === 'cambios');
-      ta.placeholder = it.estado === 'cambios' ? 'Cuéntanos qué te gustaría ajustar' : 'Déjanos un comentario o sugerencia (opcional si apruebas)';
+      if (it.estado === 'aprobado') {
+        decStatus.className = 'dec-status ok';
+        decStatus.textContent = '✓ Marcado como Aprobado';
+      } else if (it.estado === 'cambios') {
+        decStatus.className = 'dec-status fix';
+        decStatus.textContent = '✎ Marcado para Solicitar cambios (indica qué ajustar arriba)';
+      } else {
+        decStatus.className = 'dec-status';
+        decStatus.textContent = '• Pendiente de evaluación (obligatorio)';
+      }
     }
+
     function set(s){
-      it.estado = it.estado === s ? 'pendiente' : s; card.classList.remove('warn');
+      // Si el usuario escribió un texto en el textarea y no tocó "Agregar comentario", se guarda automáticamente
+      if (ta.value.trim()) addCommentFromInput();
+
+      it.estado = it.estado === s ? 'pendiente' : s;
+      card.classList.remove('warn');
       paint(); refresh(); applyFilter(); saveDraft();
-      if (it.estado === 'cambios') ta.focus({preventScroll:true});
+
+      if (it.estado === 'cambios') {
+        var hasComments = (it.comentarios && it.comentarios.length > 0);
+        if (!hasComments) {
+          ta.placeholder = 'Cuéntanos qué te gustaría ajustar (requerido para pedir cambios)…';
+          ta.focus({preventScroll:true});
+        }
+      }
     }
+
     ap.onclick = function(){ set('aprobado'); };
     ch.onclick = function(){ set('cambios'); };
-    ta.addEventListener('input', function(){ it.comentario = ta.value; card.classList.remove('warn'); saveDraft(); });
+
+    // Guardar referencia a la función de auto-commit para validación global
+    card.__commitDraftComment = addCommentFromInput;
+
     paint();
-    cards.push({card: card, nav: a, it: it});
+    cards.push({card: card, nav: a, it: it, commitComment: addCommentFromInput});
   });
 
   function counts(){ var o = {aprobado:0, cambios:0, pendiente:0}; items.forEach(function(it){ o[it.estado]++; }); return o; }
@@ -743,8 +993,15 @@ La intención es utilizar el comentario como punto de partida para que la comuni
 
   function slug(s){ return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
 
+  function commitAllDraftComments(){
+    cards.forEach(function(c){
+      if (c.commitComment) c.commitComment();
+    });
+  }
+
   // Copia estática del tablero (se ve aunque el visor no ejecute JavaScript, p. ej. vista previa del iPhone)
   function buildHTML(){
+    commitAllDraftComments();
     DATA.contenidos = items;
     var root = document.documentElement.cloneNode(true);
     root.className = root.className.replace(/\bjs\b/, 'no-js');
@@ -768,7 +1025,9 @@ La intención es utilizar el comentario como punto de partida para que la comuni
   if (SEND) { document.body.classList.add('has-send'); $('dl').textContent = 'Enviar revisión ✓'; }
 
   function doDownload(){
-    if (!DATA.revision.fecha) DATA.revision = {revisadoPor: $('who').value.trim(), fecha: new Date().toISOString()};
+    commitAllDraftComments();
+    var revName = getReviewerName() || 'Cliente';
+    if (!DATA.revision.fecha) DATA.revision = {revisadoPor: revName, fecha: new Date().toISOString()};
     var html = buildHTML();
     var name = 'Revision-' + slug(DATA.cliente) + '-' + slug(DATA.mes) + '-' + (DATA.anio || '') + '.html';
     var blob = new Blob([html], {type:'text/html;charset=utf-8'});
@@ -781,16 +1040,41 @@ La intención es utilizar el comentario como punto de partida para que la comuni
 
   // Envío automático a la hoja de Google de Nexo (Apps Script)
   function doSend(){
-    DATA.revision = {revisadoPor: $('who').value.trim(), fecha: new Date().toISOString()};
-    var payload = {action:'revision', id: DATA.id, cliente: DATA.cliente, mes: DATA.mes, anio: DATA.anio, url: DATA.url || location.href,
-      revisadoPor: DATA.revision.revisadoPor, fecha: DATA.revision.fecha,
-      contenidos: items.map(function(it, i){ return {n: i + 1, titulo: it.titulo || '', formatoOriginal: it.formatoOriginal || '', formato: it.formato || '', estado: it.estado, comentario: it.comentario || ''}; })};
+    commitAllDraftComments();
+    var revName = getReviewerName() || 'Cliente';
+    DATA.revision = {revisadoPor: revName, fecha: new Date().toISOString()};
+    var payload = {
+      action: 'revision',
+      id: DATA.id,
+      cliente: DATA.cliente,
+      mes: DATA.mes,
+      anio: DATA.anio,
+      url: DATA.url || location.href,
+      revisadoPor: DATA.revision.revisadoPor,
+      fecha: DATA.revision.fecha,
+      contenidos: items.map(function(it, i){
+        var cList = (it.comentarios && it.comentarios.length) ? it.comentarios : (it.comentario ? [{ autor: it.revisadoPor || revName, texto: it.comentario, fecha: '' }] : []);
+        var fullComment = formatComentariosString(cList) || it.comentario || '';
+        var lastAuthor = (cList.length && cList[cList.length - 1].autor) ? cList[cList.length - 1].autor : (it.revisadoPor || revName);
+        return {
+          n: i + 1,
+          id: it.id || ('c' + (i + 1)),
+          titulo: it.titulo || '',
+          formatoOriginal: it.formatoOriginal || '',
+          formato: it.formato || '',
+          estado: it.estado,
+          comentario: fullComment,
+          comentarios: cList,
+          revisadoPor: lastAuthor
+        };
+      })
+    };
     var body = JSON.stringify(payload), btn = $('dl');
     btn.disabled = true; btn.textContent = 'Enviando…';
     function ok(){
       btn.disabled = false; btn.textContent = 'Enviar revisión ✓'; saveDraft();
       var k = counts();
-      modal({kind:'ok', icon:'✓', title:'¡Revisión enviada!', text:'Nexo ya recibió tus respuestas: ' + k.aprobado + ' aprobados, ' + k.cambios + ' con cambios' + (k.pendiente ? ' y ' + k.pendiente + ' pendientes' : '') + '. Si cambias algo, puedes volver a enviarla.', buttons:[{label:'Descargar una copia', fn:doDownload}, {label:'Listo', primary:true}]});
+      modal({kind:'ok', icon:'✓', title:'¡Revisión enviada!', text:'Nexo ya recibió tus respuestas: ' + k.aprobado + ' aprobados y ' + k.cambios + ' con cambios. Si cambias algo, puedes volver a enviarla.', buttons:[{label:'Descargar una copia', fn:doDownload}, {label:'Listo', primary:true}]});
     }
     function fail(){
       btn.disabled = false; btn.textContent = 'Enviar revisión ✓';
@@ -805,33 +1089,94 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       });
   }
 
+  // VALIDACIÓN OBLIGATORIA (EN PC Y CELULARES)
   function validate(next, label){
+    commitAllDraftComments();
+
     var who = $('who');
-    if (!who.value.trim()) { who.classList.remove('err'); void who.offsetWidth; who.classList.add('err'); who.focus(); toast('Escribe tu nombre para firmar la revisión'); return; }
-    var sinComentario = cards.filter(function(c){ return c.it.estado === 'cambios' && !c.it.comentario.trim(); });
-    function pendingStep(){
-      var pend = cards.filter(function(c){ return c.it.estado === 'pendiente'; });
-      if (pend.length) {
-        modal({kind:'warn', icon:'!', title:pend.length === 1 ? 'Te falta 1 contenido por revisar' : 'Te faltan ' + pend.length + ' contenidos por revisar', text:'Puedes continuar y los pendientes quedarán sin respuesta, o terminar de revisarlos primero.',
-          buttons:[{label:label + ' igual', fn:next}, {label:'Seguir revisando', primary:true, fn:function(){ f = 'all'; applyFilter(); pend[0].card.scrollIntoView({behavior:'smooth', block:'center'}); }}]});
-        return;
-      }
-      next();
+    var reviewerName = getReviewerName();
+    if (!reviewerName) {
+      who.classList.remove('err'); void who.offsetWidth; who.classList.add('err');
+      who.focus();
+      toast('Escribe tu nombre para firmar la revisión');
+      modal({
+        kind: 'warn',
+        icon: '👤',
+        title: 'Tu nombre es obligatorio',
+        text: 'Por favor escribe tu nombre o cargo en el campo inferior para saber quién realiza la revisión.',
+        buttons: [{
+          label: 'Escribir mi nombre',
+          primary: true,
+          fn: function(){ who.focus(); }
+        }]
+      });
+      return;
     }
+    setReviewerName(reviewerName);
+
+    // 1. PASO OBLIGATORIO: Todos los contenidos deben estar evaluados (Aprobar o Solicitar cambios)
+    var pend = cards.filter(function(c){ return c.it.estado === 'pendiente'; });
+    if (pend.length) {
+      f = 'all'; applyFilter();
+      [].forEach.call(document.querySelectorAll('.chip'), function(x){ x.classList.toggle('on', x.dataset.f === 'all'); });
+      cards.forEach(function(c){ c.card.classList.remove('warn'); });
+      pend.forEach(function(c){ c.card.classList.add('warn'); });
+      pend[0].card.scrollIntoView({behavior:'smooth', block:'center'});
+
+      modal({
+        kind: 'warn',
+        icon: '!',
+        title: pend.length === 1 ? 'Paso obligatorio: falta 1 contenido por evaluar' : 'Paso obligatorio: faltan ' + pend.length + ' contenidos por evaluar',
+        text: 'Debes evaluar todos los contenidos (Aprobar o Solicitar cambios) antes de enviar la revisión. No se pueden dejar contenidos pendientes.',
+        list: pend.map(function(c){ return c.nav.textContent.replace(/^(\d+)/, '$1 · '); }),
+        buttons: [{
+          label: 'Evaluar pendientes ahora',
+          primary: true,
+          fn: function(){
+            f = 'all'; applyFilter();
+            pend[0].card.scrollIntoView({behavior:'smooth', block:'center'});
+          }
+        }]
+      });
+      return;
+    }
+
+    // 2. PASO OBLIGATORIO: Si se solicitaron cambios, debe existir comentario explicando qué ajustar
+    var sinComentario = cards.filter(function(c){
+      if (c.it.estado !== 'cambios') return false;
+      var hasComments = (c.it.comentarios && c.it.comentarios.length > 0 && c.it.comentarios.some(function(x){ return x.texto && x.texto.trim(); }));
+      var hasSingle = !!(c.it.comentario && c.it.comentario.trim());
+      return !hasComments && !hasSingle;
+    });
+
     if (sinComentario.length) {
+      f = 'all'; applyFilter();
+      [].forEach.call(document.querySelectorAll('.chip'), function(x){ x.classList.toggle('on', x.dataset.f === 'all'); });
+      cards.forEach(function(c){ c.card.classList.remove('warn'); });
       sinComentario.forEach(function(c){ c.card.classList.add('warn'); });
-      modal({kind:'warn', icon:'✎', title:'Cuéntanos qué cambiar', text:'Pediste cambios en estos contenidos pero no dejaste comentario:', list:sinComentario.map(function(c){ return c.nav.textContent.replace(/^(\d+)/, '$1 · '); }),
-        buttons:[{label:label + ' igual', fn:pendingStep}, {label:'Escribir comentario', primary:true, fn:function(){ f = 'all'; applyFilter(); sinComentario[0].card.scrollIntoView({behavior:'smooth', block:'center'}); sinComentario[0].card.querySelector('textarea').focus({preventScroll:true}); }}]});
+      sinComentario[0].card.scrollIntoView({behavior:'smooth', block:'center'});
+
+      modal({
+        kind: 'warn',
+        icon: '✎',
+        title: 'Cuéntanos qué debemos ajustar',
+        text: 'Marcaste "Pedir cambios" pero es obligatorio indicar el ajuste solicitado en:',
+        list: sinComentario.map(function(c){ return c.nav.textContent.replace(/^(\d+)/, '$1 · '); }),
+        buttons: [{
+          label: 'Escribir detalle del cambio',
+          primary: true,
+          fn: function(){
+            f = 'all'; applyFilter();
+            sinComentario[0].card.scrollIntoView({behavior:'smooth', block:'center'});
+            var ta = sinComentario[0].card.querySelector('.cm-textarea');
+            if (ta) ta.focus({preventScroll:true});
+          }
+        }]
+      });
       return;
     }
-    var comentadosSinEstado = cards.filter(function(c){ return c.it.estado === 'pendiente' && c.it.comentario.trim(); });
-    if (comentadosSinEstado.length) {
-      comentadosSinEstado.forEach(function(c){ c.card.classList.add('warn'); });
-      modal({kind:'warn', icon:'✓', title:'Marca tu respuesta', text:'Dejaste comentario pero falta marcar si apruebas o pides cambios en:', list:comentadosSinEstado.map(function(c){ return c.nav.textContent.replace(/^(\d+)/, '$1 · '); }),
-        buttons:[{label:label + ' igual', fn:pendingStep}, {label:'Elegir respuesta', primary:true, fn:function(){ f = 'all'; applyFilter(); comentadosSinEstado[0].card.scrollIntoView({behavior:'smooth', block:'center'}); }}]});
-      return;
-    }
-    pendingStep();
+
+    next();
   }
 
   $('dl').onclick = function(){ if (SEND) validate(doSend, 'Enviar'); else validate(doDownload, 'Descargar'); };

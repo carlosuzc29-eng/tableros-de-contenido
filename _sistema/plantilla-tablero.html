@@ -87,6 +87,7 @@ button{font:inherit;cursor:pointer}
 .no-js .nojs-note{display:block}
 .no-js .dock{display:none}
 .no-js .seg,.no-js .fmt-sel,.no-js textarea{pointer-events:none}
+.no-js .cm-form,.no-js .cm-del{display:none!important}
 .no-js .layout{padding-bottom:40px}
 .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--line);transition:background .3s}
 .card[data-state="aprobado"]::before{background:var(--verde)}
@@ -128,25 +129,61 @@ button{font:inherit;cursor:pointer}
 .post-h small{font-size:12px;color:var(--gris)}
 .post p{font-size:15px;white-space:pre-line;line-height:1.65;word-break:break-word}
 .post .hash{display:block;margin-top:8px;color:var(--azul-3);font-weight:500}
-.review{margin-top:34px;padding:26px;border-radius:24px;background:linear-gradient(180deg,#F7F9FA,#F2F5F7)}
-.review-h{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
-.review-h h4{font-size:17px;font-weight:600}
-.seg{display:inline-flex;background:var(--paper);padding:5px;border-radius:18px;box-shadow:inset 0 0 0 1px var(--line);gap:4px}
-.seg button{border:0;background:transparent;padding:12px 20px;border-radius:14px;font-size:14px;font-weight:600;color:var(--ink-2);display:inline-flex;align-items:center;gap:8px;transition:background .25s var(--ease),color .25s,transform .15s}
-.seg button:active{transform:scale(.97)}
-.seg .ic{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:12px;line-height:1}
+/* REVIEW & MULTI-COMMENT */
+.review{margin-top:34px;padding:26px;border-radius:24px;background:linear-gradient(180deg,#F7F9FA,#F2F5F7);border:1px solid var(--line)}
+.cm-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.cm-head h4{font-size:16px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:6px}
+.cm-sub{font-size:12px;color:var(--gris);font-weight:500}
+
+/* THREAD DE COMENTARIOS */
+.cm-thread{display:grid;gap:10px;margin-bottom:14px}
+.cm-bubble{background:#fff;border-radius:18px;padding:12px 16px;box-shadow:0 1px 3px rgba(31,53,73,.05);border:1px solid rgba(31,53,73,.08);display:flex;gap:12px;align-items:flex-start}
+.cm-av{width:32px;height:32px;border-radius:50%;background:var(--azul);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
+.cm-right{flex:1;min-width:0}
+.cm-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px}
+.cm-author{font-size:13.5px;font-weight:700;color:var(--ink)}
+.cm-date{font-size:11.5px;color:var(--gris)}
+.cm-txt{font-size:14px;line-height:1.55;color:var(--ink);white-space:pre-line;word-break:break-word;margin:0}
+.cm-del{border:0;background:transparent;color:var(--gris);font-size:18px;line-height:1;cursor:pointer;padding:0 4px;border-radius:6px;transition:color .15s}
+.cm-del:hover{color:var(--naranja)}
+
+/* FORMULARIO DE COMENTARIO */
+.cm-form{display:grid;gap:10px}
+.cm-author-input{width:240px;max-width:100%;background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 14px;font:inherit;font-size:13.5px;color:var(--ink);transition:border-color .2s}
+.cm-author-input:focus{outline:none;border-color:var(--azul)}
+.cm-author-input.err{border-color:var(--naranja);animation:shake .4s}
+.cm-textarea{width:100%;border:0;background:#fff;border-radius:16px;padding:14px 18px;font:inherit;font-size:14px;color:var(--ink);min-height:84px;resize:vertical;box-shadow:inset 0 0 0 1px var(--line);transition:box-shadow .2s}
+.cm-textarea:focus{outline:none;box-shadow:inset 0 0 0 2px var(--azul)}
+.card[data-state="cambios"] .cm-textarea{box-shadow:inset 0 0 0 1.5px rgba(230,74,0,.45)}
+.card.warn .cm-textarea{box-shadow:inset 0 0 0 2px var(--naranja)}
+.cm-form-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.hint{font-size:12.5px;color:var(--ink-2);margin:0}
+.card[data-state="cambios"] .hint{color:var(--naranja);font-weight:600}
+.btn-add-cm{border:0;background:var(--azul);color:#fff;font-weight:600;font-size:13px;padding:9px 18px;border-radius:99px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .15s,transform .15s}
+.btn-add-cm:hover{background:var(--azul-2)}
+.btn-add-cm:active{transform:scale(.97)}
+
+/* SECCIÓN DE DECISIÓN (DEBAJO DEL COMENTARIO) */
+.review-decision{margin-top:22px;padding-top:20px;border-top:1.5px dashed rgba(31,53,73,.14);display:grid;gap:12px}
+.dec-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.dec-head h4{font-size:16px;font-weight:700;color:var(--ink)}
+.req-badge{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;background:var(--naranja-soft);color:var(--naranja);padding:4px 10px;border-radius:99px}
+.seg{display:flex;background:#fff;padding:6px;border-radius:18px;box-shadow:inset 0 0 0 1px var(--line);gap:6px;width:100%}
+.seg button{flex:1;border:0;background:transparent;padding:14px 20px;border-radius:14px;font-size:15px;font-weight:700;color:var(--ink-2);display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background .2s var(--ease),color .2s,transform .15s;cursor:pointer}
+.seg button:active{transform:scale(.98)}
+.seg .ic{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:13px;line-height:1}
 .seg .approve .ic{background:var(--verde-soft);color:var(--verde-dk)}
 .seg .change .ic{background:var(--naranja-soft);color:var(--naranja)}
 .seg .approve.on{background:var(--verde);color:#fff}
 .seg .change.on{background:var(--naranja);color:#fff}
 .seg .on .ic{background:rgba(255,255,255,.25);color:#fff}
-.comment{margin-top:18px}
-.comment textarea{width:100%;border:0;background:var(--paper);border-radius:18px;padding:18px 20px;font:inherit;font-size:15px;color:var(--ink);min-height:96px;resize:vertical;box-shadow:inset 0 0 0 1px var(--line);transition:box-shadow .2s}
-.comment textarea:focus{outline:none;box-shadow:inset 0 0 0 2px var(--azul)}
-.card[data-state="cambios"] .comment textarea{box-shadow:inset 0 0 0 1.5px rgba(230,74,0,.45)}
-.card.warn .comment textarea{box-shadow:inset 0 0 0 2px var(--naranja)}
-.hint{font-size:12.5px;color:var(--ink-2);margin-top:8px;display:none}
-.card[data-state="cambios"] .hint{display:block}
+.dec-status{font-size:12.5px;color:var(--gris);text-align:center;font-weight:500}
+.dec-status.ok{color:var(--verde-dk);font-weight:600}
+.dec-status.fix{color:var(--naranja);font-weight:600}
+
+/* RESALTE OBLIGATORIO DE TARJETA */
+.card.warn{box-shadow:0 0 0 3px var(--naranja), 0 30px 60px -40px rgba(230,74,0,.4);animation:shake .4s}
+.card.warn .review-decision{background:rgba(230,74,0,.08);border-radius:18px;padding:14px;border-top-color:transparent}
 .empty{display:none;text-align:center;color:var(--ink-2);padding:60px 20px;background:var(--paper);border-radius:28px}
 
 /* DOCK */
@@ -220,8 +257,11 @@ footer .logo svg{height:84px;margin:0 auto 14px}
   .c-top .badge{display:none}
   .big{font-size:64px}
   .review{padding:18px;margin-top:26px}
-  .seg{width:100%}
-  .seg button{flex:1;justify-content:center;padding:12px 6px;font-size:13.5px;white-space:nowrap;gap:6px}
+  .cm-author-input{width:100%}
+  .cm-form-foot{flex-direction:column;align-items:stretch}
+  .btn-add-cm{justify-content:center;width:100%}
+  .seg{width:100%;flex-direction:row}
+  .seg button{flex:1;justify-content:center;padding:12px 6px;font-size:13px;white-space:nowrap;gap:6px}
   .dock{bottom:12px;padding:6px;gap:6px;border-radius:22px;justify-content:space-between}
   .dock .prog,.dock .sep{display:none}
   .dock input{flex:1;min-width:0;width:auto}
@@ -313,30 +353,115 @@ __DATA__
   [].forEach.call(document.querySelectorAll('[data-logo]'), function(d){ d.innerHTML = $('nexo-logo').innerHTML; });
   try { $('fav').href = 'data:image/svg+xml,' + encodeURIComponent($('nexo-iso').innerHTML.trim()); } catch (e) {}
 
+  function parseComentarios(str, defaultAuthor){
+    if (!str || !String(str).trim()) return [];
+    var lines = String(str).split(/\r?\n/);
+    var result = [], cur = null;
+    lines.forEach(function(line){
+      var t = line.trim();
+      if (!t) return;
+      var m = t.match(/^\[(.*?)\]:\s*(.*)$/);
+      if (m) {
+        if (cur) result.push(cur);
+        cur = { autor: m[1].trim(), texto: m[2].trim(), fecha: '' };
+      } else {
+        if (cur) { cur.texto += '\n' + t; }
+        else { cur = { autor: defaultAuthor || 'Cliente', texto: t, fecha: '' }; }
+      }
+    });
+    if (cur) result.push(cur);
+    return result.length ? result : [{ autor: defaultAuthor || 'Cliente', texto: String(str).trim(), fecha: '' }];
+  }
+
+  function formatComentariosString(list){
+    if (!list || !list.length) return '';
+    return list.map(function(c){
+      return (c.autor ? '[' + c.autor + ']: ' : '') + (c.texto || '');
+    }).join('\n\n');
+  }
+
+  function formatRelTime(isoStr){
+    if (!isoStr) return '';
+    try {
+      var d = new Date(isoStr);
+      if (isNaN(d.getTime())) return '';
+      return d.toLocaleDateString('es-VE', {day:'2-digit', month:'short'}) + ' ' + d.toLocaleTimeString('es-VE', {hour:'2-digit', minute:'2-digit'});
+    } catch(e){ return ''; }
+  }
+
+  function getReviewerName(){
+    var whoEl = $('who');
+    var w = whoEl ? whoEl.value.trim() : '';
+    if (w) return w;
+    try {
+      var stored = localStorage.getItem('nexo_reviewer_name') || '';
+      if (stored) return stored;
+    } catch(e){}
+    return DATA.revision.revisadoPor || '';
+  }
+
+  function setReviewerName(name){
+    if (!name || !name.trim()) return;
+    var trimmed = name.trim();
+    DATA.revision.revisadoPor = trimmed;
+    var whoEl = $('who');
+    if (whoEl) whoEl.value = trimmed;
+    try { localStorage.setItem('nexo_reviewer_name', trimmed); } catch(e){}
+    document.querySelectorAll('.cm-author-input').forEach(function(inp){
+      if (!inp.value.trim()) inp.value = trimmed;
+    });
+  }
+
   items.forEach(function(it, i){
     if (!it.id) it.id = 'c' + (i + 1);
     if (['pendiente','aprobado','cambios'].indexOf(it.estado) < 0) it.estado = 'pendiente';
     if (typeof it.comentario !== 'string') it.comentario = '';
+    if (!Array.isArray(it.comentarios)) it.comentarios = [];
     if (typeof it.formatoOriginal !== 'string') it.formatoOriginal = it.formato || '';
+    if (it.comentario && !it.comentarios.length) {
+      it.comentarios = parseComentarios(it.comentario, it.revisadoPor || DATA.revision.revisadoPor || '');
+    }
   });
   DATA.revision = DATA.revision || {revisadoPor:'', fecha:''};
 
-  // Borrador local (solo comodidad del cliente; el archivo descargado es la fuente oficial)
+  // Borrador local (recuperar revisión en curso)
   if (!DATA.revision.fecha) {
     try {
       var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
       if (saved && saved.items) {
-        items.forEach(function(it){ var s = saved.items[it.id]; if (s) { it.estado = s.estado; it.comentario = s.comentario; if (s.formato) it.formato = s.formato; } });
-        if (saved.who) DATA.revision.revisadoPor = saved.who;
+        items.forEach(function(it){
+          var s = saved.items[it.id];
+          if (s) {
+            it.estado = s.estado;
+            it.comentario = s.comentario;
+            if (s.formato) it.formato = s.formato;
+            if (Array.isArray(s.comentarios) && s.comentarios.length) it.comentarios = s.comentarios;
+            if (s.revisadoPor) it.revisadoPor = s.revisadoPor;
+          }
+        });
+        if (saved.who) {
+          DATA.revision.revisadoPor = saved.who;
+          setReviewerName(saved.who);
+        }
         setTimeout(function(){ toast('Recuperamos tu revisión en curso'); }, 600);
       }
     } catch (e) {}
   }
   function saveDraft(){
     try {
-      var o = {who: $('who').value, items: {}};
-      items.forEach(function(it){ o.items[it.id] = {estado: it.estado, comentario: it.comentario, formato: it.formato}; });
+      var whoVal = getReviewerName();
+      var o = {who: whoVal, items: {}};
+      items.forEach(function(it){
+        o.items[it.id] = {
+          estado: it.estado,
+          comentario: it.comentario,
+          formato: it.formato,
+          comentarios: it.comentarios,
+          revisadoPor: it.revisadoPor
+        };
+      });
       localStorage.setItem(KEY, JSON.stringify(o));
+      if (whoVal) localStorage.setItem('nexo_reviewer_name', whoVal);
     } catch (e) {}
   }
 
@@ -410,38 +535,163 @@ __DATA__
     }
     card.appendChild(body);
 
-    var rv = el('div', 'review'); var rh = el('div', 'review-h');
-    rh.appendChild(el('h4', null, '¿Qué te parece este contenido?'));
+    var rv = el('div', 'review');
+
+    // 1. BLOQUE DE COMENTARIOS (ARRIBA)
+    var cmBox = el('div', 'comment-box');
+    var cmHead = el('div', 'cm-head');
+    cmHead.appendChild(el('h4', null, '💬 Comentarios y observaciones'));
+    cmHead.appendChild(el('span', 'cm-sub', 'Cualquier persona del equipo puede dejar comentarios'));
+    cmBox.appendChild(cmHead);
+
+    var cmThread = el('div', 'cm-thread');
+    cmBox.appendChild(cmThread);
+
+    function renderThread(){
+      cmThread.innerHTML = '';
+      (it.comentarios || []).forEach(function(cm, idx){
+        var bubble = el('div', 'cm-bubble');
+        var initial = (cm.autor || 'C').trim().charAt(0).toUpperCase();
+        bubble.appendChild(el('div', 'cm-av', initial || 'C'));
+        var r = el('div', 'cm-right');
+        var topRow = el('div', 'cm-top');
+        topRow.appendChild(el('b', 'cm-author', cm.autor || 'Cliente'));
+        if (cm.fecha) topRow.appendChild(el('span', 'cm-date', formatRelTime(cm.fecha)));
+        var delBtn = el('button', 'cm-del', '×');
+        delBtn.type = 'button';
+        delBtn.title = 'Eliminar este comentario';
+        delBtn.onclick = function(){
+          it.comentarios.splice(idx, 1);
+          it.comentario = formatComentariosString(it.comentarios);
+          renderThread(); saveDraft();
+        };
+        topRow.appendChild(delBtn);
+        r.appendChild(topRow);
+        r.appendChild(el('p', 'cm-txt', cm.texto));
+        bubble.appendChild(r);
+        cmThread.appendChild(bubble);
+      });
+      cmThread.style.display = (it.comentarios && it.comentarios.length) ? 'grid' : 'none';
+    }
+
+    var cmForm = el('div', 'cm-form');
+    var authorInp = el('input', 'cm-author-input');
+    authorInp.type = 'text';
+    authorInp.placeholder = 'Tu nombre (ej: Carlos, María)';
+    authorInp.value = getReviewerName();
+    authorInp.addEventListener('input', function(){
+      if (authorInp.value.trim()) setReviewerName(authorInp.value.trim());
+      authorInp.classList.remove('err');
+    });
+    cmForm.appendChild(authorInp);
+
+    var ta = el('textarea', 'cm-textarea');
+    ta.placeholder = 'Escribe aquí tu comentario, ajuste o sugerencia…';
+    cmForm.appendChild(ta);
+
+    var formFoot = el('div', 'cm-form-foot');
+    var hint = el('span', 'hint', '✎ Si pides cambios, debes detallar qué ajustar para poder enviar.');
+    formFoot.appendChild(hint);
+
+    var btnAdd = el('button', 'btn-add-cm', '+ Agregar comentario');
+    btnAdd.type = 'button';
+
+    function addCommentFromInput(){
+      var txt = ta.value.trim();
+      if (!txt) return false;
+      var auth = authorInp.value.trim() || getReviewerName();
+      if (!auth) {
+        authorInp.classList.add('err');
+        authorInp.focus();
+        toast('Escribe tu nombre para firmar el comentario');
+        return false;
+      }
+      setReviewerName(auth);
+      it.comentarios = it.comentarios || [];
+      it.comentarios.push({ autor: auth, texto: txt, fecha: new Date().toISOString() });
+      it.comentario = formatComentariosString(it.comentarios);
+      it.revisadoPor = auth;
+      ta.value = '';
+      card.classList.remove('warn');
+      renderThread();
+      saveDraft();
+      toast('✓ Comentario agregado');
+      return true;
+    }
+
+    btnAdd.onclick = function(){ addCommentFromInput(); };
+    formFoot.appendChild(btnAdd);
+    cmForm.appendChild(formFoot);
+    cmBox.appendChild(cmForm);
+    rv.appendChild(cmBox);
+
+    // 2. BLOQUE DE DECISIÓN (ABAJO DEL COMENTARIO — PASO OBLIGATORIO)
+    var decSec = el('div', 'review-decision');
+    var decHead = el('div', 'dec-head');
+    decHead.appendChild(el('h4', null, '¿Cuál es tu decisión sobre este contenido?'));
+    decHead.appendChild(el('span', 'req-badge', '* Paso obligatorio'));
+    decSec.appendChild(decHead);
+
     var seg = el('div', 'seg');
     var ap = el('button', 'approve'); ap.type = 'button'; ap.innerHTML = '<span class="ic">✓</span>Aprobar';
     var ch = el('button', 'change'); ch.type = 'button'; ch.innerHTML = '<span class="ic">✎</span>Pedir cambios';
-    seg.appendChild(ap); seg.appendChild(ch); rh.appendChild(seg); rv.appendChild(rh);
-    var cm = el('div', 'comment'); var ta = el('textarea'); ta.textContent = it.comentario; ta.value = it.comentario;
-    ta.placeholder = 'Déjanos un comentario o sugerencia (opcional si apruebas)';
-    cm.appendChild(ta); cm.appendChild(el('div', 'hint', '✎ Cuéntanos qué te gustaría ajustar: mientras más detalle, más rápido lo resolvemos.'));
-    rv.appendChild(cm); card.appendChild(rv);
+    seg.appendChild(ap); seg.appendChild(ch);
+    decSec.appendChild(seg);
+
+    var decStatus = el('div', 'dec-status', '• Pendiente de evaluación (obligatorio)');
+    decSec.appendChild(decStatus);
+    rv.appendChild(decSec);
+    card.appendChild(rv);
+
     list.appendChild(card);
 
     var a = el('a'); a.href = '#' + it.id; a.dataset.state = it.estado;
     a.appendChild(el('span', 'n', num)); a.appendChild(el('span', 't', it.titulo || 'Contenido ' + num));
     nav.appendChild(a);
 
+    renderThread();
+
     function paint(){
       card.dataset.state = it.estado; a.dataset.state = it.estado; badge.textContent = LBL[it.estado];
       ap.classList.toggle('on', it.estado === 'aprobado'); ch.classList.toggle('on', it.estado === 'cambios');
       ap.setAttribute('aria-pressed', it.estado === 'aprobado'); ch.setAttribute('aria-pressed', it.estado === 'cambios');
-      ta.placeholder = it.estado === 'cambios' ? 'Cuéntanos qué te gustaría ajustar' : 'Déjanos un comentario o sugerencia (opcional si apruebas)';
+      if (it.estado === 'aprobado') {
+        decStatus.className = 'dec-status ok';
+        decStatus.textContent = '✓ Marcado como Aprobado';
+      } else if (it.estado === 'cambios') {
+        decStatus.className = 'dec-status fix';
+        decStatus.textContent = '✎ Marcado para Solicitar cambios (indica qué ajustar arriba)';
+      } else {
+        decStatus.className = 'dec-status';
+        decStatus.textContent = '• Pendiente de evaluación (obligatorio)';
+      }
     }
+
     function set(s){
-      it.estado = it.estado === s ? 'pendiente' : s; card.classList.remove('warn');
+      // Si el usuario escribió un texto en el textarea y no tocó "Agregar comentario", se guarda automáticamente
+      if (ta.value.trim()) addCommentFromInput();
+
+      it.estado = it.estado === s ? 'pendiente' : s;
+      card.classList.remove('warn');
       paint(); refresh(); applyFilter(); saveDraft();
-      if (it.estado === 'cambios') ta.focus({preventScroll:true});
+
+      if (it.estado === 'cambios') {
+        var hasComments = (it.comentarios && it.comentarios.length > 0);
+        if (!hasComments) {
+          ta.placeholder = 'Cuéntanos qué te gustaría ajustar (requerido para pedir cambios)…';
+          ta.focus({preventScroll:true});
+        }
+      }
     }
+
     ap.onclick = function(){ set('aprobado'); };
     ch.onclick = function(){ set('cambios'); };
-    ta.addEventListener('input', function(){ it.comentario = ta.value; card.classList.remove('warn'); saveDraft(); });
+
+    // Guardar referencia a la función de auto-commit para validación global
+    card.__commitDraftComment = addCommentFromInput;
+
     paint();
-    cards.push({card: card, nav: a, it: it});
+    cards.push({card: card, nav: a, it: it, commitComment: addCommentFromInput});
   });
 
   function counts(){ var o = {aprobado:0, cambios:0, pendiente:0}; items.forEach(function(it){ o[it.estado]++; }); return o; }
@@ -494,8 +744,15 @@ __DATA__
 
   function slug(s){ return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
 
+  function commitAllDraftComments(){
+    cards.forEach(function(c){
+      if (c.commitComment) c.commitComment();
+    });
+  }
+
   // Copia estática del tablero (se ve aunque el visor no ejecute JavaScript, p. ej. vista previa del iPhone)
   function buildHTML(){
+    commitAllDraftComments();
     DATA.contenidos = items;
     var root = document.documentElement.cloneNode(true);
     root.className = root.className.replace(/\bjs\b/, 'no-js');
@@ -519,7 +776,9 @@ __DATA__
   if (SEND) { document.body.classList.add('has-send'); $('dl').textContent = 'Enviar revisión ✓'; }
 
   function doDownload(){
-    if (!DATA.revision.fecha) DATA.revision = {revisadoPor: $('who').value.trim(), fecha: new Date().toISOString()};
+    commitAllDraftComments();
+    var revName = getReviewerName() || 'Cliente';
+    if (!DATA.revision.fecha) DATA.revision = {revisadoPor: revName, fecha: new Date().toISOString()};
     var html = buildHTML();
     var name = 'Revision-' + slug(DATA.cliente) + '-' + slug(DATA.mes) + '-' + (DATA.anio || '') + '.html';
     var blob = new Blob([html], {type:'text/html;charset=utf-8'});
@@ -532,16 +791,41 @@ __DATA__
 
   // Envío automático a la hoja de Google de Nexo (Apps Script)
   function doSend(){
-    DATA.revision = {revisadoPor: $('who').value.trim(), fecha: new Date().toISOString()};
-    var payload = {action:'revision', id: DATA.id, cliente: DATA.cliente, mes: DATA.mes, anio: DATA.anio, url: DATA.url || location.href,
-      revisadoPor: DATA.revision.revisadoPor, fecha: DATA.revision.fecha,
-      contenidos: items.map(function(it, i){ return {n: i + 1, titulo: it.titulo || '', formatoOriginal: it.formatoOriginal || '', formato: it.formato || '', estado: it.estado, comentario: it.comentario || ''}; })};
+    commitAllDraftComments();
+    var revName = getReviewerName() || 'Cliente';
+    DATA.revision = {revisadoPor: revName, fecha: new Date().toISOString()};
+    var payload = {
+      action: 'revision',
+      id: DATA.id,
+      cliente: DATA.cliente,
+      mes: DATA.mes,
+      anio: DATA.anio,
+      url: DATA.url || location.href,
+      revisadoPor: DATA.revision.revisadoPor,
+      fecha: DATA.revision.fecha,
+      contenidos: items.map(function(it, i){
+        var cList = (it.comentarios && it.comentarios.length) ? it.comentarios : (it.comentario ? [{ autor: it.revisadoPor || revName, texto: it.comentario, fecha: '' }] : []);
+        var fullComment = formatComentariosString(cList) || it.comentario || '';
+        var lastAuthor = (cList.length && cList[cList.length - 1].autor) ? cList[cList.length - 1].autor : (it.revisadoPor || revName);
+        return {
+          n: i + 1,
+          id: it.id || ('c' + (i + 1)),
+          titulo: it.titulo || '',
+          formatoOriginal: it.formatoOriginal || '',
+          formato: it.formato || '',
+          estado: it.estado,
+          comentario: fullComment,
+          comentarios: cList,
+          revisadoPor: lastAuthor
+        };
+      })
+    };
     var body = JSON.stringify(payload), btn = $('dl');
     btn.disabled = true; btn.textContent = 'Enviando…';
     function ok(){
       btn.disabled = false; btn.textContent = 'Enviar revisión ✓'; saveDraft();
       var k = counts();
-      modal({kind:'ok', icon:'✓', title:'¡Revisión enviada!', text:'Nexo ya recibió tus respuestas: ' + k.aprobado + ' aprobados, ' + k.cambios + ' con cambios' + (k.pendiente ? ' y ' + k.pendiente + ' pendientes' : '') + '. Si cambias algo, puedes volver a enviarla.', buttons:[{label:'Descargar una copia', fn:doDownload}, {label:'Listo', primary:true}]});
+      modal({kind:'ok', icon:'✓', title:'¡Revisión enviada!', text:'Nexo ya recibió tus respuestas: ' + k.aprobado + ' aprobados y ' + k.cambios + ' con cambios. Si cambias algo, puedes volver a enviarla.', buttons:[{label:'Descargar una copia', fn:doDownload}, {label:'Listo', primary:true}]});
     }
     function fail(){
       btn.disabled = false; btn.textContent = 'Enviar revisión ✓';
@@ -556,33 +840,94 @@ __DATA__
       });
   }
 
+  // VALIDACIÓN OBLIGATORIA (EN PC Y CELULARES)
   function validate(next, label){
+    commitAllDraftComments();
+
     var who = $('who');
-    if (!who.value.trim()) { who.classList.remove('err'); void who.offsetWidth; who.classList.add('err'); who.focus(); toast('Escribe tu nombre para firmar la revisión'); return; }
-    var sinComentario = cards.filter(function(c){ return c.it.estado === 'cambios' && !c.it.comentario.trim(); });
-    function pendingStep(){
-      var pend = cards.filter(function(c){ return c.it.estado === 'pendiente'; });
-      if (pend.length) {
-        modal({kind:'warn', icon:'!', title:pend.length === 1 ? 'Te falta 1 contenido por revisar' : 'Te faltan ' + pend.length + ' contenidos por revisar', text:'Puedes continuar y los pendientes quedarán sin respuesta, o terminar de revisarlos primero.',
-          buttons:[{label:label + ' igual', fn:next}, {label:'Seguir revisando', primary:true, fn:function(){ f = 'all'; applyFilter(); pend[0].card.scrollIntoView({behavior:'smooth', block:'center'}); }}]});
-        return;
-      }
-      next();
+    var reviewerName = getReviewerName();
+    if (!reviewerName) {
+      who.classList.remove('err'); void who.offsetWidth; who.classList.add('err');
+      who.focus();
+      toast('Escribe tu nombre para firmar la revisión');
+      modal({
+        kind: 'warn',
+        icon: '👤',
+        title: 'Tu nombre es obligatorio',
+        text: 'Por favor escribe tu nombre o cargo en el campo inferior para saber quién realiza la revisión.',
+        buttons: [{
+          label: 'Escribir mi nombre',
+          primary: true,
+          fn: function(){ who.focus(); }
+        }]
+      });
+      return;
     }
+    setReviewerName(reviewerName);
+
+    // 1. PASO OBLIGATORIO: Todos los contenidos deben estar evaluados (Aprobar o Solicitar cambios)
+    var pend = cards.filter(function(c){ return c.it.estado === 'pendiente'; });
+    if (pend.length) {
+      f = 'all'; applyFilter();
+      [].forEach.call(document.querySelectorAll('.chip'), function(x){ x.classList.toggle('on', x.dataset.f === 'all'); });
+      cards.forEach(function(c){ c.card.classList.remove('warn'); });
+      pend.forEach(function(c){ c.card.classList.add('warn'); });
+      pend[0].card.scrollIntoView({behavior:'smooth', block:'center'});
+
+      modal({
+        kind: 'warn',
+        icon: '!',
+        title: pend.length === 1 ? 'Paso obligatorio: falta 1 contenido por evaluar' : 'Paso obligatorio: faltan ' + pend.length + ' contenidos por evaluar',
+        text: 'Debes evaluar todos los contenidos (Aprobar o Solicitar cambios) antes de enviar la revisión. No se pueden dejar contenidos pendientes.',
+        list: pend.map(function(c){ return c.nav.textContent.replace(/^(\d+)/, '$1 · '); }),
+        buttons: [{
+          label: 'Evaluar pendientes ahora',
+          primary: true,
+          fn: function(){
+            f = 'all'; applyFilter();
+            pend[0].card.scrollIntoView({behavior:'smooth', block:'center'});
+          }
+        }]
+      });
+      return;
+    }
+
+    // 2. PASO OBLIGATORIO: Si se solicitaron cambios, debe existir comentario explicando qué ajustar
+    var sinComentario = cards.filter(function(c){
+      if (c.it.estado !== 'cambios') return false;
+      var hasComments = (c.it.comentarios && c.it.comentarios.length > 0 && c.it.comentarios.some(function(x){ return x.texto && x.texto.trim(); }));
+      var hasSingle = !!(c.it.comentario && c.it.comentario.trim());
+      return !hasComments && !hasSingle;
+    });
+
     if (sinComentario.length) {
+      f = 'all'; applyFilter();
+      [].forEach.call(document.querySelectorAll('.chip'), function(x){ x.classList.toggle('on', x.dataset.f === 'all'); });
+      cards.forEach(function(c){ c.card.classList.remove('warn'); });
       sinComentario.forEach(function(c){ c.card.classList.add('warn'); });
-      modal({kind:'warn', icon:'✎', title:'Cuéntanos qué cambiar', text:'Pediste cambios en estos contenidos pero no dejaste comentario:', list:sinComentario.map(function(c){ return c.nav.textContent.replace(/^(\d+)/, '$1 · '); }),
-        buttons:[{label:label + ' igual', fn:pendingStep}, {label:'Escribir comentario', primary:true, fn:function(){ f = 'all'; applyFilter(); sinComentario[0].card.scrollIntoView({behavior:'smooth', block:'center'}); sinComentario[0].card.querySelector('textarea').focus({preventScroll:true}); }}]});
+      sinComentario[0].card.scrollIntoView({behavior:'smooth', block:'center'});
+
+      modal({
+        kind: 'warn',
+        icon: '✎',
+        title: 'Cuéntanos qué debemos ajustar',
+        text: 'Marcaste "Pedir cambios" pero es obligatorio indicar el ajuste solicitado en:',
+        list: sinComentario.map(function(c){ return c.nav.textContent.replace(/^(\d+)/, '$1 · '); }),
+        buttons: [{
+          label: 'Escribir detalle del cambio',
+          primary: true,
+          fn: function(){
+            f = 'all'; applyFilter();
+            sinComentario[0].card.scrollIntoView({behavior:'smooth', block:'center'});
+            var ta = sinComentario[0].card.querySelector('.cm-textarea');
+            if (ta) ta.focus({preventScroll:true});
+          }
+        }]
+      });
       return;
     }
-    var comentadosSinEstado = cards.filter(function(c){ return c.it.estado === 'pendiente' && c.it.comentario.trim(); });
-    if (comentadosSinEstado.length) {
-      comentadosSinEstado.forEach(function(c){ c.card.classList.add('warn'); });
-      modal({kind:'warn', icon:'✓', title:'Marca tu respuesta', text:'Dejaste comentario pero falta marcar si apruebas o pides cambios en:', list:comentadosSinEstado.map(function(c){ return c.nav.textContent.replace(/^(\d+)/, '$1 · '); }),
-        buttons:[{label:label + ' igual', fn:pendingStep}, {label:'Elegir respuesta', primary:true, fn:function(){ f = 'all'; applyFilter(); comentadosSinEstado[0].card.scrollIntoView({behavior:'smooth', block:'center'}); }}]});
-      return;
-    }
-    pendingStep();
+
+    next();
   }
 
   $('dl').onclick = function(){ if (SEND) validate(doSend, 'Enviar'); else validate(doDownload, 'Descargar'); };

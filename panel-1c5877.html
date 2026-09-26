@@ -136,6 +136,18 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
 .p-feedback.pendiente{background:var(--bg);border:1px solid var(--line);color:var(--ink-2)}
 .p-fb-title{font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:6px}
 .p-fb-text{font-size:14.5px;line-height:1.55;white-space:pre-line;font-weight:500}
+.p-tag.reviewer{background:rgba(31,53,73,.08);color:var(--azul);font-weight:700}
+.p-fb-thread{display:grid;gap:8px;margin-top:6px}
+.p-fb-comment{background:rgba(255,255,255,.8);border-radius:14px;padding:10px 14px;border:1px solid rgba(0,0,0,.06)}
+.p-fb-comment.ok{background:rgba(255,255,255,.85)}
+.p-fb-c-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px}
+.p-fb-c-author{font-size:12.5px;font-weight:700;color:var(--ink)}
+.p-fb-c-time{font-size:11px;color:var(--gris)}
+.p-fb-c-text{font-size:14px;line-height:1.5;color:var(--ink);white-space:pre-line}
+.p-fb-fmt-change{font-size:13px;padding:6px 12px;background:rgba(255,255,255,.7);border-radius:10px;margin-top:4px}
+.fmt-badge{font-size:11.5px;padding:2px 8px;border-radius:6px;font-weight:700}
+.fmt-badge.old{background:rgba(230,74,0,.15);color:var(--naranja)}
+.fmt-badge.new{background:var(--azul);color:#fff}
 .p-card-foot{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line);flex-wrap:wrap;align-items:center}
 .btn-mini{border:0;background:var(--bg);color:var(--ink-2);font-size:12px;font-weight:600;padding:6px 14px;border-radius:99px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .15s}
 .btn-mini:hover{background:var(--azul-soft);color:var(--azul)}
@@ -335,6 +347,35 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
       });
   }
 
+  function parseComentarios(str, defaultAuthor){
+    if (!str || !String(str).trim()) return [];
+    var lines = String(str).split(/\r?\n/);
+    var result = [], cur = null;
+    lines.forEach(function(line){
+      var t = line.trim();
+      if (!t) return;
+      var m = t.match(/^\[(.*?)\]:\s*(.*)$/);
+      if (m) {
+        if (cur) result.push(cur);
+        cur = { autor: m[1].trim(), texto: m[2].trim(), fecha: '' };
+      } else {
+        if (cur) { cur.texto += '\n' + t; }
+        else { cur = { autor: defaultAuthor || 'Cliente', texto: t, fecha: '' }; }
+      }
+    });
+    if (cur) result.push(cur);
+    return result.length ? result : [{ autor: defaultAuthor || 'Cliente', texto: String(str).trim(), fecha: '' }];
+  }
+
+  function formatRelTime(isoStr){
+    if (!isoStr) return '';
+    try {
+      var d = new Date(isoStr);
+      if (isNaN(d.getTime())) return '';
+      return d.toLocaleDateString('es-VE', {day:'2-digit', month:'short'}) + ' ' + d.toLocaleTimeString('es-VE', {hour:'2-digit', minute:'2-digit'});
+    } catch(e){ return ''; }
+  }
+
   // Fusiona los contenidos del tablero con las respuestas de Google Sheets y las ediciones locales
   function getMergedItems(t, boardData){
     var raw = (boardData && boardData.contenidos) ? boardData.contenidos : [];
@@ -360,6 +401,20 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
         if (d.formatoOriginal) copy.formatoOriginal = d.formatoOriginal;
         if (d.revisadoPor) copy.revisadoPor = d.revisadoPor;
         if (d.fecha) copy.fechaRevision = d.fecha;
+      }
+
+      // Si revisadoPor no se encontró a nivel de detalle, buscarlo a nivel de tablero
+      if (!copy.revisadoPor) {
+        copy.revisadoPor = (boardData && boardData.revision && boardData.revision.revisadoPor) || t.revisadoPor || '';
+      }
+
+      // Procesar comentarios estructurados si no vienen como array
+      if (!Array.isArray(copy.comentarios) || !copy.comentarios.length) {
+        if (copy.comentario) {
+          copy.comentarios = parseComentarios(copy.comentario, copy.revisadoPor || 'Cliente');
+        } else {
+          copy.comentarios = [];
+        }
       }
 
       // Fusionar desde las ediciones locales en panel
@@ -538,16 +593,26 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
         docHtml.push('</div>');
       }
 
-      if (it.comentario && it.comentario.trim()) {
+      var reviewerItem = it.revisadoPor || revisor || 'el cliente';
+      var comList = (it.comentarios && it.comentarios.length) ? it.comentarios : parseComentarios(it.comentario, reviewerItem);
+      if (comList.length || (it.comentario && it.comentario.trim())) {
         var isChange = it.estado === 'cambios';
         var cls = isChange ? 'client-change' : 'client-comment';
-        var lbl = isChange ? 'Ajuste solicitado por el cliente:' : 'Nota / comentario de aprobación del cliente:';
-        docHtml.push(
-          '<div class="' + cls + '">',
-          '<b>' + lbl + '</b> “' + escapeHtml(it.comentario.trim()) + '”',
-          (it.formato && it.formatoOriginal && it.formato !== it.formatoOriginal) ? '<div style="margin-top:4pt;"><b>Cambio de formato solicitado:</b> ' + escapeHtml(it.formatoOriginal) + ' → ' + escapeHtml(it.formato) + '</div>' : '',
-          '</div>'
-        );
+        var headerLbl = isChange ? ('Ajustes solicitados (' + escapeHtml(reviewerItem) + '):') : ('Comentarios de aprobación (' + escapeHtml(reviewerItem) + '):');
+        docHtml.push('<div class="' + cls + '"><b>' + headerLbl + '</b>');
+        if (comList.length > 1) {
+          comList.forEach(function(cm){
+            docHtml.push('<div style="margin-top:4pt;padding-left:6pt;border-left:1.5pt solid currentColor;"><b>' + escapeHtml(cm.autor || reviewerItem) + ':</b> “' + escapeHtml(cm.texto) + '”</div>');
+          });
+        } else {
+          var singleTxt = comList.length ? comList[0].texto : it.comentario.trim();
+          var singleAut = (comList.length && comList[0].autor) ? comList[0].autor : reviewerItem;
+          docHtml.push('<div style="margin-top:2pt;">“' + escapeHtml(singleTxt) + '” <span style="font-size:8.5pt;opacity:.8;">— ' + escapeHtml(singleAut) + '</span></div>');
+        }
+        if (it.formato && it.formatoOriginal && it.formato !== it.formatoOriginal) {
+          docHtml.push('<div style="margin-top:4pt;font-weight:bold;">Cambio de formato solicitado: ' + escapeHtml(it.formatoOriginal) + ' → ' + escapeHtml(it.formato) + '</div>');
+        }
+        docHtml.push('</div>');
       }
 
       docHtml.push('</div></div>');
@@ -836,6 +901,9 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
                 if (item.fechaPublicacion) {
                   tags.appendChild(el('span', 'p-tag date', '📅 ' + item.fechaPublicacion));
                 }
+                if (item.revisadoPor) {
+                  tags.appendChild(el('span', 'p-tag reviewer', '👤 ' + item.revisadoPor));
+                }
                 if (item._isEdited) {
                   tags.appendChild(el('span', 'p-tag edited', '✎ Editado'));
                 }
@@ -1044,21 +1112,64 @@ header h1 b{display:block;font-size:20px;letter-spacing:-.01em;text-transform:no
 
                   // Bloque de Revisión / Ajustes solicitados
                   var fb = el('div', 'p-feedback ' + item.estado);
+                  var reviewer = item.revisadoPor || t.revisadoPor || (bData && bData.revision && bData.revision.revisadoPor) || '';
+                  var comList = (item.comentarios && item.comentarios.length) ? item.comentarios : parseComentarios(item.comentario, reviewer);
+
                   if (item.estado === 'cambios') {
-                    fb.appendChild(el('div', 'p-fb-title', '✎ AJUSTE SOLICITADO POR EL CLIENTE:'));
-                    var fbTxt = item.comentario ? '“' + item.comentario + '”' : '(El cliente marcó pedir cambios pero no detalló comentario escrito)';
-                    fb.appendChild(el('div', 'p-fb-text', fbTxt));
+                    var titleText = '✎ AJUSTES SOLICITADOS' + (reviewer ? ' · ' + reviewer.toUpperCase() : '');
+                    fb.appendChild(el('div', 'p-fb-title', titleText));
+
                     if (isFmtChanged) {
-                      fb.appendChild(el('div', 'p-fb-text', '• Cambio de formato solicitado: de ' + item.formatoOriginal + ' a ' + item.formato));
+                      var fmtBox = el('div', 'p-fb-fmt-change');
+                      fmtBox.innerHTML = '<b>Cambio de formato:</b> de <span class="fmt-badge old">' + escapeHtml(item.formatoOriginal) + '</span> a <span class="fmt-badge new">' + escapeHtml(item.formato) + '</span>';
+                      fb.appendChild(fmtBox);
+                    }
+
+                    if (comList.length) {
+                      var thread = el('div', 'p-fb-thread');
+                      comList.forEach(function(cm){
+                        var cBox = el('div', 'p-fb-comment');
+                        var cHead = el('div', 'p-fb-c-head');
+                        var cAuth = el('span', 'p-fb-c-author', '👤 ' + (cm.autor || reviewer || 'Cliente'));
+                        cHead.appendChild(cAuth);
+                        if (cm.fecha) {
+                          cHead.appendChild(el('span', 'p-fb-c-time', formatRelTime(cm.fecha)));
+                        }
+                        cBox.appendChild(cHead);
+                        cBox.appendChild(el('div', 'p-fb-c-text', '“' + cm.texto + '”'));
+                        thread.appendChild(cBox);
+                      });
+                      fb.appendChild(thread);
+                    } else if (item.comentario) {
+                      fb.appendChild(el('div', 'p-fb-text', '“' + item.comentario + '”'));
+                    } else {
+                      fb.appendChild(el('div', 'p-fb-text', '(Marcado para pedir cambios sin detalle escrito)'));
                     }
                   } else if (item.estado === 'aprobado') {
-                    fb.appendChild(el('div', 'p-fb-title', '✓ APROBADO POR EL CLIENTE'));
-                    if (item.comentario) {
-                      fb.appendChild(el('div', 'p-fb-text', 'Comentario del cliente: “' + item.comentario + '”'));
+                    var titleText = '✓ APROBADO' + (reviewer ? ' POR ' + reviewer.toUpperCase() : '');
+                    fb.appendChild(el('div', 'p-fb-title', titleText));
+
+                    if (comList.length) {
+                      var thread = el('div', 'p-fb-thread');
+                      comList.forEach(function(cm){
+                        var cBox = el('div', 'p-fb-comment ok');
+                        var cHead = el('div', 'p-fb-c-head');
+                        var cAuth = el('span', 'p-fb-c-author', '👤 ' + (cm.autor || reviewer || 'Cliente'));
+                        cHead.appendChild(cAuth);
+                        if (cm.fecha) {
+                          cHead.appendChild(el('span', 'p-fb-c-time', formatRelTime(cm.fecha)));
+                        }
+                        cBox.appendChild(cHead);
+                        cBox.appendChild(el('div', 'p-fb-c-text', '“' + cm.texto + '”'));
+                        thread.appendChild(cBox);
+                      });
+                      fb.appendChild(thread);
+                    } else if (item.comentario) {
+                      fb.appendChild(el('div', 'p-fb-text', 'Comentario de aprobación: “' + item.comentario + '”'));
                     }
                   } else {
                     fb.appendChild(el('div', 'p-fb-title', '• PENDIENTE DE RESPUESTA'));
-                    fb.appendChild(el('div', 'p-fb-text', 'El cliente aún no ha revisado ni emitido respuesta para esta pieza.'));
+                    fb.appendChild(el('div', 'p-fb-text', 'Aún no se ha emitido respuesta para esta pieza.'));
                   }
                   card.appendChild(fb);
 

@@ -59,3 +59,11 @@ Si Carlos pide **reiniciar un tablero**:
 - `panel-*.html`: panel interno de aprobaciones de Nexo.
 - `borradores/`: borradores JSON de trabajo (privados, ignorados en git).
 - La configuración privada (`../.nexo-config.json`) vive **fuera** del repositorio. Nunca la copies al repositorio público.
+
+## Banco de trabajo (index.html)
+
+El archivo `index.html` es el Banco de Trabajo interno de Nexo para gestionar y visualizar todos los tableros creados:
+- Se alimenta dinámicamente del endpoint mediante la clave de acceso privada.
+- Agrupa los tableros por cliente de forma automática (mes más reciente como principal e historial desplegable para meses previos).
+- **Regla estricta de seguridad**: Nunca se escriben nombres de clientes, URLs de tableros ni claves dentro del archivo `index.html`, preservando la privacidad en el repositorio público.
+

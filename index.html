@@ -227,26 +227,39 @@ body{
   gap:16px;
   flex-wrap:wrap;
 }
-.header-brand{display:flex;align-items:center;gap:12px}
-.brand-badge{
-  width:36px;
-  height:36px;
-  border-radius:10px;
-  background:var(--verde);
-  color:#fff;
-  display:grid;
-  place-items:center;
-  font-weight:800;
-  font-size:17px;
-  box-shadow:0 4px 14px var(--verde-glow);
-}
-.header-brand h1{
-  font-size:19px;
-  font-weight:700;
-  letter-spacing:-.01em;
+.header-brand{
   display:flex;
   align-items:center;
-  gap:8px;
+  gap:12px;
+  cursor:pointer;
+  user-select:none;
+  transition:opacity var(--trans);
+}
+.header-brand:hover{opacity:.92}
+.header-nexo-logo{
+  width:26px;
+  height:38px;
+  flex-shrink:0;
+  filter:drop-shadow(0 2px 8px rgba(92,184,62,.3));
+}
+.header-brand-titles{
+  display:flex;
+  flex-direction:column;
+  gap:1px;
+}
+.header-brand-titles h1{
+  font-size:18px;
+  font-weight:700;
+  letter-spacing:-.01em;
+  color:#fff;
+  line-height:1.2;
+}
+.header-brand-sub{
+  font-size:9.5px;
+  letter-spacing:.22em;
+  color:var(--verde);
+  font-weight:700;
+  text-transform:uppercase;
 }
 .live-pill{
   display:inline-flex;
@@ -335,6 +348,679 @@ body{
   color:#fff;
   box-shadow:0 4px 14px var(--verde-glow);
 }
+
+/* — Espacio de Trabajo Creativo (Hub Principal) — */
+.hub-hero{
+  background:linear-gradient(135deg, rgba(31,53,73,.82) 0%, rgba(19,34,48,.92) 100%);
+  border:1px solid var(--azul-border);
+  border-radius:24px;
+  padding:32px 30px;
+  margin-bottom:30px;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 20px 45px -15px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.12);
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+.hub-hero::before{
+  content:"";
+  position:absolute;
+  top:-60px;
+  right:-40px;
+  width:280px;
+  height:280px;
+  background:radial-gradient(circle, rgba(92,184,62,.2) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hub-hero-brand{
+  display:flex;
+  align-items:center;
+  gap:22px;
+  flex-wrap:wrap;
+  position:relative;
+  z-index:2;
+}
+.hub-hero-logo{
+  width:58px;
+  height:80px;
+  flex-shrink:0;
+  filter:drop-shadow(0 6px 18px rgba(92,184,62,.4));
+  transition:transform var(--trans);
+}
+.hub-hero-logo:hover{
+  transform:scale(1.05) rotate(-1deg);
+}
+.hub-hero-title h2{
+  font-size:26px;
+  font-weight:800;
+  letter-spacing:.02em;
+  color:#fff;
+  line-height:1.2;
+}
+.hub-hero-title h2 span{
+  color:var(--verde);
+}
+.hub-hero-title p{
+  font-size:14px;
+  color:var(--ink-2);
+  margin-top:6px;
+  line-height:1.5;
+  max-width:640px;
+}
+.hub-hero-tags{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  position:relative;
+  z-index:2;
+}
+.hub-tag{
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--azul-border);
+  border-radius:99px;
+  padding:4px 12px;
+  font-size:11.5px;
+  color:var(--ink-2);
+  font-weight:600;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.hub-tag.active{
+  border-color:rgba(92,184,62,.45);
+  color:#fff;
+  background:rgba(92,184,62,.15);
+}
+
+/* Grilla de Categorías del Hub */
+.hub-categories-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(340px, 1fr));
+  gap:24px;
+  margin-bottom:30px;
+}
+@media(max-width:768px){
+  .hub-categories-grid{grid-template-columns:1fr}
+}
+.hub-cat-card{
+  background:rgba(31,53,73,.65);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border:1px solid var(--azul-border);
+  border-radius:24px;
+  padding:28px 24px 26px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  gap:20px;
+  position:relative;
+  overflow:hidden;
+  transition:transform var(--trans), border-color var(--trans), box-shadow var(--trans);
+  box-shadow:0 18px 40px -12px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08);
+}
+.hub-cat-card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(92,184,62,.45);
+  box-shadow:0 24px 48px -10px rgba(0,0,0,.65), 0 0 25px rgba(92,184,62,.14);
+}
+.hub-cat-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.hub-cat-badge{
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  padding:4px 12px;
+  border-radius:99px;
+  background:rgba(92,184,62,.15);
+  color:var(--verde);
+  border:1px solid rgba(92,184,62,.3);
+}
+
+/* Escenario interactivo para dispositivos (MacBook / Cámara) */
+.device-stage{
+  min-height:190px;
+  display:grid;
+  place-items:center;
+  padding:16px 8px;
+  perspective:1000px;
+  position:relative;
+}
+
+/* — Elemento Gráfico Interactivo: MacBook Pro — */
+.macbook-device{
+  width:260px;
+  transition:transform 350ms cubic-bezier(.2,.8,.2,1);
+  transform:rotateX(6deg) rotateY(-5deg);
+  transform-style:preserve-3d;
+  cursor:pointer;
+  user-select:none;
+}
+.hub-cat-card:hover .macbook-device{
+  transform:rotateX(0deg) rotateY(0deg) scale(1.03);
+}
+.macbook-screen-lid{
+  background:#141f2a;
+  border:1.5px solid #2d4157;
+  border-radius:12px 12px 2px 2px;
+  padding:8px 8px 10px;
+  box-shadow:0 12px 28px -6px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.2);
+  position:relative;
+}
+.macbook-notch{
+  position:absolute;
+  top:8px;
+  left:50%;
+  transform:translateX(-50%);
+  width:32px;
+  height:5px;
+  background:#0b131c;
+  border-radius:0 0 4px 4px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:4;
+}
+.macbook-cam{
+  width:3px;
+  height:3px;
+  border-radius:50%;
+  background:#5CB83E;
+  box-shadow:0 0 4px #5CB83E;
+}
+.macbook-display{
+  background:#0d1822;
+  border-radius:6px;
+  padding:8px 10px;
+  height:120px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.06);
+}
+.macbook-glass-shine{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(115deg, rgba(255,255,255,.14) 0%, transparent 45%, rgba(92,184,62,.06) 80%, transparent 100%);
+  pointer-events:none;
+  transition:transform 600ms ease;
+  transform:translateX(-100%);
+}
+.hub-cat-card:hover .macbook-glass-shine{
+  transform:translateX(100%);
+}
+.macbook-topbar{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  margin-bottom:6px;
+}
+.m-dot{width:6px;height:6px;border-radius:50%}
+.m-dot.red{background:#E64A00}
+.m-dot.yellow{background:#d4a017}
+.m-dot.green{background:#5CB83E}
+.m-title{
+  font-size:9px;
+  color:var(--ink-2);
+  margin-left:4px;
+  font-weight:600;
+  letter-spacing:.02em;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.macbook-content-preview{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:6px;
+  height:100%;
+}
+.m-preview-col{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+.m-item-chip{
+  font-size:7.5px;
+  color:var(--ink-2);
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+.m-preview-box{
+  background:rgba(31,53,73,.8);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:4px;
+  padding:5px 4px;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  position:relative;
+  transition:background var(--trans);
+}
+.hub-cat-card:hover .m-preview-box{
+  background:rgba(40,68,94,.9);
+  border-color:rgba(92,184,62,.3);
+}
+.mini-tag{
+  font-size:7px;
+  font-weight:700;
+  padding:1px 3px;
+  border-radius:3px;
+  display:inline-block;
+  line-height:1.2;
+}
+.mini-tag.ok{background:rgba(92,184,62,.25);color:#5CB83E}
+.mini-tag.rev{background:rgba(31,53,73,.6);color:#fff}
+.mini-tag.pend{background:rgba(255,255,255,.1);color:var(--ink-2)}
+.mini-lines span{
+  display:block;
+  height:2.5px;
+  background:rgba(255,255,255,.2);
+  border-radius:2px;
+  margin-top:2px;
+}
+.mini-lines span:last-child{width:65%}
+.mini-play{
+  font-size:8px;
+  color:#5CB83E;
+  text-align:center;
+  margin-top:4px;
+}
+.mini-bars{
+  display:flex;
+  gap:2px;
+  align-items:flex-end;
+  height:10px;
+  margin-top:4px;
+}
+.mini-bars span{
+  flex:1;
+  background:var(--ink-2);
+  border-radius:1px;
+}
+.mini-bars span:nth-child(1){height:40%}
+.mini-bars span:nth-child(2){height:90%;background:#5CB83E}
+.mini-bars span:nth-child(3){height:60%}
+.macbook-base{
+  background:linear-gradient(to bottom, #2b3d4f 0%, #1a2734 100%);
+  height:10px;
+  border-radius:0 0 10px 10px;
+  border:1px solid #364b60;
+  border-top:none;
+  position:relative;
+  box-shadow:0 8px 18px rgba(0,0,0,.5);
+}
+.macbook-keyboard-deck{
+  width:100%;
+  height:100%;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+}
+.macbook-trackpad{
+  width:64px;
+  height:4px;
+  background:rgba(255,255,255,.1);
+  border-radius:0 0 2px 2px;
+  margin-top:1px;
+}
+
+/* — Elemento Gráfico Interactivo: Cámara de Cine — */
+.camera-device{
+  width:230px;
+  transition:transform 350ms cubic-bezier(.2,.8,.2,1);
+  transform:rotateX(4deg) rotateY(4deg);
+  transform-style:preserve-3d;
+  cursor:pointer;
+  user-select:none;
+}
+.hub-cat-card:hover .camera-device{
+  transform:rotateX(0deg) rotateY(0deg) scale(1.03);
+}
+.camera-body{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.camera-top-handle{
+  width:120px;
+  height:12px;
+  background:#1a2735;
+  border:1px solid #334a61;
+  border-radius:4px 4px 0 0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 8px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.2);
+}
+.camera-handle-grip{
+  width:60px;
+  height:4px;
+  background:#0e1720;
+  border-radius:2px;
+}
+.camera-mic-mount{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#283a4c;
+  display:grid;
+  place-items:center;
+}
+.cam-rec-dot{
+  width:4px;
+  height:4px;
+  border-radius:50%;
+  background:#E64A00;
+  box-shadow:0 0 6px #E64A00;
+}
+.camera-chassis{
+  width:230px;
+  background:#14202d;
+  border:1.5px solid #2d4157;
+  border-radius:10px;
+  padding:8px;
+  display:flex;
+  gap:10px;
+  box-shadow:0 12px 28px -6px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.18);
+  position:relative;
+}
+.camera-side-panel{
+  flex:1.2;
+  background:#0e1721;
+  border-radius:6px;
+  border:1px solid rgba(255,255,255,.08);
+  padding:6px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.camera-rec-badge{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  font-size:9px;
+  color:#fff;
+  font-weight:800;
+  letter-spacing:.08em;
+}
+.rec-led{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#E64A00;
+  box-shadow:0 0 8px #E64A00;
+  animation:recBlink 1.2s infinite ease-in-out;
+}
+@keyframes recBlink{
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.25;transform:scale(.75)}
+}
+.camera-monitor{
+  background:#080e14;
+  border-radius:4px;
+  border:1px solid #1e3042;
+  padding:4px 6px;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.cam-mon-header{
+  display:flex;
+  justify-content:space-between;
+  font-size:7px;
+  color:var(--ink-2);
+  font-weight:700;
+}
+.cam-viewfinder{
+  height:44px;
+  border:1px dashed rgba(255,255,255,.15);
+  border-radius:2px;
+  position:relative;
+  display:grid;
+  place-items:center;
+  background:radial-gradient(circle, rgba(92,184,62,.06) 0%, transparent 80%);
+}
+.cam-tc{
+  font-family:monospace;
+  font-size:8.5px;
+  color:#5CB83E;
+  font-weight:700;
+  letter-spacing:.05em;
+  text-shadow:0 0 6px rgba(92,184,62,.6);
+}
+.cam-vu-meters{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.cam-vu{
+  height:2.5px;
+  background:linear-gradient(to right, #5CB83E 70%, #d4a017 85%, #E64A00 100%);
+  border-radius:1px;
+}
+.cam-vu.ch1{width:80%}
+.cam-vu.ch2{width:65%}
+.hub-cat-card:hover .cam-vu.ch1{animation:vuPulse1 1s infinite alternate}
+.hub-cat-card:hover .cam-vu.ch2{animation:vuPulse2 0.8s infinite alternate}
+@keyframes vuPulse1{0%{width:75%} 100%{width:95%}}
+@keyframes vuPulse2{0%{width:60%} 100%{width:88%}}
+.cam-dials{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  font-size:7px;
+  color:var(--ink-2);
+}
+.cam-dial{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:#1a2938;
+  border:1px solid #364d63;
+}
+.cam-card-slot{
+  font-size:6.5px;
+  margin-left:auto;
+  opacity:.6;
+}
+.camera-lens-assembly{
+  flex:0.8;
+  display:grid;
+  place-items:center;
+}
+.matte-box{
+  width:78px;
+  height:78px;
+  background:#182533;
+  border:2px solid #364e66;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  box-shadow:inset 0 0 12px rgba(0,0,0,.7), 0 6px 16px rgba(0,0,0,.4);
+  position:relative;
+}
+.lens-barrel{
+  width:64px;
+  height:64px;
+  border-radius:50%;
+  background:#0f1822;
+  border:1.5px solid #4a6785;
+  display:grid;
+  place-items:center;
+  position:relative;
+  transition:transform 500ms ease;
+}
+.hub-cat-card:hover .lens-barrel{
+  transform:rotate(15deg);
+}
+.lens-aperture-ring{
+  position:absolute;
+  font-size:6px;
+  color:var(--ink-2);
+  font-weight:700;
+  letter-spacing:.02em;
+  bottom:3px;
+}
+.lens-front-element{
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  background:radial-gradient(circle, #0e2a1d 0%, #061118 65%, #020609 100%);
+  border:1px solid #5CB83E;
+  box-shadow:inset 0 0 10px rgba(92,184,62,.4), 0 0 8px rgba(92,184,62,.2);
+  position:relative;
+  overflow:hidden;
+}
+.lens-glass-reflection{
+  position:absolute;
+  top:-20%;
+  left:-20%;
+  width:140%;
+  height:140%;
+  background:linear-gradient(135deg, rgba(92,184,62,.3) 0%, transparent 40%, rgba(255,255,255,.2) 50%, transparent 60%);
+  pointer-events:none;
+}
+.camera-base-plate{
+  width:140px;
+  height:7px;
+  background:#1b2a38;
+  border-radius:0 0 4px 4px;
+  border:1px solid #304457;
+  border-top:none;
+}
+
+/* Textos e informaciones de las categorías */
+.hub-cat-info h3{
+  font-size:21px;
+  font-weight:700;
+  color:#fff;
+  margin-bottom:8px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.hub-cat-info p{
+  font-size:13.5px;
+  color:var(--ink-2);
+  line-height:1.55;
+  margin-bottom:16px;
+}
+.hub-cat-metrics{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:18px;
+}
+.hub-metric-pill{
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--azul-border);
+  border-radius:12px;
+  padding:7px 12px;
+  display:flex;
+  flex-direction:column;
+  gap:1px;
+}
+.hub-metric-pill .v{
+  font-size:16px;
+  font-weight:700;
+  color:#fff;
+}
+.hub-metric-pill .l{
+  font-size:10px;
+  color:var(--ink-2);
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  font-weight:600;
+}
+.hub-metric-pill.ok .v{color:var(--verde)}
+.hub-metric-pill.fix .v{color:var(--naranja)}
+.hub-metric-pill.pend .v{color:var(--ink-2)}
+
+/* Botón de acceso directo a subpágina */
+.btn-category-action{
+  width:100%;
+  min-height:48px;
+  padding:12px 20px;
+  border-radius:12px;
+  background:var(--verde);
+  color:#fff;
+  font:inherit;
+  font-size:14.5px;
+  font-weight:700;
+  border:0;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  box-shadow:0 8px 20px -4px var(--verde-glow);
+  transition:all var(--trans);
+  text-decoration:none;
+}
+.btn-category-action:hover{
+  filter:brightness(1.08);
+  transform:translateY(-2px);
+  box-shadow:0 12px 26px -4px rgba(92,184,62,.6);
+}
+.btn-category-action:active{
+  transform:scale(.98);
+}
+
+/* Barra de navegación de Subpágina */
+.subpage-nav-bar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  flex-wrap:wrap;
+  margin-bottom:20px;
+  padding:10px 16px;
+  background:rgba(31,53,73,.55);
+  border:1px solid var(--azul-border);
+  border-radius:14px;
+  backdrop-filter:blur(12px);
+}
+.btn-subpage-back{
+  background:rgba(255,255,255,.08);
+  border:1px solid var(--azul-border);
+  color:#fff;
+  font:inherit;
+  font-size:13px;
+  font-weight:700;
+  border-radius:9px;
+  padding:7px 14px;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  transition:all var(--trans);
+}
+.btn-subpage-back:hover{
+  background:var(--verde);
+  border-color:var(--verde);
+  box-shadow:0 4px 14px var(--verde-glow);
+  transform:translateX(-2px);
+}
+.subpage-breadcrumb{
+  font-size:13px;
+  color:var(--ink-2);
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+.subpage-breadcrumb .sep{opacity:.4}
+.subpage-breadcrumb b{color:#fff;font-weight:700}
 
 /* Contenido Principal */
 .dash-body{
@@ -963,12 +1649,20 @@ body{
 
 <!-- Dashboard autenticado -->
 <div id="dash">
-  <!-- Encabezado fijo (sticky) -->
+  <!-- Encabezado fijo (sticky) con Logotipo Oficial Nexo -->
   <header class="dash-sticky-header">
     <div class="header-shell">
-      <div class="header-brand">
-        <div class="brand-badge">N</div>
-        <h1>Banco de trabajo</h1>
+      <div class="header-brand" id="brandHomeBtn" role="button" tabindex="0" title="Ir al Espacio Creativo">
+        <svg class="header-nexo-logo" role="img" aria-label="NEXO Agencia Creativa" xmlns="http://www.w3.org/2000/svg" viewBox="758 532 862 1350">
+          <g transform="translate(0,2364) scale(1,-1)">
+            <path fill="#FFFFFF" d="M763 1617 l0 -210 47 0 46 0 0 129 0 129 3 -4 c3 -4 29 -32 31 -34 1 -1 5 -6 10 -11 4 -4 15 -16 23 -25 9 -10 17 -20 20 -22 2 -2 11 -12 19 -21 9 -10 16 -18 16 -19 1 0 5 -5 10 -10 17 -18 28 -32 29 -33 2 -1 15 -15 33 -35 9 -10 16 -18 16 -19 5 -4 18 -19 20 -22 l3 -3 47 0 46 0 0 210 0 209 -46 0 -46 0 0 -129 c0 -106 0 -128 -1 -127 -1 1 -4 5 -8 8 -6 7 -21 24 -24 27 -2 2 -6 7 -44 49 -15 15 -28 31 -31 33 -2 2 -5 5 -6 7 -1 1 -5 6 -10 11 -5 5 -9 10 -10 11 -1 1 -5 6 -10 11 -37 41 -53 58 -60 66 -5 5 -10 11 -11 12 -1 1 -6 6 -10 11 l-9 10 -47 0 -46 0 0 -209z M1238 1825 c-1 0 -1 -21 -1 -46 l0 -46 182 0 182 0 0 47 0 46 -181 0 c-100 0 -182 0 -182 -1z M1237 1615 l0 -46 182 0 182 0 0 46 0 46 -182 0 -182 0 0 -46z M1237 1454 l0 -47 182 0 182 0 0 47 0 46 -182 0 -182 0 0 -46z M764 1351 c0 -1 31 -48 69 -105 38 -57 69 -104 69 -104 -1 -1 -32 -48 -70 -105 l-69 -104 70 0 71 0 34 52 c19 28 35 51 35 51 0 0 16 -23 35 -52 l34 -51 70 0 c60 0 70 0 70 1 -1 1 -32 48 -69 104 -37 56 -68 103 -69 104 0 0 31 47 69 104 38 57 69 104 69 105 0 1 -22 1 -65 1 l-64 0 -40 -59 c-22 -33 -40 -60 -40 -60 0 0 -18 27 -40 60 l-39 59 -66 0 c-52 0 -65 0 -64 -1z M1372 1351 c-96 -9 -175 -84 -188 -180 -21 -147 116 -269 261 -231 109 28 177 142 149 252 -25 101 -119 168 -222 159z m38 -91 c102 -17 136 -150 53 -212 -79 -59 -190 -4 -190 95 0 72 65 128 137 117z"/>
+            <path fill="#5CB83E" d="M803 774 c-18 -40 -32 -73 -33 -74 0 -2 0 -2 10 -2 l9 1 10 21 9 22 27 0 28 0 9 -22 9 -22 10 0 c6 0 9 0 9 1 0 2 -64 148 -65 148 0 0 -15 -33 -32 -73z m43 9 l11 -25 -22 0 c-20 0 -21 0 -21 2 3 6 21 47 21 47 0 0 5 -11 11 -24z M1145 773 l0 -75 8 0 9 0 0 53 1 53 51 -56 c28 -30 51 -55 51 -55 1 0 1 34 1 75 l0 74 -8 0 -9 0 0 -54 0 -53 -52 56 c-28 31 -51 56 -52 56 0 0 0 -34 0 -74z M1480 773 c-18 -40 -32 -74 -32 -74 0 -1 4 -1 10 -1 l9 1 9 21 10 22 27 0 28 0 9 -22 9 -22 10 0 c8 0 9 0 9 2 -1 3 -64 147 -65 147 0 0 -15 -33 -33 -74z m44 10 c5 -13 10 -24 10 -24 0 -1 -9 -1 -21 -1 -12 0 -21 0 -21 1 0 1 20 48 21 48 0 0 5 -11 11 -24z M952 844 c-36 -6 -58 -35 -58 -75 0 -36 18 -61 49 -71 12 -4 38 -4 50 0 27 10 43 32 45 64 l0 11 -30 0 -30 0 0 -8 0 -8 21 0 20 0 -1 -4 c-5 -34 -42 -52 -75 -36 -38 18 -41 80 -4 104 15 10 39 10 55 1 5 -2 15 -12 18 -17 l2 -2 7 5 c4 3 7 7 7 8 0 3 -16 17 -24 21 -14 7 -35 10 -52 7z M1338 843 c-25 -6 -45 -25 -53 -48 -3 -12 -4 -32 -1 -44 12 -50 70 -72 115 -44 l6 3 0 12 0 12 -7 -6 c-24 -23 -58 -22 -81 0 -12 13 -16 24 -16 42 0 51 59 77 96 43 4 -3 7 -6 7 -6 1 0 1 5 1 11 l0 12 -6 3 c-18 11 -41 15 -61 10z M1051 770 l0 -72 38 0 39 1 0 8 0 8 -29 0 -30 0 0 27 0 27 30 0 29 0 0 8 0 8 -29 0 -30 0 0 20 0 20 30 0 29 0 0 9 0 8 -38 0 -39 0 0 -72z M1422 770 l0 -72 9 0 9 0 0 72 0 72 -9 0 -9 0 0 -72z M825 688 c-33 -5 -57 -31 -61 -65 -6 -61 47 -101 104 -78 l6 2 0 22 c0 11 0 21 -1 21 0 0 -3 -3 -7 -6 -29 -25 -68 -2 -62 36 3 21 16 33 36 33 12 0 16 -2 28 -12 l6 -5 0 22 0 22 -7 2 c-13 6 -29 8 -42 6z M1128 687 c-21 -7 -32 -25 -32 -52 0 -25 8 -42 25 -50 6 -3 7 -3 18 -3 16 0 22 2 30 11 l6 6 0 -7 0 -7 17 0 16 0 0 50 0 50 -16 0 -17 0 0 -7 0 -7 -3 3 c-4 5 -8 8 -13 11 -6 3 -25 4 -31 2z m37 -30 c14 -7 15 -34 2 -42 -13 -9 -30 -4 -34 11 -7 23 12 41 32 31z M883 614 l0 -72 19 0 19 0 0 27 0 26 16 -26 15 -27 23 0 c12 0 22 0 22 0 0 1 -9 14 -19 29 -21 30 -20 29 -17 29 7 0 20 10 25 20 3 7 3 7 3 20 0 18 -4 28 -16 37 -11 7 -14 7 -54 8 l-36 0 0 -71z m60 37 c7 -4 10 -15 6 -23 -3 -7 -8 -9 -19 -10 l-9 0 0 18 0 18 9 0 c7 0 10 -1 13 -3z M1000 614 l0 -72 44 0 44 0 0 17 0 16 -25 0 -25 0 0 12 0 11 24 0 23 0 0 16 0 15 -23 0 -24 0 0 12 0 12 25 0 25 0 0 16 0 16 -44 0 -44 0 0 -71z M1220 631 l0 -55 -23 0 -23 0 0 -17 1 -16 58 -1 59 0 0 17 0 17 -16 0 -16 0 0 55 0 54 -20 0 -20 0 0 -54z M1302 614 l0 -72 20 0 20 0 0 72 0 71 -20 0 -20 0 0 -71z M1349 685 c0 0 13 -32 30 -71 l30 -71 15 -1 16 0 29 70 c16 38 29 70 30 71 0 2 -1 2 -21 2 l-21 0 -16 -42 c-9 -22 -17 -41 -17 -41 0 0 -8 19 -16 42 l-16 41 -22 0 c-11 0 -21 0 -21 0z M1510 684 c-1 -1 -14 -33 -30 -71 -16 -38 -29 -70 -29 -70 0 -1 9 -1 21 -1 l21 0 2 5 c1 3 8 21 16 41 7 19 14 35 14 36 0 2 6 -11 17 -40 l16 -42 22 0 21 0 -4 9 c-2 5 -16 37 -30 72 l-26 62 -15 0 c-12 0 -16 0 -16 -1z"/>
+          </g>
+        </svg>
+        <div class="header-brand-titles">
+          <h1>Espacio Creativo</h1>
+          <span class="header-brand-sub">NEXO AGENCIA CREATIVA</span>
+        </div>
         <span class="live-pill"><span class="live-dot"></span> EN VIVO</span>
       </div>
       <div class="dash-actions">
@@ -984,9 +1678,16 @@ body{
   </header>
 
   <div class="dash-body">
-    <!-- Switcher de Vistas -->
-    <div class="view-switcher-bar">
-      <button class="view-switch-btn on" id="btnTabAprobaciones">
+    <!-- Switcher de Vistas (3 pestañas: Espacio Creativo, Aprobaciones, Producción) -->
+    <div class="view-switcher-bar" role="tablist">
+      <button class="view-switch-btn on" id="btnTabHub">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        <span>Espacio Creativo</span>
+      </button>
+      <button class="view-switch-btn" id="btnTabAprobaciones">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
           <line x1="9" y1="3" x2="9" y2="21"></line>
@@ -1001,8 +1702,229 @@ body{
       </button>
     </div>
 
-    <!-- Sección Aprobaciones -->
-    <div id="sectionAprobaciones">
+    <!-- Sección Hub Principal: Espacio Creativo -->
+    <div id="sectionHub">
+      <!-- Banner Hero con Logotipo Oficial de la Agencia -->
+      <div class="hub-hero">
+        <div class="hub-hero-brand">
+          <svg class="hub-hero-logo" role="img" aria-label="NEXO Agencia Creativa" xmlns="http://www.w3.org/2000/svg" viewBox="758 532 862 1350">
+            <g transform="translate(0,2364) scale(1,-1)">
+              <path fill="#FFFFFF" d="M763 1617 l0 -210 47 0 46 0 0 129 0 129 3 -4 c3 -4 29 -32 31 -34 1 -1 5 -6 10 -11 4 -4 15 -16 23 -25 9 -10 17 -20 20 -22 2 -2 11 -12 19 -21 9 -10 16 -18 16 -19 1 0 5 -5 10 -10 17 -18 28 -32 29 -33 2 -1 15 -15 33 -35 9 -10 16 -18 16 -19 5 -4 18 -19 20 -22 l3 -3 47 0 46 0 0 210 0 209 -46 0 -46 0 0 -129 c0 -106 0 -128 -1 -127 -1 1 -4 5 -8 8 -6 7 -21 24 -24 27 -2 2 -6 7 -44 49 -15 15 -28 31 -31 33 -2 2 -5 5 -6 7 -1 1 -5 6 -10 11 -5 5 -9 10 -10 11 -1 1 -5 6 -10 11 -37 41 -53 58 -60 66 -5 5 -10 11 -11 12 -1 1 -6 6 -10 11 l-9 10 -47 0 -46 0 0 -209z M1238 1825 c-1 0 -1 -21 -1 -46 l0 -46 182 0 182 0 0 47 0 46 -181 0 c-100 0 -182 0 -182 -1z M1237 1615 l0 -46 182 0 182 0 0 46 0 46 -182 0 -182 0 0 -46z M1237 1454 l0 -47 182 0 182 0 0 47 0 46 -182 0 -182 0 0 -46z M764 1351 c0 -1 31 -48 69 -105 38 -57 69 -104 69 -104 -1 -1 -32 -48 -70 -105 l-69 -104 70 0 71 0 34 52 c19 28 35 51 35 51 0 0 16 -23 35 -52 l34 -51 70 0 c60 0 70 0 70 1 -1 1 -32 48 -69 104 -37 56 -68 103 -69 104 0 0 31 47 69 104 38 57 69 104 69 105 0 1 -22 1 -65 1 l-64 0 -40 -59 c-22 -33 -40 -60 -40 -60 0 0 -18 27 -40 60 l-39 59 -66 0 c-52 0 -65 0 -64 -1z M1372 1351 c-96 -9 -175 -84 -188 -180 -21 -147 116 -269 261 -231 109 28 177 142 149 252 -25 101 -119 168 -222 159z m38 -91 c102 -17 136 -150 53 -212 -79 -59 -190 -4 -190 95 0 72 65 128 137 117z"/>
+              <path fill="#5CB83E" d="M803 774 c-18 -40 -32 -73 -33 -74 0 -2 0 -2 10 -2 l9 1 10 21 9 22 27 0 28 0 9 -22 9 -22 10 0 c6 0 9 0 9 1 0 2 -64 148 -65 148 0 0 -15 -33 -32 -73z m43 9 l11 -25 -22 0 c-20 0 -21 0 -21 2 3 6 21 47 21 47 0 0 5 -11 11 -24z M1145 773 l0 -75 8 0 9 0 0 53 1 53 51 -56 c28 -30 51 -55 51 -55 1 0 1 34 1 75 l0 74 -8 0 -9 0 0 -54 0 -53 -52 56 c-28 31 -51 56 -52 56 0 0 0 -34 0 -74z M1480 773 c-18 -40 -32 -74 -32 -74 0 -1 4 -1 10 -1 l9 1 9 21 10 22 27 0 28 0 9 -22 9 -22 10 0 c8 0 9 0 9 2 -1 3 -64 147 -65 147 0 0 -15 -33 -33 -74z m44 10 c5 -13 10 -24 10 -24 0 -1 -9 -1 -21 -1 -12 0 -21 0 -21 1 0 1 20 48 21 48 0 0 5 -11 11 -24z M952 844 c-36 -6 -58 -35 -58 -75 0 -36 18 -61 49 -71 12 -4 38 -4 50 0 27 10 43 32 45 64 l0 11 -30 0 -30 0 0 -8 0 -8 21 0 20 0 -1 -4 c-5 -34 -42 -52 -75 -36 -38 18 -41 80 -4 104 15 10 39 10 55 1 5 -2 15 -12 18 -17 l2 -2 7 5 c4 3 7 7 7 8 0 3 -16 17 -24 21 -14 7 -35 10 -52 7z M1338 843 c-25 -6 -45 -25 -53 -48 -3 -12 -4 -32 -1 -44 12 -50 70 -72 115 -44 l6 3 0 12 0 12 -7 -6 c-24 -23 -58 -22 -81 0 -12 13 -16 24 -16 42 0 51 59 77 96 43 4 -3 7 -6 7 -6 1 0 1 5 1 11 l0 12 -6 3 c-18 11 -41 15 -61 10z M1051 770 l0 -72 38 0 39 1 0 8 0 8 -29 0 -30 0 0 27 0 27 30 0 29 0 0 8 0 8 -29 0 -30 0 0 20 0 20 30 0 29 0 0 9 0 8 -38 0 -39 0 0 -72z M1422 770 l0 -72 9 0 9 0 0 72 0 72 -9 0 -9 0 0 -72z M825 688 c-33 -5 -57 -31 -61 -65 -6 -61 47 -101 104 -78 l6 2 0 22 c0 11 0 21 -1 21 0 0 -3 -3 -7 -6 -29 -25 -68 -2 -62 36 3 21 16 33 36 33 12 0 16 -2 28 -12 l6 -5 0 22 0 22 -7 2 c-13 6 -29 8 -42 6z M1128 687 c-21 -7 -32 -25 -32 -52 0 -25 8 -42 25 -50 6 -3 7 -3 18 -3 16 0 22 2 30 11 l6 6 0 -7 0 -7 17 0 16 0 0 50 0 50 -16 0 -17 0 0 -7 0 -7 -3 3 c-4 5 -8 8 -13 11 -6 3 -25 4 -31 2z m37 -30 c14 -7 15 -34 2 -42 -13 -9 -30 -4 -34 11 -7 23 12 41 32 31z M883 614 l0 -72 19 0 19 0 0 27 0 26 16 -26 15 -27 23 0 c12 0 22 0 22 0 0 1 -9 14 -19 29 -21 30 -20 29 -17 29 7 0 20 10 25 20 3 7 3 7 3 20 0 18 -4 28 -16 37 -11 7 -14 7 -54 8 l-36 0 0 -71z m60 37 c7 -4 10 -15 6 -23 -3 -7 -8 -9 -19 -10 l-9 0 0 18 0 18 9 0 c7 0 10 -1 13 -3z M1000 614 l0 -72 44 0 44 0 0 17 0 16 -25 0 -25 0 0 12 0 11 24 0 23 0 0 16 0 15 -23 0 -24 0 0 12 0 12 25 0 25 0 0 16 0 16 -44 0 -44 0 0 -71z M1220 631 l0 -55 -23 0 -23 0 0 -17 1 -16 58 -1 59 0 0 17 0 17 -16 0 -16 0 0 55 0 54 -20 0 -20 0 0 -54z M1302 614 l0 -72 20 0 20 0 0 72 0 71 -20 0 -20 0 0 -71z M1349 685 c0 0 13 -32 30 -71 l30 -71 15 -1 16 0 29 70 c16 38 29 70 30 71 0 2 -1 2 -21 2 l-21 0 -16 -42 c-9 -22 -17 -41 -17 -41 0 0 -8 19 -16 42 l-16 41 -22 0 c-11 0 -21 0 -21 0z M1510 684 c-1 -1 -14 -33 -30 -71 -16 -38 -29 -70 -29 -70 0 -1 9 -1 21 -1 l21 0 2 5 c1 3 8 21 16 41 7 19 14 35 14 36 0 2 6 -11 17 -40 l16 -42 22 0 21 0 -4 9 c-2 5 -16 37 -30 72 l-26 62 -15 0 c-12 0 -16 0 -16 -1z"/>
+            </g>
+          </svg>
+          <div class="hub-hero-title">
+            <h2>NEXO <span>AGENCIA CREATIVA</span></h2>
+            <p>Espacio de trabajo creativo: dirección de arte, tableros de aprobación para clientes y control técnico de rodajes en vivo.</p>
+          </div>
+        </div>
+        <div class="hub-hero-tags">
+          <span class="hub-tag active"><span class="live-dot"></span> Estudio en vivo</span>
+          <span class="hub-tag">Firebase Realtime Sync</span>
+          <span class="hub-tag">Gestión Multi-Cliente</span>
+          <span class="hub-tag">Pautas Cinematográficas</span>
+        </div>
+      </div>
+
+      <!-- Categorías de Tableros con Diseños Gráficos Interactivos -->
+      <div class="hub-categories-grid">
+        <!-- Categoría 1: Aprobación de Contenidos (MacBook Pro interactivo) -->
+        <div class="hub-cat-card">
+          <div>
+            <div class="hub-cat-top">
+              <span class="hub-cat-badge">Estrategia & Social Media</span>
+              <span class="hub-tag">Feedback Cliente</span>
+            </div>
+
+            <div class="device-stage" title="MacBook Pro · Simulador de Tableros Nexo">
+              <div class="macbook-device">
+                <div class="macbook-screen-lid">
+                  <div class="macbook-notch"><span class="macbook-cam"></span></div>
+                  <div class="macbook-display">
+                    <div class="macbook-topbar">
+                      <span class="m-dot red"></span><span class="m-dot yellow"></span><span class="m-dot green"></span>
+                      <span class="m-title">NEXO · Banco de Aprobaciones</span>
+                    </div>
+                    <div class="macbook-content-preview">
+                      <div class="m-preview-col">
+                        <div class="m-item-chip">Feed</div>
+                        <div class="m-preview-box">
+                          <div class="mini-tag ok">100% OK</div>
+                          <div class="mini-lines"><span></span><span></span></div>
+                        </div>
+                      </div>
+                      <div class="m-preview-col">
+                        <div class="m-item-chip">Reels</div>
+                        <div class="m-preview-box">
+                          <div class="mini-tag rev">Revisión</div>
+                          <div class="mini-play">▶</div>
+                        </div>
+                      </div>
+                      <div class="m-preview-col">
+                        <div class="m-item-chip">Stories</div>
+                        <div class="m-preview-box">
+                          <div class="mini-tag pend">Pendiente</div>
+                          <div class="mini-bars"><span></span><span></span><span></span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="macbook-glass-shine"></div>
+                  </div>
+                </div>
+                <div class="macbook-base">
+                  <div class="macbook-keyboard-deck">
+                    <div class="macbook-trackpad"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="hub-cat-info">
+              <h3>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--verde)">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="9" y1="3" x2="9" y2="21"></line>
+                </svg>
+                Aprobación de Contenidos
+              </h3>
+              <p>Revisión mensual de publicaciones por cliente, gestión de cambios, comentarios precisos y control de firmas de aprobación en tiempo real.</p>
+            </div>
+
+            <div class="hub-cat-metrics">
+              <div class="hub-metric-pill">
+                <span class="v" id="hubAprobTotal">3</span>
+                <span class="l">Tableros</span>
+              </div>
+              <div class="hub-metric-pill ok">
+                <span class="v" id="hubAprobOk">0</span>
+                <span class="l">Aprobados</span>
+              </div>
+              <div class="hub-metric-pill fix">
+                <span class="v" id="hubAprobFix">0</span>
+                <span class="l">Con cambios</span>
+              </div>
+              <div class="hub-metric-pill pend">
+                <span class="v" id="hubAprobPend">3</span>
+                <span class="l">Pendientes</span>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn-category-action" id="btnGoAprobaciones">
+            <span>Ingresar a Aprobaciones</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Categoría 2: Pautas de Producción Audiovisual (Cámara de Cine interactiva) -->
+        <div class="hub-cat-card">
+          <div>
+            <div class="hub-cat-top">
+              <span class="hub-cat-badge">Rodaje & Audiovisual</span>
+              <span class="hub-tag active"><span class="rec-led"></span> REC EN VIVO</span>
+            </div>
+
+            <div class="device-stage" title="Cámara de Cine 4K · Pautas Técnicas Nexo">
+              <div class="camera-device">
+                <div class="camera-body">
+                  <div class="camera-top-handle">
+                    <div class="camera-handle-grip"></div>
+                    <div class="camera-mic-mount"><span class="cam-rec-dot"></span></div>
+                  </div>
+                  <div class="camera-chassis">
+                    <div class="camera-side-panel">
+                      <div class="camera-rec-badge">
+                        <span class="rec-led"></span> <b>REC</b>
+                      </div>
+                      <div class="camera-monitor">
+                        <div class="cam-mon-header">
+                          <span>4K DCI · 60fps</span>
+                          <span>RAW</span>
+                        </div>
+                        <div class="cam-viewfinder">
+                          <div class="cam-tc">01:24:18:04</div>
+                        </div>
+                        <div class="cam-vu-meters">
+                          <span class="cam-vu ch1"></span>
+                          <span class="cam-vu ch2"></span>
+                        </div>
+                      </div>
+                      <div class="cam-dials">
+                        <span class="cam-dial"></span>
+                        <span class="cam-dial"></span>
+                        <span class="cam-card-slot">CFexpress</span>
+                      </div>
+                    </div>
+                    <div class="camera-lens-assembly">
+                      <div class="matte-box">
+                        <div class="lens-barrel">
+                          <span class="lens-aperture-ring">F/1.8 · 35mm</span>
+                          <div class="lens-front-element">
+                            <div class="lens-glass-reflection"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="camera-base-plate"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="hub-cat-info">
+              <h3>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--verde)">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                Pautas de Producción
+              </h3>
+              <p>Hojas de ruta de rodaje, desglose técnico de escenas, planos, subtareas en vivo y sincronización inmediata con todo el equipo de filmación.</p>
+            </div>
+
+            <div class="hub-cat-metrics">
+              <div class="hub-metric-pill">
+                <span class="v" id="hubProdTotal">3</span>
+                <span class="l">Pautas</span>
+              </div>
+              <div class="hub-metric-pill ok">
+                <span class="v">En vivo</span>
+                <span class="l">Sincronización</span>
+              </div>
+              <div class="hub-metric-pill">
+                <span class="v">Offline</span>
+                <span class="l">Soporte PWA</span>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn-category-action" id="btnGoProduccion">
+            <span>Ingresar a Producción</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección Aprobaciones (Subpágina) -->
+    <div id="sectionAprobaciones" style="display:none">
+      <!-- Navegación de Subpágina -->
+      <div class="subpage-nav-bar">
+        <button class="btn-subpage-back" id="btnBackFromAprob">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          <span>Volver al Espacio Creativo</span>
+        </button>
+        <div class="subpage-breadcrumb">
+          <span>Espacio Creativo</span> <span class="sep">/</span> <b>Aprobación de Contenidos</b>
+        </div>
+      </div>
       <!-- Resumen Global -->
       <div id="globalStats" class="stats-grid" style="display:none">
         <div class="stat-box">
@@ -1056,8 +1978,21 @@ body{
       <div id="dashContent"></div>
     </div>
 
-    <!-- Sección Producción -->
+    <!-- Sección Producción (Subpágina) -->
     <div id="sectionProduccion" style="display:none">
+      <!-- Navegación de Subpágina -->
+      <div class="subpage-nav-bar">
+        <button class="btn-subpage-back" id="btnBackFromProd">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          <span>Volver al Espacio Creativo</span>
+        </button>
+        <div class="subpage-breadcrumb">
+          <span>Espacio Creativo</span> <span class="sep">/</span> <b>Pautas de Producción Audiovisual</b>
+        </div>
+      </div>
+
       <div class="toolbar-wrap" id="prodToolbar" style="display:none">
         <div class="toolbar-row-main">
           <div class="search-box">
@@ -1102,7 +2037,7 @@ body{
             y: Math.random() * h,
             vx: (Math.random() - 0.5) * 0.45,
             vy: (Math.random() - 0.5) * 0.45,
-            r: Math.random() * 1.5 + 1.2,
+            r: (Math.random() * 1.5 + 1.2) * 1.4,
             isGreen: (Math.random() < 0.35)
           });
         }
@@ -1115,9 +2050,9 @@ body{
     function anim(){
       if (!running) return;
       ctx.clearRect(0, 0, w, h);
-      var maxDist = Math.min(w * 0.38, 380);
+      var maxDist = Math.min(w * 0.53, 532);
 
-      // Dibujar conexiones
+      // Dibujar conexiones (+40% escala y grosor)
       for (var i = 0; i < pts.length; i++) {
         var p1 = pts[i];
         p1.x += p1.vx; p1.y += p1.vy;
@@ -1129,12 +2064,12 @@ body{
           var dx = p1.x - p2.x, dy = p1.y - p2.y;
           var dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < maxDist) {
-            var alpha = (1 - dist / maxDist) * 0.22;
+            var alpha = (1 - dist / maxDist) * 0.24;
             ctx.beginPath();
             ctx.moveTo(p1.x, p1.y);
             ctx.lineTo(p2.x, p2.y);
             ctx.strokeStyle = (p1.isGreen || p2.isGreen) ? 'rgba(92,184,62,' + alpha + ')' : 'rgba(210,230,248,' + (alpha * 0.75) + ')';
-            ctx.lineWidth = 0.85;
+            ctx.lineWidth = 1.2;
             ctx.stroke();
           }
         }
@@ -1179,7 +2114,7 @@ body{
 
   var allTableros = [];
   var allProduccion = [];
-  var activeTab = 'aprobaciones';
+  var activeTab = 'hub';
   var unsubscribeFirestore = null;
   var unsubscribeProduccion = null;
 
@@ -1190,10 +2125,22 @@ body{
   var prodContent = document.getElementById('prodContent');
   var prodToolbar = document.getElementById('prodToolbar');
   var searchProdInp = document.getElementById('searchProd');
+  var sectionHub = document.getElementById('sectionHub');
   var sectionAprobaciones = document.getElementById('sectionAprobaciones');
   var sectionProduccion = document.getElementById('sectionProduccion');
+  var btnTabHub = document.getElementById('btnTabHub');
   var btnTabAprobaciones = document.getElementById('btnTabAprobaciones');
   var btnTabProduccion = document.getElementById('btnTabProduccion');
+  var btnGoAprobaciones = document.getElementById('btnGoAprobaciones');
+  var btnGoProduccion = document.getElementById('btnGoProduccion');
+  var btnBackFromAprob = document.getElementById('btnBackFromAprob');
+  var btnBackFromProd = document.getElementById('btnBackFromProd');
+  var brandHomeBtn = document.getElementById('brandHomeBtn');
+  var hubAprobTotal = document.getElementById('hubAprobTotal');
+  var hubAprobOk = document.getElementById('hubAprobOk');
+  var hubAprobFix = document.getElementById('hubAprobFix');
+  var hubAprobPend = document.getElementById('hubAprobPend');
+  var hubProdTotal = document.getElementById('hubProdTotal');
   var globalStats = document.getElementById('globalStats');
   var toolbar = document.getElementById('toolbar');
   var searchInp = document.getElementById('searchClient');
@@ -1254,6 +2201,7 @@ body{
     loginModal.classList.remove('on');
     dash.classList.remove('on');
     dash.style.display = 'none';
+    if (typeof switchView === 'function') switchView('hub');
   }
 
   function showLogin(){
@@ -1270,6 +2218,7 @@ body{
     loginModal.classList.remove('on');
     dash.style.display = 'block';
     dash.classList.add('on');
+    if (typeof switchView === 'function') switchView(activeTab || 'hub');
   }
 
   function formatFecha(s){
@@ -2010,6 +2959,11 @@ body{
     document.getElementById('stFix').textContent = countFix;
     document.getElementById('stPend').textContent = countPend;
     globalStats.style.display = 'grid';
+
+    if (hubAprobTotal) hubAprobTotal.textContent = totTabs;
+    if (hubAprobOk) hubAprobOk.textContent = countOk;
+    if (hubAprobFix) hubAprobFix.textContent = countFix;
+    if (hubAprobPend) hubAprobPend.textContent = countPend;
   }
 
   function updateChipsUI(){
@@ -2137,6 +3091,7 @@ body{
   }
 
   function renderProduccionCards(){
+    if (hubProdTotal) hubProdTotal.textContent = allProduccion.length;
     if (!prodContent) return;
     if (!allProduccion.length) {
       if (prodToolbar) prodToolbar.style.display = 'none';
@@ -2235,7 +3190,7 @@ body{
         updateChipsUI();
         applyFiltersAndRender();
       }
-      if (isManualRefresh && activeTab === 'aprobaciones') toast('Datos actualizados en tiempo real ✓');
+      if (isManualRefresh && (activeTab === 'aprobaciones' || activeTab === 'hub')) toast('Datos actualizados en tiempo real ✓');
     }, function(err){
       if (btnRef) btnRef.disabled = false;
       console.error('Error sincronizando tableros:', err);
@@ -2335,23 +3290,55 @@ body{
   claveInp.addEventListener('keydown', function(e){ if (e.key === 'Enter') tryLogin(); });
   loginModal.addEventListener('click', function(e){ if (e.target === loginModal) hideLogin(); });
 
-  // Pestañas (Aprobaciones / Producción)
-  if (btnTabAprobaciones && btnTabProduccion) {
-    btnTabAprobaciones.addEventListener('click', function(){
-      activeTab = 'aprobaciones';
-      btnTabAprobaciones.classList.add('on');
-      btnTabProduccion.classList.remove('on');
-      sectionAprobaciones.style.display = 'block';
-      sectionProduccion.style.display = 'none';
-    });
+  // Navegación entre Espacio Creativo y Subpáginas
+  function switchView(tab){
+    activeTab = tab || 'hub';
+    if (btnTabHub) btnTabHub.classList.toggle('on', activeTab === 'hub');
+    if (btnTabAprobaciones) btnTabAprobaciones.classList.toggle('on', activeTab === 'aprobaciones');
+    if (btnTabProduccion) btnTabProduccion.classList.toggle('on', activeTab === 'produccion');
 
-    btnTabProduccion.addEventListener('click', function(){
-      activeTab = 'produccion';
-      btnTabProduccion.classList.add('on');
-      btnTabAprobaciones.classList.remove('on');
-      sectionAprobaciones.style.display = 'none';
-      sectionProduccion.style.display = 'block';
+    if (sectionHub) sectionHub.style.display = (activeTab === 'hub' ? 'block' : 'none');
+    if (sectionAprobaciones) sectionAprobaciones.style.display = (activeTab === 'aprobaciones' ? 'block' : 'none');
+    if (sectionProduccion) sectionProduccion.style.display = (activeTab === 'produccion' ? 'block' : 'none');
+
+    if (activeTab === 'produccion') {
       renderProduccionCards();
+    }
+  }
+
+  // Pestañas superiores
+  if (btnTabHub) {
+    btnTabHub.addEventListener('click', function(){ switchView('hub'); });
+  }
+  if (btnTabAprobaciones) {
+    btnTabAprobaciones.addEventListener('click', function(){ switchView('aprobaciones'); });
+  }
+  if (btnTabProduccion) {
+    btnTabProduccion.addEventListener('click', function(){ switchView('produccion'); });
+  }
+
+  // Botones de ingreso directo desde tarjetas de categorías del Hub
+  if (btnGoAprobaciones) {
+    btnGoAprobaciones.addEventListener('click', function(){ switchView('aprobaciones'); });
+  }
+  if (btnGoProduccion) {
+    btnGoProduccion.addEventListener('click', function(){ switchView('produccion'); });
+  }
+
+  // Botones de retorno al Espacio Creativo desde subpáginas
+  if (btnBackFromAprob) {
+    btnBackFromAprob.addEventListener('click', function(){ switchView('hub'); });
+  }
+  if (btnBackFromProd) {
+    btnBackFromProd.addEventListener('click', function(){ switchView('hub'); });
+  }
+  if (brandHomeBtn) {
+    brandHomeBtn.addEventListener('click', function(){ switchView('hub'); });
+    brandHomeBtn.addEventListener('keydown', function(e){
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        switchView('hub');
+      }
     });
   }
 

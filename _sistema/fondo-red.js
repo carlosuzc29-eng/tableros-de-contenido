@@ -35,19 +35,19 @@
     speedSmall: 13.5,
     speedVariance: 3.0,
 
-    // Tamaños de nodos por escala
-    radiusLargeDesktop: 2.6,
-    radiusMediumDesktop: 1.8,
-    radiusSmallDesktop: 1.2,
+    // Tamaños de nodos por escala (+40%)
+    radiusLargeDesktop: 3.64,
+    radiusMediumDesktop: 2.52,
+    radiusSmallDesktop: 1.68,
 
-    radiusLargeMobile: 2.2,
-    radiusMediumMobile: 1.5,
-    radiusSmallMobile: 1.0,
+    radiusLargeMobile: 3.08,
+    radiusMediumMobile: 2.10,
+    radiusSmallMobile: 1.40,
 
-    // Grosor de líneas por escala
-    lineWidthLarge: 1.0,
-    lineWidthMedium: 0.85,
-    lineWidthSmall: 0.70,
+    // Grosor de líneas por escala (+40%)
+    lineWidthLarge: 1.40,
+    lineWidthMedium: 1.19,
+    lineWidthSmall: 0.98,
 
     // Paleta en zona oscura (Hero --azul: #1F3549)
     dotDefaultDark: 'rgba(230, 240, 250, ',
@@ -73,10 +73,10 @@
     pulseIntervalMax: 5.5,
     pulseSpeed: 110, // px/s a lo largo de conexiones grandes
 
-    // Interacción con cursor (escritorio)
-    mouseRadius: 150,
-    mousePushStrength: 18,
-    mouseGlowFactor: 1.35
+    // Interacción con cursor (escritorio) (+40%)
+    mouseRadius: 210,
+    mousePushStrength: 22,
+    mouseGlowFactor: 1.45
   };
 
   function createNetworkBackground(targetContainer, options){

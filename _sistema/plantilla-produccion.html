@@ -8,6 +8,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+  <!-- Firebase SDK compat -->
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
   <style>
     :root {
       --nexo-blue: #1F3549;
@@ -105,6 +108,32 @@
     .gp-text span:last-child { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;}
     .gp-bar-container { width: 120px; height: 6px; background: rgba(0,0,0,0.06); border-radius: 99px; overflow: hidden; }
     .gp-bar-fill { height: 100%; background: var(--nexo-green); border-radius: 99px; transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+
+    .live-indicator-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-right: 6px;
+      letter-spacing: 0.2px;
+      user-select: none;
+    }
+    .live-indicator-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #9ca3af;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+    .live-indicator-pill.online {
+      color: var(--nexo-green);
+    }
+    .live-indicator-pill.online .live-indicator-dot {
+      background: var(--nexo-green);
+      box-shadow: 0 0 6px rgba(92,184,62,0.6);
+    }
 
     .btn-icon-subtle {
       background: transparent; border: none; color: var(--text-muted); cursor: pointer;
@@ -380,6 +409,10 @@
     <div class="island-right">
       <div class="global-progress">
         <div class="gp-text">
+          <div id="live-indicator" class="live-indicator-pill" style="display:none;">
+            <span class="live-indicator-dot"></span>
+            <span id="live-indicator-label">En vivo</span>
+          </div>
           <span id="global-pct">0%</span>
           <span>Completado</span>
         </div>
@@ -566,6 +599,109 @@
     const LS_KEY = 'nexo-tablero-' + (DATA.fecha || 'v3') + '-' + (DATA.cliente || '').toLowerCase().replace(/[^a-z0-9]/g, '-');
     let state = { fecha: '', cliente: '', contenidos: [] };
     let searchQuery = '';
+    let db = null;
+    let prodDocRef = null;
+
+    function cleanCard(c) {
+      if (!c || typeof c !== 'object') return null;
+      return {
+        id: String(c.id || ''),
+        titulo: String(c.titulo || ''),
+        tipo: String(c.tipo || 'otro'),
+        sede: String(c.sede || ''),
+        estado: String(c.estado || 'todo'),
+        descripcion: String(c.descripcion || ''),
+        subtareas: Array.isArray(c.subtareas) ? c.subtareas.map(s => ({
+          id: String(s.id || ''),
+          texto: String(s.texto || ''),
+          done: !!s.done
+        })) : [],
+        mediaLinks: Array.isArray(c.mediaLinks) ? c.mediaLinks.map(r => ({
+          id: String(r.id || ''),
+          url: String(r.url || ''),
+          label: String(r.label || ''),
+          platform: String(r.platform || 'external')
+        })) : []
+      };
+    }
+
+    function getCounts() {
+      let todo = 0, grabando = 0, listo = 0;
+      state.contenidos.forEach(c => {
+        const st = c.estado || 'todo';
+        if (st === 'grabando') grabando++;
+        else if (st === 'listo') listo++;
+        else todo++;
+      });
+      return { todo, grabando, listo };
+    }
+
+    function updateConnectionStatus(snapshot) {
+      const ind = document.getElementById('live-indicator');
+      const label = document.getElementById('live-indicator-label');
+      if (!ind || !label) return;
+      if (!DATA.id || !DATA.firebase) {
+        ind.style.display = 'none';
+        return;
+      }
+      ind.style.display = 'inline-flex';
+      const isFromCache = snapshot && snapshot.metadata && snapshot.metadata.fromCache;
+      const isOnline = navigator.onLine && !isFromCache;
+      if (isOnline) {
+        ind.className = 'live-indicator-pill online';
+        label.textContent = 'En vivo';
+      } else {
+        ind.className = 'live-indicator-pill offline';
+        label.textContent = 'Sin conexi\u00f3n';
+      }
+    }
+
+    function showUnregisteredNotice() {
+      const ind = document.getElementById('live-indicator');
+      const label = document.getElementById('live-indicator-label');
+      if (ind && label) {
+        ind.style.display = 'inline-flex';
+        ind.className = 'live-indicator-pill offline';
+        label.textContent = 'Tablero no registrado';
+      }
+    }
+
+    window.addEventListener('online', () => updateConnectionStatus(null));
+    window.addEventListener('offline', () => updateConnectionStatus(null));
+
+    function syncToFirestore(cardId, isDelete = false) {
+      saveState();
+      if (!prodDocRef || typeof firebase === 'undefined') return;
+      const counts = getCounts();
+      const orden = state.contenidos.map(c => c.id);
+      const payload = {
+        orden: orden,
+        todo: counts.todo,
+        grabando: counts.grabando,
+        listo: counts.listo,
+        actualizado: firebase.firestore.FieldValue.serverTimestamp()
+      };
+      if (isDelete) {
+        payload['tarjetas.' + cardId] = firebase.firestore.FieldValue.delete();
+      } else {
+        const card = state.contenidos.find(c => c.id === cardId);
+        if (card) {
+          payload['tarjetas.' + cardId] = {
+            id: card.id,
+            titulo: card.titulo || '',
+            tipo: card.tipo || 'otro',
+            sede: card.sede || '',
+            estado: card.estado || 'todo',
+            descripcion: card.descripcion || '',
+            subtareas: Array.isArray(card.subtareas) ? card.subtareas : [],
+            mediaLinks: Array.isArray(card.mediaLinks) ? card.mediaLinks : []
+          };
+        }
+      }
+      prodDocRef.update(payload).catch(err => {
+        console.error('Error sincronizando con Firestore:', err);
+      });
+    }
 
     function init() {
       const local = localStorage.getItem(LS_KEY);
@@ -573,9 +709,7 @@
         try {
           const parsed = JSON.parse(local);
           if (parsed.fecha === DATA.fecha && parsed.cliente === DATA.cliente) {
-            // Siempre partir del DATA actualizado (fuente de verdad de la lista de tarjetas)
             state = JSON.parse(JSON.stringify(DATA));
-            // Solo restaurar estado y subtareas de tarjetas que ya existían
             state.contenidos.forEach(card => {
               const saved = (parsed.contenidos || []).find(c => c.id === card.id);
               if (saved) {
@@ -613,11 +747,29 @@
           const cardId = evt.item.dataset.id;
           const newStatus = evt.to.dataset.status;
           const card = state.contenidos.find(c => c.id === cardId);
-          if (card && card.estado !== newStatus) {
-            card.estado = newStatus;
-            if (newStatus === 'listo') card.subtareas.forEach(s => s.done = true);
-            else if (newStatus === 'todo') card.subtareas.forEach(s => s.done = false);
+          if (card) {
+            if (card.estado !== newStatus) {
+              card.estado = newStatus;
+              if (newStatus === 'listo') card.subtareas.forEach(s => s.done = true);
+              else if (newStatus === 'todo') card.subtareas.forEach(s => s.done = false);
+            }
+            // Capturar nuevo orden relativo tras soltar tarjeta
+            const newOrder = [];
+            ['col-todo', 'col-grabando', 'col-listo'].forEach(colId => {
+              const col = document.getElementById(colId);
+              if (col) {
+                col.querySelectorAll('.card').forEach(el => {
+                  if (el.dataset.id) newOrder.push(el.dataset.id);
+                });
+              }
+            });
+            state.contenidos.sort((a, b) => {
+              const ia = newOrder.indexOf(a.id);
+              const ib = newOrder.indexOf(b.id);
+              return (ia === -1 ? 9999 : ia) - (ib === -1 ? 9999 : ib);
+            });
             updateUI();
+            syncToFirestore(cardId, false);
           }
         }
       };
@@ -648,12 +800,95 @@
               else if (someDone && card.estado === 'todo') card.estado = 'grabando';
               else if (!someDone && card.estado === 'listo') card.estado = 'todo';
               updateUI();
+              if (currentViewId === cid && document.getElementById('view-modal').classList.contains('show')) {
+                updateOpenViewModal(card);
+              }
+              syncToFirestore(cid, false);
             }
           }
         }
       });
 
       updateUI();
+      initFirebase();
+    }
+
+    function initFirebase() {
+      if (!DATA.id || !DATA.firebase || !DATA.firebase.projectId || typeof firebase === 'undefined') {
+        return;
+      }
+      try {
+        const app = (!firebase.apps || !firebase.apps.length)
+          ? firebase.initializeApp(DATA.firebase)
+          : firebase.app();
+        db = firebase.firestore(app);
+        try {
+          db.enablePersistence({ synchronizeTabs: true }).catch(err => {
+            console.warn('Firestore persistence warning:', err.code);
+          });
+        } catch(e) {}
+        prodDocRef = db.collection('produccion').doc(DATA.id);
+
+        prodDocRef.onSnapshot({ includeMetadataChanges: true }, (snapshot) => {
+          updateConnectionStatus(snapshot);
+
+          // Ecos: ignora en onSnapshot los cambios propios para evitar parpadeos
+          if (snapshot.metadata && snapshot.metadata.hasPendingWrites) {
+            return;
+          }
+
+          if (!snapshot.exists) {
+            showUnregisteredNotice();
+            return;
+          }
+
+          const data = snapshot.data();
+          if (!data) return;
+
+          const orden = Array.isArray(data.orden) ? data.orden : [];
+          const tarjetas = (data.tarjetas && typeof data.tarjetas === 'object') ? data.tarjetas : {};
+
+          const nuevosContenidos = [];
+          orden.forEach(cid => {
+            if (tarjetas[cid]) {
+              const cleaned = cleanCard(tarjetas[cid]);
+              if (cleaned) nuevosContenidos.push(cleaned);
+            }
+          });
+          Object.keys(tarjetas).forEach(cid => {
+            if (!orden.includes(cid)) {
+              const cleaned = cleanCard(tarjetas[cid]);
+              if (cleaned) nuevosContenidos.push(cleaned);
+            }
+          });
+
+          state.contenidos = nuevosContenidos;
+          if (data.cliente) state.cliente = data.cliente;
+          if (data.fecha) state.fecha = data.fecha;
+
+          document.getElementById('hdr-client').textContent = state.cliente || 'Tablero de Producci\u00f3n';
+          document.getElementById('hdr-date').textContent = state.fecha || 'Sin fecha asignada';
+
+          renderCards();
+          saveState();
+          updateProgressUI();
+
+          // Si el modal de visualización está abierto, actualizar su contenido sin cerrarlo
+          if (currentViewId && document.getElementById('view-modal').classList.contains('show')) {
+            const currentCard = state.contenidos.find(c => c.id === currentViewId);
+            if (currentCard) {
+              updateOpenViewModal(currentCard);
+            } else {
+              closeViewModal();
+            }
+          }
+        }, (err) => {
+          console.error('Error onSnapshot produccion:', err);
+          updateConnectionStatus(null);
+        });
+      } catch(e) {
+        console.error('Error inicializando Firebase:', e);
+      }
     }
 
     function saveState() {
@@ -753,19 +988,25 @@
       if (window.lucide) lucide.createIcons();
     }
 
-    function updateUI() {
-      renderCards();
-      saveState();
+    function updateProgressUI() {
       let totalSub = 0, doneSub = 0;
       state.contenidos.forEach(c => {
-        if(c.subtareas) {
+        if (c.subtareas) {
           totalSub += c.subtareas.length;
           doneSub += c.subtareas.filter(s => s.done).length;
         }
       });
       const gPct = totalSub ? Math.round((doneSub / totalSub) * 100) : 0;
-      document.getElementById('global-pct').textContent = `${gPct}%`;
-      document.getElementById('global-fill').style.width = `${gPct}%`;
+      const pctEl = document.getElementById('global-pct');
+      const fillEl = document.getElementById('global-fill');
+      if (pctEl) pctEl.textContent = `${gPct}%`;
+      if (fillEl) fillEl.style.width = `${gPct}%`;
+    }
+
+    function updateUI() {
+      renderCards();
+      saveState();
+      updateProgressUI();
     }
 
     let currentSubtasks = [];
@@ -901,12 +1142,14 @@
       }
       closeModal();
       updateUI();
+      syncToFirestore(cardId, false);
     }
 
     function deleteCard(id) {
       if (confirm('\u00bfSeguro que deseas eliminar esta tarjeta?')) {
         state.contenidos = state.contenidos.filter(c => c.id !== id);
         updateUI();
+        syncToFirestore(id, true);
       }
     }
 
@@ -928,12 +1171,19 @@
       const card = state.contenidos.find(c => c.id === cardId);
       if (!card) return;
       currentViewId = cardId;
+      updateOpenViewModal(card);
+      document.getElementById('view-modal').classList.add('show');
+    }
 
+    function updateOpenViewModal(card) {
       const tipoCfg = TIPOS[card.tipo] || TIPOS['otro'];
       const badge = document.getElementById('view-badge');
-      badge.textContent = tipoCfg.label;
-      badge.style.background = tipoCfg.g1;
-      document.getElementById('view-titulo').textContent = card.titulo;
+      if (badge) {
+        badge.textContent = tipoCfg.label;
+        badge.style.background = tipoCfg.g1;
+      }
+      const title = document.getElementById('view-titulo');
+      if (title) title.textContent = card.titulo;
 
       let bodyHtml = '';
 
@@ -976,9 +1226,9 @@
         bodyHtml += `</div></div>`;
       }
 
-      document.getElementById('view-body').innerHTML = bodyHtml;
+      const bodyEl = document.getElementById('view-body');
+      if (bodyEl) bodyEl.innerHTML = bodyHtml;
       renderViewFooter(card);
-      document.getElementById('view-modal').classList.add('show');
       if (window.lucide) lucide.createIcons();
     }
 
@@ -1024,6 +1274,7 @@
       else if (nuevoEstado === 'todo') card.subtareas.forEach(s => s.done = false);
       closeViewModal();
       updateUI();
+      syncToFirestore(card.id, false);
     }
     // ────────────────────────────────────────────────────────────────────────
 

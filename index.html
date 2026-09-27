@@ -298,6 +298,44 @@ body{
   border-color:rgba(255,255,255,.24);
 }
 
+/* Switcher de Vistas (Aprobaciones / Producción) */
+.view-switcher-bar{
+  display:inline-flex;
+  gap:6px;
+  margin-bottom:24px;
+  background:rgba(31,53,73,.65);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  padding:5px;
+  border-radius:14px;
+  border:1px solid var(--azul-border);
+}
+.view-switch-btn{
+  background:transparent;
+  border:none;
+  color:var(--ink-2);
+  padding:9px 18px;
+  border-radius:10px;
+  font-family:inherit;
+  font-size:13.5px;
+  font-weight:700;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  transition:all var(--trans);
+  min-height:40px;
+}
+.view-switch-btn:hover{
+  color:#fff;
+  background:rgba(255,255,255,.08);
+}
+.view-switch-btn.on{
+  background:var(--verde);
+  color:#fff;
+  box-shadow:0 4px 14px var(--verde-glow);
+}
+
 /* Contenido Principal */
 .dash-body{
   max-width:1200px;
@@ -746,57 +784,92 @@ body{
   </header>
 
   <div class="dash-body">
-    <!-- Resumen Global -->
-    <div id="globalStats" class="stats-grid" style="display:none">
-      <div class="stat-box">
-        <div class="val" id="stTotal">0</div>
-        <div class="lbl">Total tableros</div>
-      </div>
-      <div class="stat-box ok">
-        <div class="val" id="stOk">0</div>
-        <div class="lbl">Aprobados</div>
-      </div>
-      <div class="stat-box fix">
-        <div class="val" id="stFix">0</div>
-        <div class="lbl">Con cambios</div>
-      </div>
-      <div class="stat-box pend">
-        <div class="val" id="stPend">0</div>
-        <div class="lbl">Pendientes</div>
-      </div>
+    <!-- Switcher de Vistas -->
+    <div class="view-switcher-bar">
+      <button class="view-switch-btn on" id="btnTabAprobaciones">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="9" y1="3" x2="9" y2="21"></line>
+        </svg>
+        <span>Aprobaciones</span>
+      </button>
+      <button class="view-switch-btn" id="btnTabProduccion">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+        </svg>
+        <span>Producción</span>
+      </button>
     </div>
 
-    <!-- Barra de herramientas: buscador, filtros y orden -->
-    <div class="toolbar-wrap" id="toolbar" style="display:none">
-      <div class="toolbar-row-main">
-        <div class="search-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-          <input type="search" id="searchClient" placeholder="Buscar cliente por nombre…">
+    <!-- Sección Aprobaciones -->
+    <div id="sectionAprobaciones">
+      <!-- Resumen Global -->
+      <div id="globalStats" class="stats-grid" style="display:none">
+        <div class="stat-box">
+          <div class="val" id="stTotal">0</div>
+          <div class="lbl">Total tableros</div>
         </div>
-        <div class="tool-selects">
-          <select class="tool-select" id="filterPeriod" aria-label="Filtrar por mes y año">
-            <option value="all">Todos los periodos</option>
-          </select>
-          <select class="tool-select" id="sortOrder" aria-label="Ordenar tableros">
-            <option value="recent">Más reciente</option>
-            <option value="az">Cliente A-Z</option>
-            <option value="pending">Más pendientes</option>
-          </select>
+        <div class="stat-box ok">
+          <div class="val" id="stOk">0</div>
+          <div class="lbl">Aprobados</div>
+        </div>
+        <div class="stat-box fix">
+          <div class="val" id="stFix">0</div>
+          <div class="lbl">Con cambios</div>
+        </div>
+        <div class="stat-box pend">
+          <div class="val" id="stPend">0</div>
+          <div class="lbl">Pendientes</div>
         </div>
       </div>
-      <div class="toolbar-row-chips" id="stateChips">
-        <button class="chip on" data-state="Todos">Todos</button>
-        <button class="chip" data-state="Sin revisar">Sin revisar</button>
-        <button class="chip" data-state="En revisión">En revisión</button>
-        <button class="chip" data-state="Aprobado">Aprobado</button>
-        <button class="chip" data-state="Con cambios">Con cambios</button>
+
+      <!-- Barra de herramientas: buscador, filtros y orden -->
+      <div class="toolbar-wrap" id="toolbar" style="display:none">
+        <div class="toolbar-row-main">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="search" id="searchClient" placeholder="Buscar cliente por nombre…">
+          </div>
+          <div class="tool-selects">
+            <select class="tool-select" id="filterPeriod" aria-label="Filtrar por mes y año">
+              <option value="all">Todos los periodos</option>
+            </select>
+            <select class="tool-select" id="sortOrder" aria-label="Ordenar tableros">
+              <option value="recent">Más reciente</option>
+              <option value="az">Cliente A-Z</option>
+              <option value="pending">Más pendientes</option>
+            </select>
+          </div>
+        </div>
+        <div class="toolbar-row-chips" id="stateChips">
+          <button class="chip on" data-state="Todos">Todos</button>
+          <button class="chip" data-state="Sin revisar">Sin revisar</button>
+          <button class="chip" data-state="En revisión">En revisión</button>
+          <button class="chip" data-state="Aprobado">Aprobado</button>
+          <button class="chip" data-state="Con cambios">Con cambios</button>
+        </div>
       </div>
+
+      <!-- Contenedor dinámico de tableros -->
+      <div id="dashContent"></div>
     </div>
 
-    <!-- Contenedor dinámico de tableros -->
-    <div id="dashContent"></div>
+    <!-- Sección Producción -->
+    <div id="sectionProduccion" style="display:none">
+      <div class="toolbar-wrap" id="prodToolbar" style="display:none">
+        <div class="toolbar-row-main">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="search" id="searchProd" placeholder="Buscar pauta de producción…">
+          </div>
+        </div>
+      </div>
+      <div id="prodContent"></div>
+    </div>
   </div>
 </div>
 
@@ -905,11 +978,22 @@ body{
   var SK_SORT_ORDER = 'nexo-sort-order';
 
   var allTableros = [];
+  var allProduccion = [];
+  var activeTab = 'aprobaciones';
   var unsubscribeFirestore = null;
+  var unsubscribeProduccion = null;
+
   var pub = document.getElementById('pub');
   var loginModal = document.getElementById('login');
   var dash = document.getElementById('dash');
   var dashContent = document.getElementById('dashContent');
+  var prodContent = document.getElementById('prodContent');
+  var prodToolbar = document.getElementById('prodToolbar');
+  var searchProdInp = document.getElementById('searchProd');
+  var sectionAprobaciones = document.getElementById('sectionAprobaciones');
+  var sectionProduccion = document.getElementById('sectionProduccion');
+  var btnTabAprobaciones = document.getElementById('btnTabAprobaciones');
+  var btnTabProduccion = document.getElementById('btnTabProduccion');
   var globalStats = document.getElementById('globalStats');
   var toolbar = document.getElementById('toolbar');
   var searchInp = document.getElementById('searchClient');
@@ -1263,6 +1347,162 @@ body{
     } catch(e){}
   }
 
+  function escapeAttr(s){
+    return String(s || '').replace(/"/g, '&quot;');
+  }
+  function escapeHtml(s){
+    return String(s || '').replace(/[&<>'"]/g, function(t){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t];
+    });
+  }
+
+  function tiempoRelativo(s){
+    if (!s) return 'hace un momento';
+    var date = null;
+    if (s.toDate && typeof s.toDate === 'function') date = s.toDate();
+    else date = new Date(s);
+    if (isNaN(date.getTime())) return 'recientemente';
+    var diffSec = Math.floor((Date.now() - date.getTime()) / 1000);
+    if (diffSec < 45) return 'hace unos segundos';
+    if (diffSec < 90) return 'hace 1 min';
+    var diffMin = Math.floor(diffSec / 60);
+    if (diffMin < 60) return 'hace ' + diffMin + ' min';
+    var diffHrs = Math.floor(diffMin / 60);
+    if (diffHrs < 24) return 'hace ' + diffHrs + ' h';
+    var diffDays = Math.floor(diffHrs / 24);
+    return 'hace ' + diffDays + ' d';
+  }
+
+  function getProdCardHtml(p){
+    var todo = +p.todo || 0;
+    var grabando = +p.grabando || 0;
+    var listo = +p.listo || 0;
+    var tot = todo + grabando + listo;
+
+    var pctListo = tot > 0 ? Math.round((listo / tot) * 100) : 0;
+    var pctGrabando = tot > 0 ? Math.round((grabando / tot) * 100) : 0;
+    var pctTodo = tot > 0 ? Math.max(0, 100 - pctListo - pctGrabando) : 100;
+
+    var timeAgo = tiempoRelativo(p.actualizado || p.registrado);
+    var url = p.url || '';
+
+    var copyBtn = '<button class="btn-tool btn-copy-url" data-url="' + escapeAttr(url) + '" title="Copiar enlace">' +
+      '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
+        '<rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>' +
+        '<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>' +
+      '</svg>' +
+      '<span>Copiar</span>' +
+    '</button>';
+
+    var openBtn = '<a class="btn-open-board" href="' + escapeAttr(url) + '" target="_blank" rel="noopener">' +
+      '<span>Abrir</span>' +
+      '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>' +
+        '<polyline points="15 3 21 3 21 9"></polyline>' +
+        '<line x1="10" y1="14" x2="21" y2="3"></line>' +
+      '</svg>' +
+    '</a>';
+
+    var statusBadge = '';
+    if (tot > 0 && listo === tot) {
+      statusBadge = '<span class="badge badge-ok">Listo</span>';
+    } else if (grabando > 0) {
+      statusBadge = '<span class="badge badge-rev" style="color:#F97316;border-color:rgba(249,115,22,0.4);background:rgba(249,115,22,0.15);">● Grabando</span>';
+    } else {
+      statusBadge = '<span class="badge badge-wait">Por hacer</span>';
+    }
+
+    return '' +
+      '<section class="client-section">' +
+        '<div class="client-header">' +
+          '<div class="client-name">' + escapeHtml(p.cliente || 'Producción') + '</div>' +
+          '<div class="client-count">' + tot + (tot === 1 ? ' contenido' : ' contenidos') + '</div>' +
+        '</div>' +
+        '<div class="board-card">' +
+          '<div class="card-top">' +
+            '<div>' +
+              '<div class="card-period">' + escapeHtml(p.fecha || 'Sin fecha') + '</div>' +
+              '<div class="card-sub">' + (p.actualizado ? 'Actualizado ' + timeAgo : 'Registrado ' + timeAgo) + '</div>' +
+            '</div>' +
+            '<div>' + statusBadge + '</div>' +
+          '</div>' +
+          '<div class="progress-bar-wrap">' +
+            '<div class="progress-bar">' +
+              '<div class="p-seg ok" style="width:' + pctListo + '%"></div>' +
+              '<div class="p-seg" style="width:' + pctGrabando + '%;background:#F97316;"></div>' +
+              '<div class="p-seg pend" style="width:' + pctTodo + '%"></div>' +
+            '</div>' +
+            '<div class="progress-meta">' +
+              '<span>' + todo + ' por hacer · ' + grabando + ' grabando · ' + listo + ' listo' + (listo === 1 ? '' : 's') + '</span>' +
+              '<span>' + pctListo + '% listo</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="card-foot">' +
+            '<div class="reviewer-info">' +
+              '<span style="font-size:12px;color:var(--ink-2);">' +
+                'Avance: <strong>' + listo + '/' + tot + '</strong> completados' +
+              '</span>' +
+            '</div>' +
+            '<div class="card-actions">' + copyBtn + openBtn + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</section>';
+  }
+
+  function renderProduccionCards(){
+    if (!prodContent) return;
+    if (!allProduccion.length) {
+      if (prodToolbar) prodToolbar.style.display = 'none';
+      prodContent.innerHTML =
+        '<div class="state-message">' +
+          '<h3>No hay pautas de producción</h3>' +
+          '<p>Los tableros de producción registrados aparecerán aquí en vivo.</p>' +
+        '</div>';
+      return;
+    }
+    if (prodToolbar) prodToolbar.style.display = 'flex';
+
+    var q = (searchProdInp && searchProdInp.value ? searchProdInp.value : '').toLowerCase().trim();
+    var list = allProduccion.slice();
+
+    list.sort(function(a, b){
+      var da = new Date(a.fecha || a.actualizado || a.registrado || 0).getTime() || 0;
+      var db = new Date(b.fecha || b.actualizado || b.registrado || 0).getTime() || 0;
+      return db - da;
+    });
+
+    if (q) {
+      list = list.filter(function(p){
+        var c = String(p.cliente || '').toLowerCase();
+        var f = String(p.fecha || '').toLowerCase();
+        return c.indexOf(q) !== -1 || f.indexOf(q) !== -1;
+      });
+    }
+
+    if (!list.length) {
+      prodContent.innerHTML =
+        '<div class="state-message">' +
+          '<h3>No hay pautas con ese criterio</h3>' +
+          '<p>Intenta con otro término de búsqueda.</p>' +
+        '</div>';
+      return;
+    }
+
+    var html = '<div class="clients-grid">';
+    list.forEach(function(p){
+      html += getProdCardHtml(p);
+    });
+    html += '</div>';
+    prodContent.innerHTML = html;
+
+    var copyBtns = prodContent.querySelectorAll('.btn-copy-url');
+    copyBtns.forEach(function(btn){
+      btn.onclick = function(){
+        copyLink(btn.getAttribute('data-url'));
+      };
+    });
+  }
+
   function startRealtimeSync(isManualRefresh){
     showDash();
     if (!allTableros.length && !isManualRefresh) renderSkeleton();
@@ -1274,7 +1514,12 @@ body{
       unsubscribeFirestore();
       unsubscribeFirestore = null;
     }
+    if (unsubscribeProduccion) {
+      unsubscribeProduccion();
+      unsubscribeProduccion = null;
+    }
 
+    // 1. Colección tableros (aprobaciones)
     unsubscribeFirestore = db.collection('tableros').onSnapshot(function(snapshot){
       if (btnRef) btnRef.disabled = false;
       var docs = [];
@@ -1293,32 +1538,37 @@ body{
             '<h3>No hay tableros registrados</h3>' +
             '<p>Los tableros publicados aparecerán aquí automáticamente.</p>' +
           '</div>';
-        return;
+      } else {
+        updateGlobalMetrics(allTableros);
+        populatePeriodOptions(allTableros);
+        toolbar.style.display = 'flex';
+        searchInp.value = curSearchQ;
+        filterPeriod.value = curFilterPeriod;
+        sortOrder.value = curSortOrder;
+        updateChipsUI();
+        applyFiltersAndRender();
       }
-
-      updateGlobalMetrics(allTableros);
-      populatePeriodOptions(allTableros);
-      toolbar.style.display = 'flex';
-
-      // Restaurar valores en controles UI
-      searchInp.value = curSearchQ;
-      filterPeriod.value = curFilterPeriod;
-      sortOrder.value = curSortOrder;
-      updateChipsUI();
-
-      applyFiltersAndRender();
-      if (isManualRefresh) toast('Datos actualizados en tiempo real ✓');
+      if (isManualRefresh && activeTab === 'aprobaciones') toast('Datos actualizados en tiempo real ✓');
     }, function(err){
       if (btnRef) btnRef.disabled = false;
-      console.error('Error sincronizando con Firestore:', err);
-      dashContent.innerHTML =
-        '<div class="state-message">' +
-          '<h3>Error al conectar</h3>' +
-          '<p>No se pudo sincronizar con Cloud Firestore. Verifica tu conexión.</p>' +
-          '<button class="btn-reset-filters" id="btnRetryNet">Reintentar</button>' +
-        '</div>';
-      var rBtn = document.getElementById('btnRetryNet');
-      if (rBtn) rBtn.onclick = function(){ startRealtimeSync(false); };
+      console.error('Error sincronizando tableros:', err);
+    });
+
+    // 2. Colección produccion (pautas en vivo)
+    unsubscribeProduccion = db.collection('produccion').onSnapshot(function(snapshot){
+      if (btnRef) btnRef.disabled = false;
+      var docs = [];
+      snapshot.forEach(function(doc){
+        var d = doc.data();
+        if (!d.id) d.id = doc.id;
+        docs.push(d);
+      });
+      allProduccion = docs;
+      renderProduccionCards();
+      if (isManualRefresh && activeTab === 'produccion') toast('Pautas actualizadas en tiempo real ✓');
+    }, function(err){
+      if (btnRef) btnRef.disabled = false;
+      console.error('Error sincronizando producción:', err);
     });
   }
 
@@ -1350,6 +1600,10 @@ body{
       unsubscribeFirestore();
       unsubscribeFirestore = null;
     }
+    if (unsubscribeProduccion) {
+      unsubscribeProduccion();
+      unsubscribeProduccion = null;
+    }
     auth.signOut().then(function(){
       try {
         sessionStorage.removeItem(SK_FILTER_STATE);
@@ -1358,6 +1612,7 @@ body{
         sessionStorage.removeItem(SK_FILTER_Q);
       } catch(e){}
       allTableros = [];
+      allProduccion = [];
       showPublic();
       toast('Sesión cerrada');
     }).catch(function(){
@@ -1392,6 +1647,30 @@ body{
 
   claveInp.addEventListener('keydown', function(e){ if (e.key === 'Enter') tryLogin(); });
   loginModal.addEventListener('click', function(e){ if (e.target === loginModal) hideLogin(); });
+
+  // Pestañas (Aprobaciones / Producción)
+  if (btnTabAprobaciones && btnTabProduccion) {
+    btnTabAprobaciones.addEventListener('click', function(){
+      activeTab = 'aprobaciones';
+      btnTabAprobaciones.classList.add('on');
+      btnTabProduccion.classList.remove('on');
+      sectionAprobaciones.style.display = 'block';
+      sectionProduccion.style.display = 'none';
+    });
+
+    btnTabProduccion.addEventListener('click', function(){
+      activeTab = 'produccion';
+      btnTabProduccion.classList.add('on');
+      btnTabAprobaciones.classList.remove('on');
+      sectionAprobaciones.style.display = 'none';
+      sectionProduccion.style.display = 'block';
+      renderProduccionCards();
+    });
+  }
+
+  if (searchProdInp) {
+    searchProdInp.addEventListener('input', renderProduccionCards);
+  }
 
   // Eventos de barra de herramientas (Paso 6)
   searchInp.addEventListener('input', function(){

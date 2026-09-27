@@ -70,6 +70,29 @@ El archivo `index.html` es el Banco de Trabajo interno de Nexo para gestionar y 
 
 ## Tableros de producción (días de pauta)
 
-- Plantilla: `_sistema/plantilla-produccion.html` (Kanban Por hacer / Grabando / Listo). Claude la usa desde este repositorio; los cambios de diseño se hacen aquí con ediciones puntuales.
-- No tocar: el marcador `// ESTOS SON LOS DATOS BASE QUE CLAUDE DEBE REEMPLAZAR CADA VEZ QUE LO USES` con el bloque `const DATA = {...}`, ni las funciones `openViewModal`, `moverEstado`, `LS_KEY` y la configuración de Sortable (`delayOnTouchOnly`).
-- Los tableros generados se publican en `produccion/<cliente>-<fecha>-<código>.html` (enlace privado, `noindex`). No se registran en Firestore por ahora.
+- **Plantilla**: `_sistema/plantilla-produccion.html` (Kanban móvil interactivo: Por hacer / Grabando / Listo). Claude la usa desde este repositorio; los cambios de diseño y funcionalidad se hacen aquí con ediciones puntuales sin alterar la estructura general.
+- **Lo que NO se debe tocar**:
+  - El marcador exacto `// ESTOS SON LOS DATOS BASE QUE CLAUDE DEBE REEMPLAZAR CADA VEZ QUE LO USES` y la estructura base del bloque `const DATA = {...}`. Solo se agregan campos opcionales `id` y `firebase: {apiKey, projectId}`.
+  - Las funciones principales de interacción: `openViewModal`, `moverEstado`, `LS_KEY` y la configuración de Sortable (`delayOnTouchOnly`).
+- **Modelo de datos en Firestore (`produccion/{id}`)**:
+  - Cada tablero se registra en la colección `produccion` bajo el id del archivo sin `.html` (ej. `bambu-bistro-2026-10-03-a1b2c3`).
+  - **Campos**:
+    - `id`: string identificador único del tablero.
+    - `cliente`: string con el nombre del cliente.
+    - `fecha`: string con la fecha del rodaje o pauta.
+    - `url`: string con la URL pública publicada en GitHub Pages.
+    - `registrado`: string con fecha ISO de creación.
+    - `orden`: arreglo de strings con los IDs de las tarjetas según el orden del tablero.
+    - `tarjetas`: mapa `{ [idTarjeta]: objetoTarjeta }` donde cada tarjeta incluye `titulo`, `tipo`, `sede`, `estado`, `descripcion`, `subtareas` y `mediaLinks`. Se usa un mapa por tarjeta (en lugar de un arreglo) para permitir actualizaciones concurrentes atómicas con notación de punto (`tarjetas.<id>`) sin pisar cambios de otros usuarios.
+    - `todo`, `grabando`, `listo`: números enteros con el total por columna.
+    - `actualizado`: timestamp del servidor (`serverTimestamp()`).
+- **Sincronización en vivo y modo sin señal**:
+  - `enablePersistence({ synchronizeTabs: true })` de Firestore permite operar sin conexión a internet y sincroniza cambios pendientes automáticamente al reconectarse.
+  - `onSnapshot` escucha cambios remotos reconstruyendo `state.contenidos` a partir de `orden` + `tarjetas`, ignorando cambios locales con `metadata.hasPendingWrites` para evitar parpadeos.
+  - Indicador de estado en cabecera: punto visual "En vivo" (verde `#5CB83E`) o "Sin conexión" (gris).
+- **Script de registro**:
+  - `_sistema/registrar_produccion.py <ruta/al/tablero.html>`
+  - Lee el bloque `DATA` del HTML, inicia sesión mediante REST API con las credenciales de `../.nexo-config.json`, inyecta `DATA.id` y `DATA.firebase` en el archivo local, y crea o reemplaza el documento `produccion/{id}` en Firestore con su estado inicial.
+- **Publicación**:
+  - Los tableros generados se publican en `produccion/<cliente>-<fecha>-<código>.html` (enlace privado, `noindex`).
+

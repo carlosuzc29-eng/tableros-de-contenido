@@ -248,6 +248,33 @@ body{
   align-items:center;
   gap:8px;
 }
+.live-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:3px 10px;
+  border-radius:20px;
+  background:rgba(92,184,62,.12);
+  border:1px solid rgba(92,184,62,.35);
+  color:var(--verde);
+  font-size:10.5px;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  margin-left:4px;
+}
+.live-dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--verde);
+  box-shadow:0 0 8px var(--verde);
+  animation:pulseDot 2s infinite ease-in-out;
+}
+@keyframes pulseDot{
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.4;transform:scale(.8)}
+}
 .dash-actions{display:flex;align-items:center;gap:10px}
 .btn-ghost{
   min-height:44px;
@@ -704,6 +731,7 @@ body{
       <div class="header-brand">
         <div class="brand-badge">N</div>
         <h1>Banco de trabajo</h1>
+        <span class="live-pill"><span class="live-dot"></span> EN VIVO</span>
       </div>
       <div class="dash-actions">
         <button class="btn-ghost" id="btnRefresh" title="Actualizar datos sin recargar">
@@ -773,6 +801,11 @@ body{
 </div>
 
 <div id="toast"></div>
+
+<!-- Firebase SDK compat -->
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
 
 <script>
 (function(){
@@ -847,18 +880,32 @@ body{
     requestAnimationFrame(anim);
   })();
 
-  // — 2. Endpoint y Sesión —
-  var ENDPOINT = 'https://script.google.com/macros/s/AKfycbyLYC8p_iglMhPuXMaPRZ4TOA_2fPTRCe3V2EmVnwotm2v5vll39e7X2AuBC-9eNcp7Jg/exec';
-  var SK_CLAVE = 'nexo-banco-clave';
+  // — 2. Firebase & Sesión —
+  var firebaseConfig = {
+    apiKey: "AIzaSyAsH9TxW0ld2aNQejJw6xxZW7fpZiw212Q",
+    authDomain: "nexo-tableros-app.firebaseapp.com",
+    projectId: "nexo-tableros-app",
+    storageBucket: "nexo-tableros-app.firebasestorage.app",
+    messagingSenderId: "636914935338",
+    appId: "1:636914935338:web:a3f3d7931afd6f57844553"
+  };
+
+  if (!firebase.apps || !firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+  var auth = firebase.auth();
+  var db = firebase.firestore();
+  try {
+    auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
+  } catch(e){}
+
   var SK_FILTER_Q = 'nexo-filter-q';
   var SK_FILTER_PERIOD = 'nexo-filter-period';
   var SK_FILTER_STATE = 'nexo-filter-state';
   var SK_SORT_ORDER = 'nexo-sort-order';
 
-  var clave = '';
-  try { clave = sessionStorage.getItem(SK_CLAVE) || ''; } catch(e){}
-
   var allTableros = [];
+  var unsubscribeFirestore = null;
   var pub = document.getElementById('pub');
   var loginModal = document.getElementById('login');
   var dash = document.getElementById('dash');
@@ -1216,65 +1263,63 @@ body{
     } catch(e){}
   }
 
-  function loadData(isRefresh){
-    if (!clave) {
-      showPublic();
-      return;
-    }
+  function startRealtimeSync(isManualRefresh){
     showDash();
-    if (!isRefresh) renderSkeleton();
+    if (!allTableros.length && !isManualRefresh) renderSkeleton();
 
     var btnRef = document.getElementById('btnRefresh');
     if (btnRef) btnRef.disabled = true;
 
-    fetch(ENDPOINT + '?clave=' + encodeURIComponent(clave) + '&t=' + Date.now())
-      .then(function(r){ return r.json(); })
-      .then(function(j){
-        if (btnRef) btnRef.disabled = false;
-        if (!j.ok) {
-          clave = '';
-          try { sessionStorage.removeItem(SK_CLAVE); } catch(e){}
-          showPublic();
-          toast('La clave no es válida o expiró');
-          return;
-        }
+    if (unsubscribeFirestore) {
+      unsubscribeFirestore();
+      unsubscribeFirestore = null;
+    }
 
-        allTableros = j.tableros || [];
-        if (!allTableros.length) {
-          globalStats.style.display = 'none';
-          toolbar.style.display = 'none';
-          dashContent.innerHTML =
-            '<div class="state-message">' +
-              '<h3>No hay tableros registrados</h3>' +
-              '<p>Los tableros publicados aparecerán aquí automáticamente.</p>' +
-            '</div>';
-          return;
-        }
+    unsubscribeFirestore = db.collection('tableros').onSnapshot(function(snapshot){
+      if (btnRef) btnRef.disabled = false;
+      var docs = [];
+      snapshot.forEach(function(doc){
+        var d = doc.data();
+        if (!d.id) d.id = doc.id;
+        docs.push(d);
+      });
+      allTableros = docs;
 
-        updateGlobalMetrics(allTableros);
-        populatePeriodOptions(allTableros);
-        toolbar.style.display = 'flex';
-
-        // Restaurar valores en controles UI
-        searchInp.value = curSearchQ;
-        filterPeriod.value = curFilterPeriod;
-        sortOrder.value = curSortOrder;
-        updateChipsUI();
-
-        applyFiltersAndRender();
-        if (isRefresh) toast('Datos actualizados');
-      })
-      .catch(function(err){
-        if (btnRef) btnRef.disabled = false;
+      if (!allTableros.length) {
+        globalStats.style.display = 'none';
+        toolbar.style.display = 'none';
         dashContent.innerHTML =
           '<div class="state-message">' +
-            '<h3>Error al conectar</h3>' +
-            '<p>No se pudo conectar con el servidor de tableros. Verifica tu conexión.</p>' +
-            '<button class="btn-reset-filters" id="btnRetryNet">Reintentar</button>' +
+            '<h3>No hay tableros registrados</h3>' +
+            '<p>Los tableros publicados aparecerán aquí automáticamente.</p>' +
           '</div>';
-        var rBtn = document.getElementById('btnRetryNet');
-        if (rBtn) rBtn.onclick = function(){ loadData(false); };
-      });
+        return;
+      }
+
+      updateGlobalMetrics(allTableros);
+      populatePeriodOptions(allTableros);
+      toolbar.style.display = 'flex';
+
+      // Restaurar valores en controles UI
+      searchInp.value = curSearchQ;
+      filterPeriod.value = curFilterPeriod;
+      sortOrder.value = curSortOrder;
+      updateChipsUI();
+
+      applyFiltersAndRender();
+      if (isManualRefresh) toast('Datos actualizados en tiempo real ✓');
+    }, function(err){
+      if (btnRef) btnRef.disabled = false;
+      console.error('Error sincronizando con Firestore:', err);
+      dashContent.innerHTML =
+        '<div class="state-message">' +
+          '<h3>Error al conectar</h3>' +
+          '<p>No se pudo sincronizar con Cloud Firestore. Verifica tu conexión.</p>' +
+          '<button class="btn-reset-filters" id="btnRetryNet">Reintentar</button>' +
+        '</div>';
+      var rBtn = document.getElementById('btnRetryNet');
+      if (rBtn) rBtn.onclick = function(){ startRealtimeSync(false); };
+    });
   }
 
   function tryLogin(){
@@ -1283,47 +1328,55 @@ body{
     errEl.textContent = 'Verificando…';
     document.getElementById('btnGo').disabled = true;
 
-    fetch(ENDPOINT + '?clave=' + encodeURIComponent(v) + '&t=' + Date.now())
-      .then(function(r){ return r.json(); })
-      .then(function(j){
+    var email = (v.indexOf('@') > 0) ? v : 'carlosuzc29@gmail.com';
+    var password = v;
+
+    auth.signInWithEmailAndPassword(email, password)
+      .then(function(){
         document.getElementById('btnGo').disabled = false;
-        if (!j.ok) {
-          errEl.textContent = 'Clave incorrecta.';
-          claveInp.select();
-          return;
-        }
-        clave = v;
-        try { sessionStorage.setItem(SK_CLAVE, clave); } catch(e){}
         hideLogin();
         toast('Bienvenido al Banco de trabajo');
-        loadData(false);
       })
-      .catch(function(){
+      .catch(function(err){
         document.getElementById('btnGo').disabled = false;
-        errEl.textContent = 'Error de conexión. Intenta de nuevo.';
+        console.error('Error de autenticación:', err);
+        errEl.textContent = 'Clave incorrecta.';
+        claveInp.select();
       });
   }
 
   function logout(){
-    clave = '';
-    try {
-      sessionStorage.removeItem(SK_CLAVE);
-      sessionStorage.removeItem(SK_FILTER_STATE);
-      sessionStorage.removeItem(SK_FILTER_PERIOD);
-      sessionStorage.removeItem(SK_SORT_ORDER);
-      sessionStorage.removeItem(SK_FILTER_Q);
-    } catch(e){}
-    allTableros = [];
-    showPublic();
-    toast('Sesión cerrada');
+    if (unsubscribeFirestore) {
+      unsubscribeFirestore();
+      unsubscribeFirestore = null;
+    }
+    auth.signOut().then(function(){
+      try {
+        sessionStorage.removeItem(SK_FILTER_STATE);
+        sessionStorage.removeItem(SK_FILTER_PERIOD);
+        sessionStorage.removeItem(SK_SORT_ORDER);
+        sessionStorage.removeItem(SK_FILTER_Q);
+      } catch(e){}
+      allTableros = [];
+      showPublic();
+      toast('Sesión cerrada');
+    }).catch(function(){
+      showPublic();
+    });
   }
 
-  // Auto-login si hay clave en sessionStorage
-  if (clave) {
-    loadData(false);
-  } else {
-    showPublic();
-  }
+  // Listener del estado de autenticación de Firebase
+  auth.onAuthStateChanged(function(user){
+    if (user) {
+      startRealtimeSync(false);
+    } else {
+      if (unsubscribeFirestore) {
+        unsubscribeFirestore();
+        unsubscribeFirestore = null;
+      }
+      showPublic();
+    }
+  });
 
   // Eventos UI
   document.getElementById('btnAcceso').addEventListener('click', function(e){
@@ -1334,7 +1387,7 @@ body{
   document.getElementById('btnGo').addEventListener('click', tryLogin);
   document.getElementById('btnLogout').addEventListener('click', logout);
   document.getElementById('btnRefresh').addEventListener('click', function(){
-    loadData(true);
+    startRealtimeSync(true);
   });
 
   claveInp.addEventListener('keydown', function(e){ if (e.key === 'Enter') tryLogin(); });

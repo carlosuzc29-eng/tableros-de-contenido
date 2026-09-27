@@ -10,7 +10,7 @@ Responde siempre en español latinoamericano neutro, con "tú". Sé breve, rigur
 - **No regeneres ni reescribas archivos HTML completos a mano.** Los tableros se construyen automáticamente con `python3 _sistema/construir.py`, que pre-renderiza con Chrome headless para garantizar la vista previa de iPhone y no consume créditos.
 - Para un tablero nuevo, tu único trabajo es crear `borradores/<cliente>-<mes>-<año>.json` desde el documento, siguiendo `_sistema/FORMATO-DATOS.md`. Luego ejecuta el script con `--publicar`.
 - Para cambios de diseño o lógica, edita **únicamente** `_sistema/plantilla-tablero.html` o `_sistema/fondo-red.js` con cambios quirúrgicos. Luego reconstruye los tableros con `construir.py`.
-- No toques los tableros HTML de la raíz manualmente; siempre compílalos desde sus borradores para mantener sincronizados el DOM pre-renderizado, el JSON incrustado y el registro en Google Sheets.
+- No toques los tableros HTML de la raíz manualmente; siempre compílalos desde sus borradores para mantener sincronizados el DOM pre-renderizado, el JSON incrustado y el registro en Cloud Firestore.
 
 ## Flujo para un tablero nuevo o actualización
 
@@ -24,7 +24,7 @@ Responde siempre en español latinoamericano neutro, con "tú". Sé breve, rigur
 4. **Verificar que no existan errores**:
    - Tablero con 0 revisiones previas (estado inicial limpio: 0 aprobados, 0 con cambios, todos pendientes).
    - En móviles: desplazamiento vertical completamente fluido sin rebotes ni saltos a la parte superior.
-   - Sincronizado en el panel interno (`panel-*.html`) sin duplicados de tarjeta.
+   - Sincronizado en tiempo real en el Banco de trabajo (`index.html`).
 5. **Entregar al usuario**:
    - Enlace final de GitHub Pages.
    - Mensaje listo para WhatsApp formateado.
@@ -36,7 +36,7 @@ Si Carlos pide **reiniciar un tablero**:
    - `"revision": { "revisadoPor": "", "fecha": "" }`
    - Todos los contenidos en `"estado": "pendiente"` y `"comentario": ""`
 2. Reconstruir con `python3 _sistema/construir.py ... --publicar` (el script genera automáticamente un nuevo `resetAt` que invalida borradores viejos en los navegadores de prueba).
-3. Restablecer la fila en la hoja de cálculo de Google a través del endpoint si habían revisiones previas registradas.
+3. Restablecer el documento en Cloud Firestore si habían revisiones previas registradas.
 
 ## Reglas críticas de UX/UI y Frontend
 
@@ -53,17 +53,17 @@ Si Carlos pide **reiniciar un tablero**:
 
 ## Archivos clave
 
-- `_sistema/plantilla-tablero.html`: plantilla maestra del tablero.
+- `_sistema/plantilla-tablero.html`: plantilla maestra del tablero (envía revisiones directamente a Cloud Firestore vía REST).
 - `_sistema/fondo-red.js`: motor de la red de conexiones animada multi-escala.
-- `_sistema/construir.py`: motor que genera, pre-renderiza con Chrome, registra en Google Sheets y publica en git.
-- `panel-*.html`: panel interno de aprobaciones de Nexo.
+- `_sistema/construir.py`: motor que genera, pre-renderiza con Chrome, registra en Cloud Firestore y publica en git.
+- `index.html`: Banco de trabajo interno de Nexo conectado a Firebase en tiempo real.
 - `borradores/`: borradores JSON de trabajo (privados, ignorados en git).
-- La configuración privada (`../.nexo-config.json`) vive **fuera** del repositorio. Nunca la copies al repositorio público.
+- La configuración privada (`../.nexo-config.json`) vive **fuera** del repositorio con credenciales de Firebase. Nunca la copies al repositorio público.
 
 ## Banco de trabajo (index.html)
 
 El archivo `index.html` es el Banco de Trabajo interno de Nexo para gestionar y visualizar todos los tableros creados:
-- Se alimenta dinámicamente del endpoint mediante la clave de acceso privada.
+- Se conecta en tiempo real a Firebase Cloud Firestore (`onSnapshot`) con autenticación Firebase.
 - Agrupa los tableros por cliente de forma automática (mes más reciente como principal e historial desplegable para meses previos).
-- **Regla estricta de seguridad**: Nunca se escriben nombres de clientes, URLs de tableros ni claves dentro del archivo `index.html`, preservando la privacidad en el repositorio público.
+- **Regla estricta de seguridad**: Nunca se escriben nombres de clientes, URLs de tableros ni claves privadas dentro de archivos del repositorio público.
 

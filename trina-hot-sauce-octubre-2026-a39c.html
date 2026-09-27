@@ -1413,11 +1413,15 @@ La intención es utilizar el comentario como punto de partida para que la comuni
   ],
   "id": "trina-hot-sauce-2026-octubre",
   "url": "https://carlosuzc29-eng.github.io/tableros-de-contenido/trina-hot-sauce-octubre-2026-a39c.html",
-  "endpoint": "https://script.google.com/macros/s/AKfycbyLYC8p_iglMhPuXMaPRZ4TOA_2fPTRCe3V2EmVnwotm2v5vll39e7X2AuBC-9eNcp7Jg/exec",
   "revision": {
     "revisadoPor": "",
     "fecha": ""
-  }
+  },
+  "firebase": {
+    "apiKey": "AIzaSyAsH9TxW0ld2aNQejJw6xxZW7fpZiw212Q",
+    "projectId": "nexo-tableros-app"
+  },
+  "resetAt": 1790543502247
 }
 </script>
 <script>
@@ -1857,7 +1861,11 @@ La intención es utilizar el comentario como punto de partida para que la comuni
   }
   window.__nexoSnapshot = buildHTML;
 
-  var SEND = !!DATA.endpoint;
+  var FB = DATA.firebase || {
+    apiKey: "AIzaSyAsH9TxW0ld2aNQejJw6xxZW7fpZiw212Q",
+    projectId: "nexo-tableros-app"
+  };
+  var SEND = !!(FB && FB.projectId);
   if (SEND) { document.body.classList.add('has-send'); $('dl').textContent = 'Enviar revisión ✓'; }
 
   function doDownload(){
@@ -1874,55 +1882,94 @@ La intención es utilizar el comentario como punto de partida para que la comuni
     modal({kind:'ok', icon:'✓', title:'¡Revisión descargada!', text:'Se guardó el archivo "' + name + '" con ' + k.aprobado + ' aprobados y ' + k.cambios + ' con cambios.' + (SEND ? ' Es una copia para ti: tu revisión se registra al tocar "Enviar revisión".' : ' Envíanoslo por WhatsApp o correo para empezar a producir.'), buttons:[{label:'Entendido', primary:true}]});
   }
 
-  // Envío automático a la hoja de Google de Nexo (Apps Script)
+  // Envío directo a Firebase Cloud Firestore
   function doSend(){
     commitAllDraftComments();
     var revName = getReviewerName() || 'Cliente';
     DATA.revision = {revisadoPor: revName, fecha: new Date().toISOString()};
-    var payload = {
-      action: 'revision',
-      id: DATA.id,
-      cliente: DATA.cliente,
-      mes: DATA.mes,
-      anio: DATA.anio,
-      url: DATA.url || location.href,
-      revisadoPor: DATA.revision.revisadoPor,
-      fecha: DATA.revision.fecha,
-      contenidos: items.map(function(it, i){
-        var cList = (it.comentarios && it.comentarios.length) ? it.comentarios : (it.comentario ? [{ autor: it.revisadoPor || revName, texto: it.comentario, fecha: '' }] : []);
-        var fullComment = formatComentariosString(cList) || it.comentario || '';
-        var lastAuthor = (cList.length && cList[cList.length - 1].autor) ? cList[cList.length - 1].autor : (it.revisadoPor || revName);
-        return {
-          n: i + 1,
-          id: it.id || ('c' + (i + 1)),
-          titulo: it.titulo || '',
-          formatoOriginal: it.formatoOriginal || '',
-          formato: it.formato || '',
-          estado: it.estado,
-          comentario: fullComment,
-          comentarios: cList,
-          revisadoPor: lastAuthor
-        };
-      })
-    };
-    var body = JSON.stringify(payload), btn = $('dl');
+    var k = counts();
+    var estadoGeneral = (k.cambios > 0) ? 'Con cambios' : (k.aprobado === items.length ? 'Aprobado' : 'Parcial');
+
+    var btn = $('dl');
     btn.disabled = true; btn.textContent = 'Enviando…';
+
     function ok(){
       btn.disabled = false; btn.textContent = 'Enviar revisión ✓'; saveDraft();
-      var k = counts();
-      modal({kind:'ok', icon:'✓', title:'¡Revisión enviada!', text:'Nexo ya recibió tus respuestas: ' + k.aprobado + ' aprobados y ' + k.cambios + ' con cambios. Si cambias algo, puedes volver a enviarla.', buttons:[{label:'Descargar una copia', fn:doDownload}, {label:'Listo', primary:true}]});
-    }
-    function fail(){
-      btn.disabled = false; btn.textContent = 'Enviar revisión ✓';
-      modal({kind:'warn', icon:'!', title:'No pudimos enviarla', text:'Revisa tu conexión e inténtalo de nuevo. Si el problema sigue, descarga una copia y envíanosla por WhatsApp.', buttons:[{label:'Descargar copia', fn:doDownload}, {label:'Reintentar', primary:true, fn:doSend}]});
-    }
-    fetch(DATA.endpoint, {method:'POST', body: body})
-      .then(function(r){ return r.json(); })
-      .then(function(j){ if (j && j.ok) ok(); else fail(); })
-      .catch(function(){
-        // Si el navegador no puede leer la respuesta, se reenvía sin leerla (la hoja igual la registra)
-        fetch(DATA.endpoint, {method:'POST', mode:'no-cors', body: body}).then(ok).catch(fail);
+      modal({
+        kind:'ok',
+        icon:'✓',
+        title:'¡Revisión enviada!',
+        text:'Nexo ya recibió tus respuestas: ' + k.aprobado + ' aprobados y ' + k.cambios + ' con cambios. Si cambias algo, puedes volver a enviarla.',
+        buttons:[{label:'Descargar una copia', fn:doDownload}, {label:'Listo', primary:true}]
       });
+    }
+
+    function fail(err){
+      console.error('Error enviando revisión a Firestore:', err);
+      btn.disabled = false; btn.textContent = 'Enviar revisión ✓';
+      modal({
+        kind:'warn',
+        icon:'!',
+        title:'No pudimos enviarla',
+        text:'Revisa tu conexión e inténtalo de nuevo. Si el problema continúa, descarga una copia y compártela por WhatsApp.',
+        buttons:[{label:'Descargar copia', fn:doDownload}, {label:'Reintentar', primary:true, fn:doSend}]
+      });
+    }
+
+    var firestoreContenidos = items.map(function(it, i){
+      var cList = (it.comentarios && it.comentarios.length) ? it.comentarios : (it.comentario ? [{ autor: it.revisadoPor || revName, texto: it.comentario, fecha: '' }] : []);
+      var fullComment = formatComentariosString(cList) || it.comentario || '';
+      var lastAuthor = (cList.length && cList[cList.length - 1].autor) ? cList[cList.length - 1].autor : (it.revisadoPor || revName);
+      return {
+        mapValue: {
+          fields: {
+            n: { integerValue: String(i + 1) },
+            id: { stringValue: String(it.id || ('c' + (i + 1))) },
+            titulo: { stringValue: String(it.titulo || '') },
+            formato: { stringValue: String(it.formato || '') },
+            formatoOriginal: { stringValue: String(it.formatoOriginal || '') },
+            estado: { stringValue: String(it.estado || 'pendiente') },
+            comentario: { stringValue: String(fullComment) },
+            revisadoPor: { stringValue: String(lastAuthor) }
+          }
+        }
+      };
+    });
+
+    var fsUrl = 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(FB.projectId) +
+      '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
+      '?updateMask.fieldPaths=aprobados&updateMask.fieldPaths=cambios&updateMask.fieldPaths=pendientes&updateMask.fieldPaths=estado&updateMask.fieldPaths=revisadoPor&updateMask.fieldPaths=ultimaRevision&updateMask.fieldPaths=contenidos' +
+      '&key=' + encodeURIComponent(FB.apiKey);
+
+    var fsBody = JSON.stringify({
+      fields: {
+        aprobados: { integerValue: String(k.aprobado) },
+        cambios: { integerValue: String(k.cambios) },
+        pendientes: { integerValue: String(k.pendiente) },
+        estado: { stringValue: estadoGeneral },
+        revisadoPor: { stringValue: revName },
+        ultimaRevision: { stringValue: DATA.revision.fecha },
+        contenidos: {
+          arrayValue: {
+            values: firestoreContenidos
+          }
+        }
+      }
+    });
+
+    fetch(fsUrl, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: fsBody
+    })
+    .then(function(r){
+      if (!r.ok) {
+        return r.json().then(function(j){ throw new Error((j.error && j.error.message) || ('HTTP ' + r.status)); });
+      }
+      return r.json();
+    })
+    .then(function(){ ok(); })
+    .catch(function(err){ fail(err); });
   }
 
   // VALIDACIÓN OBLIGATORIA (EN PC Y CELULARES)

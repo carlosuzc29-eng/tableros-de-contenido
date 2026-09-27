@@ -13,7 +13,7 @@ Qué hace:
      UN solo enlace: el mes nuevo reemplaza al anterior en la misma dirección.
   3. Inserta los datos en _sistema/plantilla-tablero.html.
   4. Pre-renderiza con Google Chrome (para que se vea en la vista previa del iPhone).
-  5. Registra el tablero en la hoja de Google (panel de aprobaciones).
+  5. Registra el tablero en Cloud Firestore (panel de aprobaciones).
   6. Con --publicar: hace git add + commit + push.
 No usa IA: no gasta créditos.
 """
@@ -46,6 +46,71 @@ def enlace_previo(ruta, cliente):
             hallados.append((os.path.getmtime(r), d['archivo']))
     return max(hallados)[1] if hallados else None
 
+def registrar_en_firestore(cfg, data, total_contenidos):
+    fb = cfg.get('firebase', {})
+    if not (fb.get('apiKey') and fb.get('projectId') and fb.get('email') and fb.get('password')):
+        return
+    try:
+        # Autenticar en Firebase Auth con las credenciales privadas
+        auth_url = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={fb['apiKey']}"
+        auth_payload = json.dumps({'email': fb['email'], 'password': fb['password'], 'returnSecureToken': True}).encode()
+        auth_req = urllib.request.Request(auth_url, data=auth_payload, headers={'Content-Type': 'application/json'})
+        auth_res = json.loads(urllib.request.urlopen(auth_req, timeout=30).read())
+        token = auth_res.get('idToken')
+        if not token:
+            print('⚠ No se pudo autenticar en Firebase')
+            return
+
+        doc_id = data['id']
+        doc_url = f"https://firestore.googleapis.com/v1/projects/{fb['projectId']}/databases/(default)/documents/tableros/{doc_id}"
+
+        # Verificar si el documento ya existe
+        doc_existe = False
+        try:
+            get_req = urllib.request.Request(f"{doc_url}?key={fb['apiKey']}")
+            urllib.request.urlopen(get_req, timeout=30)
+            doc_existe = True
+        except Exception:
+            pass
+
+        now_iso = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
+        es_reinicio = not data.get('revision', {}).get('fecha') or not doc_existe
+
+        fields = {
+            'id': {'stringValue': data['id']},
+            'cliente': {'stringValue': data['cliente']},
+            'mes': {'stringValue': data['mes']},
+            'anio': {'stringValue': str(data['anio'])},
+            'url': {'stringValue': data['url']},
+            'total': {'integerValue': str(total_contenidos)}
+        }
+
+        if es_reinicio:
+            fields.update({
+                'aprobados': {'integerValue': '0'},
+                'cambios': {'integerValue': '0'},
+                'pendientes': {'integerValue': str(total_contenidos)},
+                'estado': {'stringValue': 'Sin revisar'},
+                'revisadoPor': {'stringValue': ''},
+                'ultimaRevision': {'stringValue': ''},
+                'registrado': {'stringValue': now_iso}
+            })
+
+        mask_params = '&'.join([f"updateMask.fieldPaths={k}" for k in fields.keys()])
+        patch_url = f"{doc_url}?{mask_params}&key={fb['apiKey']}"
+        patch_body = json.dumps({'fields': fields}).encode()
+        patch_req = urllib.request.Request(patch_url, data=patch_body, headers={
+            'Content-Type': 'application/json',
+            'Authorization': f"Bearer {token}"
+        }, method='PATCH')
+        r = urllib.request.urlopen(patch_req, timeout=30)
+        if r.status in (200, 201):
+            print(f'✓ Registrado en Cloud Firestore ({data["id"]})')
+        else:
+            print('⚠ Respuesta inesperada de Firestore:', r.status)
+    except Exception as e:
+        print('⚠ No se pudo registrar en Firestore:', e)
+
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith('--')]
     if not args: sys.exit(__doc__)
@@ -73,7 +138,13 @@ def main():
             for k in ('id', 'estado', 'comentario', 'comentarios', 'revisadoPor', 'formatoOriginal'): c.pop(k, None)
     data['id'] = id_mes
     data['url'] = base + data['archivo']
-    if cfg.get('endpoint'): data['endpoint'] = cfg['endpoint']
+    data.pop('endpoint', None)
+    fb = cfg.get('firebase', {})
+    if fb.get('apiKey') and fb.get('projectId'):
+        data['firebase'] = {
+            'apiKey': fb['apiKey'],
+            'projectId': fb['projectId']
+        }
     data.setdefault('revision', {'revisadoPor': '', 'fecha': ''})
     if not data['revision'].get('fecha'):
         data['resetAt'] = int(time.time() * 1000)
@@ -98,14 +169,7 @@ def main():
     open(destino, 'w', encoding='utf-8').write(out)
     print(f'✓ Tablero generado: {data["archivo"]} ({n} contenidos)')
 
-    if cfg.get('endpoint') and cfg.get('clave'):
-        body = json.dumps({'action': 'registrar', 'clave': cfg['clave'], 'id': data['id'], 'cliente': data['cliente'],
-                           'mes': data['mes'], 'anio': data['anio'], 'url': data['url'], 'total': n}).encode()
-        try:
-            r = urllib.request.urlopen(urllib.request.Request(cfg['endpoint'], data=body, headers={'Content-Type': 'text/plain'}), timeout=60)
-            print('✓ Registrado en el panel' if json.loads(r.read()).get('ok') else '⚠ La hoja no aceptó el registro (revisa la clave)')
-        except Exception as e:
-            print('⚠ No se pudo registrar en el panel:', e)
+    registrar_en_firestore(cfg, data, n)
 
     if '--publicar' in sys.argv:
         subprocess.run(['git', '-C', REPO, 'add', data['archivo']], check=True)

@@ -67,3 +67,9 @@ El archivo `index.html` es el Banco de Trabajo interno de Nexo para gestionar y 
 - Agrupa los tableros por cliente de forma automática (mes más reciente como principal e historial desplegable para meses previos).
 - **Regla estricta de seguridad**: Nunca se escriben nombres de clientes, URLs de tableros ni claves privadas dentro de archivos del repositorio público.
 
+
+## Tableros de producción (días de pauta)
+
+- Plantilla: `_sistema/plantilla-produccion.html` (Kanban Por hacer / Grabando / Listo). Claude la usa desde este repositorio; los cambios de diseño se hacen aquí con ediciones puntuales.
+- No tocar: el marcador `// ESTOS SON LOS DATOS BASE QUE CLAUDE DEBE REEMPLAZAR CADA VEZ QUE LO USES` con el bloque `const DATA = {...}`, ni las funciones `openViewModal`, `moverEstado`, `LS_KEY` y la configuración de Sortable (`delayOnTouchOnly`).
+- Los tableros generados se publican en `produccion/<cliente>-<fecha>-<código>.html` (enlace privado, `noindex`). No se registran en Firestore por ahora.

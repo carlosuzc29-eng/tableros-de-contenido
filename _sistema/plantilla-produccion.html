@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Tablero NEXO</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+  <style>
+    :root {
+      --nexo-blue: #1F3549;
+      --nexo-green: #5CB83E;
+      --bg-color: #F5F5F7;
+      --surface: #FFFFFF;
+      --text-main: #1D1D1F;
+      --text-muted: #86868B;
+      --border-color: rgba(0,0,0,0.06);
+      --shadow-float: 0 10px 40px -10px rgba(0,0,0,0.08);
+      --shadow-card: 0 4px 20px -4px rgba(0,0,0,0.05);
+      --font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      background: var(--bg-color);
+      font-family: var(--font-sans);
+      color: var(--text-main);
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      inset: 0;
+      width: 100%;
+    }
+
+    .header-island {
+      margin: 24px;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-radius: 32px;
+      padding: 16px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      align-content: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: var(--shadow-float);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      z-index: 100;
+      flex-shrink: 0;
+    }
+
+    .island-left { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+    .logo-badge {
+      background: var(--nexo-blue);
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: 1px;
+      font-size: 14px;
+      width: 48px; height: 48px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(31,53,73,0.3);
+      flex-shrink: 0;
+    }
+    .island-titles h1 { font-size: 20px; font-weight: 700; color: var(--nexo-blue); letter-spacing: -0.5px; margin: 0; line-height: 1.2; }
+    .island-titles p { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin: 2px 0 0 0; }
+
+    .island-center { flex: 1 1 200px; display: flex; justify-content: center; align-items: center; }
+    .modern-search {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(0,0,0,0.04);
+      padding: 0 20px;
+      border-radius: 99px;
+      width: 100%;
+      max-width: 380px;
+      height: 44px;
+      border: 1px solid transparent;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+    }
+    .modern-search:focus-within {
+      background: #fff;
+      border-color: var(--nexo-green);
+      box-shadow: 0 0 0 4px rgba(92,184,62,0.15);
+    }
+    .modern-search i, .modern-search svg { color: var(--text-muted); width: 18px; height: 18px; flex-shrink: 0; }
+    .modern-search input {
+      border: none; background: transparent; outline: none; width: 100%;
+      font-family: inherit; font-size: 14px; color: var(--text-main); font-weight: 500;
+      height: 100%;
+    }
+
+    .island-right { display: flex; align-items: center; gap: 20px; flex-shrink: 0; }
+    .global-progress { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; justify-content: center;}
+    .gp-text { display: flex; gap: 8px; align-items: baseline; }
+    .gp-text span:first-child { font-size: 22px; font-weight: 800; color: var(--nexo-green); letter-spacing: -1px;}
+    .gp-text span:last-child { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;}
+    .gp-bar-container { width: 120px; height: 6px; background: rgba(0,0,0,0.06); border-radius: 99px; overflow: hidden; }
+    .gp-bar-fill { height: 100%; background: var(--nexo-green); border-radius: 99px; transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+
+    .btn-icon-subtle {
+      background: transparent; border: none; color: var(--text-muted); cursor: pointer;
+      display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%;
+      transition: all 0.2s ease; flex-shrink: 0;
+    }
+    .btn-icon-subtle:hover { background: rgba(0,0,0,0.05); color: var(--nexo-blue); }
+
+    .btn-action-primary {
+      background: var(--nexo-blue);
+      color: #fff; border: none; border-radius: 99px;
+      padding: 0 24px; height: 44px; font-family: inherit; font-size: 14px; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: 0 4px 12px rgba(31,53,73,0.2);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      flex-shrink: 0;
+    }
+    .btn-action-primary:hover {
+      transform: translateY(-2px); box-shadow: 0 8px 20px rgba(31,53,73,0.3); background: #162635;
+    }
+
+    .kanban-canvas {
+      flex: 1; padding: 0 24px 24px 24px;
+      display: flex; gap: 24px; overflow-x: auto; overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+      overscroll-behavior-x: contain;
+      will-change: scroll-position;
+    }
+    .kanban-canvas::-webkit-scrollbar { height: 0px; }
+    
+    .k-col {
+      flex: 1; min-width: 320px; max-width: 400px;
+      display: flex; flex-direction: column;
+    }
+    
+    .k-col-header {
+      padding: 8px 0 24px 0;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .k-col-title {
+      font-size: 18px; font-weight: 800; color: var(--text-main);
+      display: flex; align-items: center; gap: 8px; letter-spacing: -0.5px;
+    }
+    .k-col-title i { color: var(--text-muted); }
+    .k-col-count {
+      background: rgba(0,0,0,0.05); color: var(--text-main); font-weight: 700;
+      padding: 4px 12px; border-radius: 99px; font-size: 13px;
+    }
+
+    .k-col-cards {
+      flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; padding-bottom: 24px;
+      min-height: 200px;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+    }
+    .k-col-cards::-webkit-scrollbar { width: 0px; }
+
+    .card {
+      background: var(--surface);
+      border-radius: 24px;
+      padding: 20px;
+      cursor: grab;
+      box-shadow: var(--shadow-card);
+      border: 1px solid rgba(0,0,0,0.03);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+    .card:active { cursor: grabbing; transform: scale(0.98); }
+    .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-float); }
+    .card.grabando { border: 2px solid #F97316; box-shadow: 0 10px 30px rgba(249,115,22,0.15); }
+
+    .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+    .card-type-badge {
+      font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 8px;
+      text-transform: uppercase; letter-spacing: 0.5px; color: #fff;
+    }
+    .card-actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.2s; }
+    .card:hover .card-actions { opacity: 1; }
+    @media (hover: none) { .card-actions { opacity: 1; } }
+    .btn-micro { background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; border-radius: 6px; }
+    .btn-micro:hover { background: var(--bg-color); color: var(--nexo-blue); }
+
+    .card-title { font-size: 16px; font-weight: 700; color: var(--text-main); line-height: 1.3; margin-bottom: 6px; }
+    .card-desc { font-size: 13px; color: var(--text-muted); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 16px;}
+    
+    .card-sede-pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--bg-color); color: var(--text-muted);
+      padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 600; margin-bottom: 16px;
+    }
+    .card-sede-pill i { width: 12px; height: 12px; color: var(--nexo-green); }
+
+    .checklist { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .check-item { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; position: relative;}
+    .check-item input[type="checkbox"] { 
+      appearance: none; -webkit-appearance: none; 
+      width: 18px; height: 18px; min-width: 18px;
+      border: 2px solid var(--border-color); border-radius: 6px;
+      margin: 2px 0 0 0; cursor: pointer; transition: all 0.2s;
+      position: relative;
+    }
+    .check-item input[type="checkbox"]:checked { background: var(--nexo-green); border-color: var(--nexo-green); }
+    .check-item input[type="checkbox"]:checked::after {
+      content: ''; position: absolute; left: 5px; top: 1px;
+      width: 4px; height: 9px; border: solid white; border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+    .check-item span { font-size: 13px; color: var(--text-main); line-height: 1.4; font-weight: 500; transition: color 0.2s; }
+    .check-item input[type="checkbox"]:checked + span { text-decoration: line-through; color: var(--text-muted); }
+
+    .c-prog { display: flex; align-items: center; gap: 12px; margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border-color); }
+    .c-prog-bar { flex: 1; height: 6px; background: var(--bg-color); border-radius: 99px; overflow: hidden; }
+    .c-prog-fill { height: 100%; border-radius: 99px; transition: width 0.4s ease; }
+    .c-prog-text { font-size: 12px; font-weight: 700; color: var(--text-muted); }
+
+    .sortable-ghost { opacity: 0.3; background: var(--border-color); border-radius: 24px; border: 2px dashed var(--nexo-blue); }
+
+    .modal-overlay { 
+      position: fixed; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; 
+    }
+    .modal-overlay.show { opacity: 1; pointer-events: auto; }
+    .modal-sheet {
+      background: #fff; border-radius: 32px; width: 90%; max-width: 560px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+      transform: translateY(40px) scale(0.95); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex; flex-direction: column; max-height: 90vh;
+    }
+    .modal-overlay.show .modal-sheet { transform: translateY(0) scale(1); }
+    
+    .m-header { padding: 24px 32px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+    .m-header h2 { font-size: 22px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px;}
+    .m-body { padding: 32px; overflow-y: auto; display: flex; flex-direction: column; gap: 24px; }
+    .m-footer { padding: 20px 32px; background: var(--bg-color); border-top: 1px solid var(--border-color); border-radius: 0 0 32px 32px; display: flex; justify-content: flex-end; gap: 12px; }
+    
+    .input-grp { display: flex; flex-direction: column; gap: 8px; }
+    .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .input-grp label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .huge-input {
+      border: none; border-bottom: 2px solid var(--border-color); border-radius: 0;
+      font-size: 24px; font-weight: 700; color: var(--text-main); font-family: inherit;
+      padding: 8px 0; outline: none; transition: border-color 0.2s;
+    }
+    .huge-input:focus { border-color: var(--nexo-blue); }
+    
+    .std-input {
+      background: var(--bg-color); border: 1px solid transparent; border-radius: 12px;
+      padding: 12px 16px; font-size: 14px; font-weight: 500; font-family: inherit;
+      color: var(--text-main); outline: none; transition: all 0.2s;
+    }
+    .std-input:focus { background: #fff; border-color: var(--nexo-green); box-shadow: 0 0 0 4px rgba(92,184,62,0.1); }
+    
+    select.std-input { appearance: none; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2386868B%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; }
+
+    .subtask-editor-list { display: flex; flex-direction: column; gap: 8px; }
+    .subtask-editor-item { display: flex; gap: 8px; align-items: center; }
+    .btn-secondary { background: #fff; border: 1px solid var(--border-color); color: var(--text-main); padding: 12px 24px; border-radius: 99px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn-secondary:hover { background: var(--bg-color); }
+    .btn-block { width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 8px; }
+
+    @media (hover: none) {
+      .card:hover { transform: none; box-shadow: var(--shadow-card); }
+    }
+
+    /* RESPONSIVE MOBILE */
+    @media (max-width: 768px) {
+      .header-island {
+        margin: 12px;
+        padding: 16px;
+        border-radius: 24px;
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .island-left { justify-content: space-between; }
+      .island-center { flex: 1 1 auto; }
+      .modern-search { max-width: 100%; }
+      .island-right { justify-content: space-between; flex-wrap: wrap; }
+      .global-progress { align-items: flex-start; }
+      .btn-action-primary { flex: 1; justify-content: center; }
+      
+      .kanban-canvas {
+        padding: 0 16px 80px 16px;
+        scroll-snap-type: x proximity;
+        scroll-padding: 0 16px;
+        scroll-behavior: smooth;
+        gap: 16px;
+      }
+      .k-col {
+        min-width: 82vw;
+        max-width: none;
+        scroll-snap-align: center;
+        will-change: transform;
+      }
+      
+      .modal-sheet {
+        height: 100vh;
+        max-height: 100vh;
+        width: 100%;
+        max-width: 100%;
+        border-radius: 0;
+      }
+      .input-row { grid-template-columns: 1fr; }
+    }
+
+    /* REFERENCES */
+    .card-ref-block { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.02); padding: 8px 12px; border-radius: 12px; margin-bottom: 16px; }
+    .card-ref-info { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--text-main); }
+    .card-ref-info i { color: var(--nexo-blue); }
+    
+    .ref-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+    .ref-item { display: flex; align-items: center; justify-content: space-between; background: var(--bg-color); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); }
+    .ref-info { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--text-main); overflow: hidden; }
+    .ref-info span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+    
+    .media-sheet { max-width: 900px !important; width: 95% !important; max-height: 95vh !important; height: 95vh; display: flex; flex-direction: column; }
+    .media-body { flex: 1; padding: 0 !important; background: #000; position: relative; display: flex; justify-content: center; align-items: center; overflow: hidden !important; border-radius: 0; }
+    .media-body iframe, .media-body video, .media-body img { width: 100%; height: 100%; object-fit: contain; border: none; }
+    .media-footer { padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+    .nav-refs { display: flex; align-items: center; gap: 16px; font-size: 14px; font-weight: 700; color: var(--text-main); }
+    .nav-refs button { background: var(--bg-color); border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; color: var(--text-main); }
+    .nav-refs button:hover:not(:disabled) { background: rgba(0,0,0,0.1); }
+    .nav-refs button:disabled { opacity: 0.5; cursor: not-allowed; }
+    
+    .media-warning {
+      position: absolute; top: 16px; left: 16px; right: 16px;
+      background: rgba(0,0,0,0.75); color: #fff; padding: 12px 16px;
+      border-radius: 12px; font-size: 13px; display: flex; gap: 12px; align-items: flex-start;
+      z-index: 10; pointer-events: none; backdrop-filter: blur(8px);
+    }
+
+    /* VIEW MODAL */
+    .view-desc {
+      background: var(--bg-color); border-radius: 12px; padding: 16px;
+      font-size: 14px; line-height: 1.75; color: var(--text-main);
+      white-space: pre-wrap; max-height: 320px; overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .btn-grabando {
+      background: #F97316; color: #fff; border: none; border-radius: 99px;
+      padding: 0 24px; height: 44px; font-family: inherit; font-size: 14px; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: 0 4px 12px rgba(249,115,22,0.3);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); flex-shrink: 0;
+    }
+    .btn-grabando:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(249,115,22,0.4); background: #ea6c0a; }
+    .btn-listo {
+      background: var(--nexo-green); color: #fff; border: none; border-radius: 99px;
+      padding: 0 24px; height: 44px; font-family: inherit; font-size: 14px; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: 0 4px 12px rgba(92,184,62,0.3);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); flex-shrink: 0;
+    }
+    .btn-listo:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(92,184,62,0.4); background: #4da632; }
+  </style>
+</head>
+<body>
+
+  <header class="header-island">
+    <div class="island-left">
+      <div class="logo-badge">NEXO</div>
+      <div class="island-titles">
+        <h1 id="hdr-client">Tablero de Producción</h1>
+        <p id="hdr-date">Esperando tareas...</p>
+      </div>
+    </div>
+    <div class="island-center">
+      <div class="modern-search">
+        <i data-lucide="search"></i>
+        <input type="text" id="search-input" placeholder="Buscar tarjetas o referencias...">
+      </div>
+    </div>
+    <div class="island-right">
+      <div class="global-progress">
+        <div class="gp-text">
+          <span id="global-pct">0%</span>
+          <span>Completado</span>
+        </div>
+        <div class="gp-bar-container">
+          <div class="gp-bar-fill" id="global-fill" style="width: 0%"></div>
+        </div>
+      </div>
+      <button class="btn-icon-subtle" onclick="exportData()" title="Exportar Datos"><i data-lucide="download"></i></button>
+      <button class="btn-action-primary" onclick="openModal()"><i data-lucide="plus"></i> Crear Tarjeta</button>
+    </div>
+  </header>
+
+  <main class="kanban-canvas">
+    <div class="k-col">
+      <div class="k-col-header">
+        <div class="k-col-title"><i data-lucide="circle-dashed"></i> Por Hacer</div>
+        <div class="k-col-count" id="count-todo">0</div>
+      </div>
+      <div class="k-col-cards" id="col-todo" data-status="todo"></div>
+    </div>
+    <div class="k-col">
+      <div class="k-col-header">
+        <div class="k-col-title" style="color: #F97316;"><i data-lucide="play-circle" style="color: #F97316;"></i> Grabando</div>
+        <div class="k-col-count" id="count-grabando" style="background: rgba(249,115,22,0.1); color: #F97316;">0</div>
+      </div>
+      <div class="k-col-cards" id="col-grabando" data-status="grabando"></div>
+    </div>
+    <div class="k-col">
+      <div class="k-col-header">
+        <div class="k-col-title" style="color: var(--nexo-green);"><i data-lucide="check-circle-2" style="color: var(--nexo-green);"></i> Listo</div>
+        <div class="k-col-count" id="count-listo" style="background: rgba(92,184,62,0.1); color: var(--nexo-green);">0</div>
+      </div>
+      <div class="k-col-cards" id="col-listo" data-status="listo"></div>
+    </div>
+  </main>
+
+  <!-- EDIT MODAL -->
+  <div class="modal-overlay" id="edit-modal">
+    <div class="modal-sheet">
+      <div class="m-header">
+        <h2 id="modal-title">Editar Tarjeta</h2>
+        <button class="btn-icon-subtle" onclick="closeModal()"><i data-lucide="x"></i></button>
+      </div>
+      <div class="m-body">
+        <input type="hidden" id="modal-id">
+        <div class="input-grp">
+          <label>Título de la Tarjeta</label>
+          <input type="text" class="huge-input" id="modal-titulo" placeholder="Ej. Reel corporativo">
+        </div>
+        <div class="input-row">
+          <div class="input-grp">
+            <label>Tipo de Contenido</label>
+            <select class="std-input" id="modal-tipo">
+              <option value="video">Video</option>
+              <option value="carrusel">Carrusel</option>
+              <option value="foto">Foto</option>
+              <option value="reel">Reel</option>
+              <option value="story">Story</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+          <div class="input-grp">
+            <label>Ubicación / Sede</label>
+            <input type="text" class="std-input" id="modal-sede" placeholder="Ej: Las Américas">
+          </div>
+        </div>
+        <div class="input-grp">
+          <label>Descripción</label>
+          <textarea class="std-input" id="modal-desc" rows="8" placeholder="Añade contexto..."></textarea>
+        </div>
+        <div class="input-grp" style="background: var(--bg-color); padding: 16px; border-radius: 16px; border: 1px solid var(--border-color);">
+          <label style="color: var(--text-main); margin-bottom: 8px;">
+            <i data-lucide="link" style="width:14px; margin-right:4px;"></i> Referencias Multimedia
+          </label>
+          <div class="input-row" style="grid-template-columns: 1fr 1fr auto; align-items: end; gap: 8px;">
+            <div class="input-grp" style="gap: 4px;">
+              <label style="font-size: 10px;">Enlace (URL)</label>
+              <input type="url" class="std-input" id="ref-url" placeholder="https://..." style="background: #fff;">
+            </div>
+            <div class="input-grp" style="gap: 4px;">
+              <label style="font-size: 10px;">Nombre (Opcional)</label>
+              <input type="text" class="std-input" id="ref-label" placeholder="Ej. Inspiración" style="background: #fff;">
+            </div>
+            <button class="btn-secondary" onclick="addReferenceField()" style="height: 44px; padding: 0 16px;">Añadir</button>
+          </div>
+          <div class="ref-list" id="modal-refs-list"></div>
+        </div>
+        <div class="input-grp">
+          <label>Subtareas (Checklist)</label>
+          <div class="subtask-editor-list" id="modal-subtasks-list"></div>
+          <button class="btn-secondary btn-block" onclick="addSubtaskField()">
+            <i data-lucide="plus" style="width:18px;"></i> Añadir subtarea manual
+          </button>
+        </div>
+      </div>
+      <div class="m-footer">
+        <button class="btn-secondary" onclick="closeModal()">Cancelar</button>
+        <button class="btn-action-primary" onclick="saveModal()">Guardar Tarjeta</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW MODAL -->
+  <div class="modal-overlay" id="view-modal">
+    <div class="modal-sheet">
+      <div class="m-header" style="align-items: flex-start; gap: 16px;">
+        <div style="flex:1; min-width:0;">
+          <div id="view-badge" class="card-type-badge" style="display:inline-block; margin-bottom:10px;"></div>
+          <h2 id="view-titulo" style="font-size:20px; word-break:break-word; line-height:1.3;"></h2>
+        </div>
+        <button class="btn-icon-subtle" style="flex-shrink:0; margin-top:4px;" onclick="closeViewModal()"><i data-lucide="x"></i></button>
+      </div>
+      <div class="m-body" id="view-body"></div>
+      <div class="m-footer" id="view-footer"></div>
+    </div>
+  </div>
+
+  <!-- MEDIA VIEWER MODAL -->
+  <div class="modal-overlay" id="media-modal">
+    <div class="modal-sheet media-sheet">
+      <div class="m-header">
+        <h2 id="media-title" style="font-size: 18px; max-width: 60%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Referencias</h2>
+        <button class="btn-icon-subtle" onclick="closeMediaModal()"><i data-lucide="x"></i></button>
+      </div>
+      <div class="m-body media-body" id="media-container"></div>
+      <div class="m-footer media-footer" style="border-radius: 0 0 32px 32px;">
+        <div class="nav-refs" id="media-nav">
+          <button id="media-prev" onclick="prevMedia()"><i data-lucide="chevron-left"></i></button>
+          <span id="media-counter">1 / 1</span>
+          <button id="media-next" onclick="nextMedia()"><i data-lucide="chevron-right"></i></button>
+        </div>
+        <a id="media-original-btn" href="#" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="font-size: 13px;">
+          <i data-lucide="external-link" style="width: 16px;"></i> Abrir publicación
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ESTOS SON LOS DATOS BASE QUE CLAUDE DEBE REEMPLAZAR CADA VEZ QUE LO USES
+    const DATA = {
+      "fecha": "",
+      "cliente": "",
+      "contenidos": []
+    };
+
+    function escapeHTML(str) {
+      if (typeof str !== 'string') return '';
+      return str.replace(/[&<>'"]/g, tag => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[tag]));
+    }
+
+    function detectMediaPlatform(urlStr) {
+      try {
+        const u = new URL(urlStr);
+        if (!['http:', 'https:'].includes(u.protocol)) return null;
+        const host = u.hostname.toLowerCase();
+        if (host.includes('youtube.com') || host.includes('youtu.be')) return 'youtube';
+        if (host.includes('instagram.com')) return 'instagram';
+        if (host.includes('tiktok.com')) return 'tiktok';
+        if (host.includes('facebook.com') || host.includes('fb.watch')) return 'facebook';
+        if (host.includes('vimeo.com')) return 'vimeo';
+        const ext = u.pathname.split('.').pop().toLowerCase().split('?')[0];
+        if (['mp4','webm','mov'].includes(ext)) return 'video';
+        if (['mp3','wav','ogg'].includes(ext)) return 'audio';
+        if (['jpg','jpeg','png','webp','gif'].includes(ext)) return 'image';
+        return 'external';
+      } catch(e) { return null; }
+    }
+
+    function getPlatformIcon(platform) {
+      const icons = {'youtube':'youtube','instagram':'instagram','tiktok':'music','facebook':'facebook','vimeo':'video','video':'film','audio':'headphones','image':'image','external':'link'};
+      return icons[platform] || 'link';
+    }
+
+    const TIPOS = {
+      "video":    {label:"Video", g1:"#F97316"},
+      "carrusel": {label:"Carrusel", g1:"#3B82F6"},
+      "foto":     {label:"Foto", g1:"#10B981"},
+      "reel":     {label:"Reel", g1:"#F59E0B"},
+      "story":    {label:"Story", g1:"#8B5CF6"},
+      "otro":     {label:"Otro", g1:"#64748B"}
+    };
+
+    const LS_KEY = 'nexo-tablero-' + (DATA.fecha || 'v3') + '-' + (DATA.cliente || '').toLowerCase().replace(/[^a-z0-9]/g, '-');
+    let state = { fecha: '', cliente: '', contenidos: [] };
+    let searchQuery = '';
+
+    function init() {
+      const local = localStorage.getItem(LS_KEY);
+      if (local) {
+        try {
+          const parsed = JSON.parse(local);
+          if (parsed.fecha === DATA.fecha && parsed.cliente === DATA.cliente) {
+            // Siempre partir del DATA actualizado (fuente de verdad de la lista de tarjetas)
+            state = JSON.parse(JSON.stringify(DATA));
+            // Solo restaurar estado y subtareas de tarjetas que ya existían
+            state.contenidos.forEach(card => {
+              const saved = (parsed.contenidos || []).find(c => c.id === card.id);
+              if (saved) {
+                card.estado = saved.estado || card.estado;
+                card.subtareas.forEach(sub => {
+                  const savedSub = (saved.subtareas || []).find(s => s.id === sub.id);
+                  if (savedSub) sub.done = savedSub.done;
+                });
+              }
+            });
+            saveState();
+          } else {
+            state = JSON.parse(JSON.stringify(DATA));
+            saveState();
+          }
+        } catch(e) {
+          state = JSON.parse(JSON.stringify(DATA));
+          saveState();
+        }
+      } else {
+        state = JSON.parse(JSON.stringify(DATA));
+        saveState();
+      }
+
+      document.getElementById('hdr-client').textContent = state.cliente || 'Tablero de Producci\u00f3n';
+      document.getElementById('hdr-date').textContent = state.fecha || 'Sin fecha asignada';
+
+      const opts = {
+        group: 'kanban', animation: 250,
+        ghostClass: 'sortable-ghost',
+        delay: 200,
+        delayOnTouchOnly: true,
+        touchStartThreshold: 5,
+        onEnd: (evt) => {
+          const cardId = evt.item.dataset.id;
+          const newStatus = evt.to.dataset.status;
+          const card = state.contenidos.find(c => c.id === cardId);
+          if (card && card.estado !== newStatus) {
+            card.estado = newStatus;
+            if (newStatus === 'listo') card.subtareas.forEach(s => s.done = true);
+            else if (newStatus === 'todo') card.subtareas.forEach(s => s.done = false);
+            updateUI();
+          }
+        }
+      };
+
+      if (typeof Sortable !== 'undefined') {
+        new Sortable(document.getElementById('col-todo'), opts);
+        new Sortable(document.getElementById('col-grabando'), opts);
+        new Sortable(document.getElementById('col-listo'), opts);
+      }
+
+      document.getElementById('search-input').addEventListener('input', (e) => {
+        searchQuery = e.target.value.toLowerCase();
+        renderCards();
+      });
+
+      document.addEventListener('change', (e) => {
+        if (e.target.type === 'checkbox' && e.target.dataset.sid) {
+          const cid = e.target.dataset.cid;
+          const sid = e.target.dataset.sid;
+          const card = state.contenidos.find(c => c.id === cid);
+          if (card) {
+            const sub = card.subtareas.find(s => s.id === sid);
+            if (sub) {
+              sub.done = e.target.checked;
+              const allDone = card.subtareas.every(s => s.done);
+              const someDone = card.subtareas.some(s => s.done);
+              if (allDone && card.subtareas.length > 0) card.estado = 'listo';
+              else if (someDone && card.estado === 'todo') card.estado = 'grabando';
+              else if (!someDone && card.estado === 'listo') card.estado = 'todo';
+              updateUI();
+            }
+          }
+        }
+      });
+
+      updateUI();
+    }
+
+    function saveState() {
+      try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch(e) {}
+    }
+
+    function createCardElement(c) {
+      const el = document.createElement('div');
+      el.className = 'card' + (c.estado === 'grabando' ? ' grabando' : '');
+      el.dataset.id = escapeHTML(c.id);
+
+      const tipoCfg = TIPOS[c.tipo] || TIPOS['otro'];
+      const total = c.subtareas ? c.subtareas.length : 0;
+      const done = c.subtareas ? c.subtareas.filter(s => s.done).length : 0;
+      const pct = total ? Math.round((done / total) * 100) : 0;
+
+      let sedeBadge = '';
+      if (c.sede && c.sede.trim() !== '') {
+        sedeBadge = `<div class="card-sede-pill"><i data-lucide="map-pin"></i> ${escapeHTML(c.sede)}</div>`;
+      }
+
+      let refsHtml = '';
+      if (c.mediaLinks && c.mediaLinks.length > 0) {
+        refsHtml = `
+          <div class="card-ref-block" onmousedown="event.stopPropagation()">
+            <div class="card-ref-info">
+              <i data-lucide="film"></i> ${c.mediaLinks.length} Referencia${c.mediaLinks.length > 1 ? 's' : ''}
+            </div>
+            <button class="btn-secondary" style="padding: 6px 12px; font-size: 11px;" onclick="openMediaModal('${escapeHTML(c.id)}')">Ver</button>
+          </div>`;
+      }
+
+      let subtasksHtml = '';
+      if (total > 0) {
+        subtasksHtml = `<div class="checklist">`;
+        c.subtareas.forEach(s => {
+          subtasksHtml += `
+            <label class="check-item" onmousedown="event.stopPropagation()">
+              <input type="checkbox" data-cid="${escapeHTML(c.id)}" data-sid="${escapeHTML(s.id)}" ${s.done ? 'checked' : ''}>
+              <span>${escapeHTML(s.texto)}</span>
+            </label>`;
+        });
+        subtasksHtml += `</div>`;
+      }
+
+      el.addEventListener('click', (e) => {
+        if (!e.target.closest('.card-actions') && !e.target.closest('.check-item') && !e.target.closest('.card-ref-block')) {
+          openViewModal(c.id);
+        }
+      });
+
+      el.innerHTML = `
+        <div class="card-top">
+          <div class="card-type-badge" style="background: ${tipoCfg.g1}">${escapeHTML(tipoCfg.label)}</div>
+          <div class="card-actions">
+            <button class="btn-micro" onclick="openModal('${escapeHTML(c.id)}')"><i data-lucide="edit-3" style="width:16px;"></i></button>
+            <button class="btn-micro" onclick="deleteCard('${escapeHTML(c.id)}')"><i data-lucide="trash-2" style="width:16px;color:#ef4444;"></i></button>
+          </div>
+        </div>
+        <div class="card-title">${escapeHTML(c.titulo)}</div>
+        ${sedeBadge}
+        ${c.descripcion ? `<div class="card-desc">${escapeHTML(c.descripcion)}</div>` : ''}
+        ${refsHtml}
+        ${subtasksHtml}
+        <div class="c-prog">
+          <div class="c-prog-bar">
+            <div class="c-prog-fill" style="width: ${pct}%; background: ${tipoCfg.g1}"></div>
+          </div>
+          <span class="c-prog-text">${done}/${total}</span>
+        </div>
+      `;
+      return el;
+    }
+
+    function renderCards() {
+      const cols = { todo: document.getElementById('col-todo'), grabando: document.getElementById('col-grabando'), listo: document.getElementById('col-listo') };
+      cols.todo.innerHTML = ''; cols.grabando.innerHTML = ''; cols.listo.innerHTML = '';
+      let counts = { todo: 0, grabando: 0, listo: 0 };
+
+      state.contenidos.forEach(c => {
+        if (searchQuery) {
+          const text = (c.titulo + ' ' + (c.descripcion||'')).toLowerCase();
+          const subText = c.subtareas ? c.subtareas.map(s => s.texto).join(' ').toLowerCase() : '';
+          const refText = c.mediaLinks ? c.mediaLinks.map(r => (r.label + ' ' + r.url)).join(' ').toLowerCase() : '';
+          if (!text.includes(searchQuery) && !subText.includes(searchQuery) && !refText.includes(searchQuery)) return;
+        }
+        if (!c.estado) c.estado = 'todo';
+        if (!c.subtareas) c.subtareas = [];
+        if (!c.mediaLinks) c.mediaLinks = [];
+        cols[c.estado].appendChild(createCardElement(c));
+        counts[c.estado]++;
+      });
+
+      document.getElementById('count-todo').textContent = counts.todo;
+      document.getElementById('count-grabando').textContent = counts.grabando;
+      document.getElementById('count-listo').textContent = counts.listo;
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function updateUI() {
+      renderCards();
+      saveState();
+      let totalSub = 0, doneSub = 0;
+      state.contenidos.forEach(c => {
+        if(c.subtareas) {
+          totalSub += c.subtareas.length;
+          doneSub += c.subtareas.filter(s => s.done).length;
+        }
+      });
+      const gPct = totalSub ? Math.round((doneSub / totalSub) * 100) : 0;
+      document.getElementById('global-pct').textContent = `${gPct}%`;
+      document.getElementById('global-fill').style.width = `${gPct}%`;
+    }
+
+    let currentSubtasks = [];
+    let currentRefs = [];
+
+    function openModal(cardId = null) {
+      const modal = document.getElementById('edit-modal');
+      const title = document.getElementById('modal-title');
+      if (cardId) {
+        const card = state.contenidos.find(c => c.id === cardId);
+        document.getElementById('modal-id').value = card.id;
+        document.getElementById('modal-titulo').value = card.titulo;
+        document.getElementById('modal-tipo').value = card.tipo;
+        document.getElementById('modal-sede').value = card.sede || '';
+        document.getElementById('modal-desc').value = card.descripcion || '';
+        currentSubtasks = JSON.parse(JSON.stringify(card.subtareas || []));
+        currentRefs = JSON.parse(JSON.stringify(card.mediaLinks || []));
+        title.textContent = 'Editar Tarjeta';
+      } else {
+        document.getElementById('modal-id').value = '';
+        document.getElementById('modal-titulo').value = '';
+        document.getElementById('modal-tipo').value = 'video';
+        document.getElementById('modal-sede').value = '';
+        document.getElementById('modal-desc').value = '';
+        currentSubtasks = [];
+        currentRefs = [];
+        title.textContent = 'Nueva Tarjeta';
+      }
+      document.getElementById('ref-url').value = '';
+      document.getElementById('ref-label').value = '';
+      renderModalSubtasks();
+      renderModalRefs();
+      modal.classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('edit-modal').classList.remove('show');
+    }
+
+    function renderModalSubtasks() {
+      const list = document.getElementById('modal-subtasks-list');
+      list.innerHTML = '';
+      currentSubtasks.forEach((s, idx) => {
+        const div = document.createElement('div');
+        div.className = 'subtask-editor-item';
+        div.innerHTML = `
+          <input type="checkbox" style="width:18px;height:18px;border-radius:4px;" ${s.done ? 'checked' : ''} onchange="currentSubtasks[${idx}].done = this.checked">
+          <input type="text" class="std-input" style="flex:1" value="${escapeHTML(s.texto)}" oninput="currentSubtasks[${idx}].texto = this.value">
+          <button class="btn-icon-subtle" style="color:#ef4444;" onclick="removeSubtask(${idx})"><i data-lucide="trash-2" style="width:16px;"></i></button>
+        `;
+        list.appendChild(div);
+      });
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function addSubtaskField() {
+      currentSubtasks.push({ id: 'temp-' + Date.now(), texto: '', done: false });
+      renderModalSubtasks();
+    }
+
+    function removeSubtask(idx) {
+      currentSubtasks.splice(idx, 1);
+      renderModalSubtasks();
+    }
+
+    function renderModalRefs() {
+      const list = document.getElementById('modal-refs-list');
+      list.innerHTML = '';
+      currentRefs.forEach((r, idx) => {
+        const icon = getPlatformIcon(r.platform);
+        const div = document.createElement('div');
+        div.className = 'ref-item';
+        div.innerHTML = `
+          <div class="ref-info">
+            <i data-lucide="${icon}" style="width:16px;"></i>
+            <span>${escapeHTML(r.label || r.platform)}</span>
+          </div>
+          <button class="btn-icon-subtle" style="color:#ef4444; width:32px; height:32px;" onclick="removeReference(${idx})"><i data-lucide="trash-2" style="width:16px;"></i></button>
+        `;
+        list.appendChild(div);
+      });
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function addReferenceField() {
+      const urlInput = document.getElementById('ref-url');
+      const labelInput = document.getElementById('ref-label');
+      const url = urlInput.value.trim();
+      const label = labelInput.value.trim();
+      if (!url) return;
+      const platform = detectMediaPlatform(url);
+      if (!platform) {
+        alert('URL no v\u00e1lida o esquema inseguro. Usa https:// o http://');
+        return;
+      }
+      currentRefs.push({ id: 'ref-' + Date.now(), url, label, platform });
+      urlInput.value = '';
+      labelInput.value = '';
+      renderModalRefs();
+    }
+
+    function removeReference(idx) {
+      currentRefs.splice(idx, 1);
+      renderModalRefs();
+    }
+
+    function saveModal() {
+      const idInput = document.getElementById('modal-id').value;
+      const titulo = document.getElementById('modal-titulo').value.trim();
+      if (!titulo) return alert('El t\u00edtulo es obligatorio');
+
+      const cardId = idInput || 'c' + Date.now();
+      const newData = {
+        id: cardId,
+        titulo: titulo,
+        tipo: document.getElementById('modal-tipo').value,
+        sede: document.getElementById('modal-sede').value,
+        descripcion: document.getElementById('modal-desc').value,
+        estado: 'todo',
+        subtareas: currentSubtasks.filter(s => s.texto.trim() !== '').map(s => {
+          if (s.id.startsWith('temp-')) s.id = cardId + '-s' + Date.now() + Math.floor(Math.random()*1000);
+          return s;
+        }),
+        mediaLinks: currentRefs.filter(r => r.url.trim() !== '')
+      };
+
+      if (idInput) {
+        const idx = state.contenidos.findIndex(c => c.id === idInput);
+        newData.estado = state.contenidos[idx].estado;
+        state.contenidos[idx] = newData;
+      } else {
+        state.contenidos.unshift(newData);
+      }
+      closeModal();
+      updateUI();
+    }
+
+    function deleteCard(id) {
+      if (confirm('\u00bfSeguro que deseas eliminar esta tarjeta?')) {
+        state.contenidos = state.contenidos.filter(c => c.id !== id);
+        updateUI();
+      }
+    }
+
+    function exportData() {
+      const dataToExport = { fecha: state.fecha, cliente: state.cliente, contenidos: state.contenidos };
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataToExport, null, 2));
+      const a = document.createElement('a');
+      a.setAttribute("href", dataStr);
+      a.setAttribute("download", "Exportacion_Tablero_NEXO_" + state.cliente.replace(/\s+/g, '_') + ".json");
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+    // ── VIEW MODAL ──────────────────────────────────────────────────────────
+    let currentViewId = null;
+
+    function openViewModal(cardId) {
+      const card = state.contenidos.find(c => c.id === cardId);
+      if (!card) return;
+      currentViewId = cardId;
+
+      const tipoCfg = TIPOS[card.tipo] || TIPOS['otro'];
+      const badge = document.getElementById('view-badge');
+      badge.textContent = tipoCfg.label;
+      badge.style.background = tipoCfg.g1;
+      document.getElementById('view-titulo').textContent = card.titulo;
+
+      let bodyHtml = '';
+
+      if (card.sede && card.sede.trim()) {
+        bodyHtml += `<div class="card-sede-pill"><i data-lucide="map-pin"></i> ${escapeHTML(card.sede)}</div>`;
+      }
+
+      if (card.descripcion) {
+        bodyHtml += `<div class="input-grp">
+          <label>Contenido a producir</label>
+          <div class="view-desc">${escapeHTML(card.descripcion)}</div>
+        </div>`;
+      }
+
+      if (card.subtareas && card.subtareas.length > 0) {
+        const done = card.subtareas.filter(s => s.done).length;
+        bodyHtml += `<div class="input-grp">
+          <label>Subtareas — ${done}/${card.subtareas.length}</label>
+          <div class="checklist">`;
+        card.subtareas.forEach(s => {
+          bodyHtml += `<label class="check-item">
+            <input type="checkbox" data-cid="${escapeHTML(card.id)}" data-sid="${escapeHTML(s.id)}" ${s.done ? 'checked' : ''}>
+            <span>${escapeHTML(s.texto)}</span>
+          </label>`;
+        });
+        bodyHtml += `</div></div>`;
+      }
+
+      if (card.mediaLinks && card.mediaLinks.length > 0) {
+        bodyHtml += `<div class="input-grp">
+          <label>Referencias</label>
+          <div class="ref-list">`;
+        card.mediaLinks.forEach(r => {
+          const icon = getPlatformIcon(r.platform);
+          bodyHtml += `<div class="ref-item">
+            <div class="ref-info"><i data-lucide="${icon}" style="width:16px;"></i><span>${escapeHTML(r.label || r.platform)}</span></div>
+            <button class="btn-secondary" style="padding:6px 12px;font-size:11px;" onclick="openMediaModal('${escapeHTML(card.id)}')">Ver</button>
+          </div>`;
+        });
+        bodyHtml += `</div></div>`;
+      }
+
+      document.getElementById('view-body').innerHTML = bodyHtml;
+      renderViewFooter(card);
+      document.getElementById('view-modal').classList.add('show');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function renderViewFooter(card) {
+      const footer = document.getElementById('view-footer');
+      let btns = `<button class="btn-secondary" onclick="editFromView()"><i data-lucide="edit-3" style="width:15px; margin-right:6px;"></i> Editar</button>`;
+
+      if (card.estado === 'todo') {
+        btns += `<button class="btn-grabando" onclick="moverEstado('grabando')">
+          <i data-lucide="play-circle" style="width:18px;"></i> Comenzar grabación
+        </button>`;
+      } else if (card.estado === 'grabando') {
+        btns += `<button class="btn-listo" onclick="moverEstado('listo')">
+          <i data-lucide="check-circle-2" style="width:18px;"></i> Finalizar producción
+        </button>`;
+      } else if (card.estado === 'listo') {
+        btns += `<button class="btn-secondary" onclick="moverEstado('todo')">
+          <i data-lucide="rotate-ccw" style="width:15px; margin-right:6px;"></i> Volver a Por Hacer
+        </button>`;
+      }
+
+      footer.innerHTML = btns;
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function closeViewModal() {
+      document.getElementById('view-modal').classList.remove('show');
+      currentViewId = null;
+    }
+
+    function editFromView() {
+      const id = currentViewId;
+      closeViewModal();
+      openModal(id);
+    }
+
+    function moverEstado(nuevoEstado) {
+      if (!currentViewId) return;
+      const card = state.contenidos.find(c => c.id === currentViewId);
+      if (!card) return;
+      card.estado = nuevoEstado;
+      if (nuevoEstado === 'listo') card.subtareas.forEach(s => s.done = true);
+      else if (nuevoEstado === 'todo') card.subtareas.forEach(s => s.done = false);
+      closeViewModal();
+      updateUI();
+    }
+    // ────────────────────────────────────────────────────────────────────────
+
+    let activeMediaLinks = [];
+    let activeMediaIndex = 0;
+
+    function openMediaModal(cardId) {
+      const card = state.contenidos.find(c => c.id === cardId);
+      if (!card || !card.mediaLinks || card.mediaLinks.length === 0) return;
+      activeMediaLinks = card.mediaLinks;
+      activeMediaIndex = 0;
+      document.getElementById('media-modal').classList.add('show');
+      renderCurrentMedia();
+    }
+
+    function closeMediaModal() {
+      document.getElementById('media-modal').classList.remove('show');
+      document.getElementById('media-container').innerHTML = '';
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (document.getElementById('media-modal').classList.contains('show')) closeMediaModal();
+        else if (document.getElementById('edit-modal').classList.contains('show')) closeModal();
+        else if (document.getElementById('view-modal').classList.contains('show')) closeViewModal();
+      }
+    });
+
+    document.getElementById('media-modal').addEventListener('mousedown', (e) => {
+      if (e.target === document.getElementById('media-modal')) closeMediaModal();
+    });
+
+    document.getElementById('view-modal').addEventListener('mousedown', (e) => {
+      if (e.target === document.getElementById('view-modal')) closeViewModal();
+    });
+
+    function nextMedia() {
+      if (activeMediaIndex < activeMediaLinks.length - 1) { activeMediaIndex++; renderCurrentMedia(); }
+    }
+    function prevMedia() {
+      if (activeMediaIndex > 0) { activeMediaIndex--; renderCurrentMedia(); }
+    }
+
+    function renderCurrentMedia() {
+      const container = document.getElementById('media-container');
+      const btn = document.getElementById('media-original-btn');
+      const counter = document.getElementById('media-counter');
+      const prevBtn = document.getElementById('media-prev');
+      const nextBtn = document.getElementById('media-next');
+
+      const link = activeMediaLinks[activeMediaIndex];
+      if (!link) return;
+
+      counter.textContent = `${activeMediaIndex + 1} / ${activeMediaLinks.length}`;
+      prevBtn.disabled = activeMediaIndex === 0;
+      nextBtn.disabled = activeMediaIndex === activeMediaLinks.length - 1;
+      document.getElementById('media-title').textContent = escapeHTML(link.label || link.platform.toUpperCase());
+      btn.href = escapeHTML(link.url);
+
+      let html = '';
+      const url = link.url;
+      const cleanUrl = escapeHTML(url);
+
+      if (link.platform === 'youtube') {
+        let yid = '';
+        if (url.includes('v=')) yid = url.split('v=')[1].split('&')[0];
+        else if (url.includes('youtu.be/')) yid = url.split('youtu.be/')[1].split('?')[0];
+        else if (url.includes('shorts/')) yid = url.split('shorts/')[1].split('?')[0];
+        else if (url.includes('/embed/')) yid = url.split('/embed/')[1].split('?')[0];
+        html = `<iframe src="https://www.youtube.com/embed/${escapeHTML(yid)}?autoplay=0" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe>`;
+      } else if (link.platform === 'vimeo') {
+        const vid = url.split('/').pop().split('?')[0];
+        html = `<iframe src="https://player.vimeo.com/video/${escapeHTML(vid)}?autoplay=0" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe>`;
+      } else if (link.platform === 'instagram') {
+        const igUrl = url.split('?')[0].replace(/\/$/, '');
+        html = `<iframe src="${escapeHTML(igUrl)}/embed" allowtransparency="true" allowfullscreen="true" loading="lazy"></iframe>`;
+      } else if (link.platform === 'tiktok' || link.platform === 'facebook') {
+        const iconName = link.platform === 'tiktok' ? 'music' : 'facebook';
+        const name = link.platform === 'tiktok' ? 'TikTok' : 'Facebook';
+        html = `<div style="color:white; text-align:center; padding: 20px;">
+          <i data-lucide="${iconName}" style="width:64px;height:64px;margin-bottom:16px;"></i>
+          <h3>Publicaci\u00f3n de ${name}</h3>
+          <p style="color:#888; font-size:14px; margin-top:8px;">Las pol\u00edticas de la plataforma pueden bloquear inserciones directas.<br>Usa el bot\u00f3n inferior para abrir el contenido original.</p>
+        </div>`;
+      } else if (link.platform === 'video') {
+        html = `<video controls playsinline src="${cleanUrl}"></video>`;
+      } else if (link.platform === 'audio') {
+        html = `<audio controls src="${cleanUrl}"></audio>`;
+      } else if (link.platform === 'image') {
+        html = `<img src="${cleanUrl}" alt="Referencia" style="max-height:80vh;">`;
+      } else {
+        html = `<div style="color:white; text-align:center; padding: 20px;">
+          <i data-lucide="external-link" style="width:64px;height:64px;margin-bottom:16px;"></i>
+          <h3>Enlace Externo</h3>
+          <p style="color:#888; font-size:14px; margin-top:8px;">El contenido no puede previsualizarse aqu\u00ed.</p>
+        </div>`;
+      }
+
+      const isFile = window.location.protocol === 'file:';
+      html += `<div class="media-warning">
+        <i data-lucide="info" style="width:16px;height:16px;flex-shrink:0;"></i>
+        <div>${isFile ? 'Est\u00e1s ejecutando el archivo localmente. Algunos iframes requieren HTTPS para mostrarse.' : 'Si la plataforma bloquea la previsualizaci\u00f3n, usa el bot\u00f3n "Abrir publicaci\u00f3n original".'}</div>
+      </div>`;
+
+      container.innerHTML = html;
+      if (window.lucide) lucide.createIcons();
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

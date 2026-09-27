@@ -647,6 +647,206 @@ body{
   border:1px solid var(--azul-border);
 }
 .btn-card.sec:hover{background:rgba(255,255,255,.12);color:#fff}
+.btn-card.on{background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.3)}
+
+/* Detalle expandido de contenidos del tablero */
+.board-detail-wrap{
+  margin-top:14px;
+  border-top:1px dashed rgba(255,255,255,.12);
+  padding-top:14px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.detail-toolbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  flex-wrap:wrap;
+  background:rgba(255,255,255,.03);
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.06);
+}
+.detail-filters{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex-wrap:wrap;
+}
+.detail-chip{
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.04);
+  color:var(--ink-2);
+  font:inherit;
+  font-size:11.5px;
+  font-weight:600;
+  padding:4px 10px;
+  border-radius:99px;
+  cursor:pointer;
+  transition:all var(--trans);
+}
+.detail-chip:hover{background:rgba(255,255,255,.08);color:#fff}
+.detail-chip.on{background:var(--azul-border);color:#fff;border-color:rgba(255,255,255,.25)}
+.detail-chip.ok.on{background:var(--verde);color:#fff;border-color:var(--verde)}
+.detail-chip.fix.on{background:var(--naranja);color:#fff;border-color:var(--naranja)}
+.detail-actions{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex-wrap:wrap;
+}
+.btn-detail-action{
+  min-height:34px;
+  padding:6px 10px;
+  border-radius:8px;
+  font:inherit;
+  font-size:11.5px;
+  font-weight:600;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  text-decoration:none;
+  transition:all var(--trans);
+  background:rgba(255,255,255,.06);
+  color:var(--ink-2);
+  border:1px solid var(--azul-border);
+}
+.btn-detail-action:hover{background:rgba(255,255,255,.12);color:#fff}
+.btn-detail-action.pri{background:var(--verde);color:#fff;border:0}
+.btn-detail-action.pri:hover{filter:brightness(1.08)}
+.detail-items-list{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.detail-card{
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(255,255,255,.07);
+  border-left:4px solid rgba(255,255,255,.18);
+  border-radius:10px;
+  padding:12px 14px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  transition:border-color var(--trans);
+}
+.detail-card[data-state="aprobado"]{border-left-color:var(--verde)}
+.detail-card[data-state="cambios"]{border-left-color:var(--naranja)}
+.detail-card-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.detail-card-title-box{
+  display:flex;
+  align-items:baseline;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.detail-card-num{
+  font-size:13px;
+  font-weight:800;
+  color:var(--ink-2);
+}
+.detail-card-title{
+  font-size:13.5px;
+  font-weight:700;
+  color:#fff;
+}
+.detail-tags{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex-wrap:wrap;
+  margin-top:2px;
+}
+.detail-tag{
+  font-size:10.5px;
+  font-weight:600;
+  padding:2px 8px;
+  border-radius:99px;
+  background:rgba(255,255,255,.06);
+  color:var(--ink-2);
+}
+.detail-tag.fmt{background:rgba(255,255,255,.12);color:#fff}
+.detail-tag.fmt-changed{background:var(--naranja-soft);color:var(--naranja);border:1px solid rgba(230,74,0,.3)}
+.detail-tag.reviewer{background:rgba(255,255,255,.08);color:#fff}
+.detail-feedback{
+  border-radius:8px;
+  padding:8px 12px;
+  font-size:12.5px;
+  line-height:1.45;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.detail-feedback.cambios{
+  background:var(--naranja-soft);
+  border:1px solid rgba(230,74,0,.3);
+  color:#fff;
+}
+.detail-feedback.aprobado{
+  background:var(--verde-soft);
+  border:1px solid rgba(92,184,62,.3);
+  color:#fff;
+}
+.detail-fb-title{
+  font-size:11px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  opacity:.9;
+}
+.detail-fb-body{
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+.detail-text-box{
+  background:rgba(0,0,0,.25);
+  border-radius:6px;
+  padding:8px 10px;
+  white-space:pre-wrap;
+  word-break:break-word;
+  color:#d1d5db;
+  font-size:12px;
+  line-height:1.5;
+}
+.detail-lbl{
+  font-size:10.5px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  color:rgba(255,255,255,.45);
+  margin-bottom:3px;
+  display:block;
+}
+.detail-refs{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+  margin-top:2px;
+}
+.detail-ref-link{
+  font-size:11px;
+  color:var(--verde);
+  text-decoration:none;
+  background:rgba(92,184,62,.1);
+  padding:3px 8px;
+  border-radius:6px;
+  border:1px solid rgba(92,184,62,.2);
+}
+.detail-ref-link:hover{background:rgba(92,184,62,.2)}
+.detail-empty{
+  text-align:center;
+  padding:16px;
+  font-size:12.5px;
+  color:var(--ink-2);
+}
 
 /* Historial desplegable */
 .history-details{
@@ -1025,23 +1225,28 @@ body{
     toastT = setTimeout(function(){ toastEl.classList.remove('show'); }, 3000);
   }
 
-  function copyLink(url){
+  function copyText(txt, msg){
+    var okMsg = msg || 'Copiado al portapapeles';
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(url).then(function(){
-        toast('Enlace copiado al portapapeles');
-      }).catch(function(){ legacyCopy(url); });
+      navigator.clipboard.writeText(txt).then(function(){
+        toast(okMsg);
+      }).catch(function(){ legacyCopy(txt, okMsg); });
     } else {
-      legacyCopy(url);
+      legacyCopy(txt, okMsg);
     }
   }
 
-  function legacyCopy(txt){
+  function legacyCopy(txt, msg){
     var ta = document.createElement('textarea');
     ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
     document.body.appendChild(ta); ta.select();
-    try { document.execCommand('copy'); toast('Enlace copiado al portapapeles'); }
+    try { document.execCommand('copy'); toast(msg || 'Copiado al portapapeles'); }
     catch(e){ toast('No se pudo copiar'); }
     document.body.removeChild(ta);
+  }
+
+  function copyLink(url){
+    copyText(url, 'Enlace copiado al portapapeles');
   }
 
   function showPublic(){
@@ -1126,6 +1331,477 @@ body{
     }
   }
 
+  var boardCache = {};
+  var detailFilterState = {};
+
+  function getBoardData(t, callback){
+    if (boardCache[t.id]) return callback(null, boardCache[t.id]);
+    var url = t.url;
+    if (!url) return callback(null, null);
+
+    function extractFromHtml(html){
+      var m = html.match(/<script id=["']board-data["'] type=["']application\/json["']>([\s\S]*?)<\/script>/);
+      if (!m) return null;
+      try {
+        return JSON.parse(m[1]);
+      } catch(e){
+        return null;
+      }
+    }
+
+    var filename = url.split('/').pop();
+    var fetchUrl = (filename && filename !== url) ? './' + filename : url;
+
+    fetch(fetchUrl)
+      .then(function(r){
+        if (!r.ok) {
+          if (fetchUrl !== url) return fetch(url);
+          throw new Error('HTTP ' + r.status);
+        }
+        return r;
+      })
+      .then(function(r){ return r.text(); })
+      .then(function(html){
+        var data = extractFromHtml(html);
+        if (data) boardCache[t.id] = data;
+        callback(null, data);
+      })
+      .catch(function(err){
+        callback(err, null);
+      });
+  }
+
+  function getMergedItems(t, boardData){
+    var raw = (boardData && boardData.contenidos && boardData.contenidos.length) ? boardData.contenidos : [];
+    var fsList = Array.isArray(t.contenidos) ? t.contenidos : [];
+
+    if (!raw.length && fsList.length) {
+      return fsList.map(function(item, idx){
+        var n = +item.n || (idx + 1);
+        var copy = Object.assign({}, item);
+        copy.n = n;
+        copy.id = copy.id || ('c' + n);
+        copy.titulo = copy.titulo || ('Contenido ' + (n < 10 ? '0' : '') + n);
+        copy.estado = copy.estado || 'pendiente';
+        copy.formato = copy.formato || '';
+        copy.formatoOriginal = copy.formatoOriginal || copy.formato || '';
+        copy.comentario = copy.comentario || '';
+        copy.revisadoPor = copy.revisadoPor || t.revisadoPor || '';
+        return copy;
+      });
+    }
+
+    if (!raw.length) return [];
+
+    return raw.map(function(item, idx){
+      var n = idx + 1;
+      var copy = Object.assign({}, item);
+      copy.n = n;
+      copy.id = copy.id || ('c' + n);
+      copy.titulo = copy.titulo || ('Contenido ' + (n < 10 ? '0' : '') + n);
+      copy.estado = copy.estado || 'pendiente';
+      copy.comentario = copy.comentario || '';
+      copy.formatoOriginal = copy.formatoOriginal || copy.formato || '';
+
+      var fsItem = fsList.find(function(x){
+        return (+x.n === n) || (x.id && x.id === copy.id) || (x.titulo && x.titulo === copy.titulo);
+      });
+      if (fsItem) {
+        if (fsItem.estado) copy.estado = fsItem.estado;
+        if (fsItem.comentario != null && fsItem.comentario !== '') copy.comentario = fsItem.comentario;
+        if (fsItem.formato) copy.formato = fsItem.formato;
+        if (fsItem.formatoOriginal) copy.formatoOriginal = fsItem.formatoOriginal;
+        if (fsItem.revisadoPor) copy.revisadoPor = fsItem.revisadoPor;
+      }
+      if (!copy.revisadoPor) {
+        copy.revisadoPor = (boardData && boardData.revision && boardData.revision.revisadoPor) || t.revisadoPor || '';
+      }
+      return copy;
+    });
+  }
+
+  function descargarWord(t, boardData, mode){
+    var items = getMergedItems(t, boardData);
+    var filterMode = mode || 'aprobados';
+    var list = items.filter(function(it){
+      if (filterMode === 'cambios') return it.estado === 'cambios';
+      if (filterMode === 'todos') return true;
+      return it.estado === 'aprobado';
+    });
+
+    if (!list.length) {
+      if (filterMode === 'cambios') {
+        toast('Este tablero no tiene contenidos con cambios.');
+      } else if (filterMode === 'todos') {
+        toast('Este tablero no tiene contenidos.');
+      } else {
+        toast('Este tablero aún no tiene contenidos aprobados.');
+      }
+      return;
+    }
+
+    list.sort(function(a, b){ return a.n - b.n; });
+
+    var tituloDoc = (filterMode === 'cambios') ? 'CONTENIDOS CON AJUSTES SOLICITADOS' :
+                    (filterMode === 'todos') ? 'PARRILLA COMPLETA DE CONTENIDOS' :
+                    'CONTENIDOS APROBADOS';
+    var filePrefix = (filterMode === 'cambios') ? 'Ajustes' :
+                     (filterMode === 'todos') ? 'Parrilla-Completa' :
+                     'Aprobados';
+
+    function nl2br(s){
+      if (!s) return '';
+      return escapeHtml(s).replace(/\n/g, '<br style="mso-data-placement:same-cell;"/>');
+    }
+
+    var fechaStr = t.ultimaRevision ? formatFecha(t.ultimaRevision) : (t.registrado ? formatFecha(t.registrado) : '');
+    var revisor = t.revisadoPor || (boardData && boardData.revision && boardData.revision.revisadoPor) || '';
+    var cuenta = (boardData && boardData.cuenta) || t.cuenta || '';
+
+    var docHtml = [
+      '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">',
+      '<head>',
+      '<meta charset="utf-8">',
+      '<!--[if gte mso 9]>',
+      '<xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml>',
+      '<![endif]-->',
+      '<style>',
+      '@page Section1 { size: 8.5in 11.0in; margin: 1.0in 1.0in 1.0in 1.0in; mso-header-margin:.5in; mso-footer-margin:.5in; mso-paper-source:0; }',
+      'div.Section1 { page: Section1; }',
+      'body { font-family: "Calibri", "Segoe UI", Arial, sans-serif; font-size: 11pt; color: #1F3549; line-height: 1.45; }',
+      'h1 { font-family: "Calibri", Arial, sans-serif; font-size: 20pt; font-weight: bold; color: #1F3549; margin: 0 0 6pt 0; line-height: 1.2; }',
+      '.agency { font-size: 10pt; font-weight: bold; letter-spacing: 1.5pt; color: #5CB83E; text-transform: uppercase; margin: 0 0 4pt 0; }',
+      '.header-box { border-bottom: 2.5pt solid #5CB83E; padding-bottom: 12pt; margin-bottom: 24pt; }',
+      '.meta-grid { width: 100%; border-collapse: collapse; margin-top: 8pt; font-size: 10pt; color: #5B6B7A; }',
+      '.meta-grid td { padding: 3pt 0; vertical-align: top; }',
+      '.item-card { margin-bottom: 26pt; border: 1pt solid #D9E1E8; background: #FFFFFF; page-break-inside: avoid; }',
+      '.item-header { background: #F0F4F8; border-bottom: 1.5pt solid #5CB83E; padding: 10pt 14pt; }',
+      '.item-title { font-size: 13pt; font-weight: bold; color: #1F3549; margin: 0; }',
+      '.item-meta { font-size: 9.5pt; color: #5B6B7A; margin-top: 4pt; }',
+      '.item-body { padding: 12pt 14pt; }',
+      '.sec-label { font-size: 9pt; font-weight: bold; color: #5B6B7A; text-transform: uppercase; letter-spacing: 0.8pt; margin-top: 12pt; margin-bottom: 4pt; border-bottom: 0.5pt solid #E1E6EB; padding-bottom: 2pt; }',
+      '.text-block { font-size: 10.5pt; line-height: 1.5; color: #1F3549; margin: 0 0 8pt 0; }',
+      '.copy-card { background: #F8FAFC; border: 0.75pt solid #E1E6EB; padding: 10pt 12pt; margin-top: 4pt; margin-bottom: 8pt; }',
+      '.copy-user { font-size: 9.5pt; font-weight: bold; color: #1F3549; margin-bottom: 6pt; }',
+      '.hashtags { font-size: 9.5pt; color: #2B4661; margin-top: 8pt; }',
+      '.refs-list { margin: 4pt 0 8pt 18pt; font-size: 10pt; color: #1F3549; }',
+      '.refs-list li { margin-bottom: 3pt; }',
+      '.client-comment { background: #EAF6E4; border-left: 3pt solid #5CB83E; padding: 8pt 12pt; margin-top: 10pt; font-size: 10pt; color: #2D6319; }',
+      '.client-change { background: #FCEBE2; border-left: 3pt solid #E64A00; padding: 8pt 12pt; margin-top: 10pt; font-size: 10pt; color: #8F2E00; }',
+      '</style></head><body><div class="Section1">',
+      '<div class="header-box">',
+      '<div class="agency">NEXO AGENCIA CREATIVA</div>',
+      '<h1>' + escapeHtml(tituloDoc) + ' · ' + escapeHtml(t.cliente || 'Cliente') + '</h1>',
+      '<table class="meta-grid">',
+      '<tr><td style="width:50%;"><b>Período:</b> ' + escapeHtml((t.mes || '') + ' ' + (t.anio || '')) + (cuenta ? ' &nbsp;|&nbsp; <b>Cuenta:</b> @' + escapeHtml(cuenta) : '') + '</td>',
+      '<td style="width:50%;text-align:right;"><b>Total piezas:</b> ' + list.length + ' de ' + (t.total || items.length) + ' contenidos</td></tr>',
+      (revisor || fechaStr) ? '<tr><td>' + (revisor ? '<b>Revisado por:</b> ' + escapeHtml(revisor) : '') + '</td><td style="text-align:right;">' + (fechaStr ? '<b>Fecha de revisión:</b> ' + escapeHtml(fechaStr) : '') + '</td></tr>' : '',
+      t.url ? '<tr><td colspan="2" style="padding-top:4pt;"><b>Enlace del tablero:</b> <a href="' + escapeHtml(t.url) + '" style="color:#1F3549;">' + escapeHtml(t.url) + '</a></td></tr>' : '',
+      '</table></div>'
+    ];
+
+    list.forEach(function(it){
+      var num = (it.n < 10 ? '0' : '') + it.n;
+      var metaPieces = [];
+      if (it.formato) metaPieces.push('<b>Formato:</b> ' + escapeHtml(it.formato));
+      if (it.pilar) metaPieces.push('<b>Pilar:</b> ' + escapeHtml(it.pilar));
+      if (it.fechaPublicacion) metaPieces.push('<b>Fecha de publicación:</b> ' + escapeHtml(it.fechaPublicacion));
+
+      docHtml.push(
+        '<div class="item-card">',
+        '<div class="item-header">',
+        '<div class="item-title">Contenido ' + num + ' · ' + escapeHtml(it.titulo || 'Sin título') + '</div>',
+        metaPieces.length ? '<div class="item-meta">' + metaPieces.join(' &nbsp;|&nbsp; ') + '</div>' : '',
+        '</div><div class="item-body">'
+      );
+
+      if (it.guion && it.guion.trim()) {
+        var gl = it.guionLabel || 'Guion / Descripción';
+        docHtml.push('<div class="sec-label">' + escapeHtml(gl) + '</div><div class="text-block">' + nl2br(it.guion.trim()) + '</div>');
+      }
+
+      if (it.referencias && it.referencias.length) {
+        var validRefs = it.referencias.filter(function(r){ return r && (r.url || r.label); });
+        if (validRefs.length) {
+          docHtml.push('<div class="sec-label">Referencias</div><ul class="refs-list">');
+          validRefs.forEach(function(r){
+            var lbl = r.label || r.url || 'Referencia';
+            var u = r.url || '#';
+            docHtml.push('<li><a href="' + escapeHtml(u) + '" style="color:#1F3549;">' + escapeHtml(lbl) + '</a> (' + escapeHtml(u) + ')</li>');
+          });
+          docHtml.push('</ul>');
+        }
+      }
+
+      if ((it.copy && it.copy.trim()) || (it.hashtags && it.hashtags.trim())) {
+        docHtml.push('<div class="sec-label">Copy (Texto de la publicación)</div><div class="copy-card">');
+        if (cuenta || t.cliente) {
+          docHtml.push('<div class="copy-user">@' + escapeHtml(cuenta || t.cliente) + '</div>');
+        }
+        if (it.copy && it.copy.trim()) {
+          docHtml.push('<div class="text-block" style="margin:0;">' + nl2br(it.copy.trim()) + '</div>');
+        }
+        if (it.hashtags && it.hashtags.trim()) {
+          docHtml.push('<div class="hashtags">' + escapeHtml(it.hashtags.trim()) + '</div>');
+        }
+        docHtml.push('</div>');
+      }
+
+      var reviewerItem = it.revisadoPor || revisor || 'el cliente';
+      var comList = (it.comentarios && it.comentarios.length) ? it.comentarios : (it.comentario ? [{ autor: reviewerItem, texto: it.comentario }] : []);
+      if (comList.length || (it.comentario && it.comentario.trim())) {
+        var isChange = it.estado === 'cambios';
+        var cls = isChange ? 'client-change' : 'client-comment';
+        var headerLbl = isChange ? ('Ajustes solicitados (' + escapeHtml(reviewerItem) + '):') : ('Comentarios de aprobación (' + escapeHtml(reviewerItem) + '):');
+        docHtml.push('<div class="' + cls + '"><b>' + headerLbl + '</b>');
+        comList.forEach(function(cm){
+          docHtml.push('<div style="margin-top:2pt;">“' + escapeHtml(cm.texto || '') + '” <span style="font-size:8.5pt;opacity:.8;">— ' + escapeHtml(cm.autor || reviewerItem) + '</span></div>');
+        });
+        if (it.formato && it.formatoOriginal && it.formato !== it.formatoOriginal) {
+          docHtml.push('<div style="margin-top:4pt;font-weight:bold;">Cambio de formato solicitado: ' + escapeHtml(it.formatoOriginal) + ' → ' + escapeHtml(it.formato) + '</div>');
+        }
+        docHtml.push('</div>');
+      }
+
+      docHtml.push('</div></div>');
+    });
+
+    docHtml.push('</div></body></html>');
+
+    var fullDoc = '\ufeff' + docHtml.join('\n');
+    var blob = new Blob([fullDoc], { type: 'application/msword;charset=utf-8' });
+    var safeCliente = (t.cliente || 'Cliente').replace(/[^a-zA-Z0-9_\u00C0-\u017F-]+/g, '-');
+    var safeMes = (t.mes || 'Mes').replace(/[^a-zA-Z0-9_\u00C0-\u017F-]+/g, '-');
+    var filename = filePrefix + '-' + safeCliente + '-' + safeMes + '-' + (t.anio || '') + '.doc';
+
+    var dlUrl = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = dlUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(dlUrl); a.remove(); }, 1500);
+    toast('✓ Descargando ' + filename + ' (' + list.length + ' contenidos)');
+  }
+
+  function descargarJsonActualizado(t, bData){
+    var exportData = Object.assign({}, bData || {});
+    exportData.id = t.id;
+    exportData.cliente = t.cliente;
+    exportData.mes = t.mes;
+    exportData.anio = t.anio;
+    exportData.contenidos = getMergedItems(t, bData);
+    var jsonStr = JSON.stringify(exportData, null, 2);
+    var blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8' });
+    var safeCliente = (t.cliente || 'Cliente').replace(/[^a-zA-Z0-9_\u00C0-\u017F-]+/g, '-');
+    var filename = safeCliente + '-' + (t.mes || 'Mes') + '-' + (t.anio || '') + '-actualizado.json';
+    var dlUrl = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = dlUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(dlUrl); a.remove(); }, 1500);
+    toast('✓ Descargando ' + filename);
+  }
+
+  function copiarJsonActualizado(t, bData){
+    var exportData = Object.assign({}, bData || {});
+    exportData.id = t.id;
+    exportData.cliente = t.cliente;
+    exportData.mes = t.mes;
+    exportData.anio = t.anio;
+    exportData.contenidos = getMergedItems(t, bData);
+    copyText(JSON.stringify(exportData, null, 2), '✓ JSON completo copiado al portapapeles');
+  }
+
+  function toggleBoardDetail(tId, btn){
+    var wrap = document.getElementById('detail-' + tId);
+    if (!wrap) return;
+    var isOpen = wrap.style.display !== 'none';
+    if (isOpen) {
+      wrap.style.display = 'none';
+      if (btn) btn.classList.remove('on');
+    } else {
+      wrap.style.display = 'flex';
+      if (btn) btn.classList.add('on');
+      renderBoardDetail(tId);
+    }
+  }
+
+  function renderBoardDetail(tId){
+    var wrap = document.getElementById('detail-' + tId);
+    if (!wrap) return;
+    var t = allTableros.find(function(x){ return x.id === tId; });
+    if (!t) return;
+
+    var curFilter = detailFilterState[tId] || 'Todos';
+    var cachedData = boardCache[tId];
+
+    if (!cachedData && t.url) {
+      wrap.innerHTML = '<div class="detail-empty">Cargando contenidos completos de ' + escapeHtml(t.cliente || '') + '…</div>';
+      getBoardData(t, function(err, bData){
+        renderDetailContent(t, bData, wrap, curFilter);
+      });
+    } else {
+      renderDetailContent(t, cachedData, wrap, curFilter);
+    }
+  }
+
+  function renderDetailContent(t, bData, wrap, curFilter){
+    var allItems = getMergedItems(t, bData);
+    if (!allItems.length) {
+      wrap.innerHTML = '<div class="detail-empty">No hay contenidos registrados para este tablero.</div>';
+      return;
+    }
+
+    var kOk = allItems.filter(function(x){ return x.estado === 'aprobado'; }).length;
+    var kFix = allItems.filter(function(x){ return x.estado === 'cambios'; }).length;
+    var kPend = allItems.filter(function(x){ return x.estado === 'pendiente'; }).length;
+
+    var filtered = allItems.filter(function(x){
+      if (curFilter === 'Aprobados') return x.estado === 'aprobado';
+      if (curFilter === 'Con cambios') return x.estado === 'cambios';
+      if (curFilter === 'Pendientes') return x.estado === 'pendiente';
+      return true;
+    });
+
+    var tbHtml = '<div class="detail-toolbar">' +
+      '<div class="detail-filters">' +
+        '<button class="detail-chip ' + (curFilter === 'Todos' ? 'on' : '') + '" data-filter="Todos">Todos (' + allItems.length + ')</button>' +
+        '<button class="detail-chip ok ' + (curFilter === 'Aprobados' ? 'on' : '') + '" data-filter="Aprobados">✓ Aprobados (' + kOk + ')</button>' +
+        '<button class="detail-chip fix ' + (curFilter === 'Con cambios' ? 'on' : '') + '" data-filter="Con cambios">⚠ Con cambios (' + kFix + ')</button>' +
+        '<button class="detail-chip ' + (curFilter === 'Pendientes' ? 'on' : '') + '" data-filter="Pendientes">• Pendientes (' + kPend + ')</button>' +
+      '</div>' +
+      '<div class="detail-actions">' +
+        '<button class="btn-detail-action pri btn-dl-word-ok" title="Descargar Word con contenidos aprobados">📄 Word (Aprobados)</button>' +
+        (kFix > 0 ? '<button class="btn-detail-action btn-dl-word-fix" title="Descargar Word con ajustes y cambios solicitados">📄 Word (Ajustes)</button>' : '') +
+        '<button class="btn-detail-action btn-dl-word-all" title="Descargar Word con parrilla completa">📄 Word (Todos)</button>' +
+        '<button class="btn-detail-action btn-cp-json" title="Copiar JSON completo al portapapeles">📋 Copiar JSON</button>' +
+        '<button class="btn-detail-action btn-dl-json" title="Descargar archivo JSON">💾 Descargar JSON</button>' +
+      '</div>' +
+    '</div>';
+
+    var listHtml = '<div class="detail-items-list">';
+    if (!filtered.length) {
+      listHtml += '<div class="detail-empty">No hay contenidos con el filtro seleccionado (' + escapeHtml(curFilter) + ').</div>';
+    } else {
+      filtered.forEach(function(it){
+        var num = (it.n < 10 ? '0' : '') + it.n;
+        var isAprob = it.estado === 'aprobado';
+        var isCambios = it.estado === 'cambios';
+
+        var stBadge = isAprob ? '<span class="badge badge-ok">✓ Aprobado</span>' :
+                      (isCambios ? '<span class="badge badge-fix">⚠ Con cambios</span>' :
+                      '<span class="badge badge-wait">• Pendiente</span>');
+
+        var isFmtChanged = it.formatoOriginal && it.formato && (it.formato !== it.formatoOriginal);
+        var fmtBadge = it.formato ? ('<span class="detail-tag fmt' + (isFmtChanged ? '-changed' : '') + '">' +
+          (isFmtChanged ? 'Cambiado a: ' + escapeHtml(it.formato) : escapeHtml(it.formato)) + '</span>') : '';
+        var origFmtBadge = isFmtChanged ? ('<span class="detail-tag">Propuesto: ' + escapeHtml(it.formatoOriginal) + '</span>') : '';
+        var pilarBadge = it.pilar ? ('<span class="detail-tag">' + escapeHtml(it.pilar) + '</span>') : '';
+        var dateBadge = it.fechaPublicacion ? ('<span class="detail-tag">📅 ' + escapeHtml(it.fechaPublicacion) + '</span>') : '';
+        var revBadge = it.revisadoPor ? ('<span class="detail-tag reviewer">👤 ' + escapeHtml(it.revisadoPor) + '</span>') : '';
+
+        var fbHtml = '';
+        if (it.comentario && it.comentario.trim()) {
+          var fbCls = isCambios ? 'cambios' : (isAprob ? 'aprobado' : '');
+          var fbTitle = isCambios ? 'Ajustes solicitados' : 'Comentarios de aprobación';
+          var authorName = it.revisadoPor || t.revisadoPor || 'Cliente';
+          fbHtml = '<div class="detail-feedback ' + fbCls + '">' +
+            '<div class="detail-fb-title">' + fbTitle + ' (' + escapeHtml(authorName) + '):</div>' +
+            '<div class="detail-fb-body">“' + escapeHtml(it.comentario.trim()) + '”</div>' +
+          '</div>';
+        }
+
+        var guionHtml = '';
+        if (it.guion && it.guion.trim()) {
+          guionHtml = '<div style="margin-top:6px;">' +
+            '<span class="detail-lbl">' + escapeHtml(it.guionLabel || 'Guion / Descripción') + '</span>' +
+            '<div class="detail-text-box">' + escapeHtml(it.guion.trim()) + '</div>' +
+          '</div>';
+        }
+
+        var copyHtml = '';
+        if ((it.copy && it.copy.trim()) || (it.hashtags && it.hashtags.trim())) {
+          var cuenta = (bData && bData.cuenta) || t.cuenta || '';
+          copyHtml = '<div style="margin-top:6px;">' +
+            '<span class="detail-lbl">Copy (Texto de la publicación)' + (cuenta ? ' · @' + escapeHtml(cuenta) : '') + '</span>' +
+            '<div class="detail-text-box">' +
+              (it.copy && it.copy.trim() ? escapeHtml(it.copy.trim()) + '\n\n' : '') +
+              (it.hashtags && it.hashtags.trim() ? '<span style="color:#5CB83E;font-weight:600;">' + escapeHtml(it.hashtags.trim()) + '</span>' : '') +
+            '</div>' +
+          '</div>';
+        }
+
+        var refsHtml = '';
+        if (it.referencias && it.referencias.length) {
+          var validRefs = it.referencias.filter(function(r){ return r && (r.url || r.label); });
+          if (validRefs.length) {
+            refsHtml = '<div style="margin-top:6px;"><span class="detail-lbl">Referencias</span><div class="detail-refs">' +
+              validRefs.map(function(r){
+                var lbl = r.label || r.url || 'Referencia';
+                var u = r.url || '#';
+                return '<a class="detail-ref-link" href="' + escapeAttr(u) + '" target="_blank" rel="noopener">' + escapeHtml(lbl) + ' ↗</a>';
+              }).join('') +
+            '</div></div>';
+          }
+        }
+
+        listHtml += '<article class="detail-card" data-state="' + escapeAttr(it.estado || 'pendiente') + '">' +
+          '<div class="detail-card-head">' +
+            '<div>' +
+              '<div class="detail-card-title-box">' +
+                '<span class="detail-card-num">' + num + '</span>' +
+                '<h4 class="detail-card-title">' + escapeHtml(it.titulo || 'Sin título') + '</h4>' +
+              '</div>' +
+              '<div class="detail-tags">' + fmtBadge + origFmtBadge + pilarBadge + dateBadge + revBadge + '</div>' +
+            '</div>' +
+            '<div>' + stBadge + '</div>' +
+          '</div>' +
+          fbHtml +
+          guionHtml +
+          copyHtml +
+          refsHtml +
+        '</article>';
+      });
+    }
+    listHtml += '</div>';
+
+    wrap.innerHTML = tbHtml + listHtml;
+
+    var filterBtns = wrap.querySelectorAll('.detail-chip');
+    filterBtns.forEach(function(b){
+      b.onclick = function(e){
+        e.stopPropagation();
+        var f = b.getAttribute('data-filter');
+        detailFilterState[t.id] = f;
+        renderBoardDetail(t.id);
+      };
+    });
+
+    var btnWOk = wrap.querySelector('.btn-dl-word-ok');
+    if (btnWOk) btnWOk.onclick = function(e){ e.stopPropagation(); descargarWord(t, bData, 'aprobados'); };
+
+    var btnWFix = wrap.querySelector('.btn-dl-word-fix');
+    if (btnWFix) btnWFix.onclick = function(e){ e.stopPropagation(); descargarWord(t, bData, 'cambios'); };
+
+    var btnWAll = wrap.querySelector('.btn-dl-word-all');
+    if (btnWAll) btnWAll.onclick = function(e){ e.stopPropagation(); descargarWord(t, bData, 'todos'); };
+
+    var btnCpJ = wrap.querySelector('.btn-cp-json');
+    if (btnCpJ) btnCpJ.onclick = function(e){
+      e.stopPropagation();
+      copiarJsonActualizado(t, bData);
+    };
+
+    var btnDlJ = wrap.querySelector('.btn-dl-json');
+    if (btnDlJ) btnDlJ.onclick = function(e){
+      e.stopPropagation();
+      descargarJsonActualizado(t, bData);
+    };
+  }
+
   function getCardHtml(t, isSecondary){
     var st = calcEstado(t);
     var tot = +t.total || 0;
@@ -1139,21 +1815,22 @@ body{
 
     var revHtml = '';
     if (t.revisadoPor) {
-      revHtml = 'Revisado por <strong>' + t.revisadoPor + '</strong>' + (t.ultimaRevision ? ' · ' + formatFecha(t.ultimaRevision) : '');
+      revHtml = 'Revisado por <strong>' + escapeHtml(t.revisadoPor) + '</strong>' + (t.ultimaRevision ? ' · ' + formatFecha(t.ultimaRevision) : '');
     } else if (t.ultimaRevision) {
       revHtml = 'Última revisión: ' + formatFecha(t.ultimaRevision);
     } else {
       revHtml = '<span>Sin revisiones registradas</span>';
     }
 
-    var openBtn = t.url ? '<a href="' + t.url + '" target="_blank" rel="noopener" class="btn-card pri">Abrir ↗</a>' : '';
-    var copyBtn = t.url ? '<button class="btn-card sec btn-copy-url" data-url="' + t.url + '">Copiar</button>' : '';
+    var openBtn = t.url ? '<a href="' + escapeAttr(t.url) + '" target="_blank" rel="noopener" class="btn-card pri">Abrir ↗</a>' : '';
+    var copyBtn = t.url ? '<button class="btn-card sec btn-copy-url" data-url="' + escapeAttr(t.url) + '">Copiar</button>' : '';
+    var detailBtn = '<button class="btn-card sec btn-toggle-detail" data-id="' + escapeAttr(t.id) + '">Detalle</button>';
 
     return '' +
       '<div class="board-card ' + (isSecondary ? 'secondary' : '') + '">' +
         '<div class="card-top">' +
           '<div>' +
-            '<div class="card-period">' + (t.mes || 'Periodo') + ' ' + (t.anio || '') + '</div>' +
+            '<div class="card-period">' + escapeHtml(t.mes || 'Periodo') + ' ' + escapeHtml(t.anio || '') + '</div>' +
             '<div class="card-sub">' + tot + ' contenidos</div>' +
           '</div>' +
           '<div><span class="badge ' + st.cls + '">' + st.txt + '</span></div>' +
@@ -1171,8 +1848,9 @@ body{
         '</div>' +
         '<div class="card-foot">' +
           '<div class="reviewer-info">' + revHtml + '</div>' +
-          '<div class="card-actions">' + copyBtn + openBtn + '</div>' +
+          '<div class="card-actions">' + copyBtn + detailBtn + openBtn + '</div>' +
         '</div>' +
+        '<div class="board-detail-wrap" id="detail-' + escapeAttr(t.id) + '" style="display:none;"></div>' +
       '</div>';
   }
 
@@ -1276,7 +1954,7 @@ body{
 
       html += '<section class="client-section">' +
         '<div class="client-header">' +
-          '<div class="client-name">' + cName + '</div>' +
+          '<div class="client-name">' + escapeHtml(cName) + '</div>' +
           '<div class="client-count">' + list.length + (list.length === 1 ? ' tablero' : ' tableros') + '</div>' +
         '</div>';
 
@@ -1303,6 +1981,15 @@ body{
     copyBtns.forEach(function(btn){
       btn.onclick = function(){
         copyLink(btn.getAttribute('data-url'));
+      };
+    });
+
+    // Delegar eventos de toggle detalle
+    var detailBtns = dashContent.querySelectorAll('.btn-toggle-detail');
+    detailBtns.forEach(function(btn){
+      btn.onclick = function(){
+        var tId = btn.getAttribute('data-id');
+        toggleBoardDetail(tId, btn);
       };
     });
   }

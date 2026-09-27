@@ -35,8 +35,7 @@ Si Carlos pide **reiniciar un tablero**:
 1. Asegurar en `borradores/<cliente>-<mes>-<año>.json`:
    - `"revision": { "revisadoPor": "", "fecha": "" }`
    - Todos los contenidos en `"estado": "pendiente"` y `"comentario": ""`
-2. Reconstruir con `python3 _sistema/construir.py ... --publicar` (el script genera automáticamente un nuevo `resetAt` que invalida borradores viejos en los navegadores de prueba).
-3. Restablecer el documento en Cloud Firestore si habían revisiones previas registradas.
+2. Reconstruir con `python3 _sistema/construir.py ... --publicar` (el script genera automáticamente un nuevo `resetAt` que invalida borradores locales en navegadores, restablece las métricas en 0 y vacía el campo `contenidos` en Firestore).
 
 ## Reglas críticas de UX/UI y Frontend
 
@@ -55,8 +54,9 @@ Si Carlos pide **reiniciar un tablero**:
 
 - `_sistema/plantilla-tablero.html`: plantilla maestra del tablero (envía revisiones directamente a Cloud Firestore vía REST).
 - `_sistema/fondo-red.js`: motor de la red de conexiones animada multi-escala.
-- `_sistema/construir.py`: motor que genera, pre-renderiza con Chrome, registra en Cloud Firestore y publica en git.
+- `_sistema/construir.py`: motor que genera, pre-renderiza con Chrome, asigna identificador con token impredecible (`<cliente>-<anio>-<mes>-<token>`), registra en Cloud Firestore y publica en git.
 - `index.html`: Banco de trabajo interno de Nexo conectado a Firebase en tiempo real.
+- `panel-1c5877.html`: redirección automática hacia `index.html` (panel legado retirado).
 - `borradores/`: borradores JSON de trabajo (privados, ignorados en git).
 - La configuración privada (`../.nexo-config.json`) vive **fuera** del repositorio con credenciales de Firebase. Nunca la copies al repositorio público.
 
@@ -65,6 +65,8 @@ Si Carlos pide **reiniciar un tablero**:
 El archivo `index.html` es el Banco de Trabajo interno de Nexo para gestionar y visualizar todos los tableros creados:
 - Se conecta en tiempo real a Firebase Cloud Firestore (`onSnapshot`) con autenticación Firebase.
 - Agrupa los tableros por cliente de forma automática (mes más reciente como principal e historial desplegable para meses previos).
+- Detalle por contenido con comentarios del cliente, filtros por estado (Todos, Aprobados, Con cambios, Pendientes) y descargas en Word (.doc) y JSON.
+- Pestaña de Producción para seguimiento en vivo de pautas de rodaje.
 - **Regla estricta de seguridad**: Nunca se escriben nombres de clientes, URLs de tableros ni claves privadas dentro de archivos del repositorio público.
 
 

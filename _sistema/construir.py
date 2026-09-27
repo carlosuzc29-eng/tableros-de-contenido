@@ -93,7 +93,8 @@ def registrar_en_firestore(cfg, data, total_contenidos):
                 'estado': {'stringValue': 'Sin revisar'},
                 'revisadoPor': {'stringValue': ''},
                 'ultimaRevision': {'stringValue': ''},
-                'registrado': {'stringValue': now_iso}
+                'registrado': {'stringValue': now_iso},
+                'contenidos': {'arrayValue': {}}
             })
 
         mask_params = '&'.join([f"updateMask.fieldPaths={k}" for k in fields.keys()])
@@ -132,11 +133,14 @@ def main():
     id_mes = f"{slug(data['cliente'])}-{data['anio']}-{slug(data['mes'])}"
     if not str(data.get('id', '')).startswith(id_mes):
         # JSON copiado de otro mes: se limpia la revisión para que el tablero salga como nuevo.
-        data['id'] = id_mes
+        data['token'] = secrets.token_hex(4)
+        data['id'] = f"{id_mes}-{data['token']}"
         data['revision'] = {'revisadoPor': '', 'fecha': ''}
         for c in data.get('contenidos', []):
             for k in ('id', 'estado', 'comentario', 'comentarios', 'revisadoPor', 'formatoOriginal'): c.pop(k, None)
-    data['id'] = id_mes
+    if not data.get('token'):
+        data['token'] = secrets.token_hex(4)
+    data['id'] = f"{id_mes}-{data['token']}"
     data['url'] = base + data['archivo']
     data.pop('endpoint', None)
     fb = cfg.get('firebase', {})

@@ -1,7 +1,513 @@
 <!DOCTYPE html>
 <html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow"><title>Nexo Agencia Creativa · Tableros de contenido</title>
-<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#1F3549;color:#fff;font-family:'Futura','Century Gothic',system-ui,sans-serif;text-align:center;padding:24px}
-b{display:block;font-size:44px;letter-spacing:.08em}span{display:block;color:#5CB83E;font-size:12px;letter-spacing:.3em;margin-top:6px}
-p{color:#B9C6D2;max-width:420px;margin:28px auto 0;line-height:1.6}</style></head>
-<body><div><b>NEXO</b><span>AGENCIA CREATIVA</span><p>Tableros de contenido para clientes. Si recibiste un enlace de Nexo, ábrelo directamente desde el mensaje que te enviamos.</p></div></body></html>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;background:#1F3549;color:#fff;font-family:'Futura','Century Gothic',system-ui,sans-serif;overflow-x:clip}
+
+/* — Vista pública — */
+#pub{display:grid;place-items:center;min-height:100vh;text-align:center;padding:24px}
+#pub b{display:block;font-size:44px;letter-spacing:.08em}
+#pub .sub{display:block;color:#5CB83E;font-size:12px;letter-spacing:.3em;margin-top:6px}
+#pub p{color:#B9C6D2;max-width:420px;margin:28px auto 0;line-height:1.6}
+#pub .acc{display:inline-block;margin-top:36px;color:rgba(255,255,255,.35);font-size:12px;text-decoration:none;letter-spacing:.06em;transition:color .2s}
+#pub .acc:hover{color:#5CB83E}
+
+/* — Modal clave / Login Firebase — */
+#login{display:none;position:fixed;inset:0;z-index:100;background:rgba(10,20,30,.78);backdrop-filter:blur(6px);place-items:center;padding:24px}
+#login.on{display:grid}
+#login .box{background:#1F3549;border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:32px 28px;max-width:380px;width:100%;text-align:center;box-shadow:0 24px 48px -12px rgba(0,0,0,.5)}
+#login h3{font-size:18px;margin-bottom:6px}
+#login p{color:#B9C6D2;font-size:13px;margin-bottom:20px;line-height:1.5}
+.field-group{margin-bottom:12px;text-align:left}
+.field-group label{display:block;font-size:11px;color:#B9C6D2;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+#login input{width:100%;padding:11px 15px;border:1px solid rgba(255,255,255,.16);border-radius:10px;background:rgba(255,255,255,.06);color:#fff;font:inherit;font-size:14px;outline:none;transition:border-color .2s}
+#login input:focus{border-color:#5CB83E}
+#login .err{color:#E64A00;font-size:12.5px;margin-top:10px;min-height:18px;text-align:center}
+#login .acts{display:flex;gap:10px;margin-top:18px}
+#login .acts button{flex:1;padding:11px 0;border:0;border-radius:10px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:opacity .15s}
+#login .acts button:active{opacity:.85}
+#login .go{background:#5CB83E;color:#fff}
+#login .cancel{background:rgba(255,255,255,.08);color:#B9C6D2}
+
+/* — Dashboard autenticado — */
+#dash{display:none;min-height:100vh;padding:24px 20px 60px;max-width:1120px;margin:0 auto}
+#dash.on{display:block}
+#dash header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:18px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:24px}
+.brand-group{display:flex;align-items:center;gap:12px}
+.brand-badge{width:32px;height:32px;border-radius:8px;background:#5CB83E;color:#fff;display:grid;place-items:center;font-weight:800;font-size:16px;letter-spacing:-.02em}
+#dash header h1{font-size:20px;font-weight:700;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+.live-pill{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;background:rgba(92,184,62,.15);color:#5CB83E;padding:3px 8px;border-radius:99px;border:1px solid rgba(92,184,62,.3);display:inline-flex;align-items:center;gap:4px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#5CB83E;animation:pulseLive 1.8s infinite}
+@keyframes pulseLive{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+.header-actions{display:flex;align-items:center;gap:10px}
+.btn-subtle{border:0;background:rgba(255,255,255,.08);color:#B9C6D2;font:inherit;font-size:12px;padding:8px 14px;border-radius:8px;cursor:pointer;transition:background .15s,color .15s;display:inline-flex;align-items:center;gap:6px}
+.btn-subtle:hover{background:rgba(255,255,255,.15);color:#fff}
+
+/* Resumen Global */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:28px}
+.stat-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px 18px;position:relative;overflow:hidden}
+.stat-box .val{font-size:28px;font-weight:700;line-height:1.1}
+.stat-box .lbl{font-size:12px;color:#B9C6D2;letter-spacing:.04em;margin-top:4px}
+.stat-box.ok .val{color:#5CB83E}
+.stat-box.fix .val{color:#E64A00}
+.stat-box.pend .val{color:#B9C6D2}
+
+/* Agrupación por Clientes */
+.clients-wrap{display:grid;gap:24px}
+.client-section{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:20px 22px;transition:border-color .2s}
+.client-section:hover{border-color:rgba(255,255,255,.14)}
+.client-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.client-name{font-size:18px;font-weight:700;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+.client-count{font-size:12px;color:#B9C6D2;background:rgba(255,255,255,.06);padding:3px 9px;border-radius:99px;font-weight:500}
+
+/* Tarjeta de Tablero */
+.board-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:18px 20px;position:relative}
+.board-card.secondary{background:rgba(255,255,255,.025);border-color:rgba(255,255,255,.06);margin-top:10px}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.card-period{font-size:16px;font-weight:700;color:#fff}
+.card-sub{font-size:13px;color:#B9C6D2;margin-top:2px}
+
+/* Estados (Badges) */
+.badge{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:4px 10px;border-radius:99px;display:inline-flex;align-items:center;gap:5px}
+.badge-ok{background:rgba(92,184,62,.15);color:#5CB83E;border:1px solid rgba(92,184,62,.3)}
+.badge-fix{background:rgba(230,74,0,.15);color:#E64A00;border:1px solid rgba(230,74,0,.3)}
+.badge-rev{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2)}
+.badge-wait{background:rgba(255,255,255,.05);color:#B9C6D2;border:1px solid rgba(255,255,255,.1)}
+
+/* Barra de progreso */
+.progress-bar-wrap{margin:14px 0 10px}
+.progress-bar{height:7px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;display:flex;width:100%}
+.p-seg{height:100%;transition:width .3s}
+.p-seg.ok{background:#5CB83E}
+.p-seg.fix{background:#E64A00}
+.p-seg.pend{background:rgba(255,255,255,.2)}
+.progress-meta{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#B9C6D2;margin-top:5px}
+
+/* Footer tarjeta / meta */
+.card-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.06);font-size:12.5px;color:#B9C6D2;flex-wrap:wrap}
+.reviewer-info{display:flex;align-items:center;gap:6px}
+.reviewer-info strong{color:#fff}
+.card-actions{display:flex;align-items:center;gap:8px}
+.btn-open{background:#5CB83E;color:#fff;font-size:12px;font-weight:600;padding:6px 14px;border-radius:8px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:opacity .15s}
+.btn-open:hover{opacity:.9}
+
+/* Historial desplegable */
+.history-details{margin-top:12px;border-top:1px dashed rgba(255,255,255,.1);padding-top:10px}
+.history-summary{cursor:pointer;font-size:12px;font-weight:600;color:#B9C6D2;user-select:none;padding:6px 0;display:inline-flex;align-items:center;gap:6px;transition:color .15s}
+.history-summary:hover{color:#fff}
+.history-summary::-webkit-details-marker{display:none}
+.history-cards{display:grid;gap:10px;margin-top:8px}
+
+/* Esqueleto de Carga (Skeleton) */
+.skeleton{animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.45}50%{opacity:.9}}
+.sk-box{background:rgba(255,255,255,.06);border-radius:14px;height:120px;margin-bottom:14px}
+
+/* Mensajes de Estado */
+.state-message{text-align:center;padding:70px 20px;color:#B9C6D2;max-width:440px;margin:0 auto}
+.state-message h3{font-size:19px;color:#fff;margin-bottom:8px}
+.state-message p{font-size:14px;line-height:1.5;margin-bottom:20px}
+.state-message .btn-retry{background:#5CB83E;border:0;color:#fff;font:inherit;font-size:13px;font-weight:600;padding:10px 20px;border-radius:10px;cursor:pointer}
+
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);background:#1F3549;border:1px solid rgba(255,255,255,.18);color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;opacity:0;transition:transform .3s,opacity .3s;z-index:200;pointer-events:none}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+@media(max-width:600px){
+  #dash{padding:16px 14px 40px}
+  .card-top{flex-direction:column;gap:8px}
+  .card-foot{flex-direction:column;align-items:flex-start;gap:10px}
+  .card-actions{width:100%;justify-content:flex-end}
+}
+</style>
+
+<!-- Firebase SDKs Oficiales v10 -->
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<!-- Vista pública -->
+<div id="pub">
+  <div>
+    <b>NEXO</b><span class="sub">AGENCIA CREATIVA</span>
+    <p>Tableros de contenido para clientes. Si recibiste un enlace de Nexo, ábrelo directamente desde el mensaje que te enviamos.</p>
+    <a href="#" class="acc" id="btnAcceso">Acceso equipo →</a>
+  </div>
+</div>
+
+<!-- Modal de clave / Login -->
+<div id="login">
+  <div class="box">
+    <h3>Acceso al equipo</h3>
+    <p>Ingresa las credenciales de Nexo Tableros.</p>
+    <div class="field-group">
+      <label for="emailInput">Correo</label>
+      <input type="email" id="emailInput" value="carlosuzc29@gmail.com" autocomplete="username">
+    </div>
+    <div class="field-group">
+      <label for="claveInput">Contraseña</label>
+      <input type="password" id="claveInput" placeholder="Contraseña" autocomplete="current-password">
+    </div>
+    <div class="err" id="loginErr"></div>
+    <div class="acts">
+      <button class="cancel" id="btnCancel">Cancelar</button>
+      <button class="go" id="btnGo">Entrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Dashboard autenticado -->
+<div id="dash">
+  <header>
+    <div class="brand-group">
+      <div class="brand-badge">N</div>
+      <h1>Banco de trabajo <span class="live-pill"><span class="live-dot"></span> EN VIVO</span></h1>
+    </div>
+    <div class="header-actions">
+      <button class="btn-subtle" id="btnLogout">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <!-- Resumen Global -->
+  <div id="globalStats" class="stats-grid" style="display:none">
+    <div class="stat-box">
+      <div class="val" id="stTotal">0</div>
+      <div class="lbl">TOTAL TABLEROS</div>
+    </div>
+    <div class="stat-box ok">
+      <div class="val" id="stOk">0</div>
+      <div class="lbl">APROBADOS</div>
+    </div>
+    <div class="stat-box fix">
+      <div class="val" id="stFix">0</div>
+      <div class="lbl">CON CAMBIOS</div>
+    </div>
+    <div class="stat-box pend">
+      <div class="val" id="stPend">0</div>
+      <div class="lbl">PENDIENTES</div>
+    </div>
+  </div>
+
+  <!-- Contenedor dinámico de tableros o estados -->
+  <div id="dashContent"></div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+(function(){
+  // Configuración de Firebase para Nexo Tableros
+  var firebaseConfig = {
+    apiKey: "AIzaSyAsH9TxW0ld2aNQejJw6xxZW7fpZiw212Q",
+    authDomain: "nexo-tableros-app.firebaseapp.com",
+    projectId: "nexo-tableros-app",
+    storageBucket: "nexo-tableros-app.firebasestorage.app",
+    messagingSenderId: "636914935338",
+    appId: "1:636914935338:web:a3f3d7931afd6f57844553"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  var auth = firebase.auth();
+  var db = firebase.firestore();
+
+  // Asegurar persistencia de sesión por pestaña
+  try {
+    auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
+  } catch(e){}
+
+  var pub = document.getElementById('pub');
+  var loginModal = document.getElementById('login');
+  var dash = document.getElementById('dash');
+  var dashContent = document.getElementById('dashContent');
+  var globalStats = document.getElementById('globalStats');
+  var emailInp = document.getElementById('emailInput');
+  var claveInp = document.getElementById('claveInput');
+  var errEl = document.getElementById('loginErr');
+  var toastEl = document.getElementById('toast');
+  var toastT = null;
+  var unsubscribeRealtime = null;
+
+  function toast(m){
+    toastEl.textContent = m;
+    toastEl.classList.add('show');
+    clearTimeout(toastT);
+    toastT = setTimeout(function(){ toastEl.classList.remove('show'); }, 3000);
+  }
+
+  function showPublic(){
+    if (unsubscribeRealtime) { unsubscribeRealtime(); unsubscribeRealtime = null; }
+    pub.style.display = 'grid';
+    loginModal.classList.remove('on');
+    dash.classList.remove('on');
+    dash.style.display = 'none';
+  }
+
+  function showLogin(){
+    loginModal.classList.add('on');
+    claveInp.value = '';
+    errEl.textContent = '';
+    setTimeout(function(){ claveInp.focus(); }, 100);
+  }
+
+  function hideLogin(){ loginModal.classList.remove('on'); }
+
+  function showDash(){
+    pub.style.display = 'none';
+    loginModal.classList.remove('on');
+    dash.style.display = 'block';
+    dash.classList.add('on');
+  }
+
+  function formatFecha(s){
+    if (!s) return '';
+    var d = (s && s.toDate) ? s.toDate() : new Date(s);
+    if (isNaN(d)) return String(s);
+    return d.toLocaleDateString('es-VE', {day:'2-digit', month:'short'}) + ' ' + d.toLocaleTimeString('es-VE', {hour:'2-digit', minute:'2-digit'});
+  }
+
+  function calcEstado(t){
+    var a = +t.aprobados || 0;
+    var c = +t.cambios || 0;
+    var tot = +t.total || 0;
+    if (c > 0 || t.estado === 'Con cambios') return {txt:'Con cambios', cls:'badge-fix'};
+    if ((tot > 0 && a === tot) || t.estado === 'Aprobado') return {txt:'Aprobado', cls:'badge-ok'};
+    if (a > 0 || c > 0 || t.revisadoPor || t.ultimaRevision || t.estado === 'Parcial') return {txt:'En revisión', cls:'badge-rev'};
+    return {txt:'Sin revisar', cls:'badge-wait'};
+  }
+
+  function renderSkeleton(){
+    globalStats.style.display = 'none';
+    dashContent.innerHTML =
+      '<div class="skeleton">' +
+        '<div class="sk-box"></div>' +
+        '<div class="sk-box"></div>' +
+        '<div class="sk-box"></div>' +
+      '</div>';
+  }
+
+  function renderEmpty(){
+    globalStats.style.display = 'none';
+    dashContent.innerHTML =
+      '<div class="state-message">' +
+        '<h3>No hay tableros registrados</h3>' +
+        '<p>Los tableros publicados aparecerán aquí automáticamente en tiempo real.</p>' +
+      '</div>';
+  }
+
+  function parseMonthNum(mStr){
+    var meses = {enero:1, febrero:2, marzo:3, abril:4, mayo:5, junio:6, julio:7, agosto:8, septiembre:9, octubre:10, noviembre:11, diciembre:12};
+    var k = String(mStr||'').toLowerCase().trim();
+    return meses[k] || 0;
+  }
+
+  function getCardHtml(t, isSecondary){
+    var st = calcEstado(t);
+    var tot = +t.total || 0;
+    var a = +t.aprobados || 0;
+    var c = +t.cambios || 0;
+    var p = +t.pendientes || Math.max(0, tot - a - c);
+
+    var pctA = tot > 0 ? Math.round((a / tot) * 100) : 0;
+    var pctC = tot > 0 ? Math.round((c / tot) * 100) : 0;
+    var pctP = tot > 0 ? Math.max(0, 100 - pctA - pctC) : 100;
+
+    var revHtml = '';
+    if (t.revisadoPor) {
+      revHtml = 'Revisado por <strong>' + t.revisadoPor + '</strong>' + (t.ultimaRevision ? ' · ' + formatFecha(t.ultimaRevision) : '');
+    } else if (t.ultimaRevision) {
+      revHtml = 'Última revisión: ' + formatFecha(t.ultimaRevision);
+    } else {
+      revHtml = '<span>Sin revisiones registradas aún</span>';
+    }
+
+    var openBtn = t.url ? '<a href="' + t.url + '" target="_blank" rel="noopener" class="btn-open">Abrir tablero ↗</a>' : '';
+
+    return '' +
+      '<div class="board-card ' + (isSecondary ? 'secondary' : '') + '">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<div class="card-period">' + (t.mes || 'Periodo') + ' ' + (t.anio || '') + '</div>' +
+            '<div class="card-sub">' + tot + ' contenidos en total</div>' +
+          '</div>' +
+          '<div><span class="badge ' + st.cls + '">' + st.txt + '</span></div>' +
+        '</div>' +
+        '<div class="progress-bar-wrap">' +
+          '<div class="progress-bar">' +
+            '<div class="p-seg ok" style="width:' + pctA + '%"></div>' +
+            '<div class="p-seg fix" style="width:' + pctC + '%"></div>' +
+            '<div class="p-seg pend" style="width:' + pctP + '%"></div>' +
+          '</div>' +
+          '<div class="progress-meta">' +
+            '<span>✓ ' + a + ' aprobados · ⚠ ' + c + ' con cambios</span>' +
+            '<span>' + p + ' pendientes</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="card-foot">' +
+          '<div class="reviewer-info">' + revHtml + '</div>' +
+          '<div class="card-actions">' + openBtn + '</div>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function renderData(tableros){
+    if (!tableros || !tableros.length) {
+      renderEmpty();
+      return;
+    }
+
+    // Calcular resumen global
+    var totTabs = tableros.length;
+    var countOk = 0, countFix = 0, countPend = 0;
+
+    tableros.forEach(function(t){
+      var st = calcEstado(t);
+      if (st.txt === 'Aprobado') countOk++;
+      else if (st.txt === 'Con cambios') countFix++;
+      else countPend++;
+    });
+
+    document.getElementById('stTotal').textContent = totTabs;
+    document.getElementById('stOk').textContent = countOk;
+    document.getElementById('stFix').textContent = countFix;
+    document.getElementById('stPend').textContent = countPend;
+    globalStats.style.display = 'grid';
+
+    // Agrupar por cliente
+    var groups = {};
+    tableros.forEach(function(t){
+      var cName = String(t.cliente || 'Sin cliente').trim();
+      if (!groups[cName]) groups[cName] = [];
+      groups[cName].push(t);
+    });
+
+    var clientKeys = Object.keys(groups).sort(function(a, b){
+      return a.localeCompare(b);
+    });
+
+    var html = '<div class="clients-wrap">';
+
+    clientKeys.forEach(function(cName){
+      var list = groups[cName];
+      list.sort(function(t1, t2){
+        var y1 = parseInt(t1.anio) || 0, y2 = parseInt(t2.anio) || 0;
+        if (y1 !== y2) return y2 - y1;
+        var m1 = parseMonthNum(t1.mes), m2 = parseMonthNum(t2.mes);
+        if (m1 !== m2) return m2 - m1;
+        var d1 = new Date(t1.ultimaRevision || t1.registrado || 0).getTime();
+        var d2 = new Date(t2.ultimaRevision || t2.registrado || 0).getTime();
+        return d2 - d1;
+      });
+
+      var mainTab = list[0];
+      var historyTabs = list.slice(1);
+
+      html += '<section class="client-section">' +
+        '<div class="client-header">' +
+          '<div class="client-name">' + cName + '</div>' +
+          '<div class="client-count">' + list.length + (list.length === 1 ? ' tablero' : ' tableros') + '</div>' +
+        '</div>';
+
+      html += getCardHtml(mainTab, false);
+
+      if (historyTabs.length > 0) {
+        html += '<details class="history-details">' +
+          '<summary class="history-summary">▸ Historial (' + historyTabs.length + ' meses anteriores)</summary>' +
+          '<div class="history-cards">';
+        historyTabs.forEach(function(hTab){
+          html += getCardHtml(hTab, true);
+        });
+        html += '</div></details>';
+      }
+
+      html += '</section>';
+    });
+
+    html += '</div>';
+    dashContent.innerHTML = html;
+  }
+
+  // Suscripción en tiempo real a Cloud Firestore
+  function startRealtimeSync(){
+    if (unsubscribeRealtime) unsubscribeRealtime();
+    renderSkeleton();
+
+    unsubscribeRealtime = db.collection('tableros').onSnapshot(function(snapshot){
+      var items = [];
+      snapshot.forEach(function(doc){
+        var d = doc.data();
+        d._id = doc.id;
+        items.push(d);
+      });
+      renderData(items);
+    }, function(error){
+      console.error('Firestore snapshot error:', error);
+      dashContent.innerHTML =
+        '<div class="state-message">' +
+          '<h3>Error al cargar tableros</h3>' +
+          '<p>' + (error.message || 'Verifica permisos de acceso en Firestore.') + '</p>' +
+          '<button class="btn-retry" id="btnRetryState">Reintentar</button>' +
+        '</div>';
+      document.getElementById('btnRetryState').onclick = startRealtimeSync;
+    });
+  }
+
+  function tryLogin(){
+    var email = emailInp.value.trim();
+    var pass = claveInp.value.trim();
+
+    if (!email) { errEl.textContent = 'Escribe tu correo.'; return; }
+    if (!pass) { errEl.textContent = 'Escribe la contraseña.'; return; }
+
+    errEl.textContent = 'Iniciando sesión…';
+    document.getElementById('btnGo').disabled = true;
+
+    auth.signInWithEmailAndPassword(email, pass)
+      .then(function(userCred){
+        document.getElementById('btnGo').disabled = false;
+        hideLogin();
+        toast('Bienvenido al Banco de trabajo');
+      })
+      .catch(function(error){
+        document.getElementById('btnGo').disabled = false;
+        if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found') {
+          errEl.textContent = 'Contraseña o correo incorrectos.';
+        } else {
+          errEl.textContent = error.message || 'Error al iniciar sesión.';
+        }
+        claveInp.select();
+      });
+  }
+
+  function logout(){
+    auth.signOut().then(function(){
+      showPublic();
+      toast('Sesión cerrada');
+    });
+  }
+
+  // Escuchar estado de autenticación de Firebase
+  auth.onAuthStateChanged(function(user){
+    if (user) {
+      showDash();
+      startRealtimeSync();
+    } else {
+      showPublic();
+    }
+  });
+
+  // Eventos UI
+  document.getElementById('btnAcceso').addEventListener('click', function(e){
+    e.preventDefault();
+    showLogin();
+  });
+  document.getElementById('btnCancel').addEventListener('click', hideLogin);
+  document.getElementById('btnGo').addEventListener('click', tryLogin);
+  document.getElementById('btnLogout').addEventListener('click', logout);
+  claveInp.addEventListener('keydown', function(e){ if (e.key === 'Enter') tryLogin(); });
+  emailInp.addEventListener('keydown', function(e){ if (e.key === 'Enter') claveInp.focus(); });
+  loginModal.addEventListener('click', function(e){ if (e.target === loginModal) hideLogin(); });
+})();
+</script>
+</body></html>

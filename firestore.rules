@@ -1,0 +1,62 @@
+rules_version = '2';
+
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// Collection: tableros/{tableroId}
+// Fields:
+//   - id: string (required) - ID único del tablero (ej. milkarf-2026-octubre)
+//   - cliente: string (required) - Nombre del cliente
+//   - mes: string (required) - Mes del tablero
+//   - anio: string or int (required) - Año del tablero
+//   - url: string (required) - URL pública del tablero
+//   - total: number (required) - Total de contenidos
+//   - aprobados: number (required) - Contenidos aprobados
+//   - cambios: number (required) - Contenidos con cambios
+//   - pendientes: number (required) - Contenidos pendientes
+//   - estado: string (required) - Estado general: 'Sin respuesta', 'Parcial', 'Aprobado', 'Con cambios'
+//   - revisadoPor: string (optional) - Nombre de quien revisó
+//   - ultimaRevision: string or timestamp (optional) - Fecha de la última revisión
+//   - registrado: string or timestamp (optional) - Fecha de registro
+//   - contenidos: list of maps (optional) - Detalle de los contenidos evaluados
+//
+// ===============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper: usuario autenticado del equipo (Nexo)
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Colección principal de tableros
+    match /tableros/{tableroId} {
+      // El equipo autenticado puede listar y gestionar todos los tableros
+      allow list: if isAuthenticated();
+
+      // Permitir leer un tablero específico (cliente que accede con su enlace directo o equipo)
+      allow get: if true;
+
+      // Solo el equipo autenticado puede crear o eliminar tableros
+      allow create, delete: if isAuthenticated();
+
+      // Permitir actualizar:
+      // 1. El equipo autenticado puede actualizar cualquier campo
+      // 2. Un cliente con el enlace puede enviar sus evaluaciones (cambiar aprobados, cambios, pendientes, estado, revisadoPor, ultimaRevision, contenidos)
+      allow update: if isAuthenticated() || (
+        request.resource.data.id == resource.data.id &&
+        request.resource.data.cliente == resource.data.cliente &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'aprobados', 'cambios', 'pendientes', 'estado', 'revisadoPor', 'ultimaRevision', 'contenidos'
+        ])
+      );
+
+      // Subcolección opcional para detalle o revisiones históricas
+      match /{document=**} {
+        allow read, write: if isAuthenticated();
+      }
+    }
+  }
+}

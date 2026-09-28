@@ -3551,24 +3551,38 @@ body{
           var dx = p1.x - p2.x, dy = p1.y - p2.y;
           var dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < maxDist) {
-            var alpha = (1 - dist / maxDist) * 0.24;
+            var alpha = (1 - dist / maxDist) * 0.42;
             ctx.beginPath();
             ctx.moveTo(p1.x, p1.y);
             ctx.lineTo(p2.x, p2.y);
             ctx.strokeStyle = (p1.isGreen || p2.isGreen) ? 'rgba(92,184,62,' + alpha + ')' : 'rgba(210,230,248,' + (alpha * 0.75) + ')';
-            ctx.lineWidth = 1.2;
+            ctx.lineWidth = (p1.isGreen || p2.isGreen) ? 1.5 : 1.2;
             ctx.stroke();
           }
         }
       }
 
-      // Dibujar nodos
+      // Dibujar nodos con halo y brillo
       for (var k = 0; k < pts.length; k++) {
         var p = pts[k];
+        if (p.isGreen) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r * 2.4, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(92,184,62,0.18)';
+          ctx.fill();
+          ctx.restore();
+        }
+        ctx.save();
+        if (p.isGreen) {
+          ctx.shadowColor = '#5CB83E';
+          ctx.shadowBlur = 12;
+        }
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = p.isGreen ? 'rgba(92,184,62,0.85)' : 'rgba(230,240,250,0.65)';
+        ctx.fillStyle = p.isGreen ? 'rgba(92,184,62,0.95)' : 'rgba(230,240,250,0.85)';
         ctx.fill();
+        ctx.restore();
       }
       requestAnimationFrame(anim);
     }

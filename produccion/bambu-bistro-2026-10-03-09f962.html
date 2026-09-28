@@ -18,43 +18,43 @@
   <style>
     /* ── SISTEMA DE DISEÑO ULTRA-MODERNO NEXO STUDIO (DARK & LIGHT) ── */
     :root, [data-theme="dark"] {
-      --bg-base: #0B1118;
-      --bg-gradient: radial-gradient(circle at 15% 15%, rgba(92, 184, 62, 0.05), transparent 45%),
-                     radial-gradient(circle at 85% 85%, rgba(31, 53, 73, 0.25), transparent 50%),
-                     #0B1118;
-      --surface: #101A24;
-      --surface-elevated: #162332;
-      --surface-card: #131F2C;
-      --surface-card-hover: #182839;
-      --surface-col: rgba(16, 26, 38, 0.76);
-      --border-color: rgba(255, 255, 255, 0.08);
-      --border-subtle: rgba(255, 255, 255, 0.04);
-      --border-hover: rgba(92, 184, 62, 0.4);
+      --bg-base: #070C12;
+      --bg-gradient: radial-gradient(circle at 18% 18%, rgba(92, 184, 62, 0.16), transparent 52%),
+                     radial-gradient(circle at 82% 82%, rgba(31, 80, 115, 0.28), transparent 58%),
+                     radial-gradient(circle at 50% 40%, rgba(13, 23, 34, 0.85), #060A0F);
+      --surface: #0E1722;
+      --surface-elevated: #142232;
+      --surface-card: rgba(18, 30, 44, 0.72);
+      --surface-card-hover: rgba(26, 44, 64, 0.88);
+      --surface-col: rgba(12, 20, 30, 0.48);
+      --border-color: rgba(255, 255, 255, 0.09);
+      --border-subtle: rgba(255, 255, 255, 0.05);
+      --border-hover: rgba(92, 184, 62, 0.55);
       --text-main: #F3F6FB;
       --text-muted: #94A3B8;
       --text-light: #64748B;
       --nexo-blue: #1F3549;
       --nexo-blue-dark: #121F2B;
       --nexo-green: #5CB83E;
-      --nexo-green-soft: rgba(92, 184, 62, 0.16);
-      --nexo-green-glow: 0 0 16px rgba(92, 184, 62, 0.35);
+      --nexo-green-soft: rgba(92, 184, 62, 0.18);
+      --nexo-green-glow: 0 0 18px rgba(92, 184, 62, 0.45);
       --nexo-orange: #F97316;
-      --nexo-orange-soft: rgba(249, 115, 22, 0.16);
-      --nexo-orange-glow: 0 0 16px rgba(249, 115, 22, 0.35);
+      --nexo-orange-soft: rgba(249, 115, 22, 0.18);
+      --nexo-orange-glow: 0 0 18px rgba(249, 115, 22, 0.45);
       --nexo-cyan: #38BDF8;
-      --nexo-cyan-soft: rgba(56, 189, 248, 0.16);
-      --glass-topbar: rgba(11, 17, 24, 0.88);
-      --glass-drawer: rgba(14, 22, 32, 0.98);
-      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.35);
-      --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.06);
-      --shadow-card-hover: 0 12px 30px -4px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(92, 184, 62, 0.3);
-      --input-bg: rgba(255, 255, 255, 0.05);
+      --nexo-cyan-soft: rgba(56, 189, 248, 0.18);
+      --glass-topbar: rgba(9, 15, 22, 0.82);
+      --glass-drawer: rgba(12, 19, 28, 0.98);
+      --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.35);
+      --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.4);
+      --shadow-card: 0 3px 12px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.07);
+      --shadow-card-hover: 0 14px 34px -4px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(92, 184, 62, 0.45);
+      --input-bg: rgba(255, 255, 255, 0.06);
       --input-focus-bg: #141F2B;
-      --chip-bg: rgba(255, 255, 255, 0.06);
-      --pill-border: rgba(255, 255, 255, 0.1);
+      --chip-bg: rgba(255, 255, 255, 0.07);
+      --pill-border: rgba(255, 255, 255, 0.12);
       --empty-bg: rgba(255, 255, 255, 0.02);
-      --scrollbar-thumb: rgba(255, 255, 255, 0.14);
+      --scrollbar-thumb: rgba(255, 255, 255, 0.16);
       --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       --font-mono: 'JetBrains Mono', 'Space Grotesk', monospace;
       --trans-fast: 160ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -63,14 +63,14 @@
 
     [data-theme="light"] {
       --bg-base: #EEF3F8;
-      --bg-gradient: radial-gradient(circle at 15% 15%, rgba(92, 184, 62, 0.08), transparent 45%),
-                     radial-gradient(circle at 85% 85%, rgba(31, 53, 73, 0.08), transparent 50%),
+      --bg-gradient: radial-gradient(circle at 18% 18%, rgba(92, 184, 62, 0.14), transparent 50%),
+                     radial-gradient(circle at 82% 82%, rgba(31, 80, 115, 0.15), transparent 55%),
                      #EEF3F8;
       --surface: #FFFFFF;
       --surface-elevated: #F8FAFC;
-      --surface-card: #FFFFFF;
-      --surface-card-hover: #FFFFFF;
-      --surface-col: rgba(255, 255, 255, 0.82);
+      --surface-card: rgba(255, 255, 255, 0.80);
+      --surface-card-hover: rgba(255, 255, 255, 0.95);
+      --surface-col: rgba(240, 245, 250, 0.62);
       --border-color: rgba(15, 23, 42, 0.08);
       --border-subtle: rgba(15, 23, 42, 0.04);
       --border-hover: rgba(92, 184, 62, 0.5);
@@ -780,6 +780,8 @@
     /* TARJETAS COMO FICHAS DE PRODUCCIÓN DE AUTOR */
     .card {
       background: var(--surface-card);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       border-radius: 11px;
       padding: 13px 14px;
       cursor: pointer;
@@ -1744,10 +1746,10 @@
         </svg>
       </div>
       <div class="topbar-titles">
-        <h1 id="hdr-client" class="client-title">Bambú Bistro</h1>
+        <h1 id="hdr-client" class="client-title">Tablero NEXO</h1>
         <span class="prod-pill">PRODUCCIÓN</span>
         <span class="header-sep">·</span>
-        <span id="hdr-date" class="client-date">03 oct 2026</span>
+        <span id="hdr-date" class="client-date">Sin Fecha</span>
       </div>
     </div>
 
@@ -2027,96 +2029,10 @@
   <script>
     // ── DATOS BASE ──────────────────────────────────────────────────────────
     const DATA = {
-  "fecha": "2026-10-03",
-  "cliente": "Bambú Bistro",
-  "id": "bambu-bistro-2026-10-03-09f962",
-  "firebase": {
-    "apiKey": "AIzaSyAsH9TxW0ld2aNQejJw6xxZW7fpZiw212Q",
-    "projectId": "nexo-tableros-app"
-  },
-  "contenidos": [
-    {
-      "id": "c1",
-      "titulo": "POV: VINISTE A ALMORZAR Y TERMINASTE PASANDO LA TARDE",
-      "tipo": "reel",
-      "sede": "",
-      "estado": "todo",
-      "descripcion": "“POV: viniste a almorzar y terminaste pasando la tarde.”\nAbrimos directamente con una persona o familia sentándose en una mesa de Bambú. Puede verse el espacio detrás para contextualizar.\nREEL 1 — Bambú se vive\nConcepto: POV: viniste a almorzar y terminaste pasando la tarde.\nEl reel mostrará cómo una visita a Bambú que comienza con un almuerzo puede convertirse en un plan para disfrutar por más tiempo. Se verá la llegada de los platos, personas comiendo y compartiendo, la sobremesa y diferentes momentos disfrutando de los espacios y opciones recreativas del lugar. La intención es presentar a Bambú no solo como un restaurante, sino como un lugar para comer, compartir y disfrutar.",
-      "subtareas": [],
-      "mediaLinks": []
-    },
-    {
-      "id": "c2",
-      "titulo": "BUCLE PROVOCATIVO AL FUEGO",
-      "tipo": "reel",
-      "sede": "",
-      "estado": "todo",
-      "descripcion": "El reel mostrará de forma muy cercana y provocativa el proceso de preparación de uno de los platos más atractivos de Bambú: producto entrando al fuego, brasas, cocción, jugos, corte y resultado final. La edición estará construida en bucle, haciendo que el final conecte visualmente con el inicio para que la reproducción pueda repetirse de manera continua y natural.\nLa pieza tendrá un enfoque principalmente sensorial, apoyándose en primeros planos, sonidos de cocción y texturas para generar antojo, sin necesidad de explicar demasiado el producto.\n\nDejar en los comentarios con que plato vamos a trabajar",
-      "subtareas": [],
-      "mediaLinks": []
-    },
-    {
-      "id": "c3",
-      "titulo": "CARRUSEL DISTINTAS OPCIONES",
-      "tipo": "carrusel",
-      "sede": "",
-      "estado": "todo",
-      "descripcion": "El carrusel mostrará una mesa de Bambú con diferentes platos y opciones del menú, representando cómo cada persona puede elegir según lo que le provoque sin dejar de compartir el mismo plan. La intención es destacar la variedad gastronómica de Bambú desde una situación de consumo real, mostrando el restaurante como una opción para compartir en familia, pareja o con amigos.\n\nSlide 1:\nUna mesa, diferentes antojos.\nSlide 2:\nVisual de las distintas opciones.\nCada quien pide lo suyo.\nSlide 3:\nPonerse de acuerdo nunca fue tan fácil.\nNos vemos en Bambú.",
-      "subtareas": [],
-      "mediaLinks": []
-    },
-    {
-      "id": "c4",
-      "titulo": "ARMEMOS EL PLATO",
-      "tipo": "reel",
-      "sede": "",
-      "estado": "todo",
-      "descripcion": "REEL 4 — EL PLATO DEL MES\nConcepto: Hoy el personal de Bambú elige nuestro plato del mes.\nEl reel mostrará una dinámica en la que diferentes integrantes del personal de Bambú responderán preguntas rápidas entre dos opciones. Cada respuesta definirá una parte del plato —proteína, método de preparación, acompañante, salsa y acabado— hasta construir entre todos una combinación final.\nUna vez tomadas todas las decisiones, el equipo de cocina preparará el resultado y se revelará al final como el plato del mes de Bambú.\n\nHoy el personal de Bambú elige nuestro plato del mes.\n— ¿Carne o pollo?\n— Carne.\n— ¿A la parrilla o al sartén?\n— A la parrilla.\n— ¿Papas o pasta?\n— Papas.\n— ¿Cremoso o ahumado?\n— Ahumado.\n— ¿Picante o clásico?\n— Picante.\nCortes en cocina preparando\nY así quedó el plato elegido por nuestro equipo.\n“Ellos ya eligieron. Ahora te toca venir a probarlo. Ven a Bambu y conoce nuestro_______\nSolo disponible por el mes de octubre",
-      "subtareas": [],
-      "mediaLinks": []
-    },
-    {
-      "id": "c5",
-      "titulo": "QUE PROBAR SI VIENES POR PRIMERA VEZ",
-      "tipo": "carrusel",
-      "sede": "",
-      "estado": "todo",
-      "descripcion": "Slide 1 ¿Qué probar si vienes a Bambú Bistro por primera vez?\nSlide 2 Brochetas a la Brasa\n2 brochetas mixtas con vegetales, acompañadas de 2 contornos.\nSlide 3 Pollo con salsa de champiñones\nPechuga de pollo bañada en salsa de champiñones y .... acompañada de _______\nSlide 4 Parrilla Individual\nSolomo, pollo, cerdo y chorizo, acompañados de dos contornos.",
-      "subtareas": [],
-      "mediaLinks": []
-    },
-    {
-      "id": "c6",
-      "titulo": "LA COMIDA/LA EXPERIENCIA",
-      "tipo": "carrusel",
-      "sede": "",
-      "estado": "todo",
-      "descripcion": "REEL — COMIDA + EXPERIENCIA\nConcepto: Mostrar simultáneamente la gastronomía y la experiencia de visitar Bambú.\nEl video estará dividido horizontalmente en dos durante toda la pieza. En la parte superior se mostrará un plato de Bambú a través de tomas cercanas y provocativas del producto. Al mismo tiempo, en la parte inferior se mostrarán personas disfrutando de las áreas y actividades recreativas del restaurante.\nAmbas partes avanzarán de manera simultánea para comunicar en una misma pieza lo que puedes comer y lo que puedes disfrutar durante una visita a Bambú.\nEjemplo visual:\nParte superior: Parrilla Individual → tomas del plato, carne, corte y producto.\nParte inferior: personas disfrutando de una de las áreas recreativas de Bambú.\n\nEn el medio de cada imagen tendrá escrito:\n\nLA COMIDA\n\nLA EXPERIENCIA",
-      "subtareas": [],
-      "mediaLinks": []
-    },
-    {
-      "id": "c7",
-      "titulo": "SAL DE LA RUTINA",
-      "tipo": "otro",
-      "sede": "",
-      "estado": "todo",
-      "descripcion": "HOY CAMBIA EL PLAN.\nUna mesa, algo rico y una tarde diferente.\nVisita Bambú y haz una pausa de la rutina.\n📍 Los Llanitos de Tabay, junto al C.C. El Amanecer.",
-      "subtareas": [],
-      "mediaLinks": []
-    },
-    {
-      "id": "c8",
-      "titulo": "CELEBRACIONES Y ESPACIOS PARA RESERVAR",
-      "tipo": "reel",
-      "sede": "",
-      "estado": "todo",
-      "descripcion": "Cumpleaños.\nAniversario.\nGraduación.\nReunión familiar.\nO simplemente algo que merece celebrarse.\nSi ya tienes el motivo, nosotros tenemos el lugar.\nTomas de comida, mesa preparada, brindis, grupo compartiendo y espacios de Bambú\nHaz de Bambú el lugar de tu próxima celebración.",
-      "subtareas": [],
-      "mediaLinks": []
-    }
-  ]
-};
+      "fecha": "",
+      "cliente": "",
+      "contenidos": []
+    };
 
     // Tipos de formato y paletas temáticas refinadas
     const TIPOS = {
@@ -3087,15 +3003,20 @@
 
       // Partículas y eslabones de conexión NEXO
       const nodes = [];
-      const nodeCount = 28;
+      const nodeCount = Math.min(54, Math.max(30, Math.floor(width / 28)));
       for (let i = 0; i < nodeCount; i++) {
+        const isAccent = Math.random() < 0.45;
+        const isBlue = !isAccent && Math.random() < 0.45;
         nodes.push({
           x: Math.random(),
           y: Math.random(),
-          vx: (Math.random() - 0.5) * 0.0003,
-          vy: (Math.random() - 0.5) * 0.0003,
-          size: 1.5 + Math.random() * 2,
-          pulse: Math.random() * Math.PI * 2
+          vx: (Math.random() - 0.5) * 0.00045,
+          vy: (Math.random() - 0.5) * 0.00045,
+          size: isAccent ? (2.2 + Math.random() * 2.2) : (1.6 + Math.random() * 1.8),
+          pulse: Math.random() * Math.PI * 2,
+          pulseSpeed: 0.02 + Math.random() * 0.025,
+          isAccent: isAccent,
+          isBlue: isBlue
         });
       }
 
@@ -3173,10 +3094,11 @@
         currentOffsetY += (targetOffsetY - currentOffsetY) * 0.05;
 
         const isDark = (document.documentElement.getAttribute('data-theme') || 'dark') === 'dark';
-        const strokeGreen = isDark ? 'rgba(92, 184, 62, 0.09)' : 'rgba(92, 184, 62, 0.06)';
-        const strokeBlue = isDark ? 'rgba(56, 189, 248, 0.06)' : 'rgba(31, 53, 73, 0.04)';
-        const nodeColor = isDark ? 'rgba(92, 184, 62, 0.35)' : 'rgba(92, 184, 62, 0.25)';
-        const filamentColor = isDark ? 'rgba(92, 184, 62, 0.07)' : 'rgba(31, 53, 73, 0.04)';
+        const strokeGreen = isDark ? 'rgba(92, 184, 62, 0.44)' : 'rgba(92, 184, 62, 0.32)';
+        const strokeBlue = isDark ? 'rgba(56, 189, 248, 0.36)' : 'rgba(31, 80, 115, 0.25)';
+        const nodeColor = isDark ? 'rgba(92, 184, 62, 0.95)' : 'rgba(92, 184, 62, 0.85)';
+        const blueNode = isDark ? 'rgba(56, 189, 248, 0.90)' : 'rgba(2, 132, 199, 0.85)';
+        const dimNode = isDark ? 'rgba(185, 198, 210, 0.70)' : 'rgba(100, 116, 139, 0.55)';
 
         // 1. Dibujar filamentos y nodos flotantes
         if (!prefersReduced) {
@@ -3204,20 +3126,51 @@
             const dy = y1 - y2;
             const dist = Math.sqrt(dx * dx + dy * dy);
 
-            if (dist < 180) {
+            if (dist < 200) {
+              const alphaFactor = (1 - dist / 200);
+              const lineAlpha = alphaFactor * (isDark ? 0.38 : 0.28);
               ctx.beginPath();
               ctx.moveTo(x1, y1);
               ctx.lineTo(x2, y2);
-              ctx.strokeStyle = filamentColor;
-              ctx.lineWidth = 1;
+              if (n1.isAccent || n2.isAccent) {
+                ctx.strokeStyle = `rgba(92, 184, 62, ${lineAlpha * 1.35})`;
+                ctx.lineWidth = 1.3;
+              } else if (n1.isBlue || n2.isBlue) {
+                ctx.strokeStyle = `rgba(56, 189, 248, ${lineAlpha * 1.15})`;
+                ctx.lineWidth = 1.1;
+              } else {
+                ctx.strokeStyle = isDark ? `rgba(148, 163, 184, ${lineAlpha * 0.85})` : `rgba(100, 116, 139, ${lineAlpha * 0.75})`;
+                ctx.lineWidth = 1.0;
+              }
               ctx.stroke();
             }
           }
 
+          n1.pulse += n1.pulseSpeed;
+          const pulseScale = Math.sin(n1.pulse);
+
+          // Halo pulsante en nodos de acento
+          if (n1.isAccent) {
+            ctx.save();
+            ctx.beginPath();
+            const haloR = Math.max(2, n1.size * 2.2 + pulseScale * 3.5);
+            ctx.arc(x1, y1, haloR, 0, Math.PI * 2);
+            ctx.fillStyle = isDark ? 'rgba(92, 184, 62, 0.16)' : 'rgba(92, 184, 62, 0.10)';
+            ctx.fill();
+            ctx.restore();
+          }
+
+          // Nodo central con brillo
+          ctx.save();
+          if (isDark) {
+            ctx.shadowColor = n1.isAccent ? '#5CB83E' : (n1.isBlue ? '#38BDF8' : 'rgba(255,255,255,0.4)');
+            ctx.shadowBlur = n1.isAccent ? 14 : 9;
+          }
           ctx.beginPath();
-          ctx.arc(x1, y1, n1.size, 0, Math.PI * 2);
-          ctx.fillStyle = nodeColor;
+          ctx.arc(x1, y1, n1.size + (n1.isAccent ? pulseScale * 0.6 : 0), 0, Math.PI * 2);
+          ctx.fillStyle = n1.isAccent ? nodeColor : (n1.isBlue ? blueNode : dimNode);
           ctx.fill();
+          ctx.restore();
         }
 
         // 2. Dibujar formas de conexión maestras
@@ -3231,10 +3184,17 @@
           ctx.save();
           ctx.translate(cx, cy);
           ctx.rotate(s.angle + tRot);
-          ctx.strokeStyle = (idx % 2 === 0) ? strokeGreen : strokeBlue;
-          ctx.lineWidth = 1.6;
+
+          const isGreenShape = (idx % 2 === 0);
+          ctx.strokeStyle = isGreenShape ? strokeGreen : strokeBlue;
+          ctx.lineWidth = 2.4;
           ctx.lineCap = 'round';
           ctx.lineJoin = 'round';
+
+          if (isDark) {
+            ctx.shadowColor = isGreenShape ? 'rgba(92, 184, 62, 0.55)' : 'rgba(56, 189, 248, 0.45)';
+            ctx.shadowBlur = 18;
+          }
 
           if (s.type === 'double-loop') drawDoubleLoop(ctx, s.length, s.radius);
           else if (s.type === 'ribbon') drawRibbon(ctx, s.length, s.radius);

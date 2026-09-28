@@ -492,65 +492,77 @@ body{
   position:relative;
 }
 
-/* — Elemento Gráfico Interactivo: MacBook Pro — */
+/* — Elemento Gráfico Ultra-Realista: MacBook Pro — */
 .macbook-device{
-  width:260px;
-  transition:transform 350ms cubic-bezier(.2,.8,.2,1);
-  transform:rotateX(6deg) rotateY(-5deg);
+  width:272px;
+  transition:transform 400ms cubic-bezier(.16,1,.3,1), filter 400ms ease;
+  transform:rotateX(7deg) rotateY(-5deg);
   transform-style:preserve-3d;
   cursor:pointer;
   user-select:none;
+  filter:drop-shadow(0 20px 30px rgba(0,0,0,.7));
 }
 .hub-cat-card:hover .macbook-device{
-  transform:rotateX(0deg) rotateY(0deg) scale(1.03);
+  transform:rotateX(0deg) rotateY(0deg) scale(1.04);
+  filter:drop-shadow(0 24px 38px rgba(0,0,0,.85));
 }
 .macbook-screen-lid{
-  background:#141f2a;
-  border:1.5px solid #2d4157;
+  background:linear-gradient(150deg, #2b3a4a 0%, #18232e 45%, #0f171f 100%);
+  border:1.5px solid #3c5268;
   border-radius:12px 12px 2px 2px;
-  padding:8px 8px 10px;
-  box-shadow:0 12px 28px -6px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.2);
+  padding:7px 7px 9px;
+  box-shadow:0 14px 32px -6px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.35), inset 0 -1px 0 rgba(0,0,0,.9);
   position:relative;
 }
 .macbook-notch{
   position:absolute;
-  top:8px;
+  top:7px;
   left:50%;
   transform:translateX(-50%);
-  width:32px;
+  width:36px;
   height:5px;
-  background:#0b131c;
-  border-radius:0 0 4px 4px;
+  background:#05080c;
+  border-radius:0 0 5px 5px;
   display:flex;
   align-items:center;
   justify-content:center;
-  z-index:4;
+  gap:4px;
+  z-index:5;
 }
 .macbook-cam{
   width:3px;
   height:3px;
   border-radius:50%;
+  background:#0e2015;
+  border:0.5px solid #23452f;
+  box-shadow:inset 0 0 2px #5CB83E;
+}
+.macbook-sensor{
+  width:2px;
+  height:2px;
+  border-radius:50%;
   background:#5CB83E;
   box-shadow:0 0 4px #5CB83E;
 }
 .macbook-display{
-  background:#0d1822;
+  background:#070d14;
   border-radius:6px;
-  padding:8px 10px;
-  height:120px;
+  padding:6px 8px 8px;
+  height:124px;
   display:flex;
   flex-direction:column;
   justify-content:space-between;
   position:relative;
   overflow:hidden;
-  border:1px solid rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:inset 0 0 12px rgba(0,0,0,.8);
 }
 .macbook-glass-shine{
   position:absolute;
   inset:0;
-  background:linear-gradient(115deg, rgba(255,255,255,.14) 0%, transparent 45%, rgba(92,184,62,.06) 80%, transparent 100%);
+  background:linear-gradient(120deg, rgba(255,255,255,.24) 0%, transparent 35%, rgba(92,184,62,.1) 70%, transparent 100%);
   pointer-events:none;
-  transition:transform 600ms ease;
+  transition:transform 700ms cubic-bezier(.16,1,.3,1);
   transform:translateX(-100%);
 }
 .hub-cat-card:hover .macbook-glass-shine{
@@ -559,22 +571,31 @@ body{
 .macbook-topbar{
   display:flex;
   align-items:center;
-  gap:5px;
-  margin-bottom:6px;
+  justify-content:space-between;
+  margin-bottom:5px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  padding-bottom:3px;
 }
-.m-dot{width:6px;height:6px;border-radius:50%}
+.m-controls{display:flex;align-items:center;gap:4px}
+.m-dot{width:5.5px;height:5.5px;border-radius:50%;box-shadow:inset 0 0 2px rgba(0,0,0,.4)}
 .m-dot.red{background:#E64A00}
-.m-dot.yellow{background:#d4a017}
+.m-dot.yellow{background:#eab308}
 .m-dot.green{background:#5CB83E}
 .m-title{
-  font-size:9px;
+  font-size:8.5px;
   color:var(--ink-2);
-  margin-left:4px;
-  font-weight:600;
-  letter-spacing:.02em;
+  font-weight:700;
+  letter-spacing:.03em;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
+}
+.m-sys-icons{
+  font-size:7px;
+  color:var(--ink-2);
+  display:flex;
+  gap:4px;
+  opacity:.8;
 }
 .macbook-content-preview{
   display:grid;
@@ -588,103 +609,130 @@ body{
   gap:3px;
 }
 .m-item-chip{
-  font-size:7.5px;
+  font-size:7px;
   color:var(--ink-2);
-  font-weight:700;
+  font-weight:800;
   text-transform:uppercase;
-  letter-spacing:.04em;
+  letter-spacing:.05em;
+  display:flex;
+  align-items:center;
+  gap:3px;
 }
 .m-preview-box{
-  background:rgba(31,53,73,.8);
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:4px;
+  background:linear-gradient(135deg, rgba(28,48,68,.9) 0%, rgba(18,32,46,.9) 100%);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:5px;
   padding:5px 4px;
   height:100%;
   display:flex;
   flex-direction:column;
   justify-content:space-between;
   position:relative;
-  transition:background var(--trans);
+  box-shadow:0 3px 8px rgba(0,0,0,.4);
+  transition:all var(--trans);
 }
 .hub-cat-card:hover .m-preview-box{
-  background:rgba(40,68,94,.9);
-  border-color:rgba(92,184,62,.3);
+  border-color:rgba(92,184,62,.45);
+  box-shadow:0 4px 12px rgba(92,184,62,.15);
+}
+.mini-thumb{
+  height:28px;
+  border-radius:3px;
+  background-size:cover;
+  position:relative;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+}
+.mini-thumb.feed-art{
+  background:linear-gradient(135deg, #1b354b 0%, #2f613c 100%);
+}
+.mini-thumb.reel-art{
+  background:linear-gradient(135deg, #182e44 0%, #523068 100%);
+}
+.mini-thumb.story-art{
+  background:linear-gradient(135deg, #16364a 0%, #a0491a 100%);
+}
+.mini-play{
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:rgba(0,0,0,.65);
+  color:#5CB83E;
+  font-size:7px;
+  display:grid;
+  place-items:center;
+  box-shadow:0 0 6px rgba(92,184,62,.4);
 }
 .mini-tag{
-  font-size:7px;
-  font-weight:700;
+  font-size:6.5px;
+  font-weight:800;
   padding:1px 3px;
   border-radius:3px;
   display:inline-block;
   line-height:1.2;
 }
-.mini-tag.ok{background:rgba(92,184,62,.25);color:#5CB83E}
-.mini-tag.rev{background:rgba(31,53,73,.6);color:#fff}
+.mini-tag.ok{background:rgba(92,184,62,.3);color:#5CB83E;border:0.5px solid rgba(92,184,62,.5)}
+.mini-tag.rev{background:rgba(230,74,0,.25);color:#E64A00;border:0.5px solid rgba(230,74,0,.45)}
 .mini-tag.pend{background:rgba(255,255,255,.1);color:var(--ink-2)}
 .mini-lines span{
   display:block;
-  height:2.5px;
-  background:rgba(255,255,255,.2);
-  border-radius:2px;
+  height:2px;
+  background:rgba(255,255,255,.25);
+  border-radius:1px;
   margin-top:2px;
 }
-.mini-lines span:last-child{width:65%}
-.mini-play{
-  font-size:8px;
-  color:#5CB83E;
-  text-align:center;
-  margin-top:4px;
-}
-.mini-bars{
-  display:flex;
-  gap:2px;
-  align-items:flex-end;
-  height:10px;
-  margin-top:4px;
-}
-.mini-bars span{
-  flex:1;
-  background:var(--ink-2);
-  border-radius:1px;
-}
-.mini-bars span:nth-child(1){height:40%}
-.mini-bars span:nth-child(2){height:90%;background:#5CB83E}
-.mini-bars span:nth-child(3){height:60%}
+.mini-lines span:last-child{width:60%}
 .macbook-base{
-  background:linear-gradient(to bottom, #2b3d4f 0%, #1a2734 100%);
-  height:10px;
-  border-radius:0 0 10px 10px;
-  border:1px solid #364b60;
+  background:linear-gradient(to bottom, #304153 0%, #1c2937 60%, #121c25 100%);
+  height:12px;
+  border-radius:0 0 12px 12px;
+  border:1px solid #435b73;
   border-top:none;
   position:relative;
-  box-shadow:0 8px 18px rgba(0,0,0,.5);
+  box-shadow:0 12px 24px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.3);
+}
+.macbook-hinge{
+  position:absolute;
+  top:-2px;
+  left:50%;
+  transform:translateX(-50%);
+  width:90px;
+  height:3px;
+  background:#090f15;
+  border-radius:2px 2px 0 0;
 }
 .macbook-keyboard-deck{
   width:100%;
   height:100%;
   display:flex;
-  justify-content:center;
-  align-items:flex-start;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  padding-top:1px;
 }
 .macbook-trackpad{
-  width:64px;
-  height:4px;
-  background:rgba(255,255,255,.1);
+  width:72px;
+  height:5px;
+  background:rgba(255,255,255,.09);
+  border:0.5px solid rgba(255,255,255,.2);
   border-radius:0 0 2px 2px;
-  margin-top:1px;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.4);
 }
 
-/* — Elemento Gráfico Interactivo: Cámara de Cine — */
+/* — Elemento Gráfico Ultra-Realista: Cámara de Cine — */
 .camera-device{
-  width:230px;
-  transition:transform 350ms cubic-bezier(.2,.8,.2,1);
-  transform:rotateX(4deg) rotateY(4deg);
+  width:245px;
+  transition:transform 400ms cubic-bezier(.16,1,.3,1), filter 400ms ease;
+  transform:rotateX(5deg) rotateY(5deg);
   transform-style:preserve-3d;
   cursor:pointer;
   user-select:none;
+  filter:drop-shadow(0 20px 30px rgba(0,0,0,.7));
 }
 .hub-cat-card:hover .camera-device{
-  transform:rotateX(0deg) rotateY(0deg) scale(1.03);
+  transform:rotateX(0deg) rotateY(0deg) scale(1.04);
+  filter:drop-shadow(0 24px 38px rgba(0,0,0,.85));
 }
 .camera-body{
   display:flex;
@@ -692,28 +740,30 @@ body{
   align-items:center;
 }
 .camera-top-handle{
-  width:120px;
-  height:12px;
-  background:#1a2735;
-  border:1px solid #334a61;
-  border-radius:4px 4px 0 0;
+  width:130px;
+  height:14px;
+  background:linear-gradient(to bottom, #233344 0%, #15202c 100%);
+  border:1px solid #3c5673;
+  border-radius:5px 5px 0 0;
   display:flex;
   align-items:center;
   justify-content:space-between;
   padding:0 8px;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.2);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.25), 0 2px 6px rgba(0,0,0,.5);
 }
 .camera-handle-grip{
-  width:60px;
-  height:4px;
-  background:#0e1720;
+  width:64px;
+  height:5px;
+  background:#090f15;
   border-radius:2px;
+  border:0.5px solid rgba(255,255,255,.1);
 }
 .camera-mic-mount{
-  width:8px;
-  height:8px;
+  width:9px;
+  height:9px;
   border-radius:50%;
-  background:#283a4c;
+  background:#203140;
+  border:1px solid #38516d;
   display:grid;
   place-items:center;
 }
@@ -725,41 +775,42 @@ body{
   box-shadow:0 0 6px #E64A00;
 }
 .camera-chassis{
-  width:230px;
-  background:#14202d;
-  border:1.5px solid #2d4157;
-  border-radius:10px;
-  padding:8px;
+  width:245px;
+  background:linear-gradient(145deg, #192736 0%, #101923 60%, #0c131a 100%);
+  border:1.5px solid #385069;
+  border-radius:12px;
+  padding:9px;
   display:flex;
   gap:10px;
-  box-shadow:0 12px 28px -6px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.18);
+  box-shadow:0 16px 36px -6px rgba(0,0,0,.75), inset 0 1px 0 rgba(255,255,255,.25);
   position:relative;
 }
 .camera-side-panel{
-  flex:1.2;
-  background:#0e1721;
-  border-radius:6px;
-  border:1px solid rgba(255,255,255,.08);
-  padding:6px;
+  flex:1.25;
+  background:#0a1017;
+  border-radius:7px;
+  border:1px solid rgba(255,255,255,.1);
+  padding:7px;
   display:flex;
   flex-direction:column;
   gap:6px;
+  box-shadow:inset 0 0 10px rgba(0,0,0,.8);
 }
 .camera-rec-badge{
   display:flex;
   align-items:center;
-  gap:5px;
-  font-size:9px;
+  gap:6px;
+  font-size:9.5px;
   color:#fff;
-  font-weight:800;
+  font-weight:900;
   letter-spacing:.08em;
 }
 .rec-led{
-  width:6px;
-  height:6px;
+  width:7px;
+  height:7px;
   border-radius:50%;
-  background:#E64A00;
-  box-shadow:0 0 8px #E64A00;
+  background:#ff2a00;
+  box-shadow:0 0 8px #ff2a00, 0 0 16px rgba(255,42,0,0.6);
   animation:recBlink 1.2s infinite ease-in-out;
 }
 @keyframes recBlink{
@@ -767,10 +818,10 @@ body{
   50%{opacity:.25;transform:scale(.75)}
 }
 .camera-monitor{
-  background:#080e14;
-  border-radius:4px;
-  border:1px solid #1e3042;
-  padding:4px 6px;
+  background:#05090d;
+  border-radius:5px;
+  border:1px solid #1a2a3a;
+  padding:5px 6px;
   display:flex;
   flex-direction:column;
   gap:4px;
@@ -783,21 +834,21 @@ body{
   font-weight:700;
 }
 .cam-viewfinder{
-  height:44px;
-  border:1px dashed rgba(255,255,255,.15);
-  border-radius:2px;
+  height:46px;
+  border:1px dashed rgba(255,255,255,.18);
+  border-radius:3px;
   position:relative;
   display:grid;
   place-items:center;
-  background:radial-gradient(circle, rgba(92,184,62,.06) 0%, transparent 80%);
+  background:radial-gradient(circle, rgba(92,184,62,.08) 0%, transparent 80%);
 }
 .cam-tc{
   font-family:monospace;
-  font-size:8.5px;
+  font-size:9px;
   color:#5CB83E;
-  font-weight:700;
-  letter-spacing:.05em;
-  text-shadow:0 0 6px rgba(92,184,62,.6);
+  font-weight:800;
+  letter-spacing:.06em;
+  text-shadow:0 0 8px rgba(92,184,62,.7);
 }
 .cam-vu-meters{
   display:flex;
@@ -809,12 +860,10 @@ body{
   background:linear-gradient(to right, #5CB83E 70%, #d4a017 85%, #E64A00 100%);
   border-radius:1px;
 }
-.cam-vu.ch1{width:80%}
-.cam-vu.ch2{width:65%}
+.cam-vu.ch1{width:82%}
+.cam-vu.ch2{width:68%}
 .hub-cat-card:hover .cam-vu.ch1{animation:vuPulse1 1s infinite alternate}
 .hub-cat-card:hover .cam-vu.ch2{animation:vuPulse2 0.8s infinite alternate}
-@keyframes vuPulse1{0%{width:75%} 100%{width:95%}}
-@keyframes vuPulse2{0%{width:60%} 100%{width:88%}}
 .cam-dials{
   display:flex;
   align-items:center;
@@ -823,81 +872,102 @@ body{
   color:var(--ink-2);
 }
 .cam-dial{
-  width:10px;
-  height:10px;
+  width:11px;
+  height:11px;
   border-radius:50%;
-  background:#1a2938;
-  border:1px solid #364d63;
+  background:#1a2b3d;
+  border:1px solid #3c5673;
+  box-shadow:inset 0 0 4px rgba(0,0,0,.6);
 }
 .cam-card-slot{
   font-size:6.5px;
   margin-left:auto;
-  opacity:.6;
+  opacity:.75;
+  font-weight:600;
 }
 .camera-lens-assembly{
-  flex:0.8;
+  flex:0.85;
   display:grid;
   place-items:center;
+  position:relative;
 }
 .matte-box{
-  width:78px;
-  height:78px;
-  background:#182533;
-  border:2px solid #364e66;
+  width:84px;
+  height:84px;
+  background:linear-gradient(135deg, #1e2e3e 0%, #131d27 100%);
+  border:2.5px solid #3c5775;
   border-radius:50%;
   display:grid;
   place-items:center;
-  box-shadow:inset 0 0 12px rgba(0,0,0,.7), 0 6px 16px rgba(0,0,0,.4);
+  box-shadow:inset 0 0 14px rgba(0,0,0,.8), 0 8px 20px rgba(0,0,0,.5);
   position:relative;
+}
+.matte-box-flag{
+  position:absolute;
+  top:-7px;
+  width:58px;
+  height:5px;
+  background:#091017;
+  border:0.5px solid #3c5775;
+  border-radius:2px;
+  box-shadow:0 -2px 6px rgba(0,0,0,.5);
 }
 .lens-barrel{
-  width:64px;
-  height:64px;
+  width:68px;
+  height:68px;
   border-radius:50%;
-  background:#0f1822;
-  border:1.5px solid #4a6785;
+  background:#091017;
+  border:2px solid #507194;
   display:grid;
   place-items:center;
   position:relative;
-  transition:transform 500ms ease;
+  transition:transform 600ms cubic-bezier(.16,1,.3,1);
 }
 .hub-cat-card:hover .lens-barrel{
-  transform:rotate(15deg);
+  transform:rotate(18deg);
+}
+.lens-gear-teeth{
+  position:absolute;
+  inset:-3px;
+  border:2px dashed rgba(255,255,255,.15);
+  border-radius:50%;
+  pointer-events:none;
 }
 .lens-aperture-ring{
   position:absolute;
-  font-size:6px;
+  font-size:6.5px;
   color:var(--ink-2);
-  font-weight:700;
-  letter-spacing:.02em;
+  font-weight:800;
+  letter-spacing:.03em;
   bottom:3px;
 }
 .lens-front-element{
-  width:44px;
-  height:44px;
+  width:46px;
+  height:46px;
   border-radius:50%;
-  background:radial-gradient(circle, #0e2a1d 0%, #061118 65%, #020609 100%);
+  background:radial-gradient(circle at 35% 35%, rgba(92,184,62,.45) 0%, rgba(138,43,226,.3) 45%, #02070c 85%);
   border:1px solid #5CB83E;
-  box-shadow:inset 0 0 10px rgba(92,184,62,.4), 0 0 8px rgba(92,184,62,.2);
+  box-shadow:inset 0 0 12px rgba(92,184,62,.5), 0 0 10px rgba(92,184,62,.3);
   position:relative;
   overflow:hidden;
 }
 .lens-glass-reflection{
   position:absolute;
-  top:-20%;
-  left:-20%;
-  width:140%;
-  height:140%;
-  background:linear-gradient(135deg, rgba(92,184,62,.3) 0%, transparent 40%, rgba(255,255,255,.2) 50%, transparent 60%);
+  top:-25%;
+  left:-25%;
+  width:150%;
+  height:150%;
+  background:linear-gradient(135deg, rgba(92,184,62,.35) 0%, transparent 35%, rgba(255,255,255,.25) 48%, transparent 60%);
   pointer-events:none;
 }
 .camera-base-plate{
-  width:140px;
-  height:7px;
-  background:#1b2a38;
-  border-radius:0 0 4px 4px;
-  border:1px solid #304457;
+  width:150px;
+  height:8px;
+  background:linear-gradient(to right, #1a2938 0%, #2b3e52 50%, #1a2938 100%);
+  border-radius:0 0 5px 5px;
+  border:1px solid #3b536e;
   border-top:none;
+  box-shadow:0 4px 10px rgba(0,0,0,.5);
 }
 
 /* Textos e informaciones de las categorías */
@@ -1224,16 +1294,24 @@ body{
   font-weight:600;
 }
 
-/* Tarjeta individual de tablero */
+/* Tarjeta individual de tablero (Interactiva con apertura directa) */
 .board-card{
-  background:rgba(255,255,255,.05);
-  border:1px solid var(--azul-border);
+  background:linear-gradient(145deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
+  border:1px solid rgba(255,255,255,0.09);
   border-radius:14px;
   padding:16px 18px;
   position:relative;
   display:flex;
   flex-direction:column;
   gap:10px;
+  cursor:pointer;
+  transition:transform 0.22s cubic-bezier(0.16,1,0.3,1), border-color 0.22s ease, box-shadow 0.22s ease;
+  box-shadow:0 4px 16px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.board-card:hover{
+  transform:translateY(-3px);
+  border-color:rgba(92,184,62,0.45);
+  box-shadow:0 12px 28px -6px rgba(0,0,0,0.5), 0 0 0 1px rgba(92,184,62,0.25), inset 0 1px 0 rgba(255,255,255,0.1);
 }
 .board-card.secondary{
   background:rgba(255,255,255,.025);
@@ -1605,7 +1683,221 @@ body{
   pointer-events:none;
   box-shadow:0 10px 28px rgba(0,0,0,.45);
 }
-#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+/* Bloques de Organización por Meses */
+.month-block{
+  margin-bottom:34px;
+}
+.month-header-bar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  background:linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
+  border:1px solid rgba(255,255,255,0.09);
+  border-radius:14px;
+  padding:12px 18px;
+  margin-bottom:16px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+.month-header-title{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.month-header-title svg{
+  color:var(--verde);
+  flex-shrink:0;
+}
+.month-header-title h3{
+  margin:0;
+  font-size:16.5px;
+  font-weight:700;
+  color:#fff;
+  letter-spacing:0.02em;
+}
+.month-count-pill{
+  font-size:12px;
+  font-weight:700;
+  color:var(--verde);
+  background:var(--verde-soft);
+  border:1px solid rgba(92,184,62,0.3);
+  padding:4px 12px;
+  border-radius:99px;
+  white-space:nowrap;
+}
+
+/* Botón Editar Contenido (Administrador) */
+.btn-edit-content{
+  background:rgba(92,184,62,0.12);
+  border:1px solid rgba(92,184,62,0.35);
+  color:var(--verde);
+  padding:4px 10px;
+  border-radius:8px;
+  font:inherit;
+  font-size:11px;
+  font-weight:700;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  transition:all var(--trans);
+}
+.btn-edit-content:hover{
+  background:var(--verde);
+  color:#fff;
+  border-color:var(--verde);
+}
+
+/* Modal Editor de Contenido (Administrador) */
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(10,18,26,0.85);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  z-index:300;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.modal-card{
+  background:linear-gradient(145deg, #1A2D3E 0%, #132230 100%);
+  border:1px solid rgba(255,255,255,0.15);
+  border-radius:18px;
+  width:100%;
+  max-width:580px;
+  max-height:90vh;
+  display:flex;
+  flex-direction:column;
+  box-shadow:0 24px 60px rgba(0,0,0,0.65), 0 0 0 1px rgba(92,184,62,0.15), inset 0 1px 0 rgba(255,255,255,0.12);
+  animation:modalIn 0.25s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes modalIn{
+  from{opacity:0;transform:scale(0.96) translateY(12px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
+}
+.modal-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  padding:20px 24px 16px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.modal-eyebrow{
+  font-size:10.5px;
+  font-weight:700;
+  letter-spacing:0.08em;
+  color:var(--verde);
+  text-transform:uppercase;
+  display:block;
+  margin-bottom:3px;
+}
+.modal-head h3{
+  margin:0;
+  font-size:18px;
+  font-weight:700;
+  color:#fff;
+}
+.btn-modal-close{
+  background:transparent;
+  border:0;
+  color:var(--ink-2);
+  font-size:24px;
+  line-height:1;
+  cursor:pointer;
+  padding:4px;
+  transition:color var(--trans);
+}
+.btn-modal-close:hover{color:#fff}
+.modal-body{
+  padding:20px 24px;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.form-group{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.form-row-2{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.form-group label{
+  font-size:11.5px;
+  font-weight:700;
+  letter-spacing:0.04em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.65);
+}
+.modal-input, .modal-select, .modal-textarea{
+  background:rgba(0,0,0,0.3);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:10px;
+  padding:10px 14px;
+  color:#fff;
+  font:inherit;
+  font-size:13px;
+  transition:border-color var(--trans), box-shadow var(--trans);
+  width:100%;
+}
+.modal-input:focus, .modal-select:focus, .modal-textarea:focus{
+  outline:none;
+  border-color:var(--verde);
+  box-shadow:0 0 0 3px rgba(92,184,62,0.2);
+}
+.modal-select{
+  appearance:none;
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2388A0B2' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 12px center;
+  padding-right:32px;
+}
+.modal-textarea{
+  resize:vertical;
+  min-height:75px;
+  line-height:1.45;
+}
+.modal-foot{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:10px;
+  padding:16px 24px;
+  border-top:1px solid rgba(255,255,255,0.08);
+}
+.btn-modal-sec{
+  background:rgba(255,255,255,0.06);
+  border:1px solid var(--azul-border);
+  color:var(--ink-2);
+  padding:9px 18px;
+  border-radius:10px;
+  font:inherit;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+  transition:all var(--trans);
+}
+.btn-modal-sec:hover{background:rgba(255,255,255,0.12);color:#fff}
+.btn-modal-pri{
+  background:var(--verde);
+  border:0;
+  color:#fff;
+  padding:9px 20px;
+  border-radius:10px;
+  font:inherit;
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all var(--trans);
+  box-shadow:0 4px 14px var(--verde-glow);
+}
+.btn-modal-pri:hover{filter:brightness(1.08)}
+.btn-modal-pri:disabled{opacity:0.6;cursor:not-allowed}
 
 @media(prefers-reduced-motion: reduce){
   *,::before,::after{
@@ -1720,9 +2012,8 @@ body{
         </div>
         <div class="hub-hero-tags">
           <span class="hub-tag active"><span class="live-dot"></span> Estudio en vivo</span>
-          <span class="hub-tag">Firebase Realtime Sync</span>
-          <span class="hub-tag">Gestión Multi-Cliente</span>
-          <span class="hub-tag">Pautas Cinematográficas</span>
+          <span class="hub-tag">Espacio Creativo</span>
+          <span class="hub-tag">Dirección de Arte</span>
         </div>
       </div>
 
@@ -1886,16 +2177,16 @@ body{
 
             <div class="hub-cat-metrics">
               <div class="hub-metric-pill">
-                <span class="v" id="hubProdTotal">3</span>
+                <span class="v" id="hubProdTotal">0</span>
                 <span class="l">Pautas</span>
               </div>
               <div class="hub-metric-pill ok">
-                <span class="v">En vivo</span>
-                <span class="l">Sincronización</span>
+                <span class="v">Activo</span>
+                <span class="l">Rodajes al día</span>
               </div>
               <div class="hub-metric-pill">
-                <span class="v">Offline</span>
-                <span class="l">Soporte PWA</span>
+                <span class="v">4K Cine</span>
+                <span class="l">Calidad final</span>
               </div>
             </div>
           </div>
@@ -2009,6 +2300,65 @@ body{
 </div>
 
 <div id="toast"></div>
+
+<!-- Modal Editor de Contenido (Administrador) -->
+<div id="modalEditContent" class="modal-overlay" style="display:none;" aria-hidden="true" role="dialog">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div>
+        <span class="modal-eyebrow">ADMINISTRACIÓN CREATIVA</span>
+        <h3 id="editModalHeading">Editar Contenido</h3>
+      </div>
+      <button class="btn-modal-close" id="btnCloseEditModal" aria-label="Cerrar modal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="editItemTitulo">Título de la pieza</label>
+        <input type="text" id="editItemTitulo" class="modal-input" placeholder="Título o idea principal">
+      </div>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="editItemFormato">Formato</label>
+          <select id="editItemFormato" class="modal-select">
+            <option value="Reel">Reel</option>
+            <option value="Carrusel">Carrusel</option>
+            <option value="Estático">Estático</option>
+            <option value="Historia">Historia</option>
+            <option value="Video">Video</option>
+            <option value="TikTok">TikTok</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="editItemPilar">Pilar de contenido</label>
+          <input type="text" id="editItemPilar" class="modal-input" placeholder="Ej: Educativo, Promocional, Autoridad">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="editItemFecha">Fecha programada</label>
+        <input type="text" id="editItemFecha" class="modal-input" placeholder="Ej: 15 de Octubre 2026">
+      </div>
+      <div class="form-group">
+        <label for="editItemGuion">Guion / Descripción visual</label>
+        <textarea id="editItemGuion" class="modal-textarea" rows="4" placeholder="Acción en cámara, texto en pantalla, audio…"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="editItemCopy">Copy (Texto de la publicación)</label>
+        <textarea id="editItemCopy" class="modal-textarea" rows="4" placeholder="Texto que acompaña al post…"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="editItemHashtags">Hashtags</label>
+        <input type="text" id="editItemHashtags" class="modal-input" placeholder="#marca #campaña">
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-modal-sec" id="btnCancelEditModal">Cancelar</button>
+      <button class="btn-modal-pri" id="btnSaveEditModal">
+        <span>Guardar cambios</span>
+      </button>
+    </div>
+  </div>
+</div>
 
 <!-- Firebase SDK compat -->
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
@@ -2242,6 +2592,56 @@ body{
     var meses = {enero:1, febrero:2, marzo:3, abril:4, mayo:5, junio:6, julio:7, agosto:8, septiembre:9, octubre:10, noviembre:11, diciembre:12};
     var k = String(mStr||'').toLowerCase().trim();
     return meses[k] || 0;
+  }
+
+  function getBoardMonthKey(t){
+    var m = (t.mes || '').trim();
+    var y = (t.anio || '').trim();
+    if (!m && !y) {
+      var d = new Date(t.ultimaRevision || t.registrado || 0);
+      if (!isNaN(d.getTime()) && d.getFullYear() > 2000) {
+        var monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+        m = monthNames[d.getMonth()];
+        y = String(d.getFullYear());
+      } else {
+        m = 'General';
+        y = '';
+      }
+    }
+    if (m) m = m.charAt(0).toUpperCase() + m.slice(1).toLowerCase();
+    var score = (parseInt(y, 10) || 2026) * 100 + parseMonthNum(m);
+    return {
+      key: (m + (y ? ' ' + y : '')).trim(),
+      mes: m,
+      anio: y,
+      score: score
+    };
+  }
+
+  function getProdMonthKey(p){
+    var str = String(p.fecha || p.actualizado || p.registrado || '').trim();
+    var monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    var m = '', y = '';
+    var d = new Date(str);
+    if (!isNaN(d.getTime()) && d.getFullYear() > 2000) {
+      m = monthNames[d.getMonth()];
+      y = String(d.getFullYear());
+    } else {
+      var match = str.match(/(\d{4})[-/](\d{1,2})/);
+      if (match) {
+        y = match[1];
+        var mi = parseInt(match[2], 10) - 1;
+        if (mi >= 0 && mi < 12) m = monthNames[mi];
+      }
+    }
+    if (!m) { m = 'Reciente'; y = ''; }
+    var score = (parseInt(y, 10) || 2026) * 100 + parseMonthNum(m);
+    return {
+      key: (m + (y ? ' ' + y : '')).trim(),
+      mes: m,
+      anio: y,
+      score: score
+    };
   }
 
   function renderSkeleton(){
@@ -2697,6 +3097,14 @@ body{
           }
         }
 
+        var editBtn = '<button class="btn-edit-content" data-id="' + escapeAttr(t.id) + '" data-n="' + it.n + '" title="Editar contenido como administrador">' +
+          '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
+            '<path d="M12 20h9"></path>' +
+            '<path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>' +
+          '</svg>' +
+          '<span>Editar</span>' +
+        '</button>';
+
         listHtml += '<article class="detail-card" data-state="' + escapeAttr(it.estado || 'pendiente') + '">' +
           '<div class="detail-card-head">' +
             '<div>' +
@@ -2706,7 +3114,7 @@ body{
               '</div>' +
               '<div class="detail-tags">' + fmtBadge + origFmtBadge + pilarBadge + dateBadge + revBadge + '</div>' +
             '</div>' +
-            '<div>' + stBadge + '</div>' +
+            '<div style="display:flex;align-items:center;gap:8px;">' + stBadge + editBtn + '</div>' +
           '</div>' +
           fbHtml +
           guionHtml +
@@ -2726,6 +3134,16 @@ body{
         var f = b.getAttribute('data-filter');
         detailFilterState[t.id] = f;
         renderBoardDetail(t.id);
+      };
+    });
+
+    var editBtns = wrap.querySelectorAll('.btn-edit-content');
+    editBtns.forEach(function(eb){
+      eb.onclick = function(e){
+        e.stopPropagation();
+        var tId = eb.getAttribute('data-id');
+        var itemN = parseInt(eb.getAttribute('data-n'), 10);
+        openEditModal(tId, itemN);
       };
     });
 
@@ -2776,7 +3194,7 @@ body{
     var detailBtn = '<button class="btn-card sec btn-toggle-detail" data-id="' + escapeAttr(t.id) + '">Detalle</button>';
 
     return '' +
-      '<div class="board-card ' + (isSecondary ? 'secondary' : '') + '">' +
+      '<div class="board-card ' + (isSecondary ? 'secondary' : '') + '" data-board-url="' + escapeAttr(t.url || '') + '" title="' + (t.url ? 'Clic para abrir tablero directamente' : '') + '">' +
         '<div class="card-top">' +
           '<div>' +
             '<div class="card-period">' + escapeHtml(t.mes || 'Periodo') + ' ' + escapeHtml(t.anio || '') + '</div>' +
@@ -2833,8 +3251,8 @@ body{
     if (!filtered.length) {
       dashContent.innerHTML =
         '<div class="state-message">' +
-          '<h3>No hay tableros con estos filtros</h3>' +
-          '<p>Intenta cambiar el término de búsqueda o restablecer los filtros seleccionados.</p>' +
+          '<h3>No hay tableros para esta búsqueda</h3>' +
+          '<p>Prueba con otro filtro o término de búsqueda.</p>' +
           '<button class="btn-reset-filters" id="btnResetFilters">Limpiar filtros</button>' +
         '</div>';
       var rBtn = document.getElementById('btnResetFilters');
@@ -2853,82 +3271,108 @@ body{
       return;
     }
 
-    // Agrupar por cliente
-    var groups = {};
+    // Agrupar tableros por Mes y Año
+    var monthGroups = {};
     filtered.forEach(function(t){
-      var cName = String(t.cliente || 'Sin cliente').trim();
-      if (!groups[cName]) groups[cName] = [];
-      groups[cName].push(t);
+      var info = getBoardMonthKey(t);
+      if (!monthGroups[info.key]) {
+        monthGroups[info.key] = {
+          key: info.key,
+          score: info.score,
+          items: []
+        };
+      }
+      monthGroups[info.key].items.push(t);
     });
 
-    // Ordenar clientes según sOrder
-    var clientKeys = Object.keys(groups);
+    var monthKeys = Object.keys(monthGroups);
+    monthKeys.sort(function(a, b){
+      return monthGroups[b].score - monthGroups[a].score;
+    });
 
-    if (sOrder === 'az') {
-      clientKeys.sort(function(a, b){ return a.localeCompare(b); });
-    } else if (sOrder === 'pending') {
-      clientKeys.sort(function(a, b){
-        var pendA = groups[a].reduce(function(acc, x){ return acc + (+x.pendientes || 0); }, 0);
-        var pendB = groups[b].reduce(function(acc, x){ return acc + (+x.pendientes || 0); }, 0);
-        return pendB - pendA;
-      });
-    } else {
-      // 'recent'
-      clientKeys.sort(function(a, b){
-        var getLatest = function(arr){
-          return Math.max.apply(null, arr.map(function(t){
-            return new Date(t.ultimaRevision || t.registrado || 0).getTime() || 0;
-          }));
-        };
-        return getLatest(groups[b]) - getLatest(groups[a]);
-      });
-    }
+    var html = '';
+    monthKeys.forEach(function(mKey){
+      var mGroup = monthGroups[mKey];
+      var mItems = mGroup.items;
 
-    var html = '<div class="clients-grid">';
-
-    clientKeys.forEach(function(cName){
-      var list = groups[cName];
-      list.sort(function(t1, t2){
-        var y1 = parseInt(t1.anio) || 0, y2 = parseInt(t2.anio) || 0;
-        if (y1 !== y2) return y2 - y1;
-        var m1 = parseMonthNum(t1.mes), m2 = parseMonthNum(t2.mes);
-        if (m1 !== m2) return m2 - m1;
-        var d1 = new Date(t1.ultimaRevision || t1.registrado || 0).getTime();
-        var d2 = new Date(t2.ultimaRevision || t2.registrado || 0).getTime();
-        return d2 - d1;
+      var clientGroups = {};
+      mItems.forEach(function(t){
+        var cName = String(t.cliente || 'Sin cliente').trim();
+        if (!clientGroups[cName]) clientGroups[cName] = [];
+        clientGroups[cName].push(t);
       });
 
-      var mainTab = list[0];
-      var historyTabs = list.slice(1);
-
-      html += '<section class="client-section">' +
-        '<div class="client-header">' +
-          '<div class="client-name">' + escapeHtml(cName) + '</div>' +
-          '<div class="client-count">' + list.length + (list.length === 1 ? ' tablero' : ' tableros') + '</div>' +
-        '</div>';
-
-      html += getCardHtml(mainTab, false);
-
-      if (historyTabs.length > 0) {
-        html += '<details class="history-details">' +
-          '<summary class="history-summary">▸ Historial (' + historyTabs.length + ' meses anteriores)</summary>' +
-          '<div class="history-cards">';
-        historyTabs.forEach(function(hTab){
-          html += getCardHtml(hTab, true);
+      var clientKeys = Object.keys(clientGroups);
+      if (sOrder === 'az') {
+        clientKeys.sort(function(a, b){ return a.localeCompare(b); });
+      } else if (sOrder === 'pending') {
+        clientKeys.sort(function(a, b){
+          var pendA = clientGroups[a].reduce(function(acc, x){ return acc + (+x.pendientes || 0); }, 0);
+          var pendB = clientGroups[b].reduce(function(acc, x){ return acc + (+x.pendientes || 0); }, 0);
+          return pendB - pendA;
         });
-        html += '</div></details>';
+      } else {
+        clientKeys.sort(function(a, b){
+          var getLatest = function(arr){
+            return Math.max.apply(null, arr.map(function(t){
+              return new Date(t.ultimaRevision || t.registrado || 0).getTime() || 0;
+            }));
+          };
+          return getLatest(clientGroups[b]) - getLatest(clientGroups[a]);
+        });
       }
 
-      html += '</section>';
+      html += '<div class="month-block">' +
+        '<div class="month-header-bar">' +
+          '<div class="month-header-title">' +
+            '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
+              '<rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>' +
+              '<line x1="16" y1="2" x2="16" y2="6"></line>' +
+              '<line x1="8" y1="2" x2="8" y2="6"></line>' +
+              '<line x1="3" y1="10" x2="21" y2="10"></line>' +
+            '</svg>' +
+            '<h3>' + escapeHtml(mKey) + '</h3>' +
+          '</div>' +
+          '<span class="month-count-pill">' + mItems.length + (mItems.length === 1 ? ' tablero' : ' tableros') + '</span>' +
+        '</div>' +
+        '<div class="clients-grid">';
+
+      clientKeys.forEach(function(cName){
+        var list = clientGroups[cName];
+        var mainTab = list[0];
+        var historyTabs = list.slice(1);
+
+        html += '<section class="client-section">' +
+          '<div class="client-header">' +
+            '<div class="client-name">' + escapeHtml(cName) + '</div>' +
+            '<div class="client-count">' + list.length + (list.length === 1 ? ' tablero' : ' tableros') + '</div>' +
+          '</div>';
+
+        html += getCardHtml(mainTab, false);
+
+        if (historyTabs.length > 0) {
+          html += '<details class="history-details">' +
+            '<summary class="history-summary">▸ Historial (' + historyTabs.length + ' adicionales)</summary>' +
+            '<div class="history-cards">';
+          historyTabs.forEach(function(hTab){
+            html += getCardHtml(hTab, true);
+          });
+          html += '</div></details>';
+        }
+
+        html += '</section>';
+      });
+
+      html += '</div></div>';
     });
 
-    html += '</div>';
     dashContent.innerHTML = html;
 
     // Delegar eventos de copiar
     var copyBtns = dashContent.querySelectorAll('.btn-copy-url');
     copyBtns.forEach(function(btn){
-      btn.onclick = function(){
+      btn.onclick = function(e){
+        e.stopPropagation();
         copyLink(btn.getAttribute('data-url'));
       };
     });
@@ -2936,9 +3380,28 @@ body{
     // Delegar eventos de toggle detalle
     var detailBtns = dashContent.querySelectorAll('.btn-toggle-detail');
     detailBtns.forEach(function(btn){
-      btn.onclick = function(){
+      btn.onclick = function(e){
+        e.stopPropagation();
         var tId = btn.getAttribute('data-id');
         toggleBoardDetail(tId, btn);
+      };
+    });
+
+    // Evento de apertura directa al hacer click en la tarjeta del tablero
+    dashContent.querySelectorAll('.board-card').forEach(function(card){
+      card.onclick = function(e){
+        if (e.target.closest('.card-actions') || 
+            e.target.closest('.board-detail-wrap') || 
+            e.target.closest('button') || 
+            e.target.closest('a') ||
+            e.target.closest('input') ||
+            e.target.closest('textarea')) {
+          return;
+        }
+        var u = card.getAttribute('data-board-url');
+        if (u) {
+          window.open(u, '_blank');
+        }
       };
     });
   }
@@ -3059,7 +3522,7 @@ body{
           '<div class="client-name">' + escapeHtml(p.cliente || 'Producción') + '</div>' +
           '<div class="client-count">' + tot + (tot === 1 ? ' contenido' : ' contenidos') + '</div>' +
         '</div>' +
-        '<div class="board-card">' +
+        '<div class="board-card" data-board-url="' + escapeAttr(url) + '" title="' + (url ? 'Clic para abrir pauta directamente' : '') + '">' +
           '<div class="card-top">' +
             '<div>' +
               '<div class="card-period">' + escapeHtml(p.fecha || 'Sin fecha') + '</div>' +
@@ -3097,8 +3560,8 @@ body{
       if (prodToolbar) prodToolbar.style.display = 'none';
       prodContent.innerHTML =
         '<div class="state-message">' +
-          '<h3>No hay pautas de producción</h3>' +
-          '<p>Los tableros de producción registrados aparecerán aquí en vivo.</p>' +
+          '<h3>No hay pautas de rodaje registradas</h3>' +
+          '<p>Aquí verás tus pautas de producción organizadas por meses.</p>' +
         '</div>';
       return;
     }
@@ -3124,23 +3587,83 @@ body{
     if (!list.length) {
       prodContent.innerHTML =
         '<div class="state-message">' +
-          '<h3>No hay pautas con ese criterio</h3>' +
+          '<h3>No encontramos pautas que coincidan</h3>' +
           '<p>Intenta con otro término de búsqueda.</p>' +
         '</div>';
       return;
     }
 
-    var html = '<div class="clients-grid">';
+    // Agrupar pautas por Mes
+    var prodMonthGroups = {};
     list.forEach(function(p){
-      html += getProdCardHtml(p);
+      var info = getProdMonthKey(p);
+      if (!prodMonthGroups[info.key]) {
+        prodMonthGroups[info.key] = {
+          key: info.key,
+          score: info.score,
+          items: []
+        };
+      }
+      prodMonthGroups[info.key].items.push(p);
     });
-    html += '</div>';
+
+    var pMonthKeys = Object.keys(prodMonthGroups);
+    pMonthKeys.sort(function(a, b){
+      return prodMonthGroups[b].score - prodMonthGroups[a].score;
+    });
+
+    var html = '';
+    pMonthKeys.forEach(function(mKey){
+      var mGroup = prodMonthGroups[mKey];
+      var mItems = mGroup.items;
+
+      html += '<div class="month-block">' +
+        '<div class="month-header-bar">' +
+          '<div class="month-header-title">' +
+            '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
+              '<rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>' +
+              '<line x1="7" y1="2" x2="7" y2="22"></line>' +
+              '<line x1="17" y1="2" x2="17" y2="22"></line>' +
+              '<line x1="2" y1="12" x2="22" y2="12"></line>' +
+              '<line x1="2" y1="7" x2="7" y2="7"></line>' +
+              '<line x1="2" y1="17" x2="7" y2="17"></line>' +
+              '<line x1="17" y1="17" x2="22" y2="17"></line>' +
+              '<line x1="17" y1="7" x2="22" y2="7"></line>' +
+            '</svg>' +
+            '<h3>' + escapeHtml(mKey) + '</h3>' +
+          '</div>' +
+          '<span class="month-count-pill">' + mItems.length + (mItems.length === 1 ? ' pauta' : ' pautas') + '</span>' +
+        '</div>' +
+        '<div class="clients-grid">';
+
+      mItems.forEach(function(p){
+        html += getProdCardHtml(p);
+      });
+
+      html += '</div></div>';
+    });
+
     prodContent.innerHTML = html;
 
     var copyBtns = prodContent.querySelectorAll('.btn-copy-url');
     copyBtns.forEach(function(btn){
-      btn.onclick = function(){
+      btn.onclick = function(e){
+        e.stopPropagation();
         copyLink(btn.getAttribute('data-url'));
+      };
+    });
+
+    prodContent.querySelectorAll('.board-card').forEach(function(card){
+      card.onclick = function(e){
+        if (e.target.closest('.card-actions') || 
+            e.target.closest('button') || 
+            e.target.closest('a')) {
+          return;
+        }
+        var u = card.getAttribute('data-board-url');
+        if (u) {
+          window.open(u, '_blank');
+        }
       };
     });
   }
@@ -3177,8 +3700,8 @@ body{
         toolbar.style.display = 'none';
         dashContent.innerHTML =
           '<div class="state-message">' +
-            '<h3>No hay tableros registrados</h3>' +
-            '<p>Los tableros publicados aparecerán aquí automáticamente.</p>' +
+            '<h3>Aún no tienes tableros aquí</h3>' +
+            '<p>Cuando crees uno nuevo, aparecerá listo para revisar y organizado por meses.</p>' +
           '</div>';
       } else {
         updateGlobalMetrics(allTableros);
@@ -3190,7 +3713,7 @@ body{
         updateChipsUI();
         applyFiltersAndRender();
       }
-      if (isManualRefresh && (activeTab === 'aprobaciones' || activeTab === 'hub')) toast('Datos actualizados en tiempo real ✓');
+      if (isManualRefresh && (activeTab === 'aprobaciones' || activeTab === 'hub')) toast('Tableros actualizados ✓');
     }, function(err){
       if (btnRef) btnRef.disabled = false;
       console.error('Error sincronizando tableros:', err);
@@ -3207,7 +3730,7 @@ body{
       });
       allProduccion = docs;
       renderProduccionCards();
-      if (isManualRefresh && activeTab === 'produccion') toast('Pautas actualizadas en tiempo real ✓');
+      if (isManualRefresh && activeTab === 'produccion') toast('Pautas al día ✓');
     }, function(err){
       if (btnRef) btnRef.disabled = false;
       console.error('Error sincronizando producción:', err);
@@ -3217,7 +3740,7 @@ body{
   function tryLogin(){
     var v = claveInp.value.trim();
     if (!v) { errEl.textContent = 'Escribe la clave de acceso.'; return; }
-    errEl.textContent = 'Verificando…';
+    errEl.textContent = 'Ingresando…';
     document.getElementById('btnGo').disabled = true;
 
     var email = (v.indexOf('@') > 0) ? v : 'carlosuzc29@gmail.com';
@@ -3227,7 +3750,7 @@ body{
       .then(function(){
         document.getElementById('btnGo').disabled = false;
         hideLogin();
-        toast('Bienvenido al Banco de trabajo');
+        toast('Bienvenido al Espacio Creativo');
       })
       .catch(function(err){
         document.getElementById('btnGo').disabled = false;
@@ -3372,6 +3895,127 @@ body{
     updateChipsUI();
     saveFiltersToStorage();
     applyFiltersAndRender();
+  });
+
+  // — 10. Controlador del Modal Editor de Contenido (Administrador) —
+  var editingBoardId = null;
+  var editingItemN = null;
+
+  var modalEditContent = document.getElementById('modalEditContent');
+  var editModalHeading = document.getElementById('editModalHeading');
+  var btnCloseEditModal = document.getElementById('btnCloseEditModal');
+  var btnCancelEditModal = document.getElementById('btnCancelEditModal');
+  var btnSaveEditModal = document.getElementById('btnSaveEditModal');
+
+  var editItemTitulo = document.getElementById('editItemTitulo');
+  var editItemFormato = document.getElementById('editItemFormato');
+  var editItemPilar = document.getElementById('editItemPilar');
+  var editItemFecha = document.getElementById('editItemFecha');
+  var editItemGuion = document.getElementById('editItemGuion');
+  var editItemCopy = document.getElementById('editItemCopy');
+  var editItemHashtags = document.getElementById('editItemHashtags');
+
+  function openEditModal(tId, itemN){
+    var t = allTableros.find(function(x){ return x.id === tId; });
+    if (!t) return;
+    var bData = boardCache[tId];
+    var items = getMergedItems(t, bData);
+    var it = items.find(function(x){ return x.n === itemN; }) || items[itemN - 1];
+    if (!it) return;
+
+    editingBoardId = tId;
+    editingItemN = itemN;
+
+    if (editModalHeading) {
+      editModalHeading.textContent = 'Editar Contenido #' + (itemN < 10 ? '0' : '') + itemN + ' · ' + (t.cliente || '');
+    }
+    if (editItemTitulo) editItemTitulo.value = it.titulo || '';
+    if (editItemFormato) editItemFormato.value = it.formato || 'Reel';
+    if (editItemPilar) editItemPilar.value = it.pilar || '';
+    if (editItemFecha) editItemFecha.value = it.fechaPublicacion || '';
+    if (editItemGuion) editItemGuion.value = it.guion || '';
+    if (editItemCopy) editItemCopy.value = it.copy || '';
+    if (editItemHashtags) editItemHashtags.value = it.hashtags || '';
+
+    if (modalEditContent) {
+      modalEditContent.style.display = 'flex';
+      modalEditContent.setAttribute('aria-hidden', 'false');
+      if (editItemTitulo) editItemTitulo.focus();
+    }
+  }
+
+  function closeEditModal(){
+    if (modalEditContent) {
+      modalEditContent.style.display = 'none';
+      modalEditContent.setAttribute('aria-hidden', 'true');
+    }
+    editingBoardId = null;
+    editingItemN = null;
+  }
+
+  function saveEditContent(){
+    if (!editingBoardId || !editingItemN) return;
+    var t = allTableros.find(function(x){ return x.id === editingBoardId; });
+    if (!t) return;
+    var bData = boardCache[editingBoardId];
+    var items = getMergedItems(t, bData);
+
+    var idx = items.findIndex(function(x){ return x.n === editingItemN; });
+    if (idx === -1) idx = editingItemN - 1;
+    if (idx < 0 || idx >= items.length) return;
+
+    items[idx].titulo = editItemTitulo ? editItemTitulo.value.trim() : items[idx].titulo;
+    items[idx].formato = editItemFormato ? editItemFormato.value : items[idx].formato;
+    items[idx].pilar = editItemPilar ? editItemPilar.value.trim() : items[idx].pilar;
+    items[idx].fechaPublicacion = editItemFecha ? editItemFecha.value.trim() : items[idx].fechaPublicacion;
+    items[idx].guion = editItemGuion ? editItemGuion.value.trim() : items[idx].guion;
+    items[idx].copy = editItemCopy ? editItemCopy.value.trim() : items[idx].copy;
+    items[idx].hashtags = editItemHashtags ? editItemHashtags.value.trim() : items[idx].hashtags;
+
+    if (btnSaveEditModal) {
+      btnSaveEditModal.disabled = true;
+      btnSaveEditModal.textContent = 'Guardando…';
+    }
+
+    db.collection('tableros').doc(t.id).set({
+      contenidos: items,
+      actualizado: new Date().toISOString()
+    }, { merge: true })
+    .then(function(){
+      t.contenidos = items;
+      if (boardCache[t.id]) {
+        boardCache[t.id].contenidos = items;
+      }
+      if (btnSaveEditModal) {
+        btnSaveEditModal.disabled = false;
+        btnSaveEditModal.textContent = 'Guardar cambios';
+      }
+      closeEditModal();
+      toast('✓ Contenido actualizado con éxito');
+      renderBoardDetail(t.id);
+    })
+    .catch(function(err){
+      console.error('Error al guardar contenido en Firestore:', err);
+      if (btnSaveEditModal) {
+        btnSaveEditModal.disabled = false;
+        btnSaveEditModal.textContent = 'Guardar cambios';
+      }
+      toast('Error al guardar los cambios');
+    });
+  }
+
+  if (btnCloseEditModal) btnCloseEditModal.onclick = closeEditModal;
+  if (btnCancelEditModal) btnCancelEditModal.onclick = closeEditModal;
+  if (btnSaveEditModal) btnSaveEditModal.onclick = saveEditContent;
+  if (modalEditContent) {
+    modalEditContent.onclick = function(e){
+      if (e.target === modalEditContent) closeEditModal();
+    };
+  }
+  window.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && modalEditContent && modalEditContent.style.display === 'flex') {
+      closeEditModal();
+    }
   });
 
 })();

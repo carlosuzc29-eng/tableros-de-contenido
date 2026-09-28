@@ -4612,6 +4612,15 @@ body{
     };
   }
 
+  function resolveOpenUrl(u){
+    if (!u) return '';
+    if (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      var fn = u.split('/').pop();
+      if (fn && fn.indexOf('.html') !== -1) return './' + fn;
+    }
+    return u;
+  }
+
   function getCardHtml(t, isSecondary){
     var st = calcEstado(t);
     var tot = +t.total || 0;
@@ -4632,7 +4641,8 @@ body{
       revHtml = '<span>Sin revisiones registradas</span>';
     }
 
-    var openBtn = t.url ? '<a href="' + escapeAttr(t.url) + '" target="_blank" rel="noopener" class="btn-card pri">Abrir ↗</a>' : '';
+    var targetOpenUrl = resolveOpenUrl(t.url);
+    var openBtn = targetOpenUrl ? '<a href="' + escapeAttr(targetOpenUrl) + '" target="_blank" rel="noopener" class="btn-card pri">Abrir ↗</a>' : '';
     var copyBtn = t.url ? '<button class="btn-card sec btn-copy-url" data-url="' + escapeAttr(t.url) + '">Copiar</button>' : '';
     var detailBtn = '<button class="btn-card sec btn-toggle-detail" data-id="' + escapeAttr(t.id) + '">Detalle</button>';
 
@@ -4843,7 +4853,7 @@ body{
         }
         var u = card.getAttribute('data-board-url');
         if (u) {
-          window.open(u, '_blank');
+          window.open(resolveOpenUrl(u), '_blank');
         }
       };
     });

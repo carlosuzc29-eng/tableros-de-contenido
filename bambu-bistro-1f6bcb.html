@@ -1538,7 +1538,7 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
     paintFmt();
     if (it.pilar) tags.appendChild(el('span', 'tag', it.pilar));
     if (it.fechaPublicacion) tags.appendChild(el('span', 'tag date', '📅 ' + it.fechaPublicacion));
-    tw.appendChild(tags); tw.appendChild(el('h2', null, it.titulo || 'Contenido ' + num));
+    tw.appendChild(tags); var h2Title = el('h2', null, it.titulo || 'Contenido ' + num); tw.appendChild(h2Title);
     top.appendChild(tw);
     var badge = el('span', 'badge', LBL[it.estado]); top.appendChild(badge);
     card.appendChild(top);
@@ -1705,7 +1705,17 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
     card.__commitDraftComment = addCommentFromInput;
 
     paint();
-    cards.push({card: card, nav: a, it: it, commitComment: addCommentFromInput, renderThread: renderThread});
+    cards.push({
+      card: card,
+      nav: a,
+      it: it,
+      commitComment: addCommentFromInput,
+      renderThread: renderThread,
+      paint: paint,
+      paintFmt: paintFmt,
+      fs: fs,
+      h2Title: h2Title
+    });
   });
 
   function counts(){ var o = {aprobado:0, cambios:0, pendiente:0}; items.forEach(function(it){ o[it.estado]++; }); return o; }
@@ -1814,9 +1824,105 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
   var SEND = !!(FB && FB.projectId);
   if (SEND) { document.body.classList.add('has-send'); $('dl').textContent = 'Enviar revisión ✓'; }
 
-  // Autorregistro silencioso en Firestore al abrir por primera vez
-  if (DATA.firebase && DATA.id && FB && FB.projectId && FB.apiKey) {
-    (function autoRegisterBoard(){
+  function unpackFsValue(v){
+    if (!v || typeof v !== 'object') return v;
+    if ('stringValue' in v) return v.stringValue;
+    if ('integerValue' in v) return parseInt(v.integerValue, 10);
+    if ('booleanValue' in v) return v.booleanValue;
+    if ('mapValue' in v) {
+      var m = {};
+      var mFields = (v.mapValue && v.mapValue.fields) || {};
+      for (var k in mFields) m[k] = unpackFsValue(mFields[k]);
+      return m;
+    }
+    if ('arrayValue' in v) {
+      var arr = (v.arrayValue && v.arrayValue.values) || [];
+      return arr.map(unpackFsValue);
+    }
+    return v;
+  }
+
+  function syncBoardWithFirestore(doc){
+    if (!doc || !doc.fields) return;
+    var f = {};
+    for (var k in doc.fields) f[k] = unpackFsValue(doc.fields[k]);
+
+    var fsContenidos = Array.isArray(f.contenidos) ? f.contenidos : [];
+    var revPor = f.revisadoPor || '';
+    var revFecha = f.ultimaRevision || '';
+
+    var hasReview = (f.aprobados > 0 || f.cambios > 0 || revPor || revFecha || (f.estado && f.estado !== 'Sin revisar') || fsContenidos.length > 0);
+    if (!hasReview) return;
+
+    if (revPor) {
+      DATA.revision.revisadoPor = revPor;
+      setReviewerName(revPor);
+    }
+    if (revFecha) {
+      DATA.revision.fecha = revFecha;
+      var d = new Date(revFecha);
+      if (!isNaN(d.getTime())) {
+        var revBanner = $('reviewed');
+        if (revBanner) {
+          revBanner.textContent = '✓ Revisado por ' + (revPor || 'el cliente') + ' el ' + d.toLocaleDateString('es-VE', {day:'2-digit', month:'long', year:'numeric'}) + ' a las ' + d.toLocaleTimeString('es-VE', {hour:'2-digit', minute:'2-digit'});
+          revBanner.classList.add('show');
+        }
+      }
+    }
+
+    if (fsContenidos.length > 0) {
+      cards.forEach(function(cObj, idx){
+        var it = cObj.it;
+        var n = idx + 1;
+        var fsItem = fsContenidos.find(function(x){
+          return (+x.n === n) || (x.id && x.id === it.id) || (x.titulo && x.titulo === it.titulo);
+        });
+
+        if (fsItem) {
+          if (fsItem.estado && ['aprobado', 'cambios', 'pendiente'].indexOf(fsItem.estado) >= 0) {
+            it.estado = fsItem.estado;
+          }
+          if (fsItem.comentario != null) {
+            it.comentario = fsItem.comentario;
+          }
+          if (fsItem.formato) {
+            it.formato = fsItem.formato;
+            if (cObj.fs) {
+              cObj.fs.value = fsItem.formato;
+              if (cObj.paintFmt) cObj.paintFmt();
+            }
+          }
+          if (fsItem.formatoOriginal) {
+            it.formatoOriginal = fsItem.formatoOriginal;
+          }
+          if (fsItem.revisadoPor) {
+            it.revisadoPor = fsItem.revisadoPor;
+          }
+          if (fsItem.titulo) {
+            it.titulo = fsItem.titulo;
+            if (cObj.h2Title) cObj.h2Title.textContent = fsItem.titulo;
+          }
+
+          if (it.comentario) {
+            it.comentarios = parseComentarios(it.comentario, it.revisadoPor || revPor || 'Cliente');
+          } else {
+            it.comentarios = [];
+          }
+
+          if (cObj.renderThread) cObj.renderThread();
+          if (cObj.paint) cObj.paint();
+        }
+      });
+
+      refresh();
+      applyFilter();
+      saveDraft();
+    }
+  }
+
+  // Sincronización en vivo y autorregistro silencioso en Firestore
+  if ((DATA.firebase || FB) && DATA.id && FB && FB.projectId && FB.apiKey) {
+    (function syncAndRegisterBoard(){
       try {
         var checkUrl = 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(FB.projectId) +
           '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
@@ -1824,7 +1930,11 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
 
         fetch(checkUrl)
           .then(function(res){
-            if (res.status === 404) {
+            if (res.status === 200) {
+              return res.json().then(function(doc){
+                syncBoardWithFirestore(doc);
+              });
+            } else if (res.status === 404) {
               var nowIso = new Date().toISOString();
               var initialFields = {
                 id: { stringValue: String(DATA.id) },

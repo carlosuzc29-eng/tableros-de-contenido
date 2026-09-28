@@ -67,15 +67,26 @@ def registrar_en_firestore(cfg, data, total_contenidos):
 
         # Verificar si el documento ya existe
         doc_existe = False
+        doc_fields = {}
         try:
             get_req = urllib.request.Request(f"{doc_url}?key={fb['apiKey']}")
-            urllib.request.urlopen(get_req, timeout=15)
-            doc_existe = True
+            with urllib.request.urlopen(get_req, timeout=15) as g_res:
+                doc_obj = json.loads(g_res.read().decode())
+                doc_fields = doc_obj.get('fields', {})
+                doc_existe = True
         except Exception:
             pass
 
         now_iso = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
-        es_reinicio = not data.get('revision', {}).get('fecha') or not doc_existe
+        tiene_revision_previa = bool(
+            doc_fields.get('revisadoPor', {}).get('stringValue') or
+            doc_fields.get('ultimaRevision', {}).get('stringValue') or
+            int(doc_fields.get('aprobados', {}).get('integerValue', '0')) > 0 or
+            int(doc_fields.get('cambios', {}).get('integerValue', '0')) > 0 or
+            len(doc_fields.get('contenidos', {}).get('arrayValue', {}).get('values', [])) > 0
+        )
+
+        es_reinicio = ('--reiniciar' in sys.argv) or (not doc_existe and not data.get('revision', {}).get('fecha'))
 
         fields = {
             'id': {'stringValue': data['id']},
@@ -97,6 +108,8 @@ def registrar_en_firestore(cfg, data, total_contenidos):
                 'registrado': {'stringValue': now_iso},
                 'contenidos': {'arrayValue': {}}
             })
+        elif tiene_revision_previa:
+            print(f"  ℹ Conservando revisión existente en Firestore ({doc_fields.get('aprobados',{}).get('integerValue','0')} ok, {doc_fields.get('cambios',{}).get('integerValue','0')} cambios)")
 
         mask_params = '&'.join([f"updateMask.fieldPaths={k}" for k in fields.keys()])
         patch_url = f"{doc_url}?{mask_params}&key={fb['apiKey']}"

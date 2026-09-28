@@ -49,16 +49,17 @@ def enlace_previo(ruta, cliente):
 def registrar_en_firestore(cfg, data, total_contenidos):
     fb = cfg.get('firebase', {})
     if not (fb.get('apiKey') and fb.get('projectId') and fb.get('email') and fb.get('password')):
+        print('  Se registrará solo al abrirlo por primera vez')
         return
     try:
         # Autenticar en Firebase Auth con las credenciales privadas
         auth_url = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={fb['apiKey']}"
         auth_payload = json.dumps({'email': fb['email'], 'password': fb['password'], 'returnSecureToken': True}).encode()
         auth_req = urllib.request.Request(auth_url, data=auth_payload, headers={'Content-Type': 'application/json'})
-        auth_res = json.loads(urllib.request.urlopen(auth_req, timeout=30).read())
+        auth_res = json.loads(urllib.request.urlopen(auth_req, timeout=15).read())
         token = auth_res.get('idToken')
         if not token:
-            print('⚠ No se pudo autenticar en Firebase')
+            print('  Se registrará solo al abrirlo por primera vez')
             return
 
         doc_id = data['id']
@@ -68,7 +69,7 @@ def registrar_en_firestore(cfg, data, total_contenidos):
         doc_existe = False
         try:
             get_req = urllib.request.Request(f"{doc_url}?key={fb['apiKey']}")
-            urllib.request.urlopen(get_req, timeout=30)
+            urllib.request.urlopen(get_req, timeout=15)
             doc_existe = True
         except Exception:
             pass
@@ -104,13 +105,13 @@ def registrar_en_firestore(cfg, data, total_contenidos):
             'Content-Type': 'application/json',
             'Authorization': f"Bearer {token}"
         }, method='PATCH')
-        r = urllib.request.urlopen(patch_req, timeout=30)
+        r = urllib.request.urlopen(patch_req, timeout=15)
         if r.status in (200, 201):
             print(f'✓ Registrado en Cloud Firestore ({data["id"]})')
         else:
-            print('⚠ Respuesta inesperada de Firestore:', r.status)
-    except Exception as e:
-        print('⚠ No se pudo registrar en Firestore:', e)
+            print('  Se registrará solo al abrirlo por primera vez')
+    except Exception:
+        print('  Se registrará solo al abrirlo por primera vez')
 
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith('--')]
@@ -144,11 +145,10 @@ def main():
     data['url'] = base + data['archivo']
     data.pop('endpoint', None)
     fb = cfg.get('firebase', {})
-    if fb.get('apiKey') and fb.get('projectId'):
-        data['firebase'] = {
-            'apiKey': fb['apiKey'],
-            'projectId': fb['projectId']
-        }
+    data['firebase'] = {
+        'apiKey': fb.get('apiKey') or 'AIzaSyAsH9TxW0ld2aNQejJw6xxZW7fpZiw212Q',
+        'projectId': fb.get('projectId') or 'nexo-tableros-app'
+    }
     data.setdefault('revision', {'revisadoPor': '', 'fecha': ''})
     if not data['revision'].get('fecha'):
         data['resetAt'] = int(time.time() * 1000)

@@ -3516,7 +3516,7 @@ body{
   var auth = firebase.auth();
   var db = firebase.firestore();
   try {
-    auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
+    auth.setPersistence(firebase.auth.Auth.Persistence.SESSION).catch(function(){});
   } catch(e){}
 
   var SK_FILTER_Q = 'nexo-filter-q';
@@ -3526,9 +3526,11 @@ body{
 
   var allTableros = [];
   var allProduccion = [];
+  var allInformes = [];
   var activeTab = 'hub';
   var unsubscribeFirestore = null;
   var unsubscribeProduccion = null;
+  var unsubscribeInformes = null;
 
   var pub = document.getElementById('pub');
   var loginModal = document.getElementById('login');
@@ -4777,173 +4779,88 @@ body{
     }).join(' ');
   }
 
-  function parseInformeItem(file, tipo){
-    var fn = file.name || '';
-    var base = fn.replace(/\.html$/i, '');
-    var m = base.match(/^(.+?)-(\d{4})-(\d{2})(?:-(.+))?$/);
-    var clienteTitle = '';
-    var mesTexto = '';
+  function parseInformeItem(doc, tipoSelected){
+    var tipo = doc.tipo || tipoSelected || 'gestion';
+    var clienteTitle = doc.cliente || slugToTitleCase(doc.id || '');
+    var periodo = doc.periodo || '';
+    var mesTexto = 'Informe';
     var sortScore = 0;
 
+    var m = (typeof periodo === 'string') ? periodo.match(/^(\d{4})-(\d{2})$/) : null;
     if (m) {
-      var cSlug = m[1];
-      var y = m[2];
-      var mm = m[3];
-      clienteTitle = slugToTitleCase(cSlug);
+      var y = m[1];
+      var mm = m[2];
       var mesNom = MESES_ES[mm] || mm;
       mesTexto = mesNom + ' ' + y;
       sortScore = parseInt(y, 10) * 100 + parseInt(mm, 10);
     } else {
-      clienteTitle = slugToTitleCase(base);
-      mesTexto = 'Informe';
-      sortScore = 0;
+      var m2 = (doc.id || '').match(/(\d{4})-(\d{2})/);
+      if (m2) {
+        var y2 = m2[1];
+        var mm2 = m2[2];
+        var mesNom2 = MESES_ES[mm2] || mm2;
+        mesTexto = mesNom2 + ' ' + y2;
+        sortScore = parseInt(y2, 10) * 100 + parseInt(mm2, 10);
+      }
     }
 
-    var ghPagesUrl = 'https://carlosuzc29-eng.github.io/tableros-de-contenido/informes/' + encodeURIComponent(tipo) + '/' + encodeURIComponent(fn);
+    var url = doc.url;
+    if (!url) {
+      url = 'https://carlosuzc29-eng.github.io/tableros-de-contenido/informes/' + encodeURIComponent(tipo) + '/' + encodeURIComponent(doc.id || '') + '.html';
+    }
 
     return {
-      filename: fn,
+      id: doc.id || '',
       tipo: tipo,
       clienteTitle: clienteTitle,
       mesTexto: mesTexto,
       sortScore: sortScore,
-      url: ghPagesUrl
+      url: url
     };
   }
 
-  var INFORMES_CACHE_KEY_PREFIX = 'nexo_informes_cache_';
-  var INFORMES_CACHE_TTL = 5 * 60 * 1000; // 5 minutos
-
-  function getCachedInformes(tipo){
-    try {
-      var raw = sessionStorage.getItem(INFORMES_CACHE_KEY_PREFIX + tipo);
-      if (!raw) return null;
-      var obj = JSON.parse(raw);
-      if (!obj || !obj.ts || !Array.isArray(obj.data)) return null;
-      if (Date.now() - obj.ts > INFORMES_CACHE_TTL) return null;
-      return obj.data;
-    } catch(e) {
-      return null;
-    }
-  }
-
-  function setCachedInformes(tipo, data){
-    try {
-      sessionStorage.setItem(INFORMES_CACHE_KEY_PREFIX + tipo, JSON.stringify({
-        ts: Date.now(),
-        data: data
-      }));
-    } catch(e) {}
-    updateHubInformesMetrics();
-  }
-
-  function clearCachedInformes(tipo){
-    try {
-      sessionStorage.removeItem(INFORMES_CACHE_KEY_PREFIX + tipo);
-    } catch(e) {}
-    updateHubInformesMetrics();
-  }
-
   function updateHubInformesMetrics(){
-    var gCached = getCachedInformes('gestion');
-    var mCached = getCachedInformes('meta-ads');
-    var gCount = Array.isArray(gCached) ? gCached.length : null;
-    var mCount = Array.isArray(mCached) ? mCached.length : null;
+    var gCount = 0;
+    var mCount = 0;
+    allInformes.forEach(function(item){
+      if ((item.tipo || 'gestion') === 'meta-ads') mCount++;
+      else gCount++;
+    });
+    var totalCount = allInformes.length;
 
-    if (gCount !== null && mCount !== null) {
-      if (hubInfTotal) hubInfTotal.textContent = (gCount + mCount);
-      if (hubInfGestion) hubInfGestion.textContent = gCount + ' informes';
-      if (hubInfMeta) hubInfMeta.textContent = mCount + ' informes';
-    } else if (gCount !== null) {
-      if (hubInfTotal) hubInfTotal.textContent = gCount;
-      if (hubInfGestion) hubInfGestion.textContent = gCount + ' informes';
-      if (hubInfMeta) hubInfMeta.textContent = 'Meta Ads';
-    } else if (mCount !== null) {
-      if (hubInfTotal) hubInfTotal.textContent = mCount;
-      if (hubInfGestion) hubInfGestion.textContent = 'Gestión';
-      if (hubInfMeta) hubInfMeta.textContent = mCount + ' informes';
-    } else {
-      if (hubInfTotal) hubInfTotal.textContent = 'En vivo';
-      if (hubInfGestion) hubInfGestion.textContent = 'Gestión';
-      if (hubInfMeta) hubInfMeta.textContent = 'Meta Ads';
-    }
+    if (hubInfTotal) hubInfTotal.textContent = totalCount;
+    if (hubInfGestion) hubInfGestion.textContent = gCount + (gCount === 1 ? ' informe' : ' informes');
+    if (hubInfMeta) hubInfMeta.textContent = mCount + (mCount === 1 ? ' informe' : ' informes');
   }
 
   function loadAndRenderInformes(forceRefresh){
-    if (!informesContent) return;
-    var tipo = (selectTipoInforme && selectTipoInforme.value) ? selectTipoInforme.value : 'gestion';
-
-    if (forceRefresh) {
-      clearCachedInformes(tipo);
-    } else {
-      var cached = getCachedInformes(tipo);
-      if (cached) {
-        currentInformesList = cached;
-        renderInformesList();
-        return;
-      }
-    }
-
-    informesContent.innerHTML =
-      '<div class="state-message">' +
-        '<h3>Cargando informes…</h3>' +
-        '<p>Consultando el repositorio de informes en GitHub.</p>' +
-      '</div>';
-
-    var apiUrl = 'https://api.github.com/repos/carlosuzc29-eng/tableros-de-contenido/contents/informes/' + encodeURIComponent(tipo);
-    fetch(apiUrl)
-      .then(function(res){
-        if (res.status === 404) {
-          return [];
-        }
-        if (!res.ok) {
-          throw new Error('HTTP ' + res.status);
-        }
-        return res.json();
-      })
-      .then(function(data){
-        if (!Array.isArray(data)) data = [];
-        var files = data.filter(function(item){
-          return item.type === 'file' && /\.html$/i.test(item.name);
-        });
-        setCachedInformes(tipo, files);
-        currentInformesList = files;
-        renderInformesList();
-        if (forceRefresh) {
-          toast('✓ Informes actualizados');
-        }
-      })
-      .catch(function(err){
-        console.error('Error al consultar informes de GitHub:', err);
-        if (informesContent) {
-          informesContent.innerHTML =
-            '<div class="state-message">' +
-              '<h3>Aún no hay informes</h3>' +
-              '<p>No se pudieron recuperar informes en este momento (' + escapeHtml(err.message || 'error') + ').</p>' +
-            '</div>';
-        }
-        toast('No se pudieron cargar los informes');
-      });
+    renderInformesList();
+    if (forceRefresh) toast('✓ Informes actualizados');
   }
 
   function renderInformesList(){
     if (!informesContent) return;
-    if (!currentInformesList || !currentInformesList.length) {
-      informesContent.innerHTML =
-        '<div class="state-message">' +
-          '<h3>Aún no hay informes</h3>' +
-          '<p>Los informes publicados en esta sección aparecerán aquí automáticamente.</p>' +
-        '</div>';
-      return;
-    }
 
     var tipo = (selectTipoInforme && selectTipoInforme.value) ? selectTipoInforme.value : 'gestion';
     var isGestion = (tipo === 'gestion');
     var badgeClass = isGestion ? 'badge-gestion' : 'badge-meta';
     var badgeLabel = isGestion ? 'Gestión y rendimiento' : 'Meta Ads';
 
-    var parsedItems = currentInformesList.map(function(f){
-      return parseInformeItem(f, tipo);
+    var filteredDocs = allInformes.filter(function(doc){
+      return (doc.tipo || 'gestion') === tipo;
+    });
+
+    if (!filteredDocs.length) {
+      informesContent.innerHTML =
+        '<div class="state-message">' +
+          '<h3>Aún no hay informes</h3>' +
+          '<p>Los informes registrados en esta categoría aparecerán aquí automáticamente.</p>' +
+        '</div>';
+      return;
+    }
+
+    var parsedItems = filteredDocs.map(function(d){
+      return parseInformeItem(d, tipo);
     });
 
     var q = (searchInformeInp && searchInformeInp.value ? searchInformeInp.value : '').toLowerCase().trim();
@@ -5055,21 +4972,30 @@ body{
     });
   }
 
+  function stopRealtimeSync(){
+    if (unsubscribeFirestore) {
+      try { unsubscribeFirestore(); } catch(e){}
+      unsubscribeFirestore = null;
+    }
+    if (unsubscribeProduccion) {
+      try { unsubscribeProduccion(); } catch(e){}
+      unsubscribeProduccion = null;
+    }
+    if (unsubscribeInformes) {
+      try { unsubscribeInformes(); } catch(e){}
+      unsubscribeInformes = null;
+    }
+  }
+
   function startRealtimeSync(isManualRefresh){
+    if (!auth || !auth.currentUser) return;
     showDash();
     if (!allTableros.length && !isManualRefresh) renderSkeleton();
 
     var btnRef = document.getElementById('btnRefresh');
     if (btnRef) btnRef.disabled = true;
 
-    if (unsubscribeFirestore) {
-      unsubscribeFirestore();
-      unsubscribeFirestore = null;
-    }
-    if (unsubscribeProduccion) {
-      unsubscribeProduccion();
-      unsubscribeProduccion = null;
-    }
+    stopRealtimeSync();
 
     // 1. Colección tableros (aprobaciones)
     unsubscribeFirestore = db.collection('tableros').onSnapshot(function(snapshot){
@@ -5103,7 +5029,7 @@ body{
       if (isManualRefresh && (activeTab === 'aprobaciones' || activeTab === 'hub')) toast('Tableros actualizados ✓');
     }, function(err){
       if (btnRef) btnRef.disabled = false;
-      console.error('Error sincronizando tableros:', err);
+      console.warn('Sincronización de tableros:', err && err.message ? err.message : err);
     });
 
     // 2. Colección produccion (pautas en vivo)
@@ -5120,7 +5046,27 @@ body{
       if (isManualRefresh && activeTab === 'produccion') toast('Pautas al día ✓');
     }, function(err){
       if (btnRef) btnRef.disabled = false;
-      console.error('Error sincronizando producción:', err);
+      console.warn('Sincronización de producción:', err && err.message ? err.message : err);
+    });
+
+    // 3. Colección informes (informes registrados)
+    unsubscribeInformes = db.collection('informes').onSnapshot(function(snapshot){
+      if (btnRef) btnRef.disabled = false;
+      var docs = [];
+      snapshot.forEach(function(doc){
+        var d = doc.data();
+        if (!d.id) d.id = doc.id;
+        docs.push(d);
+      });
+      allInformes = docs;
+      updateHubInformesMetrics();
+      if (activeTab === 'informes') {
+        renderInformesList();
+      }
+      if (isManualRefresh && activeTab === 'informes') toast('Informes actualizados ✓');
+    }, function(err){
+      if (btnRef) btnRef.disabled = false;
+      console.warn('Sincronización de informes:', err && err.message ? err.message : err);
     });
   }
 
@@ -5154,11 +5100,12 @@ body{
       .then(function(cred){
         var uEmail = (cred.user && cred.user.email ? cred.user.email : email).toLowerCase().trim();
         if (ALLOWED_EMAILS.indexOf(uEmail) === -1) {
-          auth.signOut();
-          if (btnGo) btnGo.disabled = false;
-          errEl.textContent = 'Acceso no autorizado';
-          toast('Acceso no autorizado');
-          if (claveInp) claveInp.value = '';
+          auth.signOut().then(function(){
+            if (btnGo) btnGo.disabled = false;
+            errEl.textContent = 'Acceso no autorizado';
+            toast('Acceso no autorizado');
+            if (claveInp) claveInp.value = '';
+          }).catch(function(){});
           return;
         }
         try { localStorage.setItem('nexo_auth_email', uEmail); } catch(e){}
@@ -5183,14 +5130,7 @@ body{
   }
 
   function logout(){
-    if (unsubscribeFirestore) {
-      unsubscribeFirestore();
-      unsubscribeFirestore = null;
-    }
-    if (unsubscribeProduccion) {
-      unsubscribeProduccion();
-      unsubscribeProduccion = null;
-    }
+    stopRealtimeSync();
     auth.signOut().then(function(){
       try {
         sessionStorage.removeItem(SK_FILTER_STATE);
@@ -5200,7 +5140,8 @@ body{
       } catch(e){}
       allTableros = [];
       allProduccion = [];
-      currentInformesList = [];
+      allInformes = [];
+      updateHubInformesMetrics();
       showPublic();
       toast('Sesión cerrada');
     }).catch(function(){
@@ -5214,24 +5155,27 @@ body{
       var uEmail = (user.email || '').toLowerCase().trim();
       if (ALLOWED_EMAILS.indexOf(uEmail) === -1) {
         auth.signOut().then(function(){
+          stopRealtimeSync();
           showPublic();
           if (errEl) errEl.textContent = 'Acceso no autorizado';
           toast('Acceso no autorizado');
+        }).catch(function(){
+          stopRealtimeSync();
+          showPublic();
         });
         return;
       }
       startRealtimeSync(false);
     } else {
-      if (unsubscribeFirestore) {
-        unsubscribeFirestore();
-        unsubscribeFirestore = null;
-      }
-      if (unsubscribeProduccion) {
-        unsubscribeProduccion();
-        unsubscribeProduccion = null;
-      }
+      stopRealtimeSync();
+      allTableros = [];
+      allProduccion = [];
+      allInformes = [];
       showPublic();
     }
+  }, function(err){
+    stopRealtimeSync();
+    showPublic();
   });
 
   // Eventos UI

@@ -1,0 +1,62 @@
+<script>
+(function(){
+  try {
+    var metaTipo = document.querySelector('meta[name="nexo-informe"]');
+    var metaCliente = document.querySelector('meta[name="nexo-cliente"]');
+    var metaPeriodo = document.querySelector('meta[name="nexo-periodo"]');
+
+    var tipo = metaTipo ? (metaTipo.getAttribute('content') || '').trim().toLowerCase() : '';
+    var cliente = metaCliente ? (metaCliente.getAttribute('content') || '').trim() : '';
+    var periodo = metaPeriodo ? (metaPeriodo.getAttribute('content') || '').trim() : '';
+
+    if (!tipo) {
+      var p = window.location.pathname.toLowerCase();
+      if (p.indexOf('meta-ads') !== -1) tipo = 'meta-ads';
+      else if (p.indexOf('gestion') !== -1) tipo = 'gestion';
+      else tipo = 'gestion';
+    }
+
+    var filename = window.location.pathname.split('/').pop() || '';
+    var docId = filename.replace(/\.html$/i, '');
+    if (!docId) return;
+
+    var apiKey = "AIzaSyAsH9TxW0ld2aNQejJw6xxZW7fpZiw212Q";
+    var projectId = "nexo-tableros-app";
+    var baseDocUrl = "https://firestore.googleapis.com/v1/projects/" + encodeURIComponent(projectId) +
+      "/databases/(default)/documents/informes/" + encodeURIComponent(docId);
+
+    fetch(baseDocUrl + "?key=" + encodeURIComponent(apiKey))
+      .then(function(res){
+        if (res.status === 404) {
+          var nowIso = new Date().toISOString();
+          var pageUrl = window.location.href.split('?')[0].split('#')[0];
+          var payload = {
+            fields: {
+              id: { stringValue: docId },
+              tipo: { stringValue: tipo },
+              cliente: { stringValue: cliente },
+              periodo: { stringValue: periodo },
+              url: { stringValue: pageUrl },
+              registrado: { stringValue: nowIso }
+            }
+          };
+
+          var createUrl = "https://firestore.googleapis.com/v1/projects/" + encodeURIComponent(projectId) +
+            "/databases/(default)/documents/informes?documentId=" + encodeURIComponent(docId) +
+            "&key=" + encodeURIComponent(apiKey);
+
+          return fetch(createUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+        }
+      })
+      .catch(function(){
+        // Silencioso: el cliente nunca debe ver errores
+      });
+  } catch(e) {
+    // Silencioso
+  }
+})();
+</script>

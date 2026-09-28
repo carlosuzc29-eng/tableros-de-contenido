@@ -1316,7 +1316,7 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
   "mes": "Octubre",
   "anio": 2026,
   "intro": "",
-  "resetAt": 1790551000158,
+  "resetAt": 1790561562679,
   "revision": {
     "revisadoPor": "",
     "fecha": ""
@@ -1928,6 +1928,53 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
   };
   var SEND = !!(FB && FB.projectId);
   if (SEND) { document.body.classList.add('has-send'); $('dl').textContent = 'Enviar revisión ✓'; }
+
+  // Autorregistro silencioso en Firestore al abrir por primera vez
+  if (DATA.firebase && DATA.id && FB && FB.projectId && FB.apiKey) {
+    (function autoRegisterBoard(){
+      try {
+        var checkUrl = 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(FB.projectId) +
+          '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
+          '?key=' + encodeURIComponent(FB.apiKey);
+
+        fetch(checkUrl)
+          .then(function(res){
+            if (res.status === 404) {
+              var nowIso = new Date().toISOString();
+              var initialFields = {
+                id: { stringValue: String(DATA.id) },
+                cliente: { stringValue: String(DATA.cliente || '') },
+                mes: { stringValue: String(DATA.mes || '') },
+                anio: { stringValue: String(DATA.anio || '') },
+                url: { stringValue: String(DATA.url || window.location.href.split('?')[0].split('#')[0]) },
+                total: { integerValue: String(items.length) },
+                aprobados: { integerValue: '0' },
+                cambios: { integerValue: '0' },
+                pendientes: { integerValue: String(items.length) },
+                estado: { stringValue: 'Sin revisar' },
+                revisadoPor: { stringValue: '' },
+                ultimaRevision: { stringValue: '' },
+                registrado: { stringValue: nowIso },
+                contenidos: { arrayValue: {} }
+              };
+
+              var createUrl = 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(FB.projectId) +
+                '/databases/(default)/documents/tableros?documentId=' + encodeURIComponent(DATA.id) +
+                '&key=' + encodeURIComponent(FB.apiKey);
+
+              return fetch(createUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ fields: initialFields })
+              });
+            }
+          })
+          .catch(function(){
+            // Silencioso: no romper nada ni mostrar errores
+          });
+      } catch(e) {}
+    })();
+  }
 
   function doDownload(){
     commitAllDraftComments();

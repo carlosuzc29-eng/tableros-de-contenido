@@ -108,8 +108,14 @@ El archivo `index.html` es el Banco de Trabajo interno de Nexo para gestionar y 
   - El cliente se escribe en minúsculas separado por guiones (`<cliente-slug>`).
   - La fecha sigue el formato numérico de año de cuatro dígitos y mes de dos dígitos (`<aaaa-mm>`).
   - Código único al final (`<código>`).
+- **Etiquetas meta obligatorias y autorregistro**:
+  - Cada informe debe llevar estas 3 etiquetas meta en el `<head>`:
+    - `<meta name="nexo-informe" content="gestion">` (o `content="meta-ads"` según el tipo de informe).
+    - `<meta name="nexo-cliente" content="Nombre del Cliente">` (nombre oficial en formato legible).
+    - `<meta name="nexo-periodo" content="aaaa-mm">` (ej. `2026-10`).
+  - Cada informe debe incluir antes de `</body>` el snippet de registro contenido en `_sistema/snippet-registro-informe.html`. Esto permite que el informe se autorregistre de forma silenciosa y sin credenciales en la colección `informes` de Cloud Firestore la primera vez que se abre.
 - **Regla estricta de no enlazar el resto de la web**:
   - Los informes son páginas independientes para cada cliente con directiva `<meta name="robots" content="noindex, nofollow">`.
   - **No enlazar el resto de la web**: No deben incluir enlaces hacia el Banco de trabajo (`index.html`), hacia el Espacio Creativo ni hacia otros clientes o tableros de la web.
-  - En el Banco de trabajo (`index.html`) está terminantemente prohibido escribir nombres de clientes o enlaces en el código HTML; el listado se consulta y construye de forma dinámica mediante la API pública de GitHub (`https://api.github.com/repos/carlosuzc29-eng/tableros-de-contenido/contents/informes/<tipo>`).
+  - En el Banco de trabajo (`index.html`) está terminantemente prohibido escribir nombres de clientes o enlaces en el código HTML; el listado se consulta y sincroniza de forma dinámica y en tiempo real desde la colección `informes` de Cloud Firestore con sesión iniciada.
 

@@ -1,26 +1,7 @@
 rules_version = '2';
 
 // ===============================================================
-// Assumed Data Model
-// ===============================================================
-//
-// Collection: tableros/{tableroId}
-// Fields:
-//   - id: string (required) - ID único del tablero (ej. milkarf-2026-octubre)
-//   - cliente: string (required) - Nombre del cliente
-//   - mes: string (required) - Mes del tablero
-//   - anio: string or int (required) - Año del tablero
-//   - url: string (required) - URL pública del tablero
-//   - total: number (required) - Total de contenidos
-//   - aprobados: number (required) - Contenidos aprobados
-//   - cambios: number (required) - Contenidos con cambios
-//   - pendientes: number (required) - Contenidos pendientes
-//   - estado: string (required) - Estado general: 'Sin respuesta', 'Parcial', 'Aprobado', 'Con cambios'
-//   - revisadoPor: string (optional) - Nombre de quien revisó
-//   - ultimaRevision: string or timestamp (optional) - Fecha de la última revisión
-//   - registrado: string or timestamp (optional) - Fecha de registro
-//   - contenidos: list of maps (optional) - Detalle de los contenidos evaluados
-//
+// Nexo Agencia Creativa · Reglas de Seguridad Cloud Firestore
 // ===============================================================
 
 service cloud.firestore {
@@ -31,20 +12,33 @@ service cloud.firestore {
       return request.auth != null && request.auth.token.email in ['carlosuzc29@gmail.com', 'andrevmuedit@gmail.com'];
     }
 
-    // Colección principal de tableros
+    // Helper: validar que el id termine en un código aleatorio hexadecimal de 6 a 8 caracteres
+    function hasValidRandomSuffix(docId) {
+      return docId.matches('.*-[0-9a-f]{6,8}$');
+    }
+
+    // Colección principal de tableros de contenido (aprobaciones)
     match /tableros/{tableroId} {
-      // El equipo autenticado puede listar y gestionar todos los tableros
       allow list: if isAuthenticated();
-
-      // Permitir leer un tablero específico (cliente que accede con su enlace directo o equipo)
       allow get: if true;
+      allow delete: if isAuthenticated();
 
-      // Solo el equipo autenticado puede crear o eliminar tableros
-      allow create, delete: if isAuthenticated();
+      // Autorregistro sin sesión o creación por equipo autenticado
+      allow create: if isAuthenticated() || (
+        request.resource.data.id == tableroId &&
+        hasValidRandomSuffix(tableroId) &&
+        request.resource.data.keys().hasOnly([
+          'id', 'cliente', 'mes', 'anio', 'url', 'total', 'aprobados', 'cambios', 'pendientes', 'estado', 'revisadoPor', 'ultimaRevision', 'registrado', 'contenidos'
+        ]) &&
+        request.resource.data.estado == 'Sin revisar' &&
+        request.resource.data.aprobados == 0 &&
+        request.resource.data.cambios == 0 &&
+        request.resource.data.pendientes == request.resource.data.total &&
+        request.resource.data.revisadoPor == '' &&
+        request.resource.data.contenidos.size() == 0
+      );
 
-      // Permitir actualizar:
-      // 1. El equipo autenticado puede actualizar cualquier campo
-      // 2. Un cliente con el enlace puede enviar sus evaluaciones (cambiar aprobados, cambios, pendientes, estado, revisadoPor, ultimaRevision, contenidos)
+      // Actualización: equipo autenticado o cliente enviando su revisión
       allow update: if isAuthenticated() || (
         request.resource.data.id == resource.data.id &&
         request.resource.data.cliente == resource.data.cliente &&
@@ -55,16 +49,30 @@ service cloud.firestore {
         ])
       );
 
-      // Subcolección opcional para detalle o revisiones históricas
       match /{document=**} {
         allow read, write: if isAuthenticated();
       }
     }
 
-    // Colección de tableros de producción en vivo
+    // Colección de tableros de producción en vivo (rodajes)
     match /produccion/{prodId} {
+      allow list: if isAuthenticated();
       allow get: if true;
-      allow list, create, delete: if isAuthenticated();
+      allow delete: if isAuthenticated();
+
+      // Autorregistro sin sesión o creación por equipo autenticado
+      allow create: if isAuthenticated() || (
+        request.resource.data.id == prodId &&
+        hasValidRandomSuffix(prodId) &&
+        request.resource.data.keys().hasOnly([
+          'id', 'cliente', 'fecha', 'url', 'registrado', 'orden', 'tarjetas', 'todo', 'grabando', 'listo', 'actualizado'
+        ]) &&
+        request.resource.data.todo == request.resource.data.orden.size() &&
+        request.resource.data.grabando == 0 &&
+        request.resource.data.listo == 0
+      );
+
+      // Actualización: equipo autenticado o usuario moviendo tarjetas en rodaje
       allow update: if isAuthenticated() || (
         request.resource.data.id == resource.data.id &&
         request.resource.data.cliente == resource.data.cliente &&
@@ -73,6 +81,25 @@ service cloud.firestore {
         request.resource.data.diff(resource.data).affectedKeys().hasOnly([
           'tarjetas', 'orden', 'todo', 'grabando', 'listo', 'actualizado'
         ])
+      );
+    }
+
+    // Colección de informes de rendimiento y analítica
+    match /informes/{informeId} {
+      allow list: if isAuthenticated();
+      allow get: if true;
+      allow delete: if isAuthenticated();
+      allow update: if isAuthenticated();
+
+      // Autorregistro sin sesión o creación por equipo autenticado
+      allow create: if isAuthenticated() || (
+        request.resource.data.id == informeId &&
+        hasValidRandomSuffix(informeId) &&
+        request.resource.data.keys().hasOnly([
+          'id', 'tipo', 'cliente', 'periodo', 'url', 'registrado'
+        ]) &&
+        request.resource.data.tipo in ['gestion', 'meta-ads'] &&
+        request.resource.data.periodo.matches('^[0-9]{4}-[0-9]{2}$')
       );
     }
   }

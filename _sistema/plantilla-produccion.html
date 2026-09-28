@@ -656,16 +656,6 @@
       }
     }
 
-    function showUnregisteredNotice() {
-      const ind = document.getElementById('live-indicator');
-      const label = document.getElementById('live-indicator-label');
-      if (ind && label) {
-        ind.style.display = 'inline-flex';
-        ind.className = 'live-indicator-pill offline';
-        label.textContent = 'Tablero no registrado';
-      }
-    }
-
     window.addEventListener('online', () => updateConnectionStatus(null));
     window.addEventListener('offline', () => updateConnectionStatus(null));
 
@@ -813,7 +803,65 @@
       initFirebase();
     }
 
+    let isRegisteringProduccion = false;
+    function autoRegisterProduccion() {
+      if (isRegisteringProduccion || !DATA.id || !prodDocRef || !db) return;
+      isRegisteringProduccion = true;
+      try {
+        const contenidos = Array.isArray(DATA.contenidos) ? DATA.contenidos : [];
+        const orden = [];
+        const tarjetasMap = {};
+        contenidos.forEach((raw) => {
+          const c = cleanCard(raw);
+          if (c && c.id) {
+            c.estado = 'todo';
+            orden.push(c.id);
+            tarjetasMap[c.id] = c;
+          }
+        });
+        const nowIso = new Date().toISOString();
+        const docData = {
+          id: String(DATA.id),
+          cliente: String(DATA.cliente || ''),
+          fecha: String(DATA.fecha || ''),
+          url: String(DATA.url || window.location.href.split('?')[0].split('#')[0]),
+          registrado: nowIso,
+          actualizado: nowIso,
+          orden: orden,
+          tarjetas: tarjetasMap,
+          todo: orden.length,
+          grabando: 0,
+          listo: 0
+        };
+
+        db.runTransaction((transaction) => {
+          return transaction.get(prodDocRef).then((sfDoc) => {
+            if (!sfDoc.exists) {
+              transaction.set(prodDocRef, docData);
+            }
+          });
+        }).then(() => {
+          isRegisteringProduccion = false;
+          updateConnectionStatus({ metadata: { fromCache: false } });
+        }).catch((err) => {
+          isRegisteringProduccion = false;
+          console.warn('Autorregistro produccion fallback:', err);
+        });
+      } catch(e) {
+        isRegisteringProduccion = false;
+      }
+    }
+
     function initFirebase() {
+      if (!DATA.id) {
+        DATA.id = window.location.pathname.split('/').pop().replace(/\.html$/i, '') || '';
+      }
+      if (!DATA.firebase) {
+        DATA.firebase = {
+          apiKey: "AIzaSyAsH9TxW0ld2aNQejJw6xxZW7fpZiw212Q",
+          projectId: "nexo-tableros-app"
+        };
+      }
       if (!DATA.id || !DATA.firebase || !DATA.firebase.projectId || typeof firebase === 'undefined') {
         return;
       }
@@ -838,7 +886,8 @@
           }
 
           if (!snapshot.exists) {
-            showUnregisteredNotice();
+            updateConnectionStatus({ metadata: { fromCache: false } });
+            autoRegisterProduccion();
             return;
           }
 

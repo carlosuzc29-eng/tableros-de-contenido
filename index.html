@@ -475,7 +475,7 @@ body{
 /* Grilla de Categorías del Hub */
 .hub-categories-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit, minmax(340px, 1fr));
+  grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));
   gap:24px;
   margin-bottom:30px;
 }
@@ -1376,6 +1376,189 @@ body{
   .matte-box{width:84px;height:84px}
   .lens-barrel{width:70px;height:70px}
   .lens-front-element{width:46px;height:46px}
+  .tablet-device{width:245px}
+}
+
+/* — Elemento Gráfico Ultra-Realista: iPad Pro / Studio Display Analytics — */
+.device-stage.stage-tablet::before{
+  background:radial-gradient(ellipse, rgba(56,189,248,.25) 0%, rgba(92,184,62,.2) 40%, rgba(31,53,73,.35) 70%, transparent 100%);
+}
+.tablet-device{
+  width:278px;
+  background:linear-gradient(160deg, #374758 0%, #1e2834 45%, #0f151c 100%);
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:18px;
+  padding:7px;
+  box-shadow:
+    0 22px 40px -8px rgba(0,0,0,.85),
+    inset 0 1.5px 1px rgba(255,255,255,.35),
+    inset 0 -1px 0 rgba(0,0,0,.9),
+    inset 1px 0 1px rgba(255,255,255,.15),
+    inset -1px 0 1px rgba(255,255,255,.15);
+  position:relative;
+  z-index:1;
+  transition:transform 500ms cubic-bezier(.16,1,.3,1), filter 500ms ease;
+  transform:rotateX(8deg) rotateY(6deg);
+  transform-style:preserve-3d;
+  cursor:pointer;
+  user-select:none;
+}
+.hub-cat-card:hover .tablet-device{
+  transform:rotateX(2deg) rotateY(0deg) translateY(-4px) scale(1.03);
+  filter:drop-shadow(0 28px 44px rgba(0,0,0,.9));
+}
+.tablet-screen{
+  background:#070b10;
+  border-radius:12px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.08);
+  position:relative;
+  box-shadow:inset 0 0 20px rgba(0,0,0,.9);
+  padding:8px 10px 10px;
+}
+.tablet-topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  padding-bottom:6px;
+  margin-bottom:8px;
+}
+.tablet-brand-pill{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:10px;
+  font-weight:700;
+  color:#fff;
+  letter-spacing:.02em;
+}
+.tablet-brand-pill svg{
+  color:var(--verde);
+}
+.tablet-live-pill{
+  font-size:9px;
+  font-weight:700;
+  padding:2px 7px;
+  border-radius:99px;
+  background:rgba(56,189,248,.15);
+  color:#38bdf8;
+  border:1px solid rgba(56,189,248,.3);
+  display:flex;
+  align-items:center;
+  gap:4px;
+}
+.tablet-metrics-row{
+  display:grid;
+  grid-template-columns:1.2fr 1fr 1fr;
+  gap:6px;
+  margin-bottom:8px;
+}
+.tablet-mini-kpi{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:7px;
+  padding:4px 6px;
+  display:flex;
+  flex-direction:column;
+  gap:1px;
+}
+.tablet-mini-kpi .kpi-num{
+  font-size:12px;
+  font-weight:800;
+  color:#fff;
+  line-height:1.1;
+  font-variant-numeric:tabular-nums;
+  display:flex;
+  align-items:center;
+  gap:3px;
+}
+.tablet-mini-kpi .kpi-num.growth{
+  color:var(--verde);
+}
+.tablet-mini-kpi .kpi-lbl{
+  font-size:8px;
+  color:var(--ink-2);
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  font-weight:600;
+}
+.tablet-chart-box{
+  background:rgba(15,23,42,.65);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:8px;
+  padding:6px 8px;
+  position:relative;
+  overflow:hidden;
+}
+.tablet-chart-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:4px;
+}
+.tablet-chart-title{
+  font-size:9px;
+  color:var(--ink-2);
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+.tablet-legend{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.tablet-legend-item{
+  font-size:8px;
+  font-weight:600;
+  display:flex;
+  align-items:center;
+  gap:3px;
+}
+.tablet-legend-item.gestion{color:var(--verde)}
+.tablet-legend-item.meta{color:#38bdf8}
+.tablet-legend-item .dot{
+  width:5px;
+  height:5px;
+  border-radius:50%;
+}
+.tablet-legend-item.gestion .dot{background:var(--verde)}
+.tablet-legend-item.meta .dot{background:#38bdf8}
+.tablet-bars-container{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:6px;
+  height:44px;
+  padding-top:4px;
+}
+.tablet-bar-group{
+  display:flex;
+  align-items:flex-end;
+  gap:2px;
+  flex:1;
+  height:100%;
+}
+.tablet-bar{
+  flex:1;
+  border-radius:3px 3px 0 0;
+  transition:height 400ms ease;
+  position:relative;
+}
+.tablet-bar.gestion{
+  background:linear-gradient(180deg, #5CB83E 0%, rgba(92,184,62,.3) 100%);
+  box-shadow:0 0 6px rgba(92,184,62,.3);
+}
+.tablet-bar.meta{
+  background:linear-gradient(180deg, #38bdf8 0%, rgba(56,189,248,.3) 100%);
+  box-shadow:0 0 6px rgba(56,189,248,.3);
+}
+.tablet-glass-shine{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg, rgba(255,255,255,.12) 0%, rgba(255,255,255,.02) 40%, transparent 60%);
+  pointer-events:none;
 }
 
 /* Textos e informaciones de las categorías */
@@ -2712,6 +2895,138 @@ body{
             </svg>
           </button>
         </div>
+
+        <!-- Categoría 3: Informes de Rendimiento (Panel de Analítica & Métricas) -->
+        <div class="hub-cat-card">
+          <div>
+            <div class="hub-cat-top">
+              <span class="hub-cat-badge">Métricas & Analítica</span>
+              <span class="hub-tag active"><span class="live-dot" style="background:#38bdf8;box-shadow:0 0 8px #38bdf8"></span> GITHUB PAGES</span>
+            </div>
+
+            <div class="device-stage stage-tablet" title="Panel de Analítica · Métricas y Rendimiento Nexo">
+              <div class="tablet-device">
+                <div class="tablet-screen">
+                  <div class="tablet-topbar">
+                    <div class="tablet-brand-pill">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                      </svg>
+                      <span>nexo.analytics · Métricas</span>
+                    </div>
+                    <div class="tablet-live-pill">
+                      <span class="live-dot" style="background:#38bdf8;box-shadow:0 0 6px #38bdf8;width:5px;height:5px;"></span>
+                      <span>En vivo</span>
+                    </div>
+                  </div>
+
+                  <div class="tablet-metrics-row">
+                    <div class="tablet-mini-kpi">
+                      <div class="kpi-num growth">
+                        <span>+34.2%</span>
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                          <polyline points="18 15 12 9 6 15"></polyline>
+                        </svg>
+                      </div>
+                      <div class="kpi-lbl">Alcance</div>
+                    </div>
+                    <div class="tablet-mini-kpi">
+                      <div class="kpi-num" style="color:#5CB83E">Gestión</div>
+                      <div class="kpi-lbl">Rendimiento</div>
+                    </div>
+                    <div class="tablet-mini-kpi">
+                      <div class="kpi-num" style="color:#38bdf8">Meta Ads</div>
+                      <div class="kpi-lbl">Campañas</div>
+                    </div>
+                  </div>
+
+                  <div class="tablet-chart-box">
+                    <div class="tablet-chart-header">
+                      <span class="tablet-chart-title">Rendimiento Mensual</span>
+                      <div class="tablet-legend">
+                        <span class="tablet-legend-item gestion"><span class="dot"></span>Gestión</span>
+                        <span class="tablet-legend-item meta"><span class="dot"></span>Meta Ads</span>
+                      </div>
+                    </div>
+
+                    <div class="tablet-bars-container">
+                      <div class="tablet-bar-group">
+                        <div class="tablet-bar gestion" style="height:45%"></div>
+                        <div class="tablet-bar meta" style="height:35%"></div>
+                      </div>
+                      <div class="tablet-bar-group">
+                        <div class="tablet-bar gestion" style="height:65%"></div>
+                        <div class="tablet-bar meta" style="height:55%"></div>
+                      </div>
+                      <div class="tablet-bar-group">
+                        <div class="tablet-bar gestion" style="height:80%"></div>
+                        <div class="tablet-bar meta" style="height:70%"></div>
+                      </div>
+                      <div class="tablet-bar-group">
+                        <div class="tablet-bar gestion" style="height:60%"></div>
+                        <div class="tablet-bar meta" style="height:85%"></div>
+                      </div>
+                      <div class="tablet-bar-group">
+                        <div class="tablet-bar gestion" style="height:92%"></div>
+                        <div class="tablet-bar meta" style="height:100%"></div>
+                      </div>
+                    </div>
+
+                    <svg viewBox="0 0 160 30" class="tablet-svg-trend" preserveAspectRatio="none" style="width:100%;height:18px;display:block;margin-top:2px;">
+                      <defs>
+                        <linearGradient id="chartGradHub" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.35"></stop>
+                          <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"></stop>
+                        </linearGradient>
+                      </defs>
+                      <path d="M0,26 Q35,16 70,20 T120,8 T160,3 L160,30 L0,30 Z" fill="url(#chartGradHub)"></path>
+                      <path d="M0,26 Q35,16 70,20 T120,8 T160,3" fill="none" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round"></path>
+                      <circle cx="160" cy="3" r="2.5" fill="#5CB83E"></circle>
+                    </svg>
+                  </div>
+                  <div class="tablet-glass-shine"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="hub-cat-info">
+              <h3>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--verde)">
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                Informes de Rendimiento
+              </h3>
+              <p>Reportes de gestión, métricas clave de Meta Ads, estadísticas de rendimiento mensual y enlaces listos para compartir con clientes.</p>
+            </div>
+
+            <div class="hub-cat-metrics">
+              <div class="hub-metric-pill">
+                <span class="v" id="hubInfTotal">En vivo</span>
+                <span class="l">Informes</span>
+              </div>
+              <div class="hub-metric-pill ok">
+                <span class="v" id="hubInfGestion">Gestión</span>
+                <span class="l">Rendimiento</span>
+              </div>
+              <div class="hub-metric-pill">
+                <span class="v" id="hubInfMeta">Meta Ads</span>
+                <span class="l">Campañas</span>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn-category-action" id="btnGoInformes">
+            <span>Visualizar Informes</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -3051,6 +3366,10 @@ body{
 
   var btnGoAprobaciones = document.getElementById('btnGoAprobaciones');
   var btnGoProduccion = document.getElementById('btnGoProduccion');
+  var btnGoInformes = document.getElementById('btnGoInformes');
+  var hubInfTotal = document.getElementById('hubInfTotal');
+  var hubInfGestion = document.getElementById('hubInfGestion');
+  var hubInfMeta = document.getElementById('hubInfMeta');
   var btnBackFromAprob = document.getElementById('btnBackFromAprob');
   var btnBackFromProd = document.getElementById('btnBackFromProd');
   var brandHomeBtn = document.getElementById('brandHomeBtn');
@@ -3152,6 +3471,7 @@ body{
     loginModal.classList.remove('on');
     dash.style.display = 'block';
     dash.classList.add('on');
+    if (typeof updateHubInformesMetrics === 'function') updateHubInformesMetrics();
     if (typeof switchView === 'function') switchView(activeTab || 'hub');
   }
 
@@ -4324,12 +4644,39 @@ body{
         data: data
       }));
     } catch(e) {}
+    updateHubInformesMetrics();
   }
 
   function clearCachedInformes(tipo){
     try {
       sessionStorage.removeItem(INFORMES_CACHE_KEY_PREFIX + tipo);
     } catch(e) {}
+    updateHubInformesMetrics();
+  }
+
+  function updateHubInformesMetrics(){
+    var gCached = getCachedInformes('gestion');
+    var mCached = getCachedInformes('meta-ads');
+    var gCount = Array.isArray(gCached) ? gCached.length : null;
+    var mCount = Array.isArray(mCached) ? mCached.length : null;
+
+    if (gCount !== null && mCount !== null) {
+      if (hubInfTotal) hubInfTotal.textContent = (gCount + mCount);
+      if (hubInfGestion) hubInfGestion.textContent = gCount + ' informes';
+      if (hubInfMeta) hubInfMeta.textContent = mCount + ' informes';
+    } else if (gCount !== null) {
+      if (hubInfTotal) hubInfTotal.textContent = gCount;
+      if (hubInfGestion) hubInfGestion.textContent = gCount + ' informes';
+      if (hubInfMeta) hubInfMeta.textContent = 'Meta Ads';
+    } else if (mCount !== null) {
+      if (hubInfTotal) hubInfTotal.textContent = mCount;
+      if (hubInfGestion) hubInfGestion.textContent = 'Gestión';
+      if (hubInfMeta) hubInfMeta.textContent = mCount + ' informes';
+    } else {
+      if (hubInfTotal) hubInfTotal.textContent = 'En vivo';
+      if (hubInfGestion) hubInfGestion.textContent = 'Gestión';
+      if (hubInfMeta) hubInfMeta.textContent = 'Meta Ads';
+    }
   }
 
   function loadAndRenderInformes(forceRefresh){
@@ -4787,6 +5134,26 @@ body{
   }
   if (btnGoProduccion) {
     btnGoProduccion.addEventListener('click', function(){ switchView('produccion'); });
+  }
+  if (btnGoInformes) {
+    btnGoInformes.addEventListener('click', function(){ switchView('informes'); });
+  }
+
+  // Interacción al hacer clic en los dispositivos gráficos interactivos
+  var stageMacbook = document.querySelector('.stage-macbook');
+  if (stageMacbook) {
+    stageMacbook.style.cursor = 'pointer';
+    stageMacbook.addEventListener('click', function(){ switchView('aprobaciones'); });
+  }
+  var stageCamera = document.querySelector('.stage-camera');
+  if (stageCamera) {
+    stageCamera.style.cursor = 'pointer';
+    stageCamera.addEventListener('click', function(){ switchView('produccion'); });
+  }
+  var stageTablet = document.querySelector('.stage-tablet');
+  if (stageTablet) {
+    stageTablet.style.cursor = 'pointer';
+    stageTablet.addEventListener('click', function(){ switchView('informes'); });
   }
 
   // Botones de retorno al Espacio Creativo desde subpáginas

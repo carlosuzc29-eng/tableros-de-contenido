@@ -3931,6 +3931,13 @@ body{
         if (fsItem.formato) copy.formato = fsItem.formato;
         if (fsItem.formatoOriginal) copy.formatoOriginal = fsItem.formatoOriginal;
         if (fsItem.revisadoPor) copy.revisadoPor = fsItem.revisadoPor;
+        if (fsItem.titulo) copy.titulo = fsItem.titulo;
+        if (fsItem.pilar !== undefined) copy.pilar = fsItem.pilar;
+        if (fsItem.fechaPublicacion !== undefined) copy.fechaPublicacion = fsItem.fechaPublicacion;
+        if (fsItem.guion !== undefined) copy.guion = fsItem.guion;
+        if (fsItem.copy !== undefined) copy.copy = fsItem.copy;
+        if (fsItem.hashtags !== undefined) copy.hashtags = fsItem.hashtags;
+        if (fsItem.referencias && fsItem.referencias.length) copy.referencias = fsItem.referencias;
       }
       if (!copy.revisadoPor) {
         copy.revisadoPor = (boardData && boardData.revision && boardData.revision.revisadoPor) || t.revisadoPor || '';

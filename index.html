@@ -489,88 +489,139 @@ body{
   border:1px solid rgba(92,184,62,.3);
 }
 
-/* Escenario interactivo para dispositivos (MacBook / Cámara) */
+/* Escenario interactivo para dispositivos (MacBook / Cámara) con atmósfera de estudio */
 .device-stage{
-  min-height:190px;
+  min-height:205px;
   display:grid;
   place-items:center;
-  padding:16px 8px;
-  perspective:1000px;
+  padding:20px 8px 14px;
+  perspective:1100px;
   position:relative;
+  overflow:visible;
+}
+.device-stage::before{
+  content:'';
+  position:absolute;
+  width:230px;
+  height:120px;
+  border-radius:50%;
+  filter:blur(36px);
+  pointer-events:none;
+  opacity:.65;
+  transition:all 500ms ease;
+  z-index:0;
+}
+.device-stage.stage-macbook::before{
+  background:radial-gradient(ellipse, rgba(92,184,62,.3) 0%, rgba(31,53,73,.35) 60%, transparent 100%);
+}
+.device-stage.stage-camera::before{
+  background:radial-gradient(ellipse, rgba(230,74,0,.24) 0%, rgba(31,53,73,.35) 60%, transparent 100%);
+}
+.hub-cat-card:hover .device-stage::before{
+  opacity:1;
+  transform:scale(1.15);
 }
 
-/* — Elemento Gráfico Ultra-Realista: MacBook Pro — */
+/* — Elemento Gráfico Ultra-Realista: MacBook Pro M-Series — */
 .macbook-device{
-  width:272px;
-  transition:transform 400ms cubic-bezier(.16,1,.3,1), filter 400ms ease;
-  transform:rotateX(7deg) rotateY(-5deg);
+  width:282px;
+  transition:transform 500ms cubic-bezier(.16,1,.3,1), filter 500ms ease;
+  transform:rotateX(9deg) rotateY(-6deg);
   transform-style:preserve-3d;
   cursor:pointer;
   user-select:none;
-  filter:drop-shadow(0 20px 30px rgba(0,0,0,.7));
+  filter:drop-shadow(0 24px 34px rgba(0,0,0,.75));
+  position:relative;
+  z-index:1;
 }
 .hub-cat-card:hover .macbook-device{
-  transform:rotateX(0deg) rotateY(0deg) scale(1.04);
-  filter:drop-shadow(0 24px 38px rgba(0,0,0,.85));
+  transform:rotateX(2deg) rotateY(0deg) translateY(-4px) scale(1.03);
+  filter:drop-shadow(0 30px 46px rgba(0,0,0,.9));
 }
 .macbook-screen-lid{
-  background:linear-gradient(150deg, #2b3a4a 0%, #18232e 45%, #0f171f 100%);
-  border:1.5px solid #3c5268;
-  border-radius:12px 12px 2px 2px;
-  padding:7px 7px 9px;
-  box-shadow:0 14px 32px -6px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.35), inset 0 -1px 0 rgba(0,0,0,.9);
+  background:linear-gradient(165deg, #374758 0%, #1e2834 35%, #10161d 100%);
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:13px 13px 3px 3px;
+  padding:6px 6px 8px;
+  box-shadow:
+    0 16px 36px -6px rgba(0,0,0,.9),
+    inset 0 1.5px 1px rgba(255,255,255,.35),
+    inset 0 -1px 0 rgba(0,0,0,.9),
+    inset 1px 0 1px rgba(255,255,255,.15),
+    inset -1px 0 1px rgba(255,255,255,.15);
   position:relative;
+}
+.macbook-rubber-gasket{
+  position:absolute;
+  inset:3px;
+  border-radius:10px 10px 2px 2px;
+  border:0.5px solid rgba(0,0,0,.7);
+  pointer-events:none;
 }
 .macbook-notch{
   position:absolute;
-  top:7px;
+  top:6px;
   left:50%;
   transform:translateX(-50%);
-  width:36px;
-  height:5px;
-  background:#05080c;
-  border-radius:0 0 5px 5px;
+  width:44px;
+  height:7px;
+  background:#05070a;
+  border-radius:0 0 7px 7px;
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:4px;
-  z-index:5;
+  gap:5px;
+  z-index:10;
+  box-shadow:0 2px 4px rgba(0,0,0,.6);
 }
 .macbook-cam{
-  width:3px;
-  height:3px;
+  width:3.5px;
+  height:3.5px;
   border-radius:50%;
-  background:#0e2015;
-  border:0.5px solid #23452f;
+  background:radial-gradient(circle at 35% 35%, #184428 0%, #08110b 90%);
+  border:0.5px solid #285434;
   box-shadow:inset 0 0 2px #5CB83E;
+  position:relative;
+}
+.macbook-cam::after{
+  content:'';
+  position:absolute;
+  top:0.5px;
+  left:0.5px;
+  width:1px;
+  height:1px;
+  background:#fff;
+  border-radius:50%;
+  opacity:.8;
 }
 .macbook-sensor{
   width:2px;
   height:2px;
   border-radius:50%;
   background:#5CB83E;
-  box-shadow:0 0 4px #5CB83E;
+  box-shadow:0 0 5px #5CB83E;
 }
 .macbook-display{
-  background:#070d14;
-  border-radius:6px;
-  padding:6px 8px 8px;
-  height:124px;
+  background:#060a0f;
+  border-radius:7px;
+  padding:5px 7px 7px;
+  height:136px;
   display:flex;
   flex-direction:column;
   justify-content:space-between;
   position:relative;
   overflow:hidden;
-  border:1px solid rgba(255,255,255,.08);
-  box-shadow:inset 0 0 12px rgba(0,0,0,.8);
+  border:1px solid rgba(255,255,255,.09);
+  box-shadow:inset 0 0 20px rgba(0,0,0,.95), 0 0 1px rgba(255,255,255,.1);
 }
 .macbook-glass-shine{
   position:absolute;
   inset:0;
-  background:linear-gradient(120deg, rgba(255,255,255,.24) 0%, transparent 35%, rgba(92,184,62,.1) 70%, transparent 100%);
+  background:linear-gradient(118deg, rgba(255,255,255,.26) 0%, rgba(255,255,255,.05) 25%, transparent 40%, rgba(92,184,62,.12) 68%, transparent 90%);
   pointer-events:none;
-  transition:transform 700ms cubic-bezier(.16,1,.3,1);
+  transition:transform 800ms cubic-bezier(.16,1,.3,1);
   transform:translateX(-100%);
+  z-index:8;
 }
 .hub-cat-card:hover .macbook-glass-shine{
   transform:translateX(100%);
@@ -579,30 +630,45 @@ body{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  margin-bottom:5px;
-  border-bottom:1px solid rgba(255,255,255,.06);
-  padding-bottom:3px;
+  margin-bottom:6px;
+  border-bottom:1px solid rgba(255,255,255,.07);
+  padding-bottom:4px;
 }
-.m-controls{display:flex;align-items:center;gap:4px}
-.m-dot{width:5.5px;height:5.5px;border-radius:50%;box-shadow:inset 0 0 2px rgba(0,0,0,.4)}
-.m-dot.red{background:#E64A00}
-.m-dot.yellow{background:#eab308}
-.m-dot.green{background:#5CB83E}
-.m-title{
-  font-size:8.5px;
+.m-controls{display:flex;align-items:center;gap:4.5px}
+.m-dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.35), 0 1px 2px rgba(0,0,0,.5);
+}
+.m-dot.red{background:#ff5f56;border:0.5px solid #e0443e}
+.m-dot.yellow{background:#ffbd2e;border:0.5px solid #dea123}
+.m-dot.green{background:#27c93f;border:0.5px solid #1aab29}
+.m-url-pill{
+  background:rgba(255,255,255,.06);
+  border:0.5px solid rgba(255,255,255,.12);
+  border-radius:4px;
+  padding:1px 8px;
+  font-size:7.5px;
   color:var(--ink-2);
-  font-weight:700;
-  letter-spacing:.03em;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+  font-weight:600;
+  display:flex;
+  align-items:center;
+  gap:4px;
+  letter-spacing:.02em;
+}
+.m-url-lock{
+  width:7px;
+  height:7px;
+  opacity:.75;
 }
 .m-sys-icons{
   font-size:7px;
   color:var(--ink-2);
   display:flex;
   gap:4px;
-  opacity:.8;
+  opacity:.75;
+  font-weight:700;
 }
 .macbook-content-preview{
   display:grid;
@@ -614,100 +680,192 @@ body{
   display:flex;
   flex-direction:column;
   gap:3px;
+  height:100%;
+}
+.m-col-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 1px;
 }
 .m-item-chip{
   font-size:7px;
-  color:var(--ink-2);
+  color:#fff;
   font-weight:800;
   text-transform:uppercase;
-  letter-spacing:.05em;
+  letter-spacing:.06em;
   display:flex;
   align-items:center;
   gap:3px;
 }
-.m-preview-box{
-  background:linear-gradient(135deg, rgba(28,48,68,.9) 0%, rgba(18,32,46,.9) 100%);
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:5px;
-  padding:5px 4px;
+.m-preview-card{
+  background:linear-gradient(145deg, rgba(28,45,63,.85) 0%, rgba(15,25,36,.9) 100%);
+  border:1px solid rgba(255,255,255,.13);
+  border-radius:6px;
+  padding:5px;
   height:100%;
   display:flex;
   flex-direction:column;
   justify-content:space-between;
   position:relative;
-  box-shadow:0 3px 8px rgba(0,0,0,.4);
-  transition:all var(--trans);
+  box-shadow:0 4px 10px rgba(0,0,0,.45);
+  transition:all 300ms ease;
+  overflow:hidden;
 }
-.hub-cat-card:hover .m-preview-box{
+.hub-cat-card:hover .m-preview-card{
   border-color:rgba(92,184,62,.45);
-  box-shadow:0 4px 12px rgba(92,184,62,.15);
+  transform:translateY(-1.5px);
+  box-shadow:0 6px 16px rgba(0,0,0,.6), 0 0 10px rgba(92,184,62,.15);
 }
-.mini-thumb{
-  height:28px;
-  border-radius:3px;
-  background-size:cover;
+.m-card-art{
+  height:36px;
+  border-radius:4px;
   position:relative;
   display:grid;
   place-items:center;
   overflow:hidden;
+  box-shadow:inset 0 0 12px rgba(0,0,0,.6);
 }
-.mini-thumb.feed-art{
-  background:linear-gradient(135deg, #1b354b 0%, #2f613c 100%);
+.m-card-art.feed-art{
+  background:linear-gradient(135deg, #1b3850 0%, #1f5033 50%, #5CB83E 100%);
 }
-.mini-thumb.reel-art{
-  background:linear-gradient(135deg, #182e44 0%, #523068 100%);
+.m-card-art.reel-art{
+  background:linear-gradient(135deg, #1e293b 0%, #3b1d5c 50%, #E64A00 100%);
 }
-.mini-thumb.story-art{
-  background:linear-gradient(135deg, #16364a 0%, #a0491a 100%);
+.m-card-art.story-art{
+  background:linear-gradient(135deg, #16364a 0%, #1f3549 60%, #3a75a4 100%);
 }
-.mini-play{
-  width:14px;
-  height:14px;
+.m-art-overlay{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(to bottom, transparent 40%, rgba(0,0,0,.7) 100%);
+}
+.m-art-badge{
+  position:absolute;
+  top:2px;
+  right:3px;
+  font-size:6px;
+  font-weight:800;
+  color:#fff;
+  background:rgba(0,0,0,.5);
+  padding:1px 3px;
+  border-radius:2px;
+  backdrop-filter:blur(4px);
+}
+.m-play-btn{
+  width:16px;
+  height:16px;
   border-radius:50%;
-  background:rgba(0,0,0,.65);
-  color:#5CB83E;
+  background:rgba(0,0,0,.7);
+  color:#fff;
   font-size:7px;
   display:grid;
   place-items:center;
-  box-shadow:0 0 6px rgba(92,184,62,.4);
+  border:1px solid rgba(255,255,255,.3);
+  box-shadow:0 2px 8px rgba(0,0,0,.5), 0 0 8px rgba(92,184,62,.5);
+  z-index:2;
 }
-.mini-tag{
+.m-story-ring{
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  border:1.5px solid #5CB83E;
+  display:grid;
+  place-items:center;
+  background:rgba(0,0,0,.4);
+  box-shadow:0 0 8px rgba(92,184,62,.4);
+  z-index:2;
+}
+.m-story-dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#fff;
+}
+.m-meta-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-top:4px;
+}
+.mini-pill{
   font-size:6.5px;
   font-weight:800;
-  padding:1px 3px;
-  border-radius:3px;
-  display:inline-block;
-  line-height:1.2;
+  padding:2px 5px;
+  border-radius:99px;
+  display:inline-flex;
+  align-items:center;
+  gap:2.5px;
+  line-height:1.1;
+  letter-spacing:.02em;
 }
-.mini-tag.ok{background:rgba(92,184,62,.3);color:#5CB83E;border:0.5px solid rgba(92,184,62,.5)}
-.mini-tag.rev{background:rgba(230,74,0,.25);color:#E64A00;border:0.5px solid rgba(230,74,0,.45)}
-.mini-tag.pend{background:rgba(255,255,255,.1);color:var(--ink-2)}
-.mini-lines span{
-  display:block;
-  height:2px;
-  background:rgba(255,255,255,.25);
-  border-radius:1px;
-  margin-top:2px;
+.mini-pill.ok{
+  background:rgba(92,184,62,.2);
+  color:#5CB83E;
+  border:0.5px solid rgba(92,184,62,.6);
+  box-shadow:0 0 6px rgba(92,184,62,.25);
 }
-.mini-lines span:last-child{width:60%}
+.mini-pill.fix{
+  background:rgba(230,74,0,.22);
+  color:#ff692a;
+  border:0.5px solid rgba(230,74,0,.55);
+}
+.mini-pill.pend{
+  background:rgba(255,255,255,.1);
+  color:#d4e1ed;
+  border:0.5px solid rgba(255,255,255,.18);
+}
+.mini-bars-graphic{
+  display:flex;
+  gap:1.5px;
+  align-items:flex-end;
+  height:6px;
+}
+.mini-bars-graphic span{
+  width:2px;
+  background:rgba(255,255,255,.3);
+  border-radius:0.5px;
+}
+.mini-bars-graphic span:nth-child(1){height:3px}
+.mini-bars-graphic span:nth-child(2){height:6px;background:var(--verde)}
+.mini-bars-graphic span:nth-child(3){height:4px}
+
+/* Base tridimensional del MacBook Pro (Teclado, Muesca de apertura y Trackpad) */
 .macbook-base{
-  background:linear-gradient(to bottom, #304153 0%, #1c2937 60%, #121c25 100%);
-  height:12px;
-  border-radius:0 0 12px 12px;
-  border:1px solid #435b73;
+  background:linear-gradient(to bottom, #3b4c5e 0%, #223040 30%, #151e29 70%, #0d141b 100%);
+  height:15px;
+  border-radius:1px 1px 14px 14px;
+  border:1px solid rgba(255,255,255,.22);
   border-top:none;
   position:relative;
-  box-shadow:0 12px 24px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.3);
+  box-shadow:
+    0 16px 30px rgba(0,0,0,.85),
+    inset 0 1px 0 rgba(255,255,255,.4),
+    inset 0 -1px 2px rgba(0,0,0,.8);
 }
 .macbook-hinge{
   position:absolute;
-  top:-2px;
+  top:-2.5px;
   left:50%;
   transform:translateX(-50%);
-  width:90px;
+  width:100px;
   height:3px;
-  background:#090f15;
+  background:#070b0f;
   border-radius:2px 2px 0 0;
+  box-shadow:inset 0 1px 1px rgba(0,0,0,.8);
+}
+.macbook-thumb-indent{
+  position:absolute;
+  top:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:38px;
+  height:4px;
+  background:linear-gradient(to bottom, #111a23 0%, #1d2a37 100%);
+  border-radius:0 0 4px 4px;
+  border:0.5px solid rgba(255,255,255,.15);
+  border-top:none;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.8);
 }
 .macbook-keyboard-deck{
   width:100%;
@@ -715,102 +873,165 @@ body{
   display:flex;
   flex-direction:column;
   align-items:center;
-  justify-content:flex-start;
-  padding-top:1px;
+  justify-content:center;
+  padding-top:2px;
 }
 .macbook-trackpad{
-  width:72px;
-  height:5px;
-  background:rgba(255,255,255,.09);
-  border:0.5px solid rgba(255,255,255,.2);
-  border-radius:0 0 2px 2px;
-  box-shadow:inset 0 1px 2px rgba(0,0,0,.4);
+  width:78px;
+  height:7px;
+  background:linear-gradient(to bottom, rgba(255,255,255,.1) 0%, rgba(255,255,255,.03) 100%);
+  border:0.5px solid rgba(255,255,255,.25);
+  border-radius:1px 1px 3px 3px;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.6), 0 1px 1px rgba(255,255,255,.05);
 }
 
-/* — Elemento Gráfico Ultra-Realista: Cámara de Cine — */
+/* — Elemento Gráfico Ultra-Realista: Cámara de Cine Profesional (Rig 4K) — */
 .camera-device{
-  width:245px;
-  transition:transform 400ms cubic-bezier(.16,1,.3,1), filter 400ms ease;
-  transform:rotateX(5deg) rotateY(5deg);
+  width:264px;
+  transition:transform 500ms cubic-bezier(.16,1,.3,1), filter 500ms ease;
+  transform:rotateX(7deg) rotateY(6deg);
   transform-style:preserve-3d;
   cursor:pointer;
   user-select:none;
-  filter:drop-shadow(0 20px 30px rgba(0,0,0,.7));
+  filter:drop-shadow(0 24px 34px rgba(0,0,0,.8));
+  position:relative;
+  z-index:1;
 }
 .hub-cat-card:hover .camera-device{
-  transform:rotateX(0deg) rotateY(0deg) scale(1.04);
-  filter:drop-shadow(0 24px 38px rgba(0,0,0,.85));
+  transform:rotateX(2deg) rotateY(0deg) translateY(-4px) scale(1.03);
+  filter:drop-shadow(0 30px 46px rgba(0,0,0,.92));
 }
 .camera-body{
   display:flex;
   flex-direction:column;
   align-items:center;
 }
+/* Asa superior de aleación de aluminio con slots NATO y cold-shoe */
 .camera-top-handle{
-  width:130px;
-  height:14px;
-  background:linear-gradient(to bottom, #233344 0%, #15202c 100%);
-  border:1px solid #3c5673;
-  border-radius:5px 5px 0 0;
+  width:150px;
+  height:16px;
+  background:linear-gradient(to bottom, #2b3d52 0%, #172432 50%, #0e1720 100%);
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:6px 6px 0 0;
   display:flex;
   align-items:center;
   justify-content:space-between;
   padding:0 8px;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.25), 0 2px 6px rgba(0,0,0,.5);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 3px 8px rgba(0,0,0,.6);
+  position:relative;
 }
-.camera-handle-grip{
-  width:64px;
-  height:5px;
-  background:#090f15;
+.camera-handle-slots{
+  display:flex;
+  gap:5px;
+  align-items:center;
+}
+.camera-handle-slot{
+  width:14px;
+  height:4.5px;
+  background:#070b0f;
   border-radius:2px;
-  border:0.5px solid rgba(255,255,255,.1);
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.9), 0 0.5px 0 rgba(255,255,255,.1);
 }
-.camera-mic-mount{
-  width:9px;
-  height:9px;
-  border-radius:50%;
-  background:#203140;
-  border:1px solid #38516d;
-  display:grid;
-  place-items:center;
+.camera-cold-shoe{
+  width:12px;
+  height:7px;
+  background:#131c26;
+  border:1px solid #3d5673;
+  border-radius:2px;
+}
+.camera-rec-button-top{
+  display:flex;
+  align-items:center;
+  gap:3px;
+  background:#101923;
+  border:0.5px solid #ff3b30;
+  padding:1px 5px;
+  border-radius:3px;
+  box-shadow:0 0 6px rgba(255,59,48,.4);
+}
+.camera-rec-button-top span{
+  font-size:6px;
+  font-weight:900;
+  color:#ff5f56;
+  letter-spacing:.05em;
 }
 .cam-rec-dot{
-  width:4px;
-  height:4px;
+  width:5px;
+  height:5px;
   border-radius:50%;
-  background:#E64A00;
-  box-shadow:0 0 6px #E64A00;
+  background:#ff2a00;
+  box-shadow:0 0 8px #ff2a00, 0 0 14px rgba(255,42,0,.8);
+  animation:recBlink 1.2s infinite ease-in-out;
 }
+
+/* Chasis de la cámara: cuerpo mecanizado con fibra de carbono y montura */
 .camera-chassis{
-  width:245px;
-  background:linear-gradient(145deg, #192736 0%, #101923 60%, #0c131a 100%);
-  border:1.5px solid #385069;
-  border-radius:12px;
+  width:264px;
+  background:linear-gradient(150deg, #243548 0%, #141f2a 40%, #0d151e 100%);
+  border:1.5px solid rgba(255,255,255,.18);
+  border-radius:13px;
   padding:9px;
   display:flex;
   gap:10px;
-  box-shadow:0 16px 36px -6px rgba(0,0,0,.75), inset 0 1px 0 rgba(255,255,255,.25);
+  box-shadow:
+    0 18px 40px -6px rgba(0,0,0,.85),
+    inset 0 1.5px 1px rgba(255,255,255,.3),
+    inset 0 -1px 2px rgba(0,0,0,.9);
   position:relative;
 }
+.camera-chassis::before{
+  content:'';
+  position:absolute;
+  top:5px;
+  left:6px;
+  width:4px;
+  height:4px;
+  background:#3b536e;
+  border-radius:50%;
+  box-shadow:
+    inset 0 0 1px #000,
+    0 0 0 0.5px rgba(255,255,255,.2),
+    248px 0 0 #3b536e,
+    0 114px 0 #3b536e,
+    248px 114px 0 #3b536e;
+}
+
+/* Monitor de dirección SmallHD con visor 4K y UI cinemática */
 .camera-side-panel{
   flex:1.25;
-  background:#0a1017;
-  border-radius:7px;
-  border:1px solid rgba(255,255,255,.1);
+  background:#070b10;
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,.12);
   padding:7px;
   display:flex;
   flex-direction:column;
-  gap:6px;
-  box-shadow:inset 0 0 10px rgba(0,0,0,.8);
+  gap:5px;
+  box-shadow:inset 0 0 14px rgba(0,0,0,.9);
 }
 .camera-rec-badge{
   display:flex;
   align-items:center;
-  gap:6px;
-  font-size:9.5px;
+  justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  padding-bottom:3px;
+}
+.camera-badge-left{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  font-size:9px;
   color:#fff;
   font-weight:900;
   letter-spacing:.08em;
+}
+.camera-codec-tag{
+  font-size:6.5px;
+  font-weight:800;
+  color:#5CB83E;
+  background:rgba(92,184,62,.15);
+  border:0.5px solid rgba(92,184,62,.3);
+  padding:1px 4px;
+  border-radius:2px;
 }
 .rec-led{
   width:7px;
@@ -825,156 +1046,304 @@ body{
   50%{opacity:.25;transform:scale(.75)}
 }
 .camera-monitor{
-  background:#05090d;
+  background:#03060a;
   border-radius:5px;
-  border:1px solid #1a2a3a;
+  border:1px solid #142230;
   padding:5px 6px;
   display:flex;
   flex-direction:column;
   gap:4px;
+  box-shadow:inset 0 0 10px rgba(0,0,0,.95);
 }
 .cam-mon-header{
   display:flex;
   justify-content:space-between;
-  font-size:7px;
+  font-size:6.8px;
   color:var(--ink-2);
   font-weight:700;
+  letter-spacing:.02em;
+}
+.cam-mon-header b{
+  color:#fff;
 }
 .cam-viewfinder{
-  height:46px;
-  border:1px dashed rgba(255,255,255,.18);
+  height:48px;
+  border:1px solid rgba(255,255,255,.14);
   border-radius:3px;
   position:relative;
-  display:grid;
-  place-items:center;
-  background:radial-gradient(circle, rgba(92,184,62,.08) 0%, transparent 80%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(circle, rgba(92,184,62,.09) 0%, transparent 80%),
+    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+  background-size:100% 100%, 16px 16px, 16px 16px;
+  overflow:hidden;
 }
+.cam-crosshair{
+  position:absolute;
+  width:16px;
+  height:16px;
+  pointer-events:none;
+}
+.cam-crosshair::before, .cam-crosshair::after{
+  content:'';
+  position:absolute;
+  background:rgba(255,255,255,.4);
+}
+.cam-crosshair::before{top:7.5px;left:0;width:16px;height:1px}
+.cam-crosshair::after{left:7.5px;top:0;height:16px;width:1px}
 .cam-tc{
-  font-family:monospace;
-  font-size:9px;
+  font-family:'Courier New', monospace;
+  font-size:9.5px;
   color:#5CB83E;
-  font-weight:800;
-  letter-spacing:.06em;
-  text-shadow:0 0 8px rgba(92,184,62,.7);
+  font-weight:900;
+  letter-spacing:.08em;
+  text-shadow:0 0 10px rgba(92,184,62,.8);
+  z-index:2;
+}
+.cam-fps-overlay{
+  position:absolute;
+  bottom:2px;
+  right:3px;
+  font-size:5.5px;
+  color:#8ba5be;
+  font-weight:700;
 }
 .cam-vu-meters{
   display:flex;
   flex-direction:column;
   gap:2px;
+  background:rgba(0,0,0,.6);
+  padding:2px 4px;
+  border-radius:2px;
 }
-.cam-vu{
-  height:2.5px;
-  background:linear-gradient(to right, #5CB83E 70%, #d4a017 85%, #E64A00 100%);
-  border-radius:1px;
-}
-.cam-vu.ch1{width:82%}
-.cam-vu.ch2{width:68%}
-.hub-cat-card:hover .cam-vu.ch1{animation:vuPulse1 1s infinite alternate}
-.hub-cat-card:hover .cam-vu.ch2{animation:vuPulse2 0.8s infinite alternate}
-.cam-dials{
+.cam-vu-row{
   display:flex;
   align-items:center;
   gap:4px;
+}
+.cam-vu-label{
+  font-size:5.5px;
+  color:var(--ink-2);
+  font-weight:800;
+  width:8px;
+}
+.cam-vu-track{
+  flex:1;
+  height:3px;
+  background:rgba(255,255,255,.08);
+  border-radius:1px;
+  overflow:hidden;
+}
+.cam-vu{
+  height:100%;
+  background:linear-gradient(to right, #5CB83E 65%, #ffd60a 82%, #ff3b30 100%);
+  border-radius:1px;
+  box-shadow:0 0 4px rgba(92,184,62,.5);
+}
+.cam-vu.ch1{width:86%}
+.cam-vu.ch2{width:72%}
+.hub-cat-card:hover .cam-vu.ch1{animation:vuPulse1 0.9s infinite alternate}
+.hub-cat-card:hover .cam-vu.ch2{animation:vuPulse2 0.75s infinite alternate}
+@keyframes vuPulse1{
+  0%{width:72%}
+  50%{width:94%}
+  100%{width:84%}
+}
+@keyframes vuPulse2{
+  0%{width:58%}
+  50%{width:80%}
+  100%{width:68%}
+}
+.cam-dials{
+  display:flex;
+  align-items:center;
+  gap:5px;
   font-size:7px;
   color:var(--ink-2);
+  padding-top:2px;
 }
 .cam-dial{
-  width:11px;
-  height:11px;
+  width:13px;
+  height:13px;
   border-radius:50%;
-  background:#1a2b3d;
-  border:1px solid #3c5673;
-  box-shadow:inset 0 0 4px rgba(0,0,0,.6);
+  background:radial-gradient(circle, #2a3c50 0%, #111a24 100%);
+  border:1px solid #4a688a;
+  box-shadow:inset 0 1px 2px rgba(255,255,255,.2), 0 2px 4px rgba(0,0,0,.7);
+  position:relative;
+}
+.cam-dial::after{
+  content:'';
+  position:absolute;
+  top:2px;
+  left:50%;
+  transform:translateX(-50%);
+  width:1.5px;
+  height:3.5px;
+  background:#fff;
+  border-radius:1px;
 }
 .cam-card-slot{
   font-size:6.5px;
   margin-left:auto;
-  opacity:.75;
-  font-weight:600;
+  color:#94a8be;
+  font-weight:700;
+  background:rgba(255,255,255,.05);
+  padding:1px 5px;
+  border-radius:3px;
+  border:0.5px solid rgba(255,255,255,.1);
 }
+
+/* Lente de Cine Master Prime T1.5 con anillos de engranaje y óptica de multicapas */
 .camera-lens-assembly{
-  flex:0.85;
+  flex:0.95;
   display:grid;
   place-items:center;
   position:relative;
 }
 .matte-box{
-  width:84px;
-  height:84px;
-  background:linear-gradient(135deg, #1e2e3e 0%, #131d27 100%);
-  border:2.5px solid #3c5775;
+  width:96px;
+  height:96px;
+  background:linear-gradient(135deg, #243547 0%, #121c26 60%, #090e13 100%);
+  border:2px solid #456385;
   border-radius:50%;
   display:grid;
   place-items:center;
-  box-shadow:inset 0 0 14px rgba(0,0,0,.8), 0 8px 20px rgba(0,0,0,.5);
+  box-shadow:
+    inset 0 0 18px rgba(0,0,0,.95),
+    0 10px 24px rgba(0,0,0,.65),
+    0 0 1px rgba(255,255,255,.25);
   position:relative;
 }
 .matte-box-flag{
   position:absolute;
-  top:-7px;
-  width:58px;
-  height:5px;
-  background:#091017;
-  border:0.5px solid #3c5775;
-  border-radius:2px;
-  box-shadow:0 -2px 6px rgba(0,0,0,.5);
+  top:-8px;
+  width:68px;
+  height:6px;
+  background:linear-gradient(to bottom, #1d2b38 0%, #0c1218 100%);
+  border:1px solid #456385;
+  border-radius:3px;
+  box-shadow:0 -3px 8px rgba(0,0,0,.6);
 }
 .lens-barrel{
-  width:68px;
-  height:68px;
+  width:80px;
+  height:80px;
   border-radius:50%;
-  background:#091017;
-  border:2px solid #507194;
+  background:radial-gradient(circle, #0e1720 0%, #05080c 100%);
+  border:2.5px solid #2f455d;
   display:grid;
   place-items:center;
   position:relative;
-  transition:transform 600ms cubic-bezier(.16,1,.3,1);
+  transition:transform 700ms cubic-bezier(.16,1,.3,1);
+  box-shadow:inset 0 0 12px rgba(0,0,0,.95);
 }
 .hub-cat-card:hover .lens-barrel{
-  transform:rotate(18deg);
+  transform:rotate(24deg);
 }
 .lens-gear-teeth{
   position:absolute;
-  inset:-3px;
-  border:2px dashed rgba(255,255,255,.15);
+  inset:-4px;
+  border:2.5px dashed rgba(255,255,255,.22);
   border-radius:50%;
   pointer-events:none;
 }
 .lens-aperture-ring{
   position:absolute;
   font-size:6.5px;
-  color:var(--ink-2);
-  font-weight:800;
-  letter-spacing:.03em;
+  color:#b4cbe0;
+  font-weight:900;
+  letter-spacing:.05em;
   bottom:3px;
+  text-shadow:0 1px 3px rgba(0,0,0,.9);
+  background:rgba(0,0,0,.7);
+  padding:0 3px;
+  border-radius:2px;
+}
+.lens-focal-spec{
+  position:absolute;
+  font-size:6px;
+  color:#5CB83E;
+  font-weight:900;
+  letter-spacing:.04em;
+  top:3px;
+  text-shadow:0 0 6px rgba(92,184,62,.6);
+  background:rgba(0,0,0,.7);
+  padding:0 3px;
+  border-radius:2px;
 }
 .lens-front-element{
-  width:46px;
-  height:46px;
+  width:54px;
+  height:54px;
   border-radius:50%;
-  background:radial-gradient(circle at 35% 35%, rgba(92,184,62,.45) 0%, rgba(138,43,226,.3) 45%, #02070c 85%);
-  border:1px solid #5CB83E;
-  box-shadow:inset 0 0 12px rgba(92,184,62,.5), 0 0 10px rgba(92,184,62,.3);
+  background:
+    radial-gradient(circle at 35% 35%, rgba(92,184,62,.55) 0%, rgba(30,144,255,.35) 30%, rgba(138,43,226,.3) 60%, #020509 90%);
+  border:1.5px solid #5CB83E;
+  box-shadow:
+    inset 0 0 16px rgba(92,184,62,.6),
+    inset 0 0 30px rgba(0,0,0,.95),
+    0 0 14px rgba(92,184,62,.35);
   position:relative;
   overflow:hidden;
+  display:grid;
+  place-items:center;
+}
+.lens-iris-blades{
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  border:1px dashed rgba(255,255,255,.25);
+  background:radial-gradient(circle, #010407 50%, rgba(92,184,62,.15) 100%);
+  box-shadow:inset 0 0 8px #000;
 }
 .lens-glass-reflection{
   position:absolute;
-  top:-25%;
-  left:-25%;
-  width:150%;
-  height:150%;
-  background:linear-gradient(135deg, rgba(92,184,62,.35) 0%, transparent 35%, rgba(255,255,255,.25) 48%, transparent 60%);
+  top:-35%;
+  left:-35%;
+  width:170%;
+  height:170%;
+  background:linear-gradient(135deg, rgba(92,184,62,.4) 0%, transparent 32%, rgba(255,255,255,.35) 45%, rgba(140,82,255,.25) 55%, transparent 70%);
   pointer-events:none;
+  filter:blur(0.5px);
+}
+
+/* Soporte de barras de 15mm y placa Arri Dovetail */
+.camera-rods-assembly{
+  display:flex;
+  gap:32px;
+  margin-top:-3px;
+  z-index:2;
+}
+.camera-rod{
+  width:10px;
+  height:9px;
+  background:linear-gradient(to right, #111a24 0%, #2f4459 45%, #15222f 100%);
+  border-radius:50%;
+  border:1px solid #4a688b;
+  box-shadow:0 3px 6px rgba(0,0,0,.7);
 }
 .camera-base-plate{
-  width:150px;
-  height:8px;
-  background:linear-gradient(to right, #1a2938 0%, #2b3e52 50%, #1a2938 100%);
-  border-radius:0 0 5px 5px;
-  border:1px solid #3b536e;
+  width:168px;
+  height:9px;
+  background:linear-gradient(to right, #1a2837 0%, #354c64 50%, #1a2837 100%);
+  border-radius:0 0 6px 6px;
+  border:1px solid rgba(255,255,255,.2);
   border-top:none;
-  box-shadow:0 4px 10px rgba(0,0,0,.5);
+  box-shadow:0 6px 14px rgba(0,0,0,.65);
+}
+
+/* Responsividad para dispositivos gráficos en pantallas pequeñas (390px) */
+@media(max-width:420px){
+  .macbook-device{width:250px}
+  .macbook-display{height:120px}
+  .m-card-art{height:28px}
+  .camera-device{width:236px}
+  .camera-chassis{width:236px}
+  .matte-box{width:84px;height:84px}
+  .lens-barrel{width:70px;height:70px}
+  .lens-front-element{width:46px;height:46px}
 }
 
 /* Textos e informaciones de las categorías */
@@ -2052,35 +2421,78 @@ body{
               <span class="hub-tag">Feedback Cliente</span>
             </div>
 
-            <div class="device-stage" title="MacBook Pro · Simulador de Tableros Nexo">
+            <div class="device-stage stage-macbook" title="MacBook Pro · Simulador de Tableros Nexo">
               <div class="macbook-device">
                 <div class="macbook-screen-lid">
-                  <div class="macbook-notch"><span class="macbook-cam"></span></div>
+                  <div class="macbook-rubber-gasket"></div>
+                  <div class="macbook-notch">
+                    <span class="macbook-cam"></span>
+                    <span class="macbook-sensor"></span>
+                  </div>
                   <div class="macbook-display">
                     <div class="macbook-topbar">
-                      <span class="m-dot red"></span><span class="m-dot yellow"></span><span class="m-dot green"></span>
-                      <span class="m-title">NEXO · Banco de Aprobaciones</span>
+                      <div class="m-controls">
+                        <span class="m-dot red"></span>
+                        <span class="m-dot yellow"></span>
+                        <span class="m-dot green"></span>
+                      </div>
+                      <div class="m-url-pill">
+                        <svg class="m-url-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        <span>nexo.agencia · Tableros</span>
+                      </div>
+                      <div class="m-sys-icons">
+                        <span>100%</span>
+                      </div>
                     </div>
                     <div class="macbook-content-preview">
                       <div class="m-preview-col">
-                        <div class="m-item-chip">Feed</div>
-                        <div class="m-preview-box">
-                          <div class="mini-tag ok">100% OK</div>
-                          <div class="mini-lines"><span></span><span></span></div>
+                        <div class="m-col-header">
+                          <span class="m-item-chip">Feed</span>
+                          <span class="mini-pill ok">✓ 100%</span>
+                        </div>
+                        <div class="m-preview-card">
+                          <div class="m-card-art feed-art">
+                            <span class="m-art-badge">Post</span>
+                            <div class="m-art-overlay"></div>
+                          </div>
+                          <div class="m-meta-row">
+                            <div class="mini-bars-graphic"><span></span><span></span><span></span></div>
+                            <span class="mini-pill ok">Aprobado</span>
+                          </div>
                         </div>
                       </div>
                       <div class="m-preview-col">
-                        <div class="m-item-chip">Reels</div>
-                        <div class="m-preview-box">
-                          <div class="mini-tag rev">Revisión</div>
-                          <div class="mini-play">▶</div>
+                        <div class="m-col-header">
+                          <span class="m-item-chip">Reels</span>
+                          <span class="mini-pill fix">↺ Cambios</span>
+                        </div>
+                        <div class="m-preview-card">
+                          <div class="m-card-art reel-art">
+                            <div class="m-play-btn">▶</div>
+                            <span class="m-art-badge">0:30</span>
+                            <div class="m-art-overlay"></div>
+                          </div>
+                          <div class="m-meta-row">
+                            <div class="mini-bars-graphic"><span></span><span></span><span></span></div>
+                            <span class="mini-pill fix">Revisión</span>
+                          </div>
                         </div>
                       </div>
                       <div class="m-preview-col">
-                        <div class="m-item-chip">Stories</div>
-                        <div class="m-preview-box">
-                          <div class="mini-tag pend">Pendiente</div>
-                          <div class="mini-bars"><span></span><span></span><span></span></div>
+                        <div class="m-col-header">
+                          <span class="m-item-chip">Stories</span>
+                          <span class="mini-pill pend">⏳ Pend.</span>
+                        </div>
+                        <div class="m-preview-card">
+                          <div class="m-card-art story-art">
+                            <div class="m-story-ring"><div class="m-story-dot"></div></div>
+                            <span class="m-art-badge">24h</span>
+                            <div class="m-art-overlay"></div>
+                          </div>
+                          <div class="m-meta-row">
+                            <div class="mini-bars-graphic"><span></span><span></span><span></span></div>
+                            <span class="mini-pill pend">Pendiente</span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -2088,6 +2500,8 @@ body{
                   </div>
                 </div>
                 <div class="macbook-base">
+                  <div class="macbook-hinge"></div>
+                  <div class="macbook-thumb-indent"></div>
                   <div class="macbook-keyboard-deck">
                     <div class="macbook-trackpad"></div>
                   </div>
@@ -2143,47 +2557,74 @@ body{
               <span class="hub-tag active"><span class="rec-led"></span> REC EN VIVO</span>
             </div>
 
-            <div class="device-stage" title="Cámara de Cine 4K · Pautas Técnicas Nexo">
+            <div class="device-stage stage-camera" title="Cámara de Cine 4K · Pautas Técnicas Nexo">
               <div class="camera-device">
                 <div class="camera-body">
                   <div class="camera-top-handle">
-                    <div class="camera-handle-grip"></div>
-                    <div class="camera-mic-mount"><span class="cam-rec-dot"></span></div>
+                    <div class="camera-handle-slots">
+                      <span class="camera-handle-slot"></span>
+                      <span class="camera-handle-slot"></span>
+                      <span class="camera-handle-slot"></span>
+                    </div>
+                    <div class="camera-cold-shoe"></div>
+                    <div class="camera-rec-button-top">
+                      <span class="cam-rec-dot"></span>
+                      <span>REC</span>
+                    </div>
                   </div>
                   <div class="camera-chassis">
                     <div class="camera-side-panel">
                       <div class="camera-rec-badge">
-                        <span class="rec-led"></span> <b>REC</b>
+                        <div class="camera-badge-left">
+                          <span class="rec-led"></span> <b>REC</b>
+                        </div>
+                        <span class="camera-codec-tag">ProRes 4444</span>
                       </div>
                       <div class="camera-monitor">
                         <div class="cam-mon-header">
-                          <span>4K DCI · 60fps</span>
-                          <span>RAW</span>
+                          <span><b>4K DCI</b> · 24fps</span>
+                          <span>ISO 800</span>
                         </div>
                         <div class="cam-viewfinder">
-                          <div class="cam-tc">01:24:18:04</div>
+                          <div class="cam-crosshair"></div>
+                          <div class="cam-tc">01:24:18:24</div>
+                          <div class="cam-fps-overlay">5600K · 180°</div>
                         </div>
                         <div class="cam-vu-meters">
-                          <span class="cam-vu ch1"></span>
-                          <span class="cam-vu ch2"></span>
+                          <div class="cam-vu-row">
+                            <span class="cam-vu-label">L</span>
+                            <div class="cam-vu-track"><div class="cam-vu ch1"></div></div>
+                          </div>
+                          <div class="cam-vu-row">
+                            <span class="cam-vu-label">R</span>
+                            <div class="cam-vu-track"><div class="cam-vu ch2"></div></div>
+                          </div>
                         </div>
                       </div>
                       <div class="cam-dials">
-                        <span class="cam-dial"></span>
-                        <span class="cam-dial"></span>
-                        <span class="cam-card-slot">CFexpress</span>
+                        <span class="cam-dial" title="Iris"></span>
+                        <span class="cam-dial" title="Shutter"></span>
+                        <span class="cam-card-slot">CFexpress 82%</span>
                       </div>
                     </div>
                     <div class="camera-lens-assembly">
                       <div class="matte-box">
+                        <div class="matte-box-flag"></div>
                         <div class="lens-barrel">
-                          <span class="lens-aperture-ring">F/1.8 · 35mm</span>
+                          <div class="lens-gear-teeth"></div>
+                          <span class="lens-focal-spec">35mm</span>
+                          <span class="lens-aperture-ring">T1.5 CINE</span>
                           <div class="lens-front-element">
+                            <div class="lens-iris-blades"></div>
                             <div class="lens-glass-reflection"></div>
                           </div>
                         </div>
                       </div>
                     </div>
+                  </div>
+                  <div class="camera-rods-assembly">
+                    <span class="camera-rod"></span>
+                    <span class="camera-rod"></span>
                   </div>
                   <div class="camera-base-plate"></div>
                 </div>

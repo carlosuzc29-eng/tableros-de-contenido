@@ -98,3 +98,18 @@ El archivo `index.html` es el Banco de Trabajo interno de Nexo para gestionar y 
 - **Publicación**:
   - Los tableros generados se publican en `produccion/<cliente>-<fecha>-<código>.html` (enlace privado, `noindex`).
 
+## Informes
+
+- **Carpetas**:
+  - `informes/gestion/`: Informes de Gestión y Rendimiento.
+  - `informes/meta-ads/`: Informes de Meta Ads.
+- **Formato del nombre**:
+  - `<cliente-slug>-<aaaa-mm>-<código>.html` (por ejemplo: `cliente-ejemplo-2026-10-000000.html`).
+  - El cliente se escribe en minúsculas separado por guiones (`<cliente-slug>`).
+  - La fecha sigue el formato numérico de año de cuatro dígitos y mes de dos dígitos (`<aaaa-mm>`).
+  - Código único al final (`<código>`).
+- **Regla estricta de no enlazar el resto de la web**:
+  - Los informes son páginas independientes para cada cliente con directiva `<meta name="robots" content="noindex, nofollow">`.
+  - **No enlazar el resto de la web**: No deben incluir enlaces hacia el Banco de trabajo (`index.html`), hacia el Espacio Creativo ni hacia otros clientes o tableros de la web.
+  - En el Banco de trabajo (`index.html`) está terminantemente prohibido escribir nombres de clientes o enlaces en el código HTML; el listado se consulta y construye de forma dinámica mediante la API pública de GitHub (`https://api.github.com/repos/carlosuzc29-eng/tableros-de-contenido/contents/informes/<tipo>`).
+

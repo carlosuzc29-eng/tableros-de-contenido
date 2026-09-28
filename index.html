@@ -322,15 +322,20 @@ body{
   padding:5px;
   border-radius:14px;
   border:1px solid var(--azul-border);
+  max-width:100%;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
 }
+.view-switcher-bar::-webkit-scrollbar{display:none}
 .view-switch-btn{
   background:transparent;
   border:none;
   color:var(--ink-2);
-  padding:9px 18px;
+  padding:9px 16px;
   border-radius:10px;
   font-family:inherit;
-  font-size:13.5px;
+  font-size:13px;
   font-weight:700;
   cursor:pointer;
   display:inline-flex;
@@ -338,6 +343,8 @@ body{
   gap:8px;
   transition:all var(--trans);
   min-height:40px;
+  white-space:nowrap;
+  flex-shrink:0;
 }
 .view-switch-btn:hover{
   color:#fff;
@@ -1344,6 +1351,16 @@ body{
 .badge-fix{background:var(--naranja-soft);color:var(--naranja);border:1px solid rgba(230,74,0,.3)}
 .badge-rev{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2)}
 .badge-wait{background:rgba(255,255,255,.05);color:var(--ink-2);border:1px solid rgba(255,255,255,.1)}
+.badge-gestion{background:rgba(92,184,62,.15);color:#5CB83E;border:1px solid rgba(92,184,62,.35)}
+.badge-meta{background:#1F3549;color:#ffffff;border:1px solid rgba(255,255,255,.25);box-shadow:0 1px 4px rgba(0,0,0,.3)}
+
+/* Responsivo para barra de herramientas y buscador a 390px */
+@media(max-width:480px){
+  .toolbar-row-main{flex-direction:column;align-items:stretch}
+  .search-box{min-width:100%;width:100%}
+  .tool-selects{width:100%}
+  .tool-select{flex:1;min-width:140px}
+}
 
 /* Barra de progreso */
 .progress-bar-wrap{margin:4px 0 2px}
@@ -1992,6 +2009,14 @@ body{
         </svg>
         <span>Producción</span>
       </button>
+      <button class="view-switch-btn" id="btnTabInformes">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="20" x2="18" y2="10"></line>
+          <line x1="12" y1="20" x2="12" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="14"></line>
+        </svg>
+        <span>Informes</span>
+      </button>
     </div>
 
     <!-- Sección Hub Principal: Espacio Creativo -->
@@ -2296,6 +2321,50 @@ body{
       </div>
       <div id="prodContent"></div>
     </div>
+
+    <!-- Sección Informes (Subpágina) -->
+    <div id="sectionInformes" style="display:none">
+      <!-- Navegación de Subpágina -->
+      <div class="subpage-nav-bar">
+        <button class="btn-subpage-back" id="btnBackFromInformes">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          <span>Volver al Espacio Creativo</span>
+        </button>
+        <div class="subpage-breadcrumb">
+          <span>Espacio Creativo</span> <span class="sep">/</span> <b>Informes de Rendimiento</b>
+        </div>
+      </div>
+
+      <!-- Barra de herramientas: buscador por cliente, selector de tipo y botón actualizar -->
+      <div class="toolbar-wrap" id="informesToolbar">
+        <div class="toolbar-row-main">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="search" id="searchInforme" placeholder="Buscar cliente por nombre…">
+          </div>
+          <div class="tool-selects">
+            <select class="tool-select" id="selectTipoInforme" aria-label="Tipo de informe">
+              <option value="gestion">Gestión y rendimiento</option>
+              <option value="meta-ads">Meta Ads</option>
+            </select>
+            <button class="btn-tool" id="btnRefreshInformes" title="Actualizar lista de informes">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+              </svg>
+              <span>Actualizar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contenedor dinámico de informes -->
+      <div id="informesContent"></div>
+    </div>
   </div>
 </div>
 
@@ -2481,6 +2550,17 @@ body{
   var btnTabHub = document.getElementById('btnTabHub');
   var btnTabAprobaciones = document.getElementById('btnTabAprobaciones');
   var btnTabProduccion = document.getElementById('btnTabProduccion');
+  var btnTabInformes = document.getElementById('btnTabInformes');
+  var sectionInformes = document.getElementById('sectionInformes');
+  var btnBackFromInformes = document.getElementById('btnBackFromInformes');
+  var selectTipoInforme = document.getElementById('selectTipoInforme');
+  var searchInformeInp = document.getElementById('searchInforme');
+  var btnRefreshInformes = document.getElementById('btnRefreshInformes');
+  var informesContent = document.getElementById('informesContent');
+  var currentInformesList = [];
+
+  var ALLOWED_EMAILS = ['carlosuzc29@gmail.com', 'andrevmuedit@gmail.com'];
+
   var btnGoAprobaciones = document.getElementById('btnGoAprobaciones');
   var btnGoProduccion = document.getElementById('btnGoProduccion');
   var btnBackFromAprob = document.getElementById('btnBackFromAprob');
@@ -3668,6 +3748,272 @@ body{
     });
   }
 
+  // — 9. Apartado de Informes (Gestión y Rendimiento / Meta Ads) —
+  var MESES_ES = {
+    '01': 'Enero', '02': 'Febrero', '03': 'Marzo', '04': 'Abril',
+    '05': 'Mayo', '06': 'Junio', '07': 'Julio', '08': 'Agosto',
+    '09': 'Septiembre', '10': 'Octubre', '11': 'Noviembre', '12': 'Diciembre'
+  };
+
+  function slugToTitleCase(slug){
+    if (!slug) return '';
+    return slug.split('-').map(function(word){
+      if (!word) return '';
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    }).join(' ');
+  }
+
+  function parseInformeItem(file, tipo){
+    var fn = file.name || '';
+    var base = fn.replace(/\.html$/i, '');
+    var m = base.match(/^(.+?)-(\d{4})-(\d{2})(?:-(.+))?$/);
+    var clienteTitle = '';
+    var mesTexto = '';
+    var sortScore = 0;
+
+    if (m) {
+      var cSlug = m[1];
+      var y = m[2];
+      var mm = m[3];
+      clienteTitle = slugToTitleCase(cSlug);
+      var mesNom = MESES_ES[mm] || mm;
+      mesTexto = mesNom + ' ' + y;
+      sortScore = parseInt(y, 10) * 100 + parseInt(mm, 10);
+    } else {
+      clienteTitle = slugToTitleCase(base);
+      mesTexto = 'Informe';
+      sortScore = 0;
+    }
+
+    var ghPagesUrl = 'https://carlosuzc29-eng.github.io/tableros-de-contenido/informes/' + encodeURIComponent(tipo) + '/' + encodeURIComponent(fn);
+
+    return {
+      filename: fn,
+      tipo: tipo,
+      clienteTitle: clienteTitle,
+      mesTexto: mesTexto,
+      sortScore: sortScore,
+      url: ghPagesUrl
+    };
+  }
+
+  var INFORMES_CACHE_KEY_PREFIX = 'nexo_informes_cache_';
+  var INFORMES_CACHE_TTL = 5 * 60 * 1000; // 5 minutos
+
+  function getCachedInformes(tipo){
+    try {
+      var raw = sessionStorage.getItem(INFORMES_CACHE_KEY_PREFIX + tipo);
+      if (!raw) return null;
+      var obj = JSON.parse(raw);
+      if (!obj || !obj.ts || !Array.isArray(obj.data)) return null;
+      if (Date.now() - obj.ts > INFORMES_CACHE_TTL) return null;
+      return obj.data;
+    } catch(e) {
+      return null;
+    }
+  }
+
+  function setCachedInformes(tipo, data){
+    try {
+      sessionStorage.setItem(INFORMES_CACHE_KEY_PREFIX + tipo, JSON.stringify({
+        ts: Date.now(),
+        data: data
+      }));
+    } catch(e) {}
+  }
+
+  function clearCachedInformes(tipo){
+    try {
+      sessionStorage.removeItem(INFORMES_CACHE_KEY_PREFIX + tipo);
+    } catch(e) {}
+  }
+
+  function loadAndRenderInformes(forceRefresh){
+    if (!informesContent) return;
+    var tipo = (selectTipoInforme && selectTipoInforme.value) ? selectTipoInforme.value : 'gestion';
+
+    if (forceRefresh) {
+      clearCachedInformes(tipo);
+    } else {
+      var cached = getCachedInformes(tipo);
+      if (cached) {
+        currentInformesList = cached;
+        renderInformesList();
+        return;
+      }
+    }
+
+    informesContent.innerHTML =
+      '<div class="state-message">' +
+        '<h3>Cargando informes…</h3>' +
+        '<p>Consultando el repositorio de informes en GitHub.</p>' +
+      '</div>';
+
+    var apiUrl = 'https://api.github.com/repos/carlosuzc29-eng/tableros-de-contenido/contents/informes/' + encodeURIComponent(tipo);
+    fetch(apiUrl)
+      .then(function(res){
+        if (res.status === 404) {
+          return [];
+        }
+        if (!res.ok) {
+          throw new Error('HTTP ' + res.status);
+        }
+        return res.json();
+      })
+      .then(function(data){
+        if (!Array.isArray(data)) data = [];
+        var files = data.filter(function(item){
+          return item.type === 'file' && /\.html$/i.test(item.name);
+        });
+        setCachedInformes(tipo, files);
+        currentInformesList = files;
+        renderInformesList();
+        if (forceRefresh) {
+          toast('✓ Informes actualizados');
+        }
+      })
+      .catch(function(err){
+        console.error('Error al consultar informes de GitHub:', err);
+        if (informesContent) {
+          informesContent.innerHTML =
+            '<div class="state-message">' +
+              '<h3>Aún no hay informes</h3>' +
+              '<p>No se pudieron recuperar informes en este momento (' + escapeHtml(err.message || 'error') + ').</p>' +
+            '</div>';
+        }
+        toast('No se pudieron cargar los informes');
+      });
+  }
+
+  function renderInformesList(){
+    if (!informesContent) return;
+    if (!currentInformesList || !currentInformesList.length) {
+      informesContent.innerHTML =
+        '<div class="state-message">' +
+          '<h3>Aún no hay informes</h3>' +
+          '<p>Los informes publicados en esta sección aparecerán aquí automáticamente.</p>' +
+        '</div>';
+      return;
+    }
+
+    var tipo = (selectTipoInforme && selectTipoInforme.value) ? selectTipoInforme.value : 'gestion';
+    var isGestion = (tipo === 'gestion');
+    var badgeClass = isGestion ? 'badge-gestion' : 'badge-meta';
+    var badgeLabel = isGestion ? 'Gestión y rendimiento' : 'Meta Ads';
+
+    var parsedItems = currentInformesList.map(function(f){
+      return parseInformeItem(f, tipo);
+    });
+
+    var q = (searchInformeInp && searchInformeInp.value ? searchInformeInp.value : '').toLowerCase().trim();
+    if (q) {
+      parsedItems = parsedItems.filter(function(it){
+        return it.clienteTitle.toLowerCase().indexOf(q) !== -1;
+      });
+    }
+
+    if (!parsedItems.length) {
+      informesContent.innerHTML =
+        '<div class="state-message">' +
+          '<h3>No encontramos informes que coincidan</h3>' +
+          '<p>Intenta con otro término de búsqueda.</p>' +
+        '</div>';
+      return;
+    }
+
+    // Agrupar por cliente, con el mes más reciente primero
+    var clientGroups = {};
+    parsedItems.forEach(function(it){
+      var c = it.clienteTitle || 'Sin cliente';
+      if (!clientGroups[c]) clientGroups[c] = [];
+      clientGroups[c].push(it);
+    });
+
+    // Ordenar reportes de cada cliente con el mes más reciente primero
+    Object.keys(clientGroups).forEach(function(c){
+      clientGroups[c].sort(function(a, b){
+        return b.sortScore - a.sortScore;
+      });
+    });
+
+    var clientNames = Object.keys(clientGroups);
+    clientNames.sort(function(a, b){ return a.localeCompare(b); });
+
+    var html = '';
+    clientNames.forEach(function(cName){
+      var items = clientGroups[cName];
+      html += '<div class="month-block">' +
+        '<div class="month-header-bar">' +
+          '<div class="month-header-title">' +
+            '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
+              '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>' +
+              '<circle cx="12" cy="7" r="4"></circle>' +
+            '</svg>' +
+            '<h3>' + escapeHtml(cName) + '</h3>' +
+          '</div>' +
+          '<span class="month-count-pill">' + items.length + (items.length === 1 ? ' informe' : ' informes') + '</span>' +
+        '</div>' +
+        '<div class="clients-grid">';
+
+      items.forEach(function(it){
+        html += '<div class="board-card" data-report-url="' + escapeHtml(it.url) + '">' +
+          '<div class="card-top">' +
+            '<div>' +
+              '<div class="card-period">' + escapeHtml(it.clienteTitle) + '</div>' +
+              '<div class="card-sub">' + escapeHtml(it.mesTexto) + '</div>' +
+            '</div>' +
+            '<span class="badge ' + badgeClass + '">' + badgeLabel + '</span>' +
+          '</div>' +
+          '<div class="card-foot" style="margin-top:auto; padding-top:10px;">' +
+            '<div class="card-actions" style="width:100%; justify-content:flex-end;">' +
+              '<button type="button" class="btn-card sec btn-copy-report" data-url="' + escapeHtml(it.url) + '" title="Copiar enlace">' +
+                '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
+                  '<rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>' +
+                  '<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>' +
+                '</svg>' +
+                '<span>Copiar enlace</span>' +
+              '</button>' +
+              '<a href="' + escapeHtml(it.url) + '" target="_blank" rel="noopener" class="btn-card pri btn-open-report" title="Abrir informe">' +
+                '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
+                  '<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>' +
+                  '<polyline points="15 3 21 3 21 9"></polyline>' +
+                  '<line x1="10" y1="14" x2="21" y2="3"></line>' +
+                '</svg>' +
+                '<span>Abrir</span>' +
+              '</a>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      });
+
+      html += '</div></div>';
+    });
+
+    informesContent.innerHTML = html;
+
+    var copyBtns = informesContent.querySelectorAll('.btn-copy-report');
+    copyBtns.forEach(function(b){
+      b.onclick = function(e){
+        e.stopPropagation();
+        e.preventDefault();
+        copyLink(b.getAttribute('data-url'));
+      };
+    });
+
+    var cards = informesContent.querySelectorAll('.board-card');
+    cards.forEach(function(card){
+      card.onclick = function(e){
+        if (e.target.closest('.card-actions') || e.target.closest('button') || e.target.closest('a')) {
+          return;
+        }
+        var u = card.getAttribute('data-report-url');
+        if (u) {
+          window.open(u, '_blank');
+        }
+      };
+    });
+  }
+
   function startRealtimeSync(isManualRefresh){
     showDash();
     if (!allTableros.length && !isManualRefresh) renderSkeleton();
@@ -3743,11 +4089,33 @@ body{
     errEl.textContent = 'Ingresando…';
     document.getElementById('btnGo').disabled = true;
 
-    var email = (v.indexOf('@') > 0) ? v : 'carlosuzc29@gmail.com';
+    var email = 'carlosuzc29@gmail.com';
     var password = v;
+    if (v.indexOf(':') > 0) {
+      var parts = v.split(':');
+      email = parts[0].trim();
+      password = parts.slice(1).join(':').trim();
+    } else if (v.indexOf('@') > 0) {
+      email = v;
+    }
+
+    if (ALLOWED_EMAILS.indexOf(email.toLowerCase().trim()) === -1) {
+      document.getElementById('btnGo').disabled = false;
+      errEl.textContent = 'Acceso no autorizado';
+      toast('Acceso no autorizado');
+      return;
+    }
 
     auth.signInWithEmailAndPassword(email, password)
-      .then(function(){
+      .then(function(cred){
+        var uEmail = (cred.user && cred.user.email ? cred.user.email : email).toLowerCase().trim();
+        if (ALLOWED_EMAILS.indexOf(uEmail) === -1) {
+          auth.signOut();
+          document.getElementById('btnGo').disabled = false;
+          errEl.textContent = 'Acceso no autorizado';
+          toast('Acceso no autorizado');
+          return;
+        }
         document.getElementById('btnGo').disabled = false;
         hideLogin();
         toast('Bienvenido al Espacio Creativo');
@@ -3778,6 +4146,7 @@ body{
       } catch(e){}
       allTableros = [];
       allProduccion = [];
+      currentInformesList = [];
       showPublic();
       toast('Sesión cerrada');
     }).catch(function(){
@@ -3788,11 +4157,24 @@ body{
   // Listener del estado de autenticación de Firebase
   auth.onAuthStateChanged(function(user){
     if (user) {
+      var uEmail = (user.email || '').toLowerCase().trim();
+      if (ALLOWED_EMAILS.indexOf(uEmail) === -1) {
+        auth.signOut().then(function(){
+          showPublic();
+          if (errEl) errEl.textContent = 'Acceso no autorizado';
+          toast('Acceso no autorizado');
+        });
+        return;
+      }
       startRealtimeSync(false);
     } else {
       if (unsubscribeFirestore) {
         unsubscribeFirestore();
         unsubscribeFirestore = null;
+      }
+      if (unsubscribeProduccion) {
+        unsubscribeProduccion();
+        unsubscribeProduccion = null;
       }
       showPublic();
     }
@@ -3819,13 +4201,17 @@ body{
     if (btnTabHub) btnTabHub.classList.toggle('on', activeTab === 'hub');
     if (btnTabAprobaciones) btnTabAprobaciones.classList.toggle('on', activeTab === 'aprobaciones');
     if (btnTabProduccion) btnTabProduccion.classList.toggle('on', activeTab === 'produccion');
+    if (btnTabInformes) btnTabInformes.classList.toggle('on', activeTab === 'informes');
 
     if (sectionHub) sectionHub.style.display = (activeTab === 'hub' ? 'block' : 'none');
     if (sectionAprobaciones) sectionAprobaciones.style.display = (activeTab === 'aprobaciones' ? 'block' : 'none');
     if (sectionProduccion) sectionProduccion.style.display = (activeTab === 'produccion' ? 'block' : 'none');
+    if (sectionInformes) sectionInformes.style.display = (activeTab === 'informes' ? 'block' : 'none');
 
     if (activeTab === 'produccion') {
       renderProduccionCards();
+    } else if (activeTab === 'informes') {
+      loadAndRenderInformes(false);
     }
   }
 
@@ -3838,6 +4224,28 @@ body{
   }
   if (btnTabProduccion) {
     btnTabProduccion.addEventListener('click', function(){ switchView('produccion'); });
+  }
+  if (btnTabInformes) {
+    btnTabInformes.addEventListener('click', function(){ switchView('informes'); });
+  }
+  if (btnBackFromInformes) {
+    btnBackFromInformes.addEventListener('click', function(){ switchView('hub'); });
+  }
+  if (selectTipoInforme) {
+    selectTipoInforme.addEventListener('change', function(){
+      if (searchInformeInp) searchInformeInp.value = '';
+      loadAndRenderInformes(false);
+    });
+  }
+  if (searchInformeInp) {
+    searchInformeInp.addEventListener('input', function(){
+      renderInformesList();
+    });
+  }
+  if (btnRefreshInformes) {
+    btnRefreshInformes.addEventListener('click', function(){
+      loadAndRenderInformes(true);
+    });
   }
 
   // Botones de ingreso directo desde tarjetas de categorías del Hub

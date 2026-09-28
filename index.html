@@ -127,56 +127,88 @@ body{
 }
 .btn-access:active{transform:scale(.98)}
 
-/* — Modal de Clave — */
+/* — Modal de Inicio de Sesión Seguro (Correo y Contraseña) — */
 #login{
   display:none;
   position:fixed;
   inset:0;
   z-index:100;
-  background:rgba(8,16,25,.82);
-  backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
+  background:rgba(8,16,25,.86);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
   place-items:center;
   padding:20px;
 }
 #login.on{display:grid}
 #login .box{
-  background:rgba(26,44,62,.95);
-  backdrop-filter:blur(16px);
+  background:rgba(26,44,62,.96);
+  backdrop-filter:blur(20px);
   border:1px solid var(--azul-border);
   border-radius:24px;
-  padding:36px 32px 30px;
+  padding:32px 28px 28px;
   max-width:390px;
   width:100%;
   text-align:center;
-  box-shadow:0 30px 60px -15px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.18);
+  box-shadow:0 30px 60px -15px rgba(0,0,0,.75), 0 0 0 1px rgba(92,184,62,.15), inset 0 1px 0 rgba(255,255,255,.18);
+  animation:modalIn 0.25s cubic-bezier(0.16,1,0.3,1);
 }
-#login h3{font-size:20px;font-weight:700;margin-bottom:6px}
-#login p{color:var(--ink-2);font-size:13.5px;margin-bottom:20px;line-height:1.5}
+.login-brand-icon{
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  background:rgba(92,184,62,.12);
+  border:1px solid rgba(92,184,62,.3);
+  display:grid;
+  place-items:center;
+  margin:0 auto 12px;
+  box-shadow:0 0 16px rgba(92,184,62,.2);
+}
+#login h3{font-size:21px;font-weight:700;margin-bottom:6px;color:#fff}
+#login p{color:var(--ink-2);font-size:13px;margin-bottom:20px;line-height:1.5}
+.login-fields{
+  display:flex;
+  flex-direction:column;
+  gap:13px;
+  text-align:left;
+}
+.login-field{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+.login-label{
+  font-size:11px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  color:var(--ink-2);
+}
 #login input{
   width:100%;
-  min-height:46px;
-  padding:12px 16px;
+  min-height:44px;
+  padding:11px 14px;
   border:1px solid var(--azul-border);
   border-radius:12px;
-  background:rgba(255,255,255,.07);
+  background:rgba(0,0,0,.25);
   color:#fff;
   font:inherit;
-  font-size:15px;
+  font-size:14px;
   outline:none;
-  transition:border-color var(--trans), box-shadow var(--trans);
+  transition:border-color var(--trans), box-shadow var(--trans), background var(--trans);
 }
 #login input:focus{
   border-color:var(--verde);
-  box-shadow:0 0 0 3px rgba(92,184,62,.25);
-  background:rgba(255,255,255,.1);
+  box-shadow:0 0 0 3px rgba(92,184,62,.22);
+  background:rgba(0,0,0,.4);
 }
 #login .err{
   color:var(--naranja);
   font-size:12.5px;
-  margin-top:10px;
+  margin-top:12px;
   min-height:18px;
   font-weight:600;
+  text-align:center;
+  line-height:1.4;
 }
 #login .acts{display:flex;gap:10px;margin-top:20px}
 #login .acts button{
@@ -194,7 +226,7 @@ body{
 #login .acts button:active{transform:scale(.98)}
 #login .go{background:var(--verde);color:#fff;box-shadow:0 6px 18px -4px var(--verde-glow)}
 #login .go:hover{filter:brightness(1.08)}
-#login .cancel{background:rgba(255,255,255,.08);color:var(--ink-2)}
+#login .cancel{background:rgba(255,255,255,.08);color:var(--ink-2);border:1px solid var(--azul-border)}
 #login .cancel:hover{background:rgba(255,255,255,.14);color:#fff}
 
 /* — Dashboard autenticado — */
@@ -2311,16 +2343,31 @@ body{
   </div>
 </div>
 
-<!-- Modal de clave -->
+<!-- Modal de inicio de sesión seguro con correo y contraseña -->
 <div id="login">
   <div class="box">
-    <h3>Acceso equipo Nexo</h3>
-    <p>Escribe la clave del panel para ingresar al Banco de Trabajo.</p>
-    <input type="password" id="claveInput" placeholder="Clave de acceso" autocomplete="current-password">
-    <div class="err" id="loginErr"></div>
+    <div class="login-brand-icon">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--verde);">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+      </svg>
+    </div>
+    <h3>Acceso seguro Nexo</h3>
+    <p>Ingresa con tu correo y contraseña registrados para acceder al Espacio Creativo.</p>
+    <div class="login-fields">
+      <div class="login-field">
+        <label for="emailInput" class="login-label">Correo electrónico</label>
+        <input type="email" id="emailInput" placeholder="nombre@correo.com" autocomplete="email" required spellcheck="false">
+      </div>
+      <div class="login-field">
+        <label for="claveInput" class="login-label">Contraseña</label>
+        <input type="password" id="claveInput" placeholder="••••••••••••" autocomplete="current-password" required>
+      </div>
+    </div>
+    <div class="err" id="loginErr" role="alert"></div>
     <div class="acts">
-      <button class="cancel" id="btnCancel">Volver</button>
-      <button class="go" id="btnGo">Entrar</button>
+      <button type="button" class="cancel" id="btnCancel">Volver</button>
+      <button type="button" class="go" id="btnGo">Iniciar sesión</button>
     </div>
   </div>
 </div>
@@ -3018,6 +3065,7 @@ body{
   var filterPeriod = document.getElementById('filterPeriod');
   var sortOrder = document.getElementById('sortOrder');
   var stateChips = document.getElementById('stateChips');
+  var emailInp = document.getElementById('emailInput');
   var claveInp = document.getElementById('claveInput');
   var errEl = document.getElementById('loginErr');
   var toastEl = document.getElementById('toast');
@@ -3077,12 +3125,27 @@ body{
 
   function showLogin(){
     loginModal.classList.add('on');
-    claveInp.value = '';
     errEl.textContent = '';
-    setTimeout(function(){ claveInp.focus(); }, 120);
+    if (claveInp) claveInp.value = '';
+    var remembered = '';
+    try { remembered = localStorage.getItem('nexo_auth_email') || ''; } catch(e){}
+    if (emailInp) {
+      if (remembered) {
+        emailInp.value = remembered;
+        setTimeout(function(){ if (claveInp) claveInp.focus(); }, 120);
+      } else {
+        emailInp.value = '';
+        setTimeout(function(){ emailInp.focus(); }, 120);
+      }
+    } else {
+      setTimeout(function(){ if (claveInp) claveInp.focus(); }, 120);
+    }
   }
 
-  function hideLogin(){ loginModal.classList.remove('on'); }
+  function hideLogin(){
+    loginModal.classList.remove('on');
+    if (claveInp) claveInp.value = '';
+  }
 
   function showDash(){
     pub.style.display = 'none';
@@ -4525,47 +4588,60 @@ body{
   }
 
   function tryLogin(){
-    var v = claveInp.value.trim();
-    if (!v) { errEl.textContent = 'Escribe la clave de acceso.'; return; }
-    errEl.textContent = 'Ingresando…';
-    document.getElementById('btnGo').disabled = true;
+    var email = (emailInp ? emailInp.value : '').toLowerCase().trim();
+    var password = (claveInp ? claveInp.value : '').trim();
 
-    var email = 'carlosuzc29@gmail.com';
-    var password = v;
-    if (v.indexOf(':') > 0) {
-      var parts = v.split(':');
-      email = parts[0].trim();
-      password = parts.slice(1).join(':').trim();
-    } else if (v.indexOf('@') > 0) {
-      email = v;
-    }
-
-    if (ALLOWED_EMAILS.indexOf(email.toLowerCase().trim()) === -1) {
-      document.getElementById('btnGo').disabled = false;
-      errEl.textContent = 'Acceso no autorizado';
-      toast('Acceso no autorizado');
+    if (!email) {
+      errEl.textContent = 'Escribe tu correo electrónico.';
+      if (emailInp) emailInp.focus();
       return;
     }
+    if (!password) {
+      errEl.textContent = 'Escribe tu contraseña.';
+      if (claveInp) claveInp.focus();
+      return;
+    }
+
+    if (ALLOWED_EMAILS.indexOf(email) === -1) {
+      errEl.textContent = 'Acceso no autorizado. Este correo no tiene permisos.';
+      toast('Acceso no autorizado');
+      if (claveInp) claveInp.value = '';
+      return;
+    }
+
+    errEl.textContent = 'Validando credenciales…';
+    var btnGo = document.getElementById('btnGo');
+    if (btnGo) btnGo.disabled = true;
 
     auth.signInWithEmailAndPassword(email, password)
       .then(function(cred){
         var uEmail = (cred.user && cred.user.email ? cred.user.email : email).toLowerCase().trim();
         if (ALLOWED_EMAILS.indexOf(uEmail) === -1) {
           auth.signOut();
-          document.getElementById('btnGo').disabled = false;
+          if (btnGo) btnGo.disabled = false;
           errEl.textContent = 'Acceso no autorizado';
           toast('Acceso no autorizado');
+          if (claveInp) claveInp.value = '';
           return;
         }
-        document.getElementById('btnGo').disabled = false;
+        try { localStorage.setItem('nexo_auth_email', uEmail); } catch(e){}
+        if (btnGo) btnGo.disabled = false;
+        if (claveInp) claveInp.value = '';
         hideLogin();
         toast('Bienvenido al Espacio Creativo');
       })
       .catch(function(err){
-        document.getElementById('btnGo').disabled = false;
+        if (btnGo) btnGo.disabled = false;
         console.error('Error de autenticación:', err);
-        errEl.textContent = 'Clave incorrecta.';
-        claveInp.select();
+        if (claveInp) claveInp.value = '';
+        if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found') {
+          errEl.textContent = 'Correo o contraseña incorrectos.';
+        } else if (err.code === 'auth/too-many-requests') {
+          errEl.textContent = 'Demasiados intentos fallidos. Intenta más tarde.';
+        } else {
+          errEl.textContent = 'Error al ingresar: verifica tus datos.';
+        }
+        if (claveInp) claveInp.focus();
       });
   }
 
@@ -4633,7 +4709,23 @@ body{
     startRealtimeSync(true);
   });
 
-  claveInp.addEventListener('keydown', function(e){ if (e.key === 'Enter') tryLogin(); });
+  if (emailInp) {
+    emailInp.addEventListener('keydown', function(e){
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (emailInp.value.trim() && claveInp) claveInp.focus();
+        else tryLogin();
+      }
+    });
+  }
+  if (claveInp) {
+    claveInp.addEventListener('keydown', function(e){
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        tryLogin();
+      }
+    });
+  }
   loginModal.addEventListener('click', function(e){ if (e.target === loginModal) hideLogin(); });
 
   // Navegación entre Espacio Creativo y Subpáginas

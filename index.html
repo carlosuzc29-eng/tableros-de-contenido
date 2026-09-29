@@ -2289,13 +2289,91 @@ body{
   color:#fff;
   box-shadow:0 0 12px rgba(92,184,62,0.4);
 }
+.badge-corregido{
+  background:rgba(0,180,216,0.15);
+  color:#38BDF8;
+  border:1px solid rgba(56,189,248,0.35);
+}
+.detail-chip.corregido.on{
+  background:#0284C7;
+  color:#fff;
+  border-color:#38BDF8;
+}
+.detail-card[data-state="corregido"]{
+  border-left-color:#38BDF8;
+}
+.detail-feedback.corregido{
+  background:rgba(2,132,199,0.12);
+  border:1px solid rgba(56,189,248,0.3);
+  color:#E0F2FE;
+}
+.reenvio-banner{
+  background:linear-gradient(135deg, rgba(2,132,199,0.16) 0%, rgba(14,165,233,0.08) 100%);
+  border:1px solid rgba(56,189,248,0.35);
+  border-left:4px solid #38BDF8;
+  border-radius:12px;
+  padding:14px 18px;
+  margin-bottom:14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  flex-wrap:wrap;
+}
+.reenvio-info{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+.reenvio-title{
+  font-size:13px;
+  font-weight:700;
+  color:#BAE6FD;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.reenvio-sub{
+  font-size:12px;
+  color:rgba(255,255,255,0.7);
+}
+.btn-reenviar-cliente{
+  background:linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+  border:1px solid rgba(56,189,248,0.5);
+  color:#fff;
+  padding:8px 14px;
+  border-radius:8px;
+  font:inherit;
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  transition:all var(--trans);
+  box-shadow:0 4px 14px rgba(2,132,199,0.3);
+}
+.btn-reenviar-cliente:hover{
+  filter:brightness(1.15);
+  box-shadow:0 6px 18px rgba(2,132,199,0.5);
+  transform:translateY(-1px);
+}
 .modal-feedback-box{
   background:rgba(230,74,0,0.12);
   border:1px solid rgba(230,74,0,0.35);
   border-left:4px solid #E64A00;
-  border-radius:8px;
-  padding:10px 14px;
+  border-radius:10px;
+  padding:12px 14px;
   margin-bottom:14px;
+  position:relative;
+  transition:all 0.2s ease;
+}
+.modal-fb-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:6px;
 }
 .modal-fb-title{
   font-size:11px;
@@ -2303,15 +2381,156 @@ body{
   text-transform:uppercase;
   letter-spacing:.8px;
   color:#FFA07A;
-  margin-bottom:4px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.btn-expand-fb{
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.18);
+  color:#FFA07A;
+  font-size:11px;
+  font-weight:600;
+  padding:3px 8px;
+  border-radius:6px;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  transition:all var(--trans);
+}
+.btn-expand-fb:hover{
+  background:rgba(230,74,0,0.25);
+  color:#fff;
 }
 .modal-fb-text{
   font-size:13px;
-  line-height:1.45;
+  line-height:1.5;
   color:#FFE5D9;
   font-style:italic;
   white-space:pre-wrap;
   word-break:break-word;
+  max-height:120px;
+  overflow-y:auto;
+  padding-right:4px;
+}
+/* Modal Fullscreen & Dual Column Layout */
+.modal-card.fullscreen{
+  max-width:98vw !important;
+  width:98vw !important;
+  height:96vh !important;
+  max-height:96vh !important;
+  border-radius:12px;
+}
+.modal-card.fullscreen .modal-body{
+  display:grid;
+  grid-template-columns:380px 1fr;
+  gap:20px;
+  align-items:stretch;
+  overflow-y:auto;
+}
+@media(max-width:900px){
+  .modal-card.fullscreen .modal-body{
+    display:flex;
+    flex-direction:column;
+  }
+}
+.modal-side-feedback{
+  display:none;
+}
+.modal-card.fullscreen .modal-side-feedback{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  background:rgba(0,0,0,0.25);
+  border:1px solid rgba(230,74,0,0.3);
+  border-radius:12px;
+  padding:16px;
+  height:100%;
+  box-sizing:border-box;
+}
+.modal-side-feedback .modal-fb-title{
+  font-size:12px;
+  padding-bottom:8px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.modal-side-feedback .modal-fb-text{
+  max-height:none;
+  overflow-y:visible;
+  font-size:14px;
+  line-height:1.6;
+  color:#FFE8DE;
+}
+.modal-card.fullscreen #editItemFeedbackBox{
+  display:none !important;
+}
+.modal-card.fullscreen .modal-editor-fields{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.btn-modal-fullscreen{
+  background:transparent;
+  border:0;
+  color:var(--ink-2);
+  font-size:15px;
+  cursor:pointer;
+  padding:6px 8px;
+  border-radius:6px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  transition:all var(--trans);
+}
+.btn-modal-fullscreen:hover{
+  background:rgba(255,255,255,0.08);
+  color:#fff;
+}
+/* Modal Standalone Pantalla Completa para Ver la Corrección */
+#modalExpandedFeedback{
+  z-index:350;
+}
+.expanded-fb-card{
+  background:linear-gradient(145deg, #1A1F2C 0%, #0E131E 100%);
+  border:1px solid rgba(230,74,0,0.45);
+  border-radius:20px;
+  width:95vw;
+  max-width:960px;
+  max-height:92vh;
+  display:flex;
+  flex-direction:column;
+  box-shadow:0 30px 80px rgba(0,0,0,0.85), 0 0 0 1px rgba(230,74,0,0.25);
+  animation:modalIn 0.25s cubic-bezier(0.16,1,0.3,1);
+}
+.expanded-fb-body{
+  padding:24px 28px;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+.expanded-fb-meta{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:13px;
+  color:#FFA07A;
+  font-weight:700;
+  padding-bottom:12px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.expanded-fb-content{
+  background:rgba(230,74,0,0.07);
+  border:1.5px solid rgba(230,74,0,0.3);
+  border-radius:12px;
+  padding:20px 24px;
+  font-size:16px;
+  line-height:1.7;
+  color:#FFEBE4;
+  white-space:pre-wrap;
+  word-break:break-word;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  user-select:text;
 }
 .detail-items-list{
   display:flex;
@@ -3662,76 +3881,141 @@ body{
 
 <!-- Modal Editor de Contenido (Administrador) -->
 <div id="modalEditContent" class="modal-overlay" style="display:none;" aria-hidden="true" role="dialog">
-  <div class="modal-card">
+  <div class="modal-card" id="editModalCard">
     <div class="modal-head">
       <div>
         <span class="modal-eyebrow">ADMINISTRACIÓN CREATIVA</span>
         <h3 id="editModalHeading">Editar Contenido</h3>
       </div>
-      <button class="btn-modal-close" id="btnCloseEditModal" aria-label="Cerrar modal">&times;</button>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <button class="btn-modal-fullscreen" id="btnToggleFullscreenEdit" title="Alternar pantalla completa" aria-label="Pantalla completa">
+          <svg id="iconExpandModal" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <polyline points="9 21 3 21 3 15"></polyline>
+            <line x1="21" y1="3" x2="14" y2="10"></line>
+            <line x1="3" y1="21" x2="10" y2="14"></line>
+          </svg>
+          <svg id="iconCompressModal" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+            <polyline points="4 14 10 14 10 20"></polyline>
+            <polyline points="20 10 14 10 14 4"></polyline>
+            <line x1="14" y1="10" x2="21" y2="3"></line>
+            <line x1="3" y1="21" x2="10" y2="14"></line>
+          </svg>
+        </button>
+        <button class="btn-modal-close" id="btnCloseEditModal" aria-label="Cerrar modal">&times;</button>
+      </div>
     </div>
     <div class="modal-body">
-      <div id="editItemFeedbackBox" class="modal-feedback-box" style="display:none;">
-        <div class="modal-fb-title">⚠ Corrección solicitada por el cliente:</div>
-        <div id="editItemFeedbackText" class="modal-fb-text"></div>
+      <!-- Lateral de Corrección en pantalla completa -->
+      <div id="modalSideFeedback" class="modal-side-feedback">
+        <div class="modal-fb-header">
+          <span class="modal-fb-title">⚠ Ajustes solicitados por el cliente</span>
+          <button class="btn-expand-fb btn-trigger-expand-fb" type="button" title="Ver en pantalla gigante">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+            <span>Ampliar</span>
+          </button>
+        </div>
+        <div id="modalSideFeedbackText" class="modal-fb-text"></div>
       </div>
-      <div class="form-row-2">
-        <div class="form-group">
-          <label for="editItemEstado">Estado de la pieza</label>
-          <select id="editItemEstado" class="modal-select">
-            <option value="aprobado">✓ Aprobado (Listo para ClickUp)</option>
-            <option value="cambios">⚠ Con cambios solicitados</option>
-            <option value="pendiente">• Pendiente de revisión</option>
-          </select>
+
+      <!-- Campos de edición -->
+      <div class="modal-editor-fields">
+        <div id="editItemFeedbackBox" class="modal-feedback-box" style="display:none;">
+          <div class="modal-fb-header">
+            <span class="modal-fb-title">⚠ Corrección solicitada por el cliente:</span>
+            <button class="btn-expand-fb btn-trigger-expand-fb" type="button" title="Ver corrección en pantalla completa">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+              <span>Ver en pantalla completa</span>
+            </button>
+          </div>
+          <div id="editItemFeedbackText" class="modal-fb-text"></div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="editItemEstado">Estado de la pieza</label>
+            <select id="editItemEstado" class="modal-select">
+              <option value="corregido">🔄 Corregido (Listo para reenviar al cliente)</option>
+              <option value="aprobado">✓ Aprobado (Listo para ClickUp)</option>
+              <option value="cambios">⚠ Con cambios solicitados</option>
+              <option value="pendiente">• Pendiente de revisión</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="editItemFormato">Formato</label>
+            <select id="editItemFormato" class="modal-select">
+              <option value="Reel">Reel</option>
+              <option value="Carrusel">Carrusel</option>
+              <option value="Post">Post / Estático</option>
+              <option value="Historia">Historia</option>
+              <option value="Video">Video</option>
+              <option value="TikTok">TikTok</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="editItemTitulo">Título de la pieza (ClickUp)</label>
+            <input type="text" id="editItemTitulo" class="modal-input" placeholder="Título o idea principal">
+          </div>
+          <div class="form-group">
+            <label for="editItemPilar">Pilar de contenido</label>
+            <input type="text" id="editItemPilar" class="modal-input" placeholder="Ej: Educativo, Promocional, Autoridad">
+          </div>
         </div>
         <div class="form-group">
-          <label for="editItemFormato">Formato</label>
-          <select id="editItemFormato" class="modal-select">
-            <option value="Reel">Reel</option>
-            <option value="Carrusel">Carrusel</option>
-            <option value="Post">Post / Estático</option>
-            <option value="Historia">Historia</option>
-            <option value="Video">Video</option>
-            <option value="TikTok">TikTok</option>
-            <option value="Otro">Otro</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-row-2">
-        <div class="form-group">
-          <label for="editItemTitulo">Título de la pieza (ClickUp)</label>
-          <input type="text" id="editItemTitulo" class="modal-input" placeholder="Título o idea principal">
+          <label for="editItemFecha">Fecha programada de publicación (Due Date)</label>
+          <input type="text" id="editItemFecha" class="modal-input" placeholder="Ej: 15 de Octubre 2026">
         </div>
         <div class="form-group">
-          <label for="editItemPilar">Pilar de contenido</label>
-          <input type="text" id="editItemPilar" class="modal-input" placeholder="Ej: Educativo, Promocional, Autoridad">
+          <label for="editItemGuion">Guion / Descripción visual (Producción & Task Description)</label>
+          <textarea id="editItemGuion" class="modal-textarea" rows="4" placeholder="Acción en cámara, texto en pantalla, audio…"></textarea>
         </div>
-      </div>
-      <div class="form-group">
-        <label for="editItemFecha">Fecha programada de publicación (Due Date)</label>
-        <input type="text" id="editItemFecha" class="modal-input" placeholder="Ej: 15 de Octubre 2026">
-      </div>
-      <div class="form-group">
-        <label for="editItemGuion">Guion / Descripción visual (Producción & Task Description)</label>
-        <textarea id="editItemGuion" class="modal-textarea" rows="4" placeholder="Acción en cámara, texto en pantalla, audio…"></textarea>
-      </div>
-      <div class="form-group">
-        <label for="editItemCopy">Copy (Texto oficial para la publicación)</label>
-        <textarea id="editItemCopy" class="modal-textarea" rows="4" placeholder="Texto que acompaña al post…"></textarea>
-      </div>
-      <div class="form-group">
-        <label for="editItemHashtags">Hashtags</label>
-        <input type="text" id="editItemHashtags" class="modal-input" placeholder="#marca #campaña">
-      </div>
-      <div class="form-group">
-        <label for="editItemComentario">Notas de ajuste / Correcciones (Historial)</label>
-        <textarea id="editItemComentario" class="modal-textarea" rows="2" placeholder="Observaciones o notas de corrección del contenido…"></textarea>
+        <div class="form-group">
+          <label for="editItemCopy">Copy (Texto oficial para la publicación)</label>
+          <textarea id="editItemCopy" class="modal-textarea" rows="4" placeholder="Texto que acompaña al post…"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="editItemHashtags">Hashtags</label>
+          <input type="text" id="editItemHashtags" class="modal-input" placeholder="#marca #campaña">
+        </div>
+        <div class="form-group">
+          <label for="editItemComentario">Notas de ajuste / Correcciones (Historial)</label>
+          <textarea id="editItemComentario" class="modal-textarea" rows="2" placeholder="Observaciones o notas de corrección del contenido…"></textarea>
+        </div>
       </div>
     </div>
     <div class="modal-foot">
       <button class="btn-modal-sec" id="btnCancelEditModal">Cancelar</button>
       <button class="btn-modal-pri" id="btnSaveEditModal">
         <span>Guardar cambios</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Pantalla Completa para Ver la Corrección Solicitada -->
+<div id="modalExpandedFeedback" class="modal-overlay" style="display:none;" aria-hidden="true" role="dialog">
+  <div class="expanded-fb-card">
+    <div class="modal-head">
+      <div>
+        <span class="modal-eyebrow" style="color:#FFA07A;">VISTA DETALLADA DE CORRECCIÓN</span>
+        <h3 id="expandedFbTitle" style="color:#fff;">Corrección solicitada por el cliente</h3>
+      </div>
+      <button class="btn-modal-close" id="btnCloseExpandedFb" aria-label="Cerrar vista">&times;</button>
+    </div>
+    <div class="expanded-fb-body">
+      <div class="expanded-fb-meta" id="expandedFbMeta">
+        <span id="expandedFbAuthor">👤 Cliente</span>
+        <span>•</span>
+        <span id="expandedFbPiece">Pieza #00</span>
+      </div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:rgba(255,255,255,0.6);">Mensaje / Observaciones exactas del cliente:</div>
+      <div class="expanded-fb-content" id="expandedFbContent"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-modal-pri" id="btnExpandedFbDone" style="background:#0284C7;border-color:#38BDF8;">
+        <span>Volver al editor</span>
       </button>
     </div>
   </div>
@@ -4395,6 +4679,7 @@ body{
 
     var kOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
     var kFix = items.filter(function(x){ return x.estado === 'cambios'; }).length;
+    var kCorregido = items.filter(function(x){ return x.estado === 'corregido'; }).length;
     var kPend = items.filter(function(x){ return x.estado === 'pendiente'; }).length;
 
     var safeCliente = (t.cliente || 'Cliente').replace(/[^a-zA-Z0-9_\u00C0-\u017F-]+/g, '-');
@@ -4421,9 +4706,9 @@ body{
             '<div style="font-size:11px;color:#718096;margin-top:5px;">Exportado: ' + new Date().toLocaleDateString('es-ES', { year:'numeric', month:'short', day:'numeric' }) + '</div>',
           '</div>',
         '</div>',
-        '<div style="margin-top:12px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#4A5568;">',
+        '<div style="margin-top:12px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#4A5568;flex-wrap:wrap;gap:8px;">',
           '<div><b>Total de piezas:</b> ' + items.length + ' contenidos</div>',
-          '<div><span style="color:#2E7D32;font-weight:700;">✓ ' + kOk + ' Aprobados</span> &nbsp;|&nbsp; <span style="color:#C62828;font-weight:700;">⚠ ' + kFix + ' Con cambios</span> &nbsp;|&nbsp; <span style="color:#718096;">• ' + kPend + ' Pendientes</span></div>',
+          '<div><span style="color:#2E7D32;font-weight:700;">✓ ' + kOk + ' Aprobados</span>' + (kCorregido > 0 ? ' &nbsp;|&nbsp; <span style="color:#0284C7;font-weight:700;">🔄 ' + kCorregido + ' Corregidos</span>' : '') + ' &nbsp;|&nbsp; <span style="color:#C62828;font-weight:700;">⚠ ' + kFix + ' Con cambios</span> &nbsp;|&nbsp; <span style="color:#718096;">• ' + kPend + ' Pendientes</span></div>',
           '<div>' + (revisor ? '<b>Revisado por:</b> ' + escapeHtml(revisor) : '<span>Sin revisor registrado</span>') + (fechaStr ? ' (' + escapeHtml(fechaStr) + ')' : '') + '</div>',
         '</div>',
         (t.url ? '<div style="margin-top:8px;font-size:11px;color:#718096;"><b>Tablero digital interactivo:</b> <a href="' + escapeHtml(t.url) + '" style="color:#6C5CE7;text-decoration:none;font-weight:600;">' + escapeHtml(t.url) + '</a></div>' : ''),
@@ -4450,6 +4735,7 @@ body{
       var num = (it.n < 10 ? '0' : '') + it.n;
       var bg = (idx % 2 === 0) ? '#FFFFFF' : '#F8FAFC';
       var stLabel = (it.estado === 'aprobado') ? '<span style="color:#2E7D32;font-weight:700;">✓ Aprobado</span>' :
+                    (it.estado === 'corregido') ? '<span style="color:#0284C7;font-weight:700;">🔄 Corregido</span>' :
                     (it.estado === 'cambios') ? '<span style="color:#C62828;font-weight:700;">⚠ Con cambios</span>' :
                     '<span style="color:#64748B;">• Pendiente</span>';
       var taskName = '[' + escapeHtml(it.formato || 'Post') + '] ' + escapeHtml(it.titulo || 'Sin título') + ' (#' + num + ')';
@@ -4479,11 +4765,12 @@ body{
       var num = (it.n < 10 ? '0' : '') + it.n;
       var taskName = '[' + (it.formato || 'Post') + '] ' + (it.titulo || 'Sin título') + ' (#' + num + ')';
       var isAprob = it.estado === 'aprobado';
+      var isCorregido = it.estado === 'corregido';
       var isCambios = it.estado === 'cambios';
-      var stColor = isAprob ? '#2E7D32' : (isCambios ? '#C62828' : '#64748B');
-      var stBg = isAprob ? '#E8F5E9' : (isCambios ? '#FFEBEE' : '#F1F5F9');
-      var stBorder = isAprob ? '#A5D6A7' : (isCambios ? '#FFCDD2' : '#CBD5E1');
-      var stText = isAprob ? '✓ Aprobado para ClickUp' : (isCambios ? '⚠ Ajustes solicitados' : '• Pendiente de revisión');
+      var stColor = isAprob ? '#2E7D32' : (isCorregido ? '#0284C7' : (isCambios ? '#C62828' : '#64748B'));
+      var stBg = isAprob ? '#E8F5E9' : (isCorregido ? '#E0F2FE' : (isCambios ? '#FFEBEE' : '#F1F5F9'));
+      var stBorder = isAprob ? '#A5D6A7' : (isCorregido ? '#BAE6FD' : (isCambios ? '#FFCDD2' : '#CBD5E1'));
+      var stText = isAprob ? '✓ Aprobado para ClickUp' : (isCorregido ? '🔄 Corregido (Listo reenvío)' : (isCambios ? '⚠ Ajustes solicitados' : '• Pendiente de revisión'));
 
       html.push(
         '<div class="clickup-card" style="page-break-inside:avoid;break-inside:avoid;background:#FFFFFF;border:1px solid #D9E1E8;border-top:3.5px solid #6C5CE7;border-radius:8px;padding:16px 18px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,0.04);">' +
@@ -4670,11 +4957,13 @@ body{
 
     var kOk = allItems.filter(function(x){ return x.estado === 'aprobado'; }).length;
     var kFix = allItems.filter(function(x){ return x.estado === 'cambios'; }).length;
+    var kCorregido = allItems.filter(function(x){ return x.estado === 'corregido'; }).length;
     var kPend = allItems.filter(function(x){ return x.estado === 'pendiente'; }).length;
 
     var filtered = allItems.filter(function(x){
       if (curFilter === 'Aprobados') return x.estado === 'aprobado';
       if (curFilter === 'Con cambios') return x.estado === 'cambios';
+      if (curFilter === 'Corregidos') return x.estado === 'corregido';
       if (curFilter === 'Pendientes') return x.estado === 'pendiente';
       return true;
     });
@@ -4684,6 +4973,7 @@ body{
         '<button class="detail-chip ' + (curFilter === 'Todos' ? 'on' : '') + '" data-filter="Todos">Todos (' + allItems.length + ')</button>' +
         '<button class="detail-chip ok ' + (curFilter === 'Aprobados' ? 'on' : '') + '" data-filter="Aprobados">✓ Aprobados (' + kOk + ')</button>' +
         '<button class="detail-chip fix ' + (curFilter === 'Con cambios' ? 'on' : '') + '" data-filter="Con cambios">⚠ Con cambios (' + kFix + ')</button>' +
+        (kCorregido > 0 || curFilter === 'Corregidos' ? '<button class="detail-chip corregido ' + (curFilter === 'Corregidos' ? 'on' : '') + '" data-filter="Corregidos">🔄 Corregidos (' + kCorregido + ')</button>' : '') +
         '<button class="detail-chip ' + (curFilter === 'Pendientes' ? 'on' : '') + '" data-filter="Pendientes">• Pendientes (' + kPend + ')</button>' +
       '</div>' +
       '<div class="detail-actions">' +
@@ -4696,7 +4986,27 @@ body{
       '</div>' +
     '</div>';
 
-    var listHtml = '<div class="detail-items-list">';
+    // Banner de reenvío si hay piezas corregidas listas para el cliente
+    var reenvioHtml = '';
+    if (kCorregido > 0) {
+      var pluralP = kCorregido === 1 ? '1 contenido corregido listo' : (kCorregido + ' contenidos corregidos listos');
+      reenvioHtml = '<div class="reenvio-banner">' +
+        '<div class="reenvio-info">' +
+          '<div class="reenvio-title"><span>🔄 ' + pluralP + ' para reenvío al cliente</span></div>' +
+          '<div class="reenvio-sub">Las observaciones del cliente ya fueron subsanadas en el tablero. Puedes notificar al cliente o enviarle el enlace para su re-aprobación.</div>' +
+        '</div>' +
+        '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
+          '<button class="btn-reenviar-cliente btn-share-corregidos" data-id="' + escapeAttr(t.id) + '">' +
+            '<span>📤 Notificar Reenvío por WhatsApp</span>' +
+          '</button>' +
+          '<button class="btn-detail-action btn-copy-reenvio-link" data-id="' + escapeAttr(t.id) + '" title="Copiar enlace directo con mensaje preparado">' +
+            '<span>🔗 Copiar mensaje y enlace</span>' +
+          '</button>' +
+        '</div>' +
+      '</div>';
+    }
+
+    var listHtml = reenvioHtml + '<div class="detail-items-list">';
     if (!filtered.length) {
       listHtml += '<div class="detail-empty">No hay contenidos con el filtro seleccionado (' + escapeHtml(curFilter) + ').</div>';
     } else {
@@ -4704,10 +5014,12 @@ body{
         var num = (it.n < 10 ? '0' : '') + it.n;
         var isAprob = it.estado === 'aprobado';
         var isCambios = it.estado === 'cambios';
+        var isCorregido = it.estado === 'corregido';
 
         var stBadge = isAprob ? '<span class="badge badge-ok">✓ Aprobado</span>' :
                       (isCambios ? '<span class="badge badge-fix">⚠ Con cambios</span>' :
-                      '<span class="badge badge-wait">• Pendiente</span>');
+                      (isCorregido ? '<span class="badge badge-corregido">🔄 Corregido</span>' :
+                      '<span class="badge badge-wait">• Pendiente</span>'));
 
         var isFmtChanged = it.formatoOriginal && it.formato && (it.formato !== it.formatoOriginal);
         var fmtBadge = it.formato ? ('<span class="detail-tag fmt' + (isFmtChanged ? '-changed' : '') + '">' +
@@ -4719,11 +5031,14 @@ body{
 
         var fbHtml = '';
         if (it.comentario && it.comentario.trim()) {
-          var fbCls = isCambios ? 'cambios' : (isAprob ? 'aprobado' : '');
-          var fbTitle = isCambios ? 'Ajustes solicitados' : 'Comentarios de aprobación';
+          var fbCls = isCambios ? 'cambios' : (isCorregido ? 'corregido' : (isAprob ? 'aprobado' : ''));
+          var fbTitle = isCambios ? 'Ajustes solicitados' : (isCorregido ? 'Corrección atendida (Observación del cliente)' : 'Comentarios de aprobación');
           var authorName = it.revisadoPor || t.revisadoPor || 'Cliente';
           fbHtml = '<div class="detail-feedback ' + fbCls + '">' +
-            '<div class="detail-fb-title">' + fbTitle + ' (' + escapeHtml(authorName) + '):</div>' +
+            '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">' +
+              '<div class="detail-fb-title">' + fbTitle + ' (' + escapeHtml(authorName) + '):</div>' +
+              '<button class="btn-expand-fb btn-card-fb-zoom" data-id="' + escapeAttr(t.id) + '" data-n="' + it.n + '" type="button" title="Ver corrección en pantalla completa">🔍 Ampliar</button>' +
+            '</div>' +
             '<div class="detail-fb-body">“' + escapeHtml(it.comentario.trim()) + '”</div>' +
           '</div>';
         }
@@ -4762,8 +5077,8 @@ body{
           }
         }
 
-        var quickApproveBtn = isCambios ?
-          ('<button class="btn-quick-approve" data-id="' + escapeAttr(t.id) + '" data-n="' + it.n + '" title="Marcar como corregido y aprobado para ClickUp">' +
+        var quickApproveBtn = (isCambios || isCorregido) ?
+          ('<button class="btn-quick-approve" data-id="' + escapeAttr(t.id) + '" data-n="' + it.n + '" title="Aprobar para ClickUp">' +
             '<span>✓ Aprobar</span>' +
           '</button>') : '';
 
@@ -4853,6 +5168,36 @@ body{
       e.stopPropagation();
       descargarJsonActualizado(t, bData);
     };
+
+    // Zoom modal para correcciones desde las tarjetas
+    var zoomFbBtns = wrap.querySelectorAll('.btn-card-fb-zoom');
+    zoomFbBtns.forEach(function(zb){
+      zb.onclick = function(e){
+        e.stopPropagation();
+        var itemN = parseInt(zb.getAttribute('data-n'), 10);
+        var targetIt = allItems.find(function(x){ return x.n === itemN; }) || allItems[itemN - 1];
+        if (targetIt) {
+          openExpandedFeedback(t, targetIt);
+        }
+      };
+    });
+
+    // Reenvío al cliente (WhatsApp & Enlace)
+    var btnShareCorregidos = wrap.querySelector('.btn-share-corregidos');
+    if (btnShareCorregidos) {
+      btnShareCorregidos.onclick = function(e){
+        e.stopPropagation();
+        shareReenvioWhatsApp(t, bData);
+      };
+    }
+
+    var btnCopyReenvio = wrap.querySelector('.btn-copy-reenvio-link');
+    if (btnCopyReenvio) {
+      btnCopyReenvio.onclick = function(e){
+        e.stopPropagation();
+        copyReenvioMessage(t, bData);
+      };
+    }
   }
 
   function resolveOpenUrl(u){
@@ -5984,13 +6329,19 @@ body{
   var editingItemN = null;
 
   var modalEditContent = document.getElementById('modalEditContent');
+  var editModalCard = document.getElementById('editModalCard');
   var editModalHeading = document.getElementById('editModalHeading');
   var btnCloseEditModal = document.getElementById('btnCloseEditModal');
   var btnCancelEditModal = document.getElementById('btnCancelEditModal');
   var btnSaveEditModal = document.getElementById('btnSaveEditModal');
+  var btnToggleFullscreenEdit = document.getElementById('btnToggleFullscreenEdit');
+  var iconExpandModal = document.getElementById('iconExpandModal');
+  var iconCompressModal = document.getElementById('iconCompressModal');
 
   var editItemFeedbackBox = document.getElementById('editItemFeedbackBox');
   var editItemFeedbackText = document.getElementById('editItemFeedbackText');
+  var modalSideFeedback = document.getElementById('modalSideFeedback');
+  var modalSideFeedbackText = document.getElementById('modalSideFeedbackText');
   var editItemEstado = document.getElementById('editItemEstado');
   var editItemTitulo = document.getElementById('editItemTitulo');
   var editItemFormato = document.getElementById('editItemFormato');
@@ -6000,6 +6351,41 @@ body{
   var editItemCopy = document.getElementById('editItemCopy');
   var editItemHashtags = document.getElementById('editItemHashtags');
   var editItemComentario = document.getElementById('editItemComentario');
+
+  // Modal Standalone de Corrección Expandida
+  var modalExpandedFeedback = document.getElementById('modalExpandedFeedback');
+  var btnCloseExpandedFb = document.getElementById('btnCloseExpandedFb');
+  var btnExpandedFbDone = document.getElementById('btnExpandedFbDone');
+  var expandedFbAuthor = document.getElementById('expandedFbAuthor');
+  var expandedFbPiece = document.getElementById('expandedFbPiece');
+  var expandedFbContent = document.getElementById('expandedFbContent');
+
+  function openExpandedFeedback(t, it){
+    if (!modalExpandedFeedback || !it) return;
+    var author = it.revisadoPor || t.revisadoPor || 'Cliente';
+    var pieceNum = '#' + (it.n < 10 ? '0' : '') + it.n + ' · ' + (it.titulo || 'Contenido');
+    if (expandedFbAuthor) expandedFbAuthor.textContent = '👤 Observación enviada por: ' + author;
+    if (expandedFbPiece) expandedFbPiece.textContent = pieceNum;
+    if (expandedFbContent) {
+      expandedFbContent.textContent = it.comentario ? it.comentario.trim() : 'Sin observaciones registradas.';
+    }
+    modalExpandedFeedback.style.display = 'flex';
+    modalExpandedFeedback.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeExpandedFeedback(){
+    if (modalExpandedFeedback) {
+      modalExpandedFeedback.style.display = 'none';
+      modalExpandedFeedback.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  function toggleEditModalFullscreen(){
+    if (!editModalCard) return;
+    var isFull = editModalCard.classList.toggle('fullscreen');
+    if (iconExpandModal) iconExpandModal.style.display = isFull ? 'none' : 'block';
+    if (iconCompressModal) iconCompressModal.style.display = isFull ? 'block' : 'none';
+  }
 
   function openEditModal(tId, itemN){
     var t = allTableros.find(function(x){ return x.id === tId; });
@@ -6016,18 +6402,30 @@ body{
       editModalHeading.textContent = 'Editar Contenido #' + (itemN < 10 ? '0' : '') + itemN + ' · ' + (t.cliente || '');
     }
 
+    var commentText = (it.comentario && it.comentario.trim()) ? it.comentario.trim() : '';
+    var author = it.revisadoPor || t.revisadoPor || 'Cliente';
+    var isChanges = it.estado === 'cambios' || it.estado === 'corregido';
+
     if (editItemFeedbackBox && editItemFeedbackText) {
-      if (it.comentario && it.comentario.trim()) {
-        var author = it.revisadoPor || t.revisadoPor || 'Cliente';
-        var isChanges = it.estado === 'cambios';
-        editItemFeedbackText.textContent = (isChanges ? '⚠ Ajustes solicitados por ' : 'Comentario de ') + author + ': “' + it.comentario.trim() + '”';
+      if (commentText) {
+        editItemFeedbackText.textContent = (isChanges ? '⚠ Ajustes solicitados por ' : 'Comentario de ') + author + ': “' + commentText + '”';
         editItemFeedbackBox.style.display = 'block';
       } else {
         editItemFeedbackBox.style.display = 'none';
       }
     }
 
-    if (editItemEstado) editItemEstado.value = it.estado || 'pendiente';
+    if (modalSideFeedback && modalSideFeedbackText) {
+      modalSideFeedbackText.textContent = commentText ? ('“' + commentText + '”\n\n— ' + author) : 'Sin notas de corrección del cliente.';
+    }
+
+    // Configurar estado por defecto: si estaba con cambios, sugerir directamente 'corregido' para facilitar el flujo
+    var defaultEstado = it.estado || 'pendiente';
+    if (it.estado === 'cambios') {
+      defaultEstado = 'corregido';
+    }
+    if (editItemEstado) editItemEstado.value = defaultEstado;
+
     if (editItemTitulo) editItemTitulo.value = it.titulo || '';
     if (editItemFormato) editItemFormato.value = it.formato || 'Reel';
     if (editItemPilar) editItemPilar.value = it.pilar || '';
@@ -6036,6 +6434,15 @@ body{
     if (editItemCopy) editItemCopy.value = it.copy || '';
     if (editItemHashtags) editItemHashtags.value = it.hashtags || '';
     if (editItemComentario) editItemComentario.value = it.comentario || '';
+
+    // Permitir clic en el botón de ampliar feedback dentro del modal
+    var triggerBtns = editModalCard ? editModalCard.querySelectorAll('.btn-trigger-expand-fb') : [];
+    triggerBtns.forEach(function(tb){
+      tb.onclick = function(e){
+        e.stopPropagation();
+        openExpandedFeedback(t, it);
+      };
+    });
 
     if (modalEditContent) {
       modalEditContent.style.display = 'flex';
@@ -6048,6 +6455,11 @@ body{
     if (modalEditContent) {
       modalEditContent.style.display = 'none';
       modalEditContent.setAttribute('aria-hidden', 'true');
+    }
+    if (editModalCard && editModalCard.classList.contains('fullscreen')) {
+      editModalCard.classList.remove('fullscreen');
+      if (iconExpandModal) iconExpandModal.style.display = 'block';
+      if (iconCompressModal) iconCompressModal.style.display = 'none';
     }
     editingBoardId = null;
     editingItemN = null;
@@ -6076,8 +6488,12 @@ body{
 
     var newOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
     var newFix = items.filter(function(x){ return x.estado === 'cambios'; }).length;
+    var newCorregidos = items.filter(function(x){ return x.estado === 'corregido'; }).length;
     var newPend = items.filter(function(x){ return x.estado === 'pendiente'; }).length;
-    var newEstado = (newFix > 0) ? 'Con cambios' : ((newOk === items.length && items.length > 0) ? 'Aprobado' : (newOk > 0 ? 'Parcial' : 'Pendiente'));
+
+    var newEstado = (newFix > 0) ? 'Con cambios' :
+                    (newCorregidos > 0 ? 'En revisión' :
+                    ((newOk === items.length && items.length > 0) ? 'Aprobado' : (newOk > 0 ? 'Parcial' : 'Pendiente')));
 
     if (btnSaveEditModal) {
       btnSaveEditModal.disabled = true;
@@ -6106,7 +6522,10 @@ body{
         btnSaveEditModal.textContent = 'Guardar cambios';
       }
       closeEditModal();
-      toast('✓ Contenido actualizado con éxito');
+      var stateToastMsg = (items[idx].estado === 'corregido') ?
+        '✓ Contenido #' + (editingItemN < 10 ? '0' : '') + editingItemN + ' corregido y listo para reenvío' :
+        '✓ Contenido actualizado con éxito';
+      toast(stateToastMsg);
       renderBoardDetail(t.id);
       applyFiltersAndRender();
       if (typeof updateGlobalMetrics === 'function') updateGlobalMetrics(allTableros);
@@ -6167,17 +6586,66 @@ body{
     });
   }
 
+  function generateReenvioMessage(t, bData){
+    var items = getMergedItems(t, bData);
+    var corregidos = items.filter(function(x){ return x.estado === 'corregido'; });
+    var cliente = t.cliente || 'Estimado cliente';
+    var mes = t.mes || '';
+    var url = t.url || window.location.href;
+
+    var msg = '¡Hola ' + cliente + '! 👋\n\n' +
+      'Hemos ajustado las correcciones solicitadas en la parrilla de contenidos de *' + mes + '*.\n\n' +
+      'Piezas corregidas:\n';
+
+    corregidos.forEach(function(c){
+      var nStr = (c.n < 10 ? '0' : '') + c.n;
+      msg += '• #' + nStr + ' - ' + (c.titulo || 'Contenido') + ' (' + (c.formato || 'Post') + ')\n';
+    });
+
+    msg += '\nPuedes revisar los cambios aplicados en tu tablero interactivo:\n' + url + '\n\n' +
+      'Quedamos atentos a tu visto bueno para iniciar producción. ¡Gracias!';
+
+    return msg;
+  }
+
+  function shareReenvioWhatsApp(t, bData){
+    var msg = generateReenvioMessage(t, bData);
+    var waUrl = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(msg);
+    window.open(waUrl, '_blank', 'noopener,noreferrer');
+    toast('✓ Abriendo WhatsApp para reenviar al cliente');
+  }
+
+  function copyReenvioMessage(t, bData){
+    var msg = generateReenvioMessage(t, bData);
+    copyText(msg, '✓ Mensaje y enlace copiados para enviar al cliente');
+  }
+
   if (btnCloseEditModal) btnCloseEditModal.onclick = closeEditModal;
   if (btnCancelEditModal) btnCancelEditModal.onclick = closeEditModal;
   if (btnSaveEditModal) btnSaveEditModal.onclick = saveEditContent;
+  if (btnToggleFullscreenEdit) btnToggleFullscreenEdit.onclick = toggleEditModalFullscreen;
+
+  if (btnCloseExpandedFb) btnCloseExpandedFb.onclick = closeExpandedFeedback;
+  if (btnExpandedFbDone) btnExpandedFbDone.onclick = closeExpandedFeedback;
+
   if (modalEditContent) {
     modalEditContent.onclick = function(e){
       if (e.target === modalEditContent) closeEditModal();
     };
   }
+  if (modalExpandedFeedback) {
+    modalExpandedFeedback.onclick = function(e){
+      if (e.target === modalExpandedFeedback) closeExpandedFeedback();
+    };
+  }
+
   window.addEventListener('keydown', function(e){
-    if (e.key === 'Escape' && modalEditContent && modalEditContent.style.display === 'flex') {
-      closeEditModal();
+    if (e.key === 'Escape') {
+      if (modalExpandedFeedback && modalExpandedFeedback.style.display === 'flex') {
+        closeExpandedFeedback();
+      } else if (modalEditContent && modalEditContent.style.display === 'flex') {
+        closeEditModal();
+      }
     }
   });
 

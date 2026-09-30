@@ -3730,6 +3730,146 @@ body{
   max-width: 480px;
 }
 
+/* Modal Unir Tableros Aprobados */
+#modalMergeBoards {
+  z-index: 340;
+}
+.merge-boards-card {
+  width: 94vw;
+  max-width: 820px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(155deg, #162636 0%, #0d1722 100%);
+  border: 1.5px solid rgba(56, 189, 248, 0.35);
+  border-radius: 18px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85);
+  overflow: hidden;
+  animation: modalIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.merge-boards-body {
+  padding: 20px 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.merge-hero-banner {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.12) 0%, rgba(92, 184, 62, 0.1) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  border-radius: 12px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.merge-hero-banner h4 {
+  margin: 0 0 4px 0;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #BAE6FD;
+}
+.merge-hero-banner p {
+  margin: 0;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.76);
+  line-height: 1.45;
+}
+.merge-sources-box {
+  background: rgba(0, 0, 0, 0.24);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.merge-source-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 9px;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+.merge-source-row:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(56, 189, 248, 0.3);
+}
+.merge-source-row.selected {
+  border-color: #38BDF8;
+  background: rgba(56, 189, 248, 0.08);
+}
+.merge-preview-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.merge-preview-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 12px;
+  background: rgba(92, 184, 62, 0.06);
+  border: 1px solid rgba(92, 184, 62, 0.25);
+  border-left: 3.5px solid var(--verde);
+  border-radius: 8px;
+  font-size: 12.5px;
+}
+.merge-preview-item .num {
+  font-weight: 800;
+  color: #86EFAC;
+}
+.btn-unir-client-hdr {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.16) 0%, rgba(92, 184, 62, 0.14) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 8px;
+  color: #BAE6FD;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-unir-client-hdr:hover {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.3) 0%, rgba(92, 184, 62, 0.25) 100%);
+  border-color: #38BDF8;
+  color: #fff;
+  transform: translateY(-1px);
+}
+.btn-ws-unir-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.18) 0%, rgba(92, 184, 62, 0.15) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 9px;
+  color: #BAE6FD;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-ws-unir-action:hover {
+  background: linear-gradient(135deg, #0284C7 0%, #16a34a 100%);
+  border-color: transparent;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+
 /* Adaptabilidad Mobile completa */
 @media (max-width: 768px) {
   #modalBoardWorkspace .workspace-card,
@@ -4341,6 +4481,12 @@ body{
               <option value="az">Cliente A-Z</option>
               <option value="pending">Más pendientes</option>
             </select>
+            <button class="btn-ws-unir-action" id="btnToolbarMergeBoards" title="Unir y consolidar contenidos aprobados de un cliente">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+              <span>Unir tableros</span>
+            </button>
           </div>
         </div>
         <div class="toolbar-row-chips" id="stateChips">
@@ -4585,8 +4731,11 @@ body{
         <span id="wsBoardPeriod" class="workspace-period">Periodo</span>
         <span id="wsBoardBadge" class="badge">Estado</span>
       </div>
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
         <div id="wsBoardProg" class="workspace-prog-summary">0 de 0 aprobados</div>
+        <button class="btn-ws-unir-action" id="wsBtnMergeBoard" title="Unir contenidos aprobados de este cliente en un tablero definitivo">
+          <span>⚡ Unir aprobados</span>
+        </button>
         <button class="btn-card pri" id="wsBtnOpenClientView" title="Abrir vista pública del tablero">Abrir público ↗</button>
         <button class="btn-modal-close" id="btnCloseWorkspace" aria-label="Cerrar espacio de trabajo">&times;</button>
       </div>
@@ -4762,7 +4911,84 @@ body{
   </div>
 </div>
 
+<!-- ==========================================================================
+     MODAL 4: UNIR TABLEROS Y GENERAR TABLERO DEFINITIVO DE APROBADOS
+     ========================================================================== -->
+<div id="modalMergeBoards" class="modal-overlay" style="display:none;" aria-hidden="true" role="dialog">
+  <div class="merge-boards-card">
+    <div class="modal-head">
+      <div>
+        <span class="modal-eyebrow" style="color:#86EFAC;">CONSOLIDACIÓN Y ENTREGA DEFINITIVA</span>
+        <h3 id="mergeModalTitle" style="color:#fff;margin:0;">Unir Tableros Aprobados</h3>
+      </div>
+      <button class="btn-modal-close" id="btnCloseMergeModal" aria-label="Cerrar ventana">&times;</button>
+    </div>
+
+    <div class="merge-boards-body">
+      <!-- Banner Informativo -->
+      <div class="merge-hero-banner">
+        <div style="font-size:28px;">⚡</div>
+        <div>
+          <h4>Fusión de Contenidos Aprobados para Producción</h4>
+          <p>
+            Esta sección detecta los tableros e iteraciones del cliente y extrae <b>únicamente los contenidos que han sido formalmente aprobados</b>. 
+            Crea un nuevo Tablero Definitivo consolidado y conectado, listo para descargar en Word o exportar a ClickUp.
+          </p>
+        </div>
+      </div>
+
+      <!-- Configuración del Tablero Destino -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="form-group">
+          <label for="mergeInputCliente">Cliente</label>
+          <input type="text" id="mergeInputCliente" class="modal-input" readonly>
+        </div>
+        <div class="form-group">
+          <label for="mergeInputPeriodo">Periodo / Mes</label>
+          <input type="text" id="mergeInputPeriodo" class="modal-input" placeholder="Ej: Octubre 2026">
+        </div>
+      </div>
+
+      <!-- Selector de Tableros a Unir -->
+      <div class="merge-sources-box">
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;color:#BAE6FD;">
+          <span>Tableros / Iteraciones a combinar:</span>
+          <span id="mergeSourcesCount" style="color:var(--ink-2);font-weight:500;">0 tableros encontrados</span>
+        </div>
+        <div id="mergeSourcesList" style="display:flex;flex-direction:column;gap:8px;">
+          <!-- Inyectado dinámicamente con checkboxes de tableros -->
+        </div>
+      </div>
+
+      <!-- Vista previa de piezas aprobadas que se integrarán -->
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <span class="pane-section-title" style="color:#86EFAC;margin:0;">
+            ✓ Contenidos aprobados que se unirán (<span id="mergeCountPreview">0</span> piezas)
+          </span>
+          <span style="font-size:11.5px;color:var(--ink-2);">*Se toman únicamente contenidos en estado "Aprobado"</span>
+        </div>
+        <div class="merge-preview-list" id="mergePreviewList">
+          <!-- Inyectado dinámicamente -->
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-foot">
+      <div>
+        <button class="btn-modal-sec" id="btnCancelMergeModal">Cancelar</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn-modal-pri" id="btnExecuteMerge" style="background:linear-gradient(135deg, #16a34a 0%, #059669 100%);">
+          <span>✨ Unir y Crear Tablero Definitivo Aprobado</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Firebase SDK compat -->
+
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
@@ -6127,7 +6353,10 @@ body{
         html += '<section class="client-section">' +
           '<div class="client-header">' +
             '<div class="client-name">' + escapeHtml(cName) + '</div>' +
-            '<div class="client-count">' + list.length + (list.length === 1 ? ' tablero' : ' tableros') + '</div>' +
+            '<div style="display:flex;align-items:center;gap:8px;">' +
+              (list.length > 1 ? '<button class="btn-unir-client-hdr btn-open-merge-client" data-client="' + escapeAttr(cName) + '" title="Unir contenidos aprobados de las distintas versiones de este cliente">⚡ Unir aprobados</button>' : '') +
+              '<div class="client-count">' + list.length + (list.length === 1 ? ' tablero' : ' tableros') + '</div>' +
+            '</div>' +
           '</div>';
 
         html += getCardHtml(mainTab, false);
@@ -6150,7 +6379,18 @@ body{
 
     dashContent.innerHTML = html;
 
+    // Delegar eventos de unir tableros por cliente
+    var mergeClientBtns = dashContent.querySelectorAll('.btn-open-merge-client');
+    mergeClientBtns.forEach(function(btn){
+      btn.onclick = function(e){
+        e.stopPropagation();
+        var client = btn.getAttribute('data-client');
+        openMergeBoardsModal(client);
+      };
+    });
+
     // Delegar eventos de copiar
+
     var copyBtns = dashContent.querySelectorAll('.btn-copy-url');
     copyBtns.forEach(function(btn){
       btn.onclick = function(e){
@@ -7411,6 +7651,26 @@ body{
   var shipmentGeneratedUrl = document.getElementById('shipmentGeneratedUrl');
   var btnCopyShipmentLink = document.getElementById('btnCopyShipmentLink');
 
+  var modalMergeBoards = document.getElementById('modalMergeBoards');
+  var btnCloseMergeModal = document.getElementById('btnCloseMergeModal');
+  var btnCancelMergeModal = document.getElementById('btnCancelMergeModal');
+  var btnExecuteMerge = document.getElementById('btnExecuteMerge');
+  var mergeModalTitle = document.getElementById('mergeModalTitle');
+  var mergeInputCliente = document.getElementById('mergeInputCliente');
+  var mergeInputPeriodo = document.getElementById('mergeInputPeriodo');
+  var mergeSourcesCount = document.getElementById('mergeSourcesCount');
+  var mergeSourcesList = document.getElementById('mergeSourcesList');
+  var mergeCountPreview = document.getElementById('mergeCountPreview');
+  var mergePreviewList = document.getElementById('mergePreviewList');
+  var btnToolbarMergeBoards = document.getElementById('btnToolbarMergeBoards');
+  var wsBtnMergeBoard = document.getElementById('wsBtnMergeBoard');
+
+  var currentMergeClient = null;
+  var currentMergeCandidateBoards = [];
+  var currentMergeSelectedBoardIds = {};
+  var currentMergeApprovedItems = [];
+
+
   // Apertura del Espacio de Trabajo Principal del Tablero
   function openBoardWorkspace(tId, defaultTab){
     var t = allTableros.find(function(x){ return x.id === tId; });
@@ -7658,6 +7918,7 @@ body{
           '<p>Todas las ' + countAll + ' piezas de este conjunto (' + escapeHtml(t.cliente || '') + ' · ' + escapeHtml(t.mes || '') + ') han sido formalmente aprobadas en su versión definitiva.</p>' +
         '</div>' +
         '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">' +
+          '<button class="btn-ws-unir-action btn-ws-merge-from-listos" style="padding:10px 16px;font-size:13px;" title="Unir con otros tableros de este cliente">⚡ Unir con otro tablero</button>' +
           '<button class="btn-detail-action clickup btn-ws-pdf-clickup" style="padding:10px 18px;font-size:13px;">📑 Exportar PDF para ClickUp</button>' +
           '<button class="btn-detail-action pri btn-ws-word-ok" style="padding:10px 18px;font-size:13px;">📄 Descargar Word Definitivo</button>' +
         '</div>' +
@@ -7668,8 +7929,9 @@ body{
         '<div class="lock-icon">🔒</div>' +
         '<h4>Conjunto en proceso de aprobación (' + countOk + ' de ' + countAll + ' aprobados)</h4>' +
         '<p>El Tablero Final de Contenidos Listos se habilitará automáticamente en cuanto todas las piezas estén aprobadas. Faltan <b>' + remaining + ' contenidos</b> por ser aprobados.</p>' +
-        '<div style="display:flex;gap:8px;margin-top:6px;">' +
+        '<div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;justify-content:center;">' +
           '<button class="btn-modal-sec btn-ws-go-cambios" style="color:#FFA07A;">Ver pendientes / correcciones</button>' +
+          '<button class="btn-ws-unir-action btn-ws-merge-from-listos" style="padding:8px 16px;font-size:12.5px;">⚡ Unir piezas aprobadas con otro tablero</button>' +
         '</div>' +
       '</div>';
     }
@@ -7756,6 +8018,15 @@ body{
         shareReenvioWhatsApp(t, bData);
       };
     }
+
+    var btnMergeListos = wsBodyContent.querySelectorAll('.btn-ws-merge-from-listos');
+    btnMergeListos.forEach(function(bml){
+      bml.onclick = function(e){
+        e.stopPropagation();
+        openMergeBoardsModal(t.cliente);
+      };
+    });
+
 
     var btnPdf = wsBodyContent.querySelector('.btn-ws-pdf-clickup');
     if (btnPdf) btnPdf.onclick = function(e){ e.stopPropagation(); descargarPdfClickUp(t, bData); };
@@ -8165,7 +8436,349 @@ body{
     closeShareShipmentModal();
   }
 
-  // Delegaciones de eventos y listeners de los nuevos modales
+  // ==========================================================================
+  // UNIR TABLEROS: FUSIÓN DE CONTENIDOS EN ESTADO 'APROBADO' PARA ENTREGA DEFINITIVA
+  // ==========================================================================
+  function openMergeBoardsModal(preferredClient){
+    var clientName = preferredClient || '';
+    if (!clientName && currentWorkspaceBoardId) {
+      var currentTab = allTableros.find(function(x){ return x.id === currentWorkspaceBoardId; });
+      if (currentTab) clientName = currentTab.cliente || '';
+    }
+    if (!clientName && allTableros.length > 0) {
+      clientName = allTableros[0].cliente || '';
+    }
+
+    if (!clientName) {
+      toast('No hay tableros registrados para unir.');
+      return;
+    }
+
+    currentMergeClient = clientName;
+
+    // Buscar tableros candidatos de este cliente (o con nombre similar)
+    currentMergeCandidateBoards = allTableros.filter(function(t){
+      return String(t.cliente || '').trim().toLowerCase() === String(clientName).trim().toLowerCase();
+    });
+
+    if (currentMergeCandidateBoards.length === 0) {
+      currentMergeCandidateBoards = allTableros.filter(function(t){
+        return String(t.cliente || '').toLowerCase().indexOf(String(clientName).toLowerCase()) !== -1;
+      });
+    }
+
+    // Si aún así no hay, mostrar todos los tableros del cliente o los primeros
+    if (currentMergeCandidateBoards.length === 0) {
+      currentMergeCandidateBoards = allTableros.slice(0, 5);
+    }
+
+    // Inicializar selección: por defecto todos los tableros candidatos marcados
+    currentMergeSelectedBoardIds = {};
+    currentMergeCandidateBoards.forEach(function(b){
+      currentMergeSelectedBoardIds[b.id] = true;
+    });
+
+    if (mergeModalTitle) mergeModalTitle.textContent = 'Unir Tableros Aprobados · ' + clientName;
+    if (mergeInputCliente) mergeInputCliente.value = clientName;
+
+    // Determinar periodo sugerido (tomar el más reciente)
+    var latestPeriod = (currentMergeCandidateBoards[0] && currentMergeCandidateBoards[0].mes) ?
+      ((currentMergeCandidateBoards[0].mes || '') + ' ' + (currentMergeCandidateBoards[0].anio || '2026')).trim() : 'Octubre 2026';
+    if (mergeInputPeriodo) mergeInputPeriodo.value = latestPeriod + ' [Definitivo]';
+
+    if (mergeSourcesCount) {
+      mergeSourcesCount.textContent = currentMergeCandidateBoards.length + (currentMergeCandidateBoards.length === 1 ? ' tablero detectado' : ' tableros detectados');
+    }
+
+    // Renderizar lista de tableros candidatos con badges y piezas aprobadas
+    renderMergeCandidateRows();
+
+    // Asegurar que los datos de contenidos estén cargados para todos los candidatos
+    ensureCandidateBoardDataLoaded(function(){
+      recalculateMergeApprovedPreview();
+    });
+
+    if (modalMergeBoards) {
+      modalMergeBoards.style.display = 'flex';
+      modalMergeBoards.setAttribute('aria-hidden', 'false');
+    }
+  }
+
+  function renderMergeCandidateRows(){
+    if (!mergeSourcesList) return;
+    var html = '';
+
+    currentMergeCandidateBoards.forEach(function(b){
+      var isChecked = !!currentMergeSelectedBoardIds[b.id];
+      var bPeriod = ((b.mes || '') + ' ' + (b.anio || '')).trim() || 'Periodo';
+      var st = calcEstado(b);
+      var bData = boardCache[b.id];
+      var items = getMergedItems(b, bData);
+      var nAprob = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
+      var tot = items.length || b.total || 0;
+
+      html += '<label class="merge-source-row ' + (isChecked ? 'selected' : '') + '">' +
+        '<div style="display:flex;align-items:center;gap:10px;">' +
+          '<input type="checkbox" class="cb-merge-source" data-board-id="' + escapeAttr(b.id) + '" ' + (isChecked ? 'checked' : '') + ' style="width:17px;height:17px;accent-color:#38BDF8;cursor:pointer;">' +
+          '<div>' +
+            '<div style="font-weight:700;font-size:13px;color:#fff;">' + escapeHtml(bPeriod) + ' <span style="font-size:11.5px;color:rgba(255,255,255,0.6);font-family:monospace;">(' + escapeHtml(b.id) + ')</span></div>' +
+            '<div style="font-size:11.5px;color:var(--ink-2);margin-top:2px;">' + (tot > 0 ? (tot + ' piezas totales') : 'Cargando datos…') + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div style="display:flex;align-items:center;gap:8px;">' +
+          '<span class="badge badge-ok" style="font-size:11px;padding:3px 8px;">✓ ' + nAprob + ' aprobados</span>' +
+          '<span class="badge ' + st.cls + '" style="font-size:11px;padding:3px 8px;">' + st.txt + '</span>' +
+        '</div>' +
+      '</label>';
+    });
+
+    mergeSourcesList.innerHTML = html;
+
+    var cbs = mergeSourcesList.querySelectorAll('.cb-merge-source');
+    cbs.forEach(function(cb){
+      cb.onchange = function(){
+        var bId = cb.getAttribute('data-board-id');
+        currentMergeSelectedBoardIds[bId] = cb.checked;
+        cb.closest('.merge-source-row').classList.toggle('selected', cb.checked);
+        recalculateMergeApprovedPreview();
+      };
+    });
+  }
+
+  function ensureCandidateBoardDataLoaded(callback){
+    var needed = currentMergeCandidateBoards.filter(function(b){
+      return !boardCache[b.id] && b.url;
+    });
+
+    if (!needed.length) {
+      if (callback) callback();
+      return;
+    }
+
+    var pending = needed.length;
+    needed.forEach(function(b){
+      getBoardData(b, function(){
+        pending--;
+        if (pending <= 0 && callback) callback();
+      });
+    });
+  }
+
+  function recalculateMergeApprovedPreview(){
+    // Tomar únicamente contenidos que estén en estado 'aprobado'
+    var approvedMap = {}; // Clave por pieza o número
+    var approvedList = [];
+
+    // Iterar por los tableros seleccionados
+    currentMergeCandidateBoards.forEach(function(b){
+      if (!currentMergeSelectedBoardIds[b.id]) return;
+      var bData = boardCache[b.id];
+      var items = getMergedItems(b, bData);
+
+      items.forEach(function(it){
+        // REGLA FUNDAMENTAL: Únicamente piezas con estado === 'aprobado'
+        if (it.estado !== 'aprobado') return;
+
+        var dedupeKey = String(it.n || it.id || it.titulo || '').trim().toLowerCase();
+        var existing = approvedMap[dedupeKey];
+
+        if (!existing) {
+          var itemClone = Object.assign({}, it);
+          itemClone.origenTableroId = b.id;
+          itemClone.origenTableroMes = b.mes || '';
+          approvedMap[dedupeKey] = itemClone;
+        } else {
+          // Si ya existe la misma pieza aprobada en otra versión, conservar la de mayor versión o más reciente
+          var vNew = parseInt(it.version, 10) || 1;
+          var vOld = parseInt(existing.version, 10) || 1;
+          if (vNew >= vOld) {
+            var itemClone2 = Object.assign({}, it);
+            itemClone2.origenTableroId = b.id;
+            itemClone2.origenTableroMes = b.mes || '';
+            approvedMap[dedupeKey] = itemClone2;
+          }
+        }
+      });
+    });
+
+    // Ordenar por número de pieza correlativo
+    approvedList = Object.keys(approvedMap).map(function(k){ return approvedMap[k]; });
+    approvedList.sort(function(a, b){
+      var nA = parseInt(a.n, 10) || 0;
+      var nB = parseInt(b.n, 10) || 0;
+      return nA - nB;
+    });
+
+    // Re-indexar números de pieza para que queden correlativos limpios si es necesario
+    approvedList.forEach(function(it, idx){
+      if (!it.n) it.n = idx + 1;
+    });
+
+    currentMergeApprovedItems = approvedList;
+
+    if (mergeCountPreview) mergeCountPreview.textContent = approvedList.length;
+
+    if (mergePreviewList) {
+      if (!approvedList.length) {
+        mergePreviewList.innerHTML = '<div style="padding:16px;text-align:center;font-size:12.5px;color:rgba(255,255,255,0.5);border:1px dashed rgba(255,255,255,0.15);border-radius:8px;">' +
+          'No se encontraron contenidos en estado "aprobado" en los tableros seleccionados.<br><span style="font-size:11.5px;color:#BAE6FD;">Marca las piezas como aprobadas primero para poder unirlas.</span></div>';
+        if (btnExecuteMerge) btnExecuteMerge.disabled = true;
+        return;
+      }
+
+      if (btnExecuteMerge) btnExecuteMerge.disabled = false;
+
+      var previewHtml = '';
+      approvedList.forEach(function(it){
+        var num = (it.n < 10 ? '0' : '') + it.n;
+        previewHtml += '<div class="merge-preview-item">' +
+          '<div style="display:flex;align-items:center;gap:10px;">' +
+            '<span class="num">#' + num + '</span>' +
+            '<div>' +
+              '<div style="font-weight:700;color:#fff;">' + escapeHtml(it.titulo || 'Sin título') + '</div>' +
+              '<div style="font-size:11.5px;color:var(--ink-2);display:flex;gap:6px;align-items:center;margin-top:2px;">' +
+                (it.formato ? ('<span class="ws-pill">' + escapeHtml(it.formato) + '</span>') : '') +
+                (it.pilar ? ('<span class="ws-pill">' + escapeHtml(it.pilar) + '</span>') : '') +
+                '<span class="ws-pill version">' + (it.version ? ('v' + it.version) : 'v1') + '</span>' +
+                (it.origenTableroMes ? ('<span style="color:#BAE6FD;">• de ' + escapeHtml(it.origenTableroMes) + '</span>') : '') +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div style="display:flex;align-items:center;gap:6px;">' +
+            '<span class="badge badge-ok">✓ Aprobado</span>' +
+          '</div>' +
+        '</div>';
+      });
+
+      mergePreviewList.innerHTML = previewHtml;
+    }
+  }
+
+  function closeMergeBoardsModal(){
+    if (modalMergeBoards) {
+      modalMergeBoards.style.display = 'none';
+      modalMergeBoards.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  function executeMergeBoards(){
+    if (!currentMergeApprovedItems.length) {
+      toast('No hay contenidos en estado aprobado para unir.');
+      return;
+    }
+
+    var cliente = (mergeInputCliente ? mergeInputCliente.value.trim() : '') || currentMergeClient || 'Cliente';
+    var periodoRaw = (mergeInputPeriodo ? mergeInputPeriodo.value.trim() : '') || 'Periodo Definitivo';
+
+    // Generar un ID descriptivo y seguro para el nuevo tablero definitivo
+    var slugCliente = cliente.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    var slugPeriodo = periodoRaw.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    var randSuffix = Math.random().toString(36).substring(2, 6);
+    var unifiedBoardId = slugCliente + '-' + slugPeriodo + '-definitivo-' + randSuffix;
+
+    // Extraer mes y anio para indexación del nuevo tablero
+    var anioMatch = periodoRaw.match(/\b(202\d)\b/);
+    var anio = anioMatch ? anioMatch[1] : '2026';
+    var mes = periodoRaw.replace(anio, '').replace(/\[.*?\]/g, '').replace(/definitivo/gi, '').trim() || 'Definitivo';
+
+    // Preparar lista de contenidos 100% aprobados
+    var finalizedItems = currentMergeApprovedItems.map(function(it, idx){
+      var itemObj = Object.assign({}, it);
+      itemObj.n = idx + 1;
+      itemObj.id = itemObj.id || ('c' + (idx + 1));
+      itemObj.estado = 'aprobado'; // Garantizado 100% aprobado
+      if (!itemObj.fechaAprobacion) itemObj.fechaAprobacion = new Date().toISOString();
+      return itemObj;
+    });
+
+    var countOk = finalizedItems.length;
+
+    // Buscar una URL pública representativa (de alguno de los tableros candidatos) para permitir abrirlo
+    var representativeUrl = '';
+    for (var i = 0; i < currentMergeCandidateBoards.length; i++) {
+      if (currentMergeCandidateBoards[i].url) {
+        representativeUrl = currentMergeCandidateBoards[i].url;
+        break;
+      }
+    }
+
+    var unifiedBoardDoc = {
+      id: unifiedBoardId,
+      cliente: cliente,
+      mes: mes,
+      anio: anio,
+      total: countOk,
+      aprobados: countOk,
+      cambios: 0,
+      pendientes: 0,
+      estado: 'Aprobado',
+      tipo: 'unificado_definitivo',
+      url: representativeUrl,
+      revisadoPor: 'Cliente & Agencia (Unificado)',
+      ultimaRevision: new Date().toISOString(),
+      actualizado: new Date().toISOString(),
+      registrado: new Date().toISOString(),
+      contenidos: finalizedItems,
+      tablerosOrigenIds: Object.keys(currentMergeSelectedBoardIds).filter(function(k){ return currentMergeSelectedBoardIds[k]; })
+    };
+
+    if (btnExecuteMerge) {
+      btnExecuteMerge.disabled = true;
+      btnExecuteMerge.textContent = 'Guardando tablero unificado…';
+    }
+
+    toast('Creando Tablero Definitivo con ' + countOk + ' piezas aprobadas…');
+
+    db.collection('tableros').doc(unifiedBoardId).set(unifiedBoardDoc)
+    .then(function(){
+      // Guardar en cache local inmediato
+      boardCache[unifiedBoardId] = {
+        cliente: cliente,
+        mes: mes,
+        anio: anio,
+        contenidos: finalizedItems,
+        revision: {
+          aprobados: countOk,
+          cambios: 0,
+          pendientes: 0,
+          revisadoPor: 'Cliente & Agencia (Unificado)',
+          fecha: new Date().toISOString()
+        }
+      };
+
+      // Si aún no está en allTableros (por latencia de listener), insertarlo
+      var exists = allTableros.some(function(x){ return x.id === unifiedBoardId; });
+      if (!exists) {
+        allTableros.unshift(unifiedBoardDoc);
+      }
+
+      if (btnExecuteMerge) {
+        btnExecuteMerge.disabled = false;
+        btnExecuteMerge.textContent = '✨ Unir y Crear Tablero Definitivo Aprobado';
+      }
+
+      closeMergeBoardsModal();
+      toast('🏆 ¡Tablero Definitivo creado con éxito con ' + countOk + ' piezas aprobadas!');
+
+      applyFiltersAndRender();
+      if (typeof updateGlobalMetrics === 'function') updateGlobalMetrics(allTableros);
+
+      // Abrir inmediatamente el nuevo tablero unificado en su pestaña 'Contenidos listos'
+      setTimeout(function(){
+        openBoardWorkspace(unifiedBoardId, 'listos');
+      }, 350);
+    })
+    .catch(function(err){
+      console.error('Error al guardar tablero unificado en Firestore:', err);
+      if (btnExecuteMerge) {
+        btnExecuteMerge.disabled = false;
+        btnExecuteMerge.textContent = '✨ Unir y Crear Tablero Definitivo Aprobado';
+      }
+      toast('Error al crear el tablero unificado en Firestore');
+    });
+  }
+
+  // Delegaciones de eventos y listeners de los modales
   if (btnCloseWorkspace) btnCloseWorkspace.onclick = closeBoardWorkspace;
   if (btnClosePieceEditor) btnClosePieceEditor.onclick = function(){ closePieceEditor(false); };
   if (btnPieceEditorCancel) btnPieceEditorCancel.onclick = function(){ closePieceEditor(false); };
@@ -8175,6 +8788,19 @@ body{
   if (btnCloseShareShipment) btnCloseShareShipment.onclick = closeShareShipmentModal;
   if (btnCancelShareShipment) btnCancelShareShipment.onclick = closeShareShipmentModal;
   if (btnCopyShipmentLink) btnCopyShipmentLink.onclick = copyShipmentReviewLink;
+
+  if (btnCloseMergeModal) btnCloseMergeModal.onclick = closeMergeBoardsModal;
+  if (btnCancelMergeModal) btnCancelMergeModal.onclick = closeMergeBoardsModal;
+  if (btnExecuteMerge) btnExecuteMerge.onclick = executeMergeBoards;
+  if (btnToolbarMergeBoards) btnToolbarMergeBoards.onclick = function(){ openMergeBoardsModal(); };
+  if (wsBtnMergeBoard) wsBtnMergeBoard.onclick = function(){
+    if (currentWorkspaceBoardId) {
+      var t = allTableros.find(function(x){ return x.id === currentWorkspaceBoardId; });
+      openMergeBoardsModal(t ? t.cliente : null);
+    } else {
+      openMergeBoardsModal();
+    }
+  };
 
   if (modalBoardWorkspace) {
     modalBoardWorkspace.onclick = function(e){
@@ -8191,11 +8817,17 @@ body{
       if (e.target === modalShareShipment) closeShareShipmentModal();
     };
   }
+  if (modalMergeBoards) {
+    modalMergeBoards.onclick = function(e){
+      if (e.target === modalMergeBoards) closeMergeBoardsModal();
+    };
+  }
 
   // Sustituir toggleBoardDetail para abrir de inmediato la ventana amplia de trabajo modal
   function toggleBoardDetail(tId, btn){
     openBoardWorkspace(tId, 'todos');
   }
+
 
   if (btnCloseEditModal) btnCloseEditModal.onclick = closeEditModal;
   if (btnCancelEditModal) btnCancelEditModal.onclick = closeEditModal;
@@ -8218,7 +8850,9 @@ body{
 
   window.addEventListener('keydown', function(e){
     if (e.key === 'Escape') {
-      if (modalShareShipment && modalShareShipment.style.display === 'flex') {
+      if (modalMergeBoards && modalMergeBoards.style.display === 'flex') {
+        closeMergeBoardsModal();
+      } else if (modalShareShipment && modalShareShipment.style.display === 'flex') {
         closeShareShipmentModal();
       } else if (modalPieceEditor && modalPieceEditor.style.display === 'flex') {
         closePieceEditor(false);

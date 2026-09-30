@@ -281,8 +281,81 @@ footer .logo svg{height:76px;margin:0 auto 12px}
   .dl-mini{width:40px;height:44px;border-radius:14px;flex-shrink:0}
   .box{padding:22px 18px;border-radius:22px;max-width:92vw}
 }
+
+/* MODO REVISIÓN DE PIEZAS CORREGIDAS */
+.shipment-banner{
+  background:linear-gradient(135deg,rgba(56,189,248,.18),rgba(92,184,62,.15));
+  border:1.5px solid rgba(56,189,248,.45);
+  border-radius:18px;
+  padding:16px 20px;
+  margin-top:22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  flex-wrap:wrap;
+}
+.shipment-banner-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.shipment-banner-icon{
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  background:#38BDF8;
+  color:#0B1926;
+  display:grid;
+  place-items:center;
+  font-size:20px;
+  font-weight:800;
+  flex-shrink:0;
+}
+.shipment-banner-title{
+  font-size:15px;
+  font-weight:700;
+  color:#fff;
+  letter-spacing:-.01em;
+}
+.shipment-banner-sub{
+  font-size:12.5px;
+  color:#BAE6FD;
+  margin-top:2px;
+}
+.shipment-banner-action a{
+  color:#38BDF8;
+  font-size:12.5px;
+  font-weight:600;
+  text-decoration:none;
+  padding:6px 12px;
+  border-radius:99px;
+  background:rgba(56,189,248,.12);
+  border:1px solid rgba(56,189,248,.3);
+  display:inline-block;
+  transition:all .2s;
+}
+.shipment-banner-action a:hover{
+  background:rgba(56,189,248,.25);
+}
+.tag.version{
+  background:#38BDF8;
+  color:#0B1926;
+  font-weight:700;
+}
+.piece-history-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:11.5px;
+  color:#94A3B8;
+  background:rgba(31,53,73,.06);
+  padding:4px 10px;
+  border-radius:8px;
+  margin-top:8px;
+}
 @media (prefers-reduced-motion:reduce){.card{opacity:1;transform:none;transition:none}}
-@media print{.dock,.index,.modal,.toast,.page-network-canvas{display:none!important}.layout{grid-template-columns:1fr}.card{opacity:1;transform:none;break-inside:avoid}}
+@media print{.dock,.index,.modal,.toast,.page-network-canvas,.shipment-banner{display:none!important}.layout{grid-template-columns:1fr}.card{opacity:1;transform:none;break-inside:avoid}}
 </style>
 </head>
 <body class="has-send">
@@ -1628,6 +1701,33 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
     $('reviewed').classList.add('show');
   }
 
+  // DETECCIÓN DE ENVÍO DE CORRECCIONES / FILTRO SELECTIVO DE PIEZAS
+  var urlParams = new URLSearchParams(window.location.search);
+  var piezasParam = urlParams.get('piezas');
+  var isReviewShipment = urlParams.get('review') === 'corregidos' || !!piezasParam;
+  var targetPieceNumbers = null;
+  if (piezasParam) {
+    targetPieceNumbers = piezasParam.split(',').map(function(s){ return parseInt(s.trim(), 10); }).filter(function(n){ return !isNaN(n) && n > 0; });
+  }
+
+  if (isReviewShipment && targetPieceNumbers && targetPieceNumbers.length > 0) {
+    var banner = el('div', 'shipment-banner');
+    banner.innerHTML = '<div class="shipment-banner-left">' +
+      '<div class="shipment-banner-icon">🔄</div>' +
+      '<div>' +
+        '<div class="shipment-banner-title">Revisión de contenidos corregidos (' + targetPieceNumbers.length + ' ' + (targetPieceNumbers.length === 1 ? 'pieza' : 'piezas') + ')</div>' +
+        '<div class="shipment-banner-sub">La agencia aplicó los ajustes solicitados. Revisa cada versión y confírmanos tu aprobación.</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="shipment-banner-action">' +
+      '<a href="' + window.location.pathname + '" title="Ver todo el tablero completo">Ver tablero completo ↗</a>' +
+    '</div>';
+    var introEl = $('intro');
+    if (introEl && introEl.parentNode) {
+      introEl.parentNode.insertBefore(banner, introEl.nextSibling);
+    }
+  }
+
   // Tarjetas
   var list = $('list'), nav = $('nav'), cards = [];
   list.innerHTML = ''; nav.innerHTML = '';
@@ -1635,12 +1735,20 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
   (DATA.formatos || ['Reel','Carrusel','Post','Story','Video','TikTok']).concat(items.map(function(it){ return it.formatoOriginal; }), items.map(function(it){ return it.formato; })).forEach(function(x){ if (x && FORMATOS.indexOf(x) < 0) FORMATOS.push(x); });
   var handle = (DATA.cuenta || DATA.cliente || '').replace(/^@/, '');
   items.forEach(function(it, i){
-    var num = pad(i + 1);
+    var pieceNum = i + 1;
+    var num = pad(pieceNum);
     var card = el('article', 'card'); card.id = it.id; card.dataset.state = it.estado;
+    card.dataset.pieceNum = pieceNum;
 
     var top = el('div', 'c-top');
     top.appendChild(el('div', 'big', num));
     var tw = el('div'); var tags = el('div', 'tags');
+
+    // Versión pill si tiene versión > 1 o estado corregido
+    if (it.version && it.version > 1) {
+      tags.appendChild(el('span', 'tag version', 'v' + it.version + ' Corregido'));
+    }
+
     var fw = el('label', 'fmt-wrap'); var fs = el('select', 'fmt-sel'); fs.setAttribute('aria-label', 'Tipo de contenido');
     FORMATOS.forEach(function(x){ var o = el('option', null, x); o.value = x; fs.appendChild(o); });
     if (!it.formato) { var o0 = el('option', null, 'Tipo de contenido'); o0.value = ''; fs.insertBefore(o0, fs.firstChild); }
@@ -1829,15 +1937,26 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
       paint: paint,
       paintFmt: paintFmt,
       fs: fs,
-      h2Title: h2Title
+      h2Title: h2Title,
+      tagsEl: tags
     });
   });
 
-  function counts(){ var o = {aprobado:0, cambios:0, pendiente:0}; items.forEach(function(it){ o[it.estado]++; }); return o; }
+  function counts(){
+    var o = {aprobado:0, cambios:0, pendiente:0};
+    var evaluatedItems = (targetPieceNumbers && targetPieceNumbers.length > 0)
+      ? items.filter(function(it, idx){ return targetPieceNumbers.indexOf(idx + 1) !== -1; })
+      : items;
+    evaluatedItems.forEach(function(it){ o[it.estado]++; });
+    return o;
+  }
   function refresh(){
-    var n = items.length || 1, k = counts();
+    var evaluatedItems = (targetPieceNumbers && targetPieceNumbers.length > 0)
+      ? items.filter(function(it, idx){ return targetPieceNumbers.indexOf(idx + 1) !== -1; })
+      : items;
+    var n = evaluatedItems.length || 1, k = counts();
     $('sOk').textContent = k.aprobado; $('sFix').textContent = k.cambios; $('sPend').textContent = k.pendiente;
-    $('dN').textContent = (k.aprobado + k.cambios) + '/' + items.length;
+    $('dN').textContent = (k.aprobado + k.cambios) + '/' + evaluatedItems.length;
     $('pct').textContent = Math.round((k.aprobado + k.cambios) / n * 100) + '%';
     var lo = C * k.aprobado / n, lf = C * k.cambios / n;
     $('rOk').setAttribute('stroke-dasharray', lo + ' ' + C);
@@ -1849,7 +1968,13 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
   var f = 'all';
   function applyFilter(){
     var vis = 0;
-    cards.forEach(function(c){ var v = (f === 'all' || c.it.estado === f); c.card.style.display = v ? '' : 'none'; c.nav.style.display = v ? '' : 'none'; if (v) vis++; });
+    cards.forEach(function(c){
+      var isIncludedInShipment = (!targetPieceNumbers || targetPieceNumbers.indexOf(parseInt(c.card.dataset.pieceNum, 10)) !== -1);
+      var v = isIncludedInShipment && (f === 'all' || c.it.estado === f);
+      c.card.style.display = v ? '' : 'none';
+      c.nav.style.display = isIncludedInShipment ? (v ? '' : 'none') : 'none';
+      if (v) vis++;
+    });
     $('empty').style.display = vis ? 'none' : 'block';
   }
   [].forEach.call(document.querySelectorAll('.chip'), function(b){
@@ -2010,12 +2135,27 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
           if (fsItem.formatoOriginal) {
             it.formatoOriginal = fsItem.formatoOriginal;
           }
-          if (fsItem.revisadoPor) {
-            it.revisadoPor = fsItem.revisadoPor;
-          }
           if (fsItem.titulo) {
             it.titulo = fsItem.titulo;
             if (cObj.h2Title) cObj.h2Title.textContent = fsItem.titulo;
+          }
+          if (fsItem.guion) {
+            it.guion = fsItem.guion;
+          }
+          if (fsItem.copy) {
+            it.copy = fsItem.copy;
+          }
+          if (fsItem.version) {
+            it.version = parseInt(fsItem.version, 10);
+            if (it.version > 1 && cObj.tagsEl) {
+              var existingV = cObj.tagsEl.querySelector('.tag.version');
+              if (!existingV) {
+                var vTag = el('span', 'tag version', 'v' + it.version + ' Corregido');
+                cObj.tagsEl.insertBefore(vTag, cObj.tagsEl.firstChild);
+              } else {
+                existingV.textContent = 'v' + it.version + ' Corregido';
+              }
+            }
           }
 
           if (it.comentario) {
@@ -2106,7 +2246,10 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
     var revName = getReviewerName() || 'Cliente';
     DATA.revision = {revisadoPor: revName, fecha: new Date().toISOString()};
     var k = counts();
-    var estadoGeneral = (k.cambios > 0) ? 'Con cambios' : (k.aprobado === items.length ? 'Aprobado' : 'Parcial');
+    var totalGlobalOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
+    var totalGlobalFix = items.filter(function(x){ return x.estado === 'cambios'; }).length;
+    var totalGlobalPend = items.filter(function(x){ return x.estado === 'pendiente' || !x.estado; }).length;
+    var estadoGeneral = (totalGlobalFix > 0) ? 'Con cambios' : (totalGlobalOk === items.length ? 'Aprobado' : (totalGlobalOk > 0 ? 'Parcial' : 'Sin revisar'));
 
     var btn = $('dl');
     btn.disabled = true; btn.textContent = 'Enviando…';
@@ -2117,7 +2260,7 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
         kind:'ok',
         icon:'✓',
         title:'¡Revisión enviada!',
-        text:'Nexo ya recibió tus respuestas: ' + k.aprobado + ' aprobados y ' + k.cambios + ' con cambios. Si cambias algo, puedes volver a enviarla.',
+        text:'Nexo ya recibió tus respuestas: ' + k.aprobado + ' aprobados y ' + k.cambios + ' con cambios.' + (isReviewShipment ? ' (Envío de revisión procesado).' : '') + ' Si cambias algo, puedes volver a enviarla.',
         buttons:[{label:'Descargar una copia', fn:doDownload}, {label:'Listo', primary:true}]
       });
     }
@@ -2161,9 +2304,9 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
 
     var fsBody = JSON.stringify({
       fields: {
-        aprobados: { integerValue: String(k.aprobado) },
-        cambios: { integerValue: String(k.cambios) },
-        pendientes: { integerValue: String(k.pendiente) },
+        aprobados: { integerValue: String(totalGlobalOk) },
+        cambios: { integerValue: String(totalGlobalFix) },
+        pendientes: { integerValue: String(totalGlobalPend) },
         estado: { stringValue: estadoGeneral },
         revisadoPor: { stringValue: revName },
         ultimaRevision: { stringValue: DATA.revision.fecha },
@@ -2194,8 +2337,13 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
   function validate(next, label){
     commitAllDraftComments();
 
-    // 1. PASO OBLIGATORIO: Todos los contenidos deben estar evaluados (Aprobar o Solicitar cambios)
-    var pend = cards.filter(function(c){ return c.it.estado === 'pendiente'; });
+    // Evaluar solo las piezas del envío si estamos en modo revisión específica
+    var cardsToValidate = (targetPieceNumbers && targetPieceNumbers.length > 0)
+      ? cards.filter(function(c){ return targetPieceNumbers.indexOf(parseInt(c.card.dataset.pieceNum, 10)) !== -1; })
+      : cards;
+
+    // 1. PASO OBLIGATORIO: Todos los contenidos evaluables deben estar evaluados (Aprobar o Solicitar cambios)
+    var pend = cardsToValidate.filter(function(c){ return c.it.estado === 'pendiente' || !c.it.estado; });
     if (pend.length) {
       f = 'all'; applyFilter();
       [].forEach.call(document.querySelectorAll('.chip'), function(x){ x.classList.toggle('on', x.dataset.f === 'all'); });
@@ -2207,7 +2355,7 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
         kind: 'warn',
         icon: '!',
         title: pend.length === 1 ? 'Paso obligatorio: falta 1 contenido por evaluar' : 'Paso obligatorio: faltan ' + pend.length + ' contenidos por evaluar',
-        text: 'Debes evaluar todos los contenidos (Aprobar o Solicitar cambios) antes de enviar la revisión. No se pueden dejar contenidos pendientes.',
+        text: 'Debes evaluar todos los contenidos del envío (Aprobar o Solicitar cambios) antes de enviar la revisión. No se pueden dejar contenidos pendientes.',
         list: pend.map(function(c){ return c.nav.textContent.replace(/^(\d+)/, '$1 · '); }),
         buttons: [{
           label: 'Evaluar pendientes ahora',
@@ -2222,7 +2370,7 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
     }
 
     // 2. PASO OBLIGATORIO: Si se solicitaron cambios, debe existir comentario explicando qué ajustar
-    var sinComentario = cards.filter(function(c){
+    var sinComentario = cardsToValidate.filter(function(c){
       if (c.it.estado !== 'cambios') return false;
       var hasComments = (c.it.comentarios && c.it.comentarios.length > 0 && c.it.comentarios.some(function(x){ return x.texto && x.texto.trim(); }));
       var hasSingle = !!(c.it.comentario && c.it.comentario.trim());

@@ -3198,6 +3198,559 @@ body{
     transition-duration:0.01ms !important;
   }
 }
+
+/* ==========================================================================
+   MODAL DE ESPACIO DE TRABAJO DE TABLERO & REVISIÓN CLIENTE / AGENCIA
+   ========================================================================== */
+#modalBoardWorkspace {
+  z-index: 280;
+  padding: 0;
+  background: rgba(8, 14, 21, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.workspace-card {
+  width: 96vw;
+  max-width: 1440px;
+  height: 94vh;
+  max-height: 94vh;
+  background: linear-gradient(150deg, #132230 0%, #0c1620 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(92, 184, 62, 0.15);
+  animation: modalIn 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.workspace-head {
+  padding: 18px 24px;
+  background: rgba(255, 255, 255, 0.025);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.workspace-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.workspace-client {
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+.workspace-period {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--verde);
+  background: rgba(92, 184, 62, 0.12);
+  border: 1px solid rgba(92, 184, 62, 0.3);
+  padding: 4px 12px;
+  border-radius: 99px;
+}
+.workspace-prog-summary {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.workspace-nav-tabs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 24px;
+  background: rgba(0, 0, 0, 0.22);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.workspace-nav-tabs::-webkit-scrollbar { display: none; }
+.ws-tab-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--ink-2);
+  padding: 8px 14px;
+  border-radius: 99px;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  transition: all var(--trans);
+}
+.ws-tab-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+.ws-tab-btn.active {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+.ws-tab-btn.tab-corregidos.active {
+  background: rgba(56, 189, 248, 0.18);
+  color: #BAE6FD;
+  border-color: rgba(56, 189, 248, 0.4);
+}
+.ws-tab-btn.tab-listos {
+  background: linear-gradient(135deg, rgba(92, 184, 62, 0.15) 0%, rgba(16, 185, 129, 0.1) 100%);
+  border-color: rgba(92, 184, 62, 0.3);
+  color: #86EFAC;
+}
+.ws-tab-btn.tab-listos.active {
+  background: linear-gradient(135deg, var(--verde) 0%, #16a34a 100%);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 2px 10px rgba(92, 184, 62, 0.4);
+}
+.workspace-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Envío de piezas corregidas banner & control */
+.ws-corregidos-hub {
+  background: linear-gradient(145deg, rgba(2, 132, 199, 0.14) 0%, rgba(14, 165, 233, 0.06) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-left: 4.5px solid #38BDF8;
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ws-hub-left h4 {
+  margin: 0 0 4px 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #BAE6FD;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ws-hub-left p {
+  margin: 0;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.45;
+}
+.ws-hub-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Grid de piezas en workspace */
+.ws-grid-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 14px;
+}
+@media (max-width: 640px) {
+  .ws-grid-items { grid-template-columns: 1fr; }
+}
+
+.ws-item-card {
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+.ws-item-card:hover {
+  background: rgba(255, 255, 255, 0.055);
+  border-color: rgba(255, 255, 255, 0.16);
+  transform: translateY(-1px);
+}
+.ws-item-card.is-cambios {
+  border-left: 4px solid var(--naranja);
+  background: rgba(230, 74, 0, 0.05);
+}
+.ws-item-card.is-corregido {
+  border-left: 4px solid #38BDF8;
+  background: rgba(2, 132, 199, 0.06);
+}
+.ws-item-card.is-aprobado {
+  border-left: 4px solid var(--verde);
+}
+.ws-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+.ws-card-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.ws-card-num {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+.ws-card-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.3;
+}
+.ws-card-meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.ws-pill {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--ink-2);
+}
+.ws-pill.version {
+  background: rgba(99, 102, 241, 0.15);
+  color: #A5B4FC;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.ws-client-comment-preview {
+  background: rgba(230, 74, 0, 0.1);
+  border: 1px solid rgba(230, 74, 0, 0.28);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #FFD2C0;
+  font-style: italic;
+}
+.ws-client-comment-preview.corregido {
+  background: rgba(2, 132, 199, 0.1);
+  border-color: rgba(56, 189, 248, 0.3);
+  color: #BAE6FD;
+}
+
+.ws-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* MODAL DE EDICIÓN Y COMPARACIÓN DE PIEZA (SPLIT-VIEW) */
+#modalPieceEditor {
+  z-index: 310;
+  padding: 0;
+  background: rgba(5, 10, 16, 0.9);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+.piece-editor-card {
+  width: 96vw;
+  max-width: 1400px;
+  height: 94vh;
+  max-height: 94vh;
+  background: linear-gradient(150deg, #162432 0%, #0d1722 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 36px 90px rgba(0, 0, 0, 0.85);
+  overflow: hidden;
+  animation: modalIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.piece-editor-head {
+  padding: 16px 24px;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.piece-editor-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 0;
+  overflow: hidden;
+}
+@media (max-width: 960px) {
+  .piece-editor-body {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+}
+.piece-left-pane {
+  background: rgba(0, 0, 0, 0.28);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.piece-right-pane {
+  padding: 20px 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.015);
+}
+.piece-editor-foot {
+  padding: 14px 24px;
+  background: rgba(10, 18, 26, 0.95);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pane-section-title {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #FFA07A;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.client-fb-hero {
+  background: rgba(230, 74, 0, 0.12);
+  border: 1.5px solid rgba(230, 74, 0, 0.35);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+.client-fb-hero-text {
+  font-size: 14px;
+  line-height: 1.55;
+  color: #FFEAE2;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-top: 8px;
+}
+.version-snapshot-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.version-snapshot-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-2);
+}
+.version-snapshot-body {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.78);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+/* Botones de acción en pieza */
+.btn-save-draft {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 9px 18px;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all var(--trans);
+}
+.btn-save-draft:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+.btn-finalize-correction {
+  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+  border: 0;
+  color: #fff;
+  padding: 9px 22px;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+  transition: all var(--trans);
+}
+.btn-finalize-correction:hover {
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.55);
+}
+
+/* Modal Selector para Copiar Enlace de Revisión de Corregidos */
+#modalShareShipment {
+  z-index: 320;
+}
+.share-shipment-card {
+  width: 92vw;
+  max-width: 620px;
+  background: linear-gradient(150deg, #1A2D3E 0%, #111e2a 100%);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.8);
+  animation: modalIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.shipment-items-selector {
+  max-height: 280px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.shipment-select-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.shipment-select-row:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+.shipment-select-row input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  cursor: pointer;
+  accent-color: #38BDF8;
+}
+
+/* Tablero Final "Contenidos Listos" */
+.tablero-listos-banner {
+  background: linear-gradient(135deg, rgba(92, 184, 62, 0.18) 0%, rgba(16, 185, 129, 0.08) 100%);
+  border: 1.5px solid rgba(92, 184, 62, 0.45);
+  border-left: 5px solid var(--verde);
+  border-radius: 16px;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.tablero-listos-banner h3 {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: #86EFAC;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tablero-listos-banner p {
+  margin: 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.78);
+}
+.tablero-progreso-lock {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px dashed rgba(255, 255, 255, 0.16);
+  border-radius: 14px;
+  padding: 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.tablero-progreso-lock .lock-icon {
+  font-size: 32px;
+}
+.tablero-progreso-lock h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+.tablero-progreso-lock p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink-2);
+  max-width: 480px;
+}
+
+/* Adaptabilidad Mobile completa */
+@media (max-width: 768px) {
+  #modalBoardWorkspace .workspace-card,
+  #modalPieceEditor .piece-editor-card {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+    border: 0 !important;
+  }
+  .workspace-head, .piece-editor-head {
+    padding: 14px 16px;
+  }
+  .workspace-body, .piece-right-pane, .piece-left-pane {
+    padding: 14px 16px;
+  }
+  .piece-editor-foot {
+    padding: 12px 16px;
+  }
+}
 </style>
 </head>
 <body>
@@ -4016,6 +4569,194 @@ body{
     <div class="modal-foot">
       <button class="btn-modal-pri" id="btnExpandedFbDone" style="background:#0284C7;border-color:#38BDF8;">
         <span>Volver al editor</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ==========================================================================
+     MODAL 1: ESPACIO DE TRABAJO AMPLIO DEL TABLERO (VENTANA DE TRABAJO AGENCIA)
+     ========================================================================== -->
+<div id="modalBoardWorkspace" class="modal-overlay" style="display:none;" aria-hidden="true" role="dialog">
+  <div class="workspace-card">
+    <div class="workspace-head">
+      <div class="workspace-meta">
+        <h2 id="wsBoardClient" class="workspace-client">Cliente</h2>
+        <span id="wsBoardPeriod" class="workspace-period">Periodo</span>
+        <span id="wsBoardBadge" class="badge">Estado</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <div id="wsBoardProg" class="workspace-prog-summary">0 de 0 aprobados</div>
+        <button class="btn-card pri" id="wsBtnOpenClientView" title="Abrir vista pública del tablero">Abrir público ↗</button>
+        <button class="btn-modal-close" id="btnCloseWorkspace" aria-label="Cerrar espacio de trabajo">&times;</button>
+      </div>
+    </div>
+
+    <!-- Navegación por apartados del flujo -->
+    <div class="workspace-nav-tabs">
+      <button class="ws-tab-btn active" data-tab="todos">Todos (<span id="wsCountAll">0</span>)</button>
+      <button class="ws-tab-btn" data-tab="cambios" style="color:#FFA07A;">⚠ Correcciones pendientes (<span id="wsCountChanges">0</span>)</button>
+      <button class="ws-tab-btn tab-corregidos" data-tab="corregidos">🔄 Contenidos corregidos (<span id="wsCountCorrected">0</span>)</button>
+      <button class="ws-tab-btn" data-tab="aprobados" style="color:#86EFAC;">✓ Aprobados (<span id="wsCountApproved">0</span>)</button>
+      <button class="ws-tab-btn" data-tab="pendientes">• Sin revisar (<span id="wsCountPending">0</span>)</button>
+      <button class="ws-tab-btn tab-listos" data-tab="listos" id="wsTabBtnListos">🏆 Contenidos listos</button>
+    </div>
+
+    <!-- Cuerpo interactivo del espacio de trabajo -->
+    <div class="workspace-body" id="wsBodyContent">
+      <!-- Se inyecta dinámicamente con JS según el tab activo -->
+    </div>
+  </div>
+</div>
+
+<!-- ==========================================================================
+     MODAL 2: VENTANA DE CORRECCIÓN, EDICIÓN Y COMPARACIÓN (SPLIT-VIEW)
+     ========================================================================== -->
+<div id="modalPieceEditor" class="modal-overlay" style="display:none;" aria-hidden="true" role="dialog">
+  <div class="piece-editor-card">
+    <div class="piece-editor-head">
+      <div>
+        <span class="modal-eyebrow" id="pieceEditorEyebrow">CORRECCIÓN EN ESPACIO DE TRABAJO</span>
+        <h3 id="pieceEditorTitle" style="margin:0;font-size:18px;color:#fff;">Contenido #00</h3>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span id="pieceEditorStateBadge" class="badge">Estado</span>
+        <span id="pieceEditorVersionBadge" class="ws-pill version">v1</span>
+        <button class="btn-modal-close" id="btnClosePieceEditor" aria-label="Cerrar editor">&times;</button>
+      </div>
+    </div>
+
+    <div class="piece-editor-body">
+      <!-- Panel Izquierdo: Observaciones del cliente & Versión anterior comentada -->
+      <div class="piece-left-pane">
+        <div class="pane-section-title">💬 Observaciones del Cliente</div>
+        <div class="client-fb-hero">
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#FFA07A;font-weight:700;">
+            <span id="pieceEditorClientAuthor">👤 Cliente</span>
+            <span id="pieceEditorClientDate">Fecha</span>
+          </div>
+          <div class="client-fb-hero-text" id="pieceEditorClientComment">“Sin observaciones registradas.”</div>
+        </div>
+
+        <div class="version-snapshot-box">
+          <div class="version-snapshot-title">📋 Versión que recibió los comentarios (Comparación)</div>
+          <div class="version-snapshot-body" id="pieceEditorSnapshot">Cargando material previo…</div>
+        </div>
+
+        <div class="version-snapshot-box" style="margin-top:auto;">
+          <div class="version-snapshot-title">📜 Historial de versiones y revisiones</div>
+          <div id="pieceEditorHistoryList" style="font-size:12px;display:flex;flex-direction:column;gap:6px;max-height:160px;overflow-y:auto;color:rgba(255,255,255,0.7);">
+            <!-- Items de historial -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel Derecho: Formulario de Corrección de Campos y Archivos -->
+      <div class="piece-right-pane">
+        <div class="pane-section-title" style="color:var(--verde);">✎ Campos y Material Corregido</div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="pieceInputTitulo">Título de la pieza (ClickUp)</label>
+            <input type="text" id="pieceInputTitulo" class="modal-input" placeholder="Título o idea principal">
+          </div>
+          <div class="form-group">
+            <label for="pieceInputFormato">Formato</label>
+            <select id="pieceInputFormato" class="modal-select">
+              <option value="Reel">Reel</option>
+              <option value="Carrusel">Carrusel</option>
+              <option value="Post">Post / Estático</option>
+              <option value="Story">Story / Historia</option>
+              <option value="Video">Video</option>
+              <option value="TikTok">TikTok</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="pieceInputPilar">Pilar de contenido</label>
+            <input type="text" id="pieceInputPilar" class="modal-input" placeholder="Ej: Educativo, Promocional, Autoridad">
+          </div>
+          <div class="form-group">
+            <label for="pieceInputFecha">Fecha programada de publicación (Due Date)</label>
+            <input type="text" id="pieceInputFecha" class="modal-input" placeholder="Ej: 15 de Octubre 2026">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="pieceInputGuion">Guion / Instrucciones visuales (Task Description)</label>
+          <textarea id="pieceInputGuion" class="modal-textarea" rows="4" placeholder="Acción en cámara, texto en pantalla, audio…"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="pieceInputCopy">Copy (Texto oficial para la publicación)</label>
+          <textarea id="pieceInputCopy" class="modal-textarea" rows="4" placeholder="Texto que acompaña al post…"></textarea>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="pieceInputHashtags">Hashtags</label>
+            <input type="text" id="pieceInputHashtags" class="modal-input" placeholder="#marca #campaña">
+          </div>
+          <div class="form-group">
+            <label for="pieceInputReferencias">Enlaces de archivos / Referencias sustituidas (URLs separadas por comas o saltos)</label>
+            <textarea id="pieceInputReferencias" class="modal-textarea" rows="2" placeholder="https://drive.google.com/... o referencias"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Acciones del Editor de Pieza -->
+    <div class="piece-editor-foot">
+      <div>
+        <button class="btn-modal-sec" id="btnPieceEditorCancel">Cerrar sin guardar</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <button class="btn-save-draft" id="btnPieceSaveDraft" title="Guarda el avance sin cambiar la pieza a corregida ni mostrar al cliente">
+          💾 Guardar borrador
+        </button>
+        <button class="btn-finalize-correction" id="btnPieceFinalize" title="Guarda una nueva versión y mueve la pieza automáticamente a Contenidos Corregidos">
+          ✓ Finalizar corrección
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==========================================================================
+     MODAL 3: SELECTOR Y GENERADOR DE ENVÍO DE CORREGIDOS
+     ========================================================================== -->
+<div id="modalShareShipment" class="modal-overlay" style="display:none;" aria-hidden="true" role="dialog">
+  <div class="share-shipment-card">
+    <div class="modal-head">
+      <div>
+        <span class="modal-eyebrow" style="color:#38BDF8;">ENVÍO DE RE-REVISIÓN AL CLIENTE</span>
+        <h3 style="color:#fff;margin:0;">Compartir piezas corregidas</h3>
+      </div>
+      <button class="btn-modal-close" id="btnCloseShareShipment">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p style="margin:0;font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5;">
+        El cliente recibirá un enlace exclusivo y enfocado para revisar únicamente las piezas que selecciones a continuación (por defecto todas las corregidas):
+      </p>
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#BAE6FD;font-weight:700;margin-top:6px;">
+        <span>Piezas corregidas disponibles:</span>
+        <button id="btnToggleAllShipment" type="button" style="background:transparent;border:0;color:#38BDF8;font-size:12px;font-weight:700;cursor:pointer;">Deseleccionar todas</button>
+      </div>
+      <div class="shipment-items-selector" id="shipmentItemsList">
+        <!-- Inyectado dinámicamente con checkboxes -->
+      </div>
+      <div class="form-group" style="margin-top:6px;">
+        <label for="shipmentGeneratedUrl">Enlace exclusivo de revisión generado:</label>
+        <input type="text" id="shipmentGeneratedUrl" class="modal-input" readonly style="font-family:monospace;font-size:12px;color:#38BDF8;">
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-modal-sec" id="btnCancelShareShipment">Cancelar</button>
+      <button class="btn-modal-pri" id="btnCopyShipmentLink" style="background:#0284C7;">
+        <span>🔗 Copiar enlace y mensaje</span>
       </button>
     </div>
   </div>
@@ -6620,6 +7361,842 @@ body{
     copyText(msg, '✓ Mensaje y enlace copiados para enviar al cliente');
   }
 
+  // ==========================================================================
+  // LOGICA Y CONTROL: ESPACIO DE TRABAJO AMPLIO, CORRECCIÓN Y RE-ENVÍOS
+  // ==========================================================================
+  var currentWorkspaceBoardId = null;
+  var currentWorkspaceTab = 'todos';
+  var editingPieceItem = null;
+  var editingPieceOriginal = null;
+  var currentShipmentBoard = null;
+
+  var modalBoardWorkspace = document.getElementById('modalBoardWorkspace');
+  var btnCloseWorkspace = document.getElementById('btnCloseWorkspace');
+  var wsBoardClient = document.getElementById('wsBoardClient');
+  var wsBoardPeriod = document.getElementById('wsBoardPeriod');
+  var wsBoardBadge = document.getElementById('wsBoardBadge');
+  var wsBoardProg = document.getElementById('wsBoardProg');
+  var wsBtnOpenClientView = document.getElementById('wsBtnOpenClientView');
+  var wsBodyContent = document.getElementById('wsBodyContent');
+  var wsTabBtnListos = document.getElementById('wsTabBtnListos');
+
+  var modalPieceEditor = document.getElementById('modalPieceEditor');
+  var btnClosePieceEditor = document.getElementById('btnClosePieceEditor');
+  var btnPieceEditorCancel = document.getElementById('btnPieceEditorCancel');
+  var btnPieceSaveDraft = document.getElementById('btnPieceSaveDraft');
+  var btnPieceFinalize = document.getElementById('btnPieceFinalize');
+  var pieceEditorTitle = document.getElementById('pieceEditorTitle');
+  var pieceEditorStateBadge = document.getElementById('pieceEditorStateBadge');
+  var pieceEditorVersionBadge = document.getElementById('pieceEditorVersionBadge');
+  var pieceEditorClientAuthor = document.getElementById('pieceEditorClientAuthor');
+  var pieceEditorClientDate = document.getElementById('pieceEditorClientDate');
+  var pieceEditorClientComment = document.getElementById('pieceEditorClientComment');
+  var pieceEditorSnapshot = document.getElementById('pieceEditorSnapshot');
+  var pieceEditorHistoryList = document.getElementById('pieceEditorHistoryList');
+
+  var pieceInputTitulo = document.getElementById('pieceInputTitulo');
+  var pieceInputFormato = document.getElementById('pieceInputFormato');
+  var pieceInputPilar = document.getElementById('pieceInputPilar');
+  var pieceInputFecha = document.getElementById('pieceInputFecha');
+  var pieceInputGuion = document.getElementById('pieceInputGuion');
+  var pieceInputCopy = document.getElementById('pieceInputCopy');
+  var pieceInputHashtags = document.getElementById('pieceInputHashtags');
+  var pieceInputReferencias = document.getElementById('pieceInputReferencias');
+
+  var modalShareShipment = document.getElementById('modalShareShipment');
+  var btnCloseShareShipment = document.getElementById('btnCloseShareShipment');
+  var btnCancelShareShipment = document.getElementById('btnCancelShareShipment');
+  var btnToggleAllShipment = document.getElementById('btnToggleAllShipment');
+  var shipmentItemsList = document.getElementById('shipmentItemsList');
+  var shipmentGeneratedUrl = document.getElementById('shipmentGeneratedUrl');
+  var btnCopyShipmentLink = document.getElementById('btnCopyShipmentLink');
+
+  // Apertura del Espacio de Trabajo Principal del Tablero
+  function openBoardWorkspace(tId, defaultTab){
+    var t = allTableros.find(function(x){ return x.id === tId; });
+    if (!t) return;
+    currentWorkspaceBoardId = tId;
+    currentWorkspaceTab = defaultTab || 'todos';
+
+    if (modalBoardWorkspace) {
+      modalBoardWorkspace.style.display = 'flex';
+      modalBoardWorkspace.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    if (wsBoardClient) wsBoardClient.textContent = t.cliente || 'Tablero de contenido';
+    if (wsBoardPeriod) wsBoardPeriod.textContent = (t.mes || '') + ' ' + (t.anio || '');
+    if (wsBtnOpenClientView) {
+      var targetUrl = resolveOpenUrl(t.url);
+      wsBtnOpenClientView.onclick = function(){
+        if (targetUrl) window.open(targetUrl, '_blank');
+      };
+      wsBtnOpenClientView.style.display = targetUrl ? 'inline-flex' : 'none';
+    }
+
+    // Cargar datos del tablero si faltan en cache
+    var cachedData = boardCache[tId];
+    if (!cachedData && t.url) {
+      if (wsBodyContent) wsBodyContent.innerHTML = '<div class="detail-empty">Cargando contenidos completos de ' + escapeHtml(t.cliente || '') + '…</div>';
+      getBoardData(t, function(err, bData){
+        renderBoardWorkspace();
+      });
+    } else {
+      renderBoardWorkspace();
+    }
+  }
+
+  function closeBoardWorkspace(){
+    if (modalBoardWorkspace) {
+      modalBoardWorkspace.style.display = 'none';
+      modalBoardWorkspace.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+    currentWorkspaceBoardId = null;
+  }
+
+  function renderBoardWorkspace(){
+    if (!currentWorkspaceBoardId) return;
+    var t = allTableros.find(function(x){ return x.id === currentWorkspaceBoardId; });
+    if (!t) return;
+    var bData = boardCache[t.id];
+    var items = getMergedItems(t, bData);
+
+    var countAll = items.length;
+    var countOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
+    var countFix = items.filter(function(x){ return x.estado === 'cambios' || x.estado === 'en_correccion'; }).length;
+    var countCorregido = items.filter(function(x){ return x.estado === 'corregido'; }).length;
+    var countPend = items.filter(function(x){ return x.estado === 'pendiente' || !x.estado; }).length;
+
+    var isAllApproved = (countAll > 0 && countOk === countAll);
+
+    // Actualizar contadores en tabs
+    var elCountAll = document.getElementById('wsCountAll');
+    var elCountChanges = document.getElementById('wsCountChanges');
+    var elCountCorrected = document.getElementById('wsCountCorrected');
+    var elCountApproved = document.getElementById('wsCountApproved');
+    var elCountPending = document.getElementById('wsCountPending');
+
+    if (elCountAll) elCountAll.textContent = countAll;
+    if (elCountChanges) elCountChanges.textContent = countFix;
+    if (elCountCorrected) elCountCorrected.textContent = countCorregido;
+    if (elCountApproved) elCountApproved.textContent = countOk;
+    if (elCountPending) elCountPending.textContent = countPend;
+
+    if (wsBoardProg) {
+      wsBoardProg.innerHTML = 'Progreso: <b>' + countOk + ' de ' + countAll + ' aprobados</b> (' + (countAll ? Math.round((countOk / countAll) * 100) : 0) + '%)';
+    }
+
+    if (wsBoardBadge) {
+      var st = calcEstado(t);
+      wsBoardBadge.className = 'badge ' + st.cls;
+      wsBoardBadge.textContent = st.txt;
+    }
+
+    // Configurar estado del Tablero Final Listos
+    if (wsTabBtnListos) {
+      if (isAllApproved) {
+        wsTabBtnListos.innerHTML = '🏆 Contenidos listos ✓ (' + countAll + ')';
+        wsTabBtnListos.style.opacity = '1';
+        wsTabBtnListos.title = 'Todas las piezas de este conjunto están aprobadas';
+      } else {
+        wsTabBtnListos.innerHTML = '🏆 Contenidos listos (' + countOk + '/' + countAll + ')';
+        wsTabBtnListos.style.opacity = '0.75';
+        wsTabBtnListos.title = 'Faltan ' + (countAll - countOk) + ' contenidos por aprobar';
+      }
+    }
+
+    // Actualizar clase activa en tabs
+    var tabBtns = modalBoardWorkspace ? modalBoardWorkspace.querySelectorAll('.ws-tab-btn') : [];
+    tabBtns.forEach(function(tb){
+      var tabName = tb.getAttribute('data-tab');
+      tb.classList.toggle('active', tabName === currentWorkspaceTab);
+      tb.onclick = function(){
+        currentWorkspaceTab = tabName;
+        renderBoardWorkspace();
+      };
+    });
+
+    if (!wsBodyContent) return;
+
+    // Renderizar pestaña seleccionada
+    if (currentWorkspaceTab === 'listos') {
+      renderTabListosContent(t, bData, items, countOk, countAll, isAllApproved);
+    } else {
+      renderTabGridItems(t, bData, items);
+    }
+  }
+
+  function renderTabGridItems(t, bData, allItems){
+    var filtered = allItems.filter(function(it){
+      if (currentWorkspaceTab === 'cambios') return it.estado === 'cambios' || it.estado === 'en_correccion';
+      if (currentWorkspaceTab === 'corregidos') return it.estado === 'corregido';
+      if (currentWorkspaceTab === 'aprobados') return it.estado === 'aprobado';
+      if (currentWorkspaceTab === 'pendientes') return it.estado === 'pendiente' || !it.estado;
+      return true;
+    });
+
+    var countCorregidos = allItems.filter(function(x){ return x.estado === 'corregido'; }).length;
+
+    var html = '';
+
+    // Barra superior de herramientas y exportaciones rápidas
+    html += '<div class="detail-toolbar">' +
+      '<div style="font-size:12.5px;color:rgba(255,255,255,0.75);">' +
+        'Mostrando <b>' + filtered.length + ' de ' + allItems.length + '</b> piezas' +
+      '</div>' +
+      '<div class="detail-actions">' +
+        '<button class="btn-detail-action clickup btn-ws-pdf-clickup" title="Descargar PDF detallado para ClickUp">📑 PDF para ClickUp</button>' +
+        '<button class="btn-detail-action pri btn-ws-word-ok" title="Descargar Word con aprobados">📄 Word (Aprobados)</button>' +
+        '<button class="btn-detail-action btn-ws-word-all" title="Descargar Word con todos">📄 Word (Todos)</button>' +
+        '<button class="btn-detail-action btn-ws-cp-json" title="Copiar JSON completo">📋 Copiar JSON</button>' +
+      '</div>' +
+    '</div>';
+
+    // Banner destacado si estamos en corregidos o hay corregidos listos
+    if (currentWorkspaceTab === 'corregidos' || (countCorregidos > 0 && currentWorkspaceTab === 'todos')) {
+      var pluralText = countCorregidos === 1 ? '1 contenido corregido listo' : (countCorregidos + ' contenidos corregidos listos');
+      html += '<div class="ws-corregidos-hub">' +
+        '<div class="ws-hub-left">' +
+          '<h4><span>🔄 ' + pluralText + ' para nueva revisión del cliente</span></h4>' +
+          '<p>Las correcciones ya fueron finalizadas. Genera un enlace exclusivo para compartir únicamente las piezas corregidas seleccionadas.</p>' +
+        '</div>' +
+        '<div class="ws-hub-actions">' +
+          '<button class="btn-finalize-correction btn-ws-open-shipment" type="button" style="background:#0284C7;">' +
+            '<span>🔗 Copiar enlace de revisión</span>' +
+          '</button>' +
+          '<button class="btn-detail-action btn-ws-wa-shipment" type="button" title="Notificar por WhatsApp">' +
+            '<span>💬 WhatsApp</span>' +
+          '</button>' +
+        '</div>' +
+      '</div>';
+    }
+
+    if (!filtered.length) {
+      html += '<div class="detail-empty">No hay contenidos en este apartado (' + escapeHtml(currentWorkspaceTab) + ').</div>';
+      wsBodyContent.innerHTML = html;
+      bindWorkspaceBodyEvents(t, bData);
+      return;
+    }
+
+    html += '<div class="ws-grid-items">';
+    filtered.forEach(function(it){
+      var num = (it.n < 10 ? '0' : '') + it.n;
+      var isAprob = it.estado === 'aprobado';
+      var isCambios = it.estado === 'cambios' || it.estado === 'en_correccion';
+      var isCorregido = it.estado === 'corregido';
+
+      var cardCls = isCambios ? 'is-cambios' : (isCorregido ? 'is-corregido' : (isAprob ? 'is-aprobado' : ''));
+
+      var stBadge = isAprob ? '<span class="badge badge-ok">✓ Aprobado</span>' :
+                    (isCambios ? '<span class="badge badge-fix">⚠ Con cambios</span>' :
+                    (isCorregido ? '<span class="badge badge-corregido">🔄 Corregido</span>' :
+                    '<span class="badge badge-wait">• Pendiente</span>'));
+
+      var vNum = it.version ? ('v' + it.version) : 'v1';
+
+      var fbPreview = '';
+      if (it.comentario && it.comentario.trim()) {
+        var author = it.revisadoPor || t.revisadoPor || 'Cliente';
+        fbPreview = '<div class="ws-client-comment-preview ' + (isCorregido ? 'corregido' : '') + '">' +
+          '<b>' + (isCambios ? 'Ajustes solicitados' : (isCorregido ? 'Corrección atendida' : 'Comentarios')) + ' (' + escapeHtml(author) + '):</b><br>' +
+          '“' + escapeHtml(it.comentario.trim()) + '”' +
+        '</div>';
+      }
+
+      var guionSnip = it.guion ? ('<div style="font-size:12px;color:rgba(255,255,255,0.7);max-height:48px;overflow:hidden;text-overflow:ellipsis;line-height:1.4;">' + escapeHtml(it.guion) + '</div>') : '';
+
+      var quickAprobBtn = (isCambios || isCorregido) ?
+        ('<button class="btn-quick-approve btn-ws-quick-approve" data-n="' + it.n + '" title="Marcar como aprobado">✓ Aprobar</button>') : '';
+
+      var actionLabel = (isCambios || isCorregido) ? 'Corregir / Editar' : 'Detalles & Editar';
+
+      html += '<div class="ws-item-card ' + cardCls + '">' +
+        '<div class="ws-card-header">' +
+          '<div class="ws-card-title-row">' +
+            '<span class="ws-card-num">#' + num + '</span>' +
+            '<h3 class="ws-card-title">' + escapeHtml(it.titulo || 'Sin título') + '</h3>' +
+          '</div>' +
+          '<div style="display:flex;align-items:center;gap:6px;">' +
+            '<span class="ws-pill version">' + vNum + '</span>' +
+            stBadge +
+          '</div>' +
+        '</div>' +
+        '<div class="ws-card-meta">' +
+          (it.formato ? '<span class="ws-pill">' + escapeHtml(it.formato) + '</span>' : '') +
+          (it.pilar ? '<span class="ws-pill">' + escapeHtml(it.pilar) + '</span>' : '') +
+          (it.fechaPublicacion ? '<span class="ws-pill">📅 ' + escapeHtml(it.fechaPublicacion) + '</span>' : '') +
+          (it.fechaCorreccion ? '<span class="ws-pill" style="color:#BAE6FD;">🔄 Corregido: ' + formatFecha(it.fechaCorreccion) + '</span>' : '') +
+        '</div>' +
+        fbPreview +
+        guionSnip +
+        '<div class="ws-card-foot">' +
+          '<div style="font-size:11.5px;color:var(--ink-2);">' +
+            (it.revisadoPor ? ('👤 ' + escapeHtml(it.revisadoPor)) : 'Sin revisor') +
+          '</div>' +
+          '<div style="display:flex;align-items:center;gap:6px;">' +
+            quickAprobBtn +
+            '<button class="btn-modal-pri btn-ws-open-piece" data-n="' + it.n + '" style="padding:6px 12px;font-size:12px;background:var(--azul);">' +
+              '<span>' + actionLabel + '</span>' +
+            '</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    });
+    html += '</div>';
+
+    wsBodyContent.innerHTML = html;
+    bindWorkspaceBodyEvents(t, bData);
+  }
+
+  function renderTabListosContent(t, bData, allItems, countOk, countAll, isAllApproved){
+    var html = '';
+    if (isAllApproved) {
+      html += '<div class="tablero-listos-banner">' +
+        '<div>' +
+          '<h3>🏆 ¡Tablero 100% Aprobado y Listo para Producción!</h3>' +
+          '<p>Todas las ' + countAll + ' piezas de este conjunto (' + escapeHtml(t.cliente || '') + ' · ' + escapeHtml(t.mes || '') + ') han sido formalmente aprobadas en su versión definitiva.</p>' +
+        '</div>' +
+        '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">' +
+          '<button class="btn-detail-action clickup btn-ws-pdf-clickup" style="padding:10px 18px;font-size:13px;">📑 Exportar PDF para ClickUp</button>' +
+          '<button class="btn-detail-action pri btn-ws-word-ok" style="padding:10px 18px;font-size:13px;">📄 Descargar Word Definitivo</button>' +
+        '</div>' +
+      '</div>';
+    } else {
+      var remaining = countAll - countOk;
+      html += '<div class="tablero-progreso-lock">' +
+        '<div class="lock-icon">🔒</div>' +
+        '<h4>Conjunto en proceso de aprobación (' + countOk + ' de ' + countAll + ' aprobados)</h4>' +
+        '<p>El Tablero Final de Contenidos Listos se habilitará automáticamente en cuanto todas las piezas estén aprobadas. Faltan <b>' + remaining + ' contenidos</b> por ser aprobados.</p>' +
+        '<div style="display:flex;gap:8px;margin-top:6px;">' +
+          '<button class="btn-modal-sec btn-ws-go-cambios" style="color:#FFA07A;">Ver pendientes / correcciones</button>' +
+        '</div>' +
+      '</div>';
+    }
+
+    html += '<div style="margin-top:14px;">' +
+      '<div class="pane-section-title" style="color:#86EFAC;margin-bottom:12px;">Parrilla Definitiva de Contenidos</div>' +
+      '<div class="ws-grid-items">';
+
+    allItems.forEach(function(it){
+      var num = (it.n < 10 ? '0' : '') + it.n;
+      var isAprob = it.estado === 'aprobado';
+      var stBadge = isAprob ? '<span class="badge badge-ok">✓ Aprobado</span>' : '<span class="badge badge-wait">• Pendiente (' + escapeHtml(it.estado) + ')</span>';
+
+      html += '<div class="ws-item-card ' + (isAprob ? 'is-aprobado' : '') + '">' +
+        '<div class="ws-card-header">' +
+          '<div class="ws-card-title-row">' +
+            '<span class="ws-card-num">#' + num + '</span>' +
+            '<h3 class="ws-card-title">' + escapeHtml(it.titulo || 'Sin título') + '</h3>' +
+          '</div>' +
+          stBadge +
+        '</div>' +
+        '<div class="ws-card-meta">' +
+          (it.formato ? '<span class="ws-pill">' + escapeHtml(it.formato) + '</span>' : '') +
+          (it.pilar ? '<span class="ws-pill">' + escapeHtml(it.pilar) + '</span>' : '') +
+          (it.fechaPublicacion ? '<span class="ws-pill">📅 ' + escapeHtml(it.fechaPublicacion) + '</span>' : '') +
+          '<span class="ws-pill version">' + (it.version ? ('v' + it.version) : 'v1') + '</span>' +
+        '</div>' +
+        (it.guion ? ('<div style="font-size:12px;color:rgba(255,255,255,0.8);line-height:1.45;background:rgba(0,0,0,0.2);padding:8px 10px;border-radius:6px;"><b>Guion:</b> ' + escapeHtml(it.guion) + '</div>') : '') +
+        (it.copy ? ('<div style="font-size:12px;color:rgba(255,255,255,0.8);line-height:1.45;background:rgba(0,0,0,0.2);padding:8px 10px;border-radius:6px;"><b>Copy:</b> ' + escapeHtml(it.copy) + '</div>') : '') +
+        '<div class="ws-card-foot">' +
+          '<span style="font-size:11.5px;color:var(--ink-2);">' + (it.fechaAprobacion ? ('Aprobado: ' + formatFecha(it.fechaAprobacion)) : (it.revisadoPor || '')) + '</span>' +
+          '<button class="btn-modal-sec btn-ws-open-piece" data-n="' + it.n + '" style="padding:4px 10px;font-size:11.5px;">Inspeccionar</button>' +
+        '</div>' +
+      '</div>';
+    });
+
+    html += '</div></div>';
+    wsBodyContent.innerHTML = html;
+    bindWorkspaceBodyEvents(t, bData);
+  }
+
+  function bindWorkspaceBodyEvents(t, bData){
+    if (!wsBodyContent) return;
+
+    var pieceBtns = wsBodyContent.querySelectorAll('.btn-ws-open-piece');
+    pieceBtns.forEach(function(pb){
+      pb.onclick = function(e){
+        e.stopPropagation();
+        var n = parseInt(pb.getAttribute('data-n'), 10);
+        openPieceEditor(t.id, n);
+      };
+    });
+
+    var qaBtns = wsBodyContent.querySelectorAll('.btn-ws-quick-approve');
+    qaBtns.forEach(function(qb){
+      qb.onclick = function(e){
+        e.stopPropagation();
+        var n = parseInt(qb.getAttribute('data-n'), 10);
+        quickApproveItem(t.id, n);
+        setTimeout(function(){ renderBoardWorkspace(); }, 400);
+      };
+    });
+
+    var btnGoCambios = wsBodyContent.querySelector('.btn-ws-go-cambios');
+    if (btnGoCambios) {
+      btnGoCambios.onclick = function(){
+        currentWorkspaceTab = 'cambios';
+        renderBoardWorkspace();
+      };
+    }
+
+    var btnOpenShipment = wsBodyContent.querySelector('.btn-ws-open-shipment');
+    if (btnOpenShipment) {
+      btnOpenShipment.onclick = function(e){
+        e.stopPropagation();
+        openShareShipmentModal(t);
+      };
+    }
+
+    var btnWaShipment = wsBodyContent.querySelector('.btn-ws-wa-shipment');
+    if (btnWaShipment) {
+      btnWaShipment.onclick = function(e){
+        e.stopPropagation();
+        shareReenvioWhatsApp(t, bData);
+      };
+    }
+
+    var btnPdf = wsBodyContent.querySelector('.btn-ws-pdf-clickup');
+    if (btnPdf) btnPdf.onclick = function(e){ e.stopPropagation(); descargarPdfClickUp(t, bData); };
+
+    var btnWOk = wsBodyContent.querySelector('.btn-ws-word-ok');
+    if (btnWOk) btnWOk.onclick = function(e){ e.stopPropagation(); descargarWord(t, bData, 'aprobados'); };
+
+    var btnWAll = wsBodyContent.querySelector('.btn-ws-word-all');
+    if (btnWAll) btnWAll.onclick = function(e){ e.stopPropagation(); descargarWord(t, bData, 'todos'); };
+
+    var btnCpJson = wsBodyContent.querySelector('.btn-ws-cp-json');
+    if (btnCpJson) btnCpJson.onclick = function(e){ e.stopPropagation(); copiarJsonActualizado(t, bData); };
+  }
+
+  // ==========================================================================
+  // VENTANA DE TRABAJO AMPLIA DE CORRECCIÓN (SPLIT-VIEW)
+  // ==========================================================================
+  function openPieceEditor(tId, itemN){
+    var t = allTableros.find(function(x){ return x.id === tId; });
+    if (!t) return;
+    var bData = boardCache[tId];
+    var items = getMergedItems(t, bData);
+    var it = items.find(function(x){ return x.n === itemN; }) || items[itemN - 1];
+    if (!it) return;
+
+    editingBoardId = tId;
+    editingItemN = itemN;
+    editingPieceItem = it;
+    // Guardar copia original para detectar cambios no guardados al cerrar
+    editingPieceOriginal = JSON.parse(JSON.stringify(it));
+
+    var num = (itemN < 10 ? '0' : '') + itemN;
+    if (pieceEditorTitle) pieceEditorTitle.textContent = '#' + num + ' · ' + (it.titulo || 'Contenido');
+
+    var vCur = it.version || 1;
+    if (pieceEditorVersionBadge) pieceEditorVersionBadge.textContent = 'v' + vCur;
+
+    var author = it.revisadoPor || t.revisadoPor || 'Cliente';
+    if (pieceEditorClientAuthor) pieceEditorClientAuthor.textContent = '👤 ' + author;
+    if (pieceEditorClientDate) pieceEditorClientDate.textContent = it.fechaRevision ? formatFecha(it.fechaRevision) : (t.ultimaRevision ? formatFecha(t.ultimaRevision) : '');
+
+    var cText = (it.comentario && it.comentario.trim()) ? it.comentario.trim() : 'Sin observaciones registradas para esta pieza.';
+    if (pieceEditorClientComment) pieceEditorClientComment.textContent = '“' + cText + '”';
+
+    if (pieceEditorStateBadge) {
+      pieceEditorStateBadge.className = 'badge ' + (it.estado === 'aprobado' ? 'badge-ok' : (it.estado === 'cambios' ? 'badge-fix' : (it.estado === 'corregido' ? 'badge-corregido' : 'badge-wait')));
+      pieceEditorStateBadge.textContent = it.estado || 'pendiente';
+    }
+
+    // Comparación: Snapshot de la versión que recibió los comentarios
+    if (pieceEditorSnapshot) {
+      var snapshotLines = [];
+      snapshotLines.push('• Título: ' + (it.titulo || '—'));
+      snapshotLines.push('• Formato propuesto: ' + (it.formatoOriginal || it.formato || '—'));
+      if (it.formato && it.formatoOriginal && it.formato !== it.formatoOriginal) {
+        snapshotLines.push('• Formato solicitado por cliente: ' + it.formato);
+      }
+      if (it.pilar) snapshotLines.push('• Pilar: ' + it.pilar);
+      if (it.guion) snapshotLines.push('\n[Guion / Instrucciones]:\n' + it.guion);
+      if (it.copy) snapshotLines.push('\n[Copy]:\n' + it.copy);
+      if (it.hashtags) snapshotLines.push('\n[Hashtags]:\n' + it.hashtags);
+      if (it.referencias && it.referencias.length) {
+        snapshotLines.push('\n[Referencias]:\n' + it.referencias.map(function(r){ return (r.label || r.url || 'Ref'); }).join('\n'));
+      }
+      pieceEditorSnapshot.textContent = snapshotLines.join('\n');
+    }
+
+    // Historial de revisiones
+    if (pieceEditorHistoryList) {
+      var histHtml = '';
+      var histArr = Array.isArray(it.historial) ? it.historial : [];
+      if (!histArr.length) {
+        histHtml = '<div style="font-style:italic;">Versión inicial v1 sin historial previo.</div>';
+      } else {
+        histArr.forEach(function(h, idx){
+          histHtml += '<div style="padding:4px 6px;border-left:2px solid rgba(255,255,255,0.2);">' +
+            '<b>v' + (h.version || (idx + 1)) + '</b> (' + (h.fecha ? formatFecha(h.fecha) : '—') + '): ' +
+            '<span>' + escapeHtml(h.accion || h.comentario || 'Ajuste guardado') + '</span>' +
+          '</div>';
+        });
+      }
+      pieceEditorHistoryList.innerHTML = histHtml;
+    }
+
+    // Si tiene borrador no finalizado, cargarlo
+    var currentData = it.borrador || it;
+    if (pieceInputTitulo) pieceInputTitulo.value = currentData.titulo || '';
+    if (pieceInputFormato) pieceInputFormato.value = currentData.formato || 'Reel';
+    if (pieceInputPilar) pieceInputPilar.value = currentData.pilar || '';
+    if (pieceInputFecha) pieceInputFecha.value = currentData.fechaPublicacion || '';
+    if (pieceInputGuion) pieceInputGuion.value = currentData.guion || '';
+    if (pieceInputCopy) pieceInputCopy.value = currentData.copy || '';
+    if (pieceInputHashtags) pieceInputHashtags.value = currentData.hashtags || '';
+    if (pieceInputReferencias) {
+      var refsText = (currentData.referencias && Array.isArray(currentData.referencias)) ?
+        currentData.referencias.map(function(r){ return r.url || r.label || ''; }).filter(Boolean).join('\n') : '';
+      pieceInputReferencias.value = refsText;
+    }
+
+    if (modalPieceEditor) {
+      modalPieceEditor.style.display = 'flex';
+      modalPieceEditor.setAttribute('aria-hidden', 'false');
+      if (pieceInputTitulo) pieceInputTitulo.focus();
+    }
+  }
+
+  function hasUnsavedPieceChanges(){
+    if (!editingPieceOriginal) return false;
+    var curTitulo = pieceInputTitulo ? pieceInputTitulo.value.trim() : '';
+    var curGuion = pieceInputGuion ? pieceInputGuion.value.trim() : '';
+    var curCopy = pieceInputCopy ? pieceInputCopy.value.trim() : '';
+    var orig = editingPieceOriginal.borrador || editingPieceOriginal;
+    if (curTitulo !== (orig.titulo || '').trim()) return true;
+    if (curGuion !== (orig.guion || '').trim()) return true;
+    if (curCopy !== (orig.copy || '').trim()) return true;
+    return false;
+  }
+
+  function closePieceEditor(force){
+    if (!force && hasUnsavedPieceChanges()) {
+      if (!confirm('Tienes cambios sin guardar en esta pieza. ¿Deseas descartarlos y salir?')) {
+        return;
+      }
+    }
+    if (modalPieceEditor) {
+      modalPieceEditor.style.display = 'none';
+      modalPieceEditor.setAttribute('aria-hidden', 'true');
+    }
+    editingPieceItem = null;
+    editingPieceOriginal = null;
+  }
+
+  function getPieceFormValues(){
+    var refsVal = pieceInputReferencias ? pieceInputReferencias.value.trim() : '';
+    var parsedRefs = [];
+    if (refsVal) {
+      refsVal.split(/\r?\n|,/).forEach(function(u){
+        var clean = u.trim();
+        if (clean) parsedRefs.push({ url: clean, label: clean });
+      });
+    }
+    return {
+      titulo: pieceInputTitulo ? pieceInputTitulo.value.trim() : '',
+      formato: pieceInputFormato ? pieceInputFormato.value : 'Reel',
+      pilar: pieceInputPilar ? pieceInputPilar.value.trim() : '',
+      fechaPublicacion: pieceInputFecha ? pieceInputFecha.value.trim() : '',
+      guion: pieceInputGuion ? pieceInputGuion.value.trim() : '',
+      copy: pieceInputCopy ? pieceInputCopy.value.trim() : '',
+      hashtags: pieceInputHashtags ? pieceInputHashtags.value.trim() : '',
+      referencias: parsedRefs
+    };
+  }
+
+  // 1. Guardar Borrador: Guarda el avance sin cambiar la pieza a corregida ni exponerla al cliente
+  function savePieceDraft(){
+    if (!editingBoardId || !editingItemN) return;
+    var t = allTableros.find(function(x){ return x.id === editingBoardId; });
+    if (!t) return;
+    var bData = boardCache[editingBoardId];
+    var items = getMergedItems(t, bData);
+    var idx = items.findIndex(function(x){ return x.n === editingItemN; });
+    if (idx === -1) idx = editingItemN - 1;
+    if (idx < 0 || idx >= items.length) return;
+
+    var vals = getPieceFormValues();
+    items[idx].borrador = vals;
+    items[idx].titulo = vals.titulo || items[idx].titulo;
+    items[idx].formato = vals.formato || items[idx].formato;
+    // Si estaba con cambios, marcar internamente 'en_correccion'
+    if (items[idx].estado === 'cambios') {
+      items[idx].estado = 'en_correccion';
+    }
+
+    if (btnPieceSaveDraft) {
+      btnPieceSaveDraft.disabled = true;
+      btnPieceSaveDraft.textContent = 'Guardando…';
+    }
+
+    db.collection('tableros').doc(t.id).set({
+      contenidos: items,
+      actualizado: new Date().toISOString()
+    }, { merge: true })
+    .then(function(){
+      t.contenidos = items;
+      if (boardCache[t.id]) boardCache[t.id].contenidos = items;
+      if (btnPieceSaveDraft) {
+        btnPieceSaveDraft.disabled = false;
+        btnPieceSaveDraft.textContent = '💾 Guardar borrador';
+      }
+      toast('✓ Borrador guardado exitosamente (pieza continúa en corrección)');
+      closePieceEditor(true);
+      renderBoardWorkspace();
+      applyFiltersAndRender();
+    })
+    .catch(function(err){
+      console.error('Error guardando borrador:', err);
+      if (btnPieceSaveDraft) {
+        btnPieceSaveDraft.disabled = false;
+        btnPieceSaveDraft.textContent = '💾 Guardar borrador';
+      }
+      toast('Error al guardar borrador en Firestore');
+    });
+  }
+
+  // 2. Finalizar Corrección: Incrementa versión, estado='corregido', registra historial y pasa a Contenidos Corregidos
+  function finalizePieceCorrection(){
+    if (!editingBoardId || !editingItemN) return;
+    var t = allTableros.find(function(x){ return x.id === editingBoardId; });
+    if (!t) return;
+    var bData = boardCache[editingBoardId];
+    var items = getMergedItems(t, bData);
+    var idx = items.findIndex(function(x){ return x.n === editingItemN; });
+    if (idx === -1) idx = editingItemN - 1;
+    if (idx < 0 || idx >= items.length) return;
+
+    var vals = getPieceFormValues();
+    var curV = parseInt(items[idx].version, 10) || 1;
+    var nextV = curV + 1;
+    var nowIso = new Date().toISOString();
+
+    // Historial
+    var hist = Array.isArray(items[idx].historial) ? items[idx].historial.slice() : [];
+    hist.push({
+      version: curV,
+      fecha: nowIso,
+      estadoAnterior: items[idx].estado,
+      comentarioPrevio: items[idx].comentario || '',
+      accion: 'Corrección finalizada a versión v' + nextV
+    });
+
+    items[idx].titulo = vals.titulo || items[idx].titulo;
+    items[idx].formato = vals.formato || items[idx].formato;
+    items[idx].pilar = vals.pilar;
+    items[idx].fechaPublicacion = vals.fechaPublicacion;
+    items[idx].guion = vals.guion;
+    items[idx].copy = vals.copy;
+    items[idx].hashtags = vals.hashtags;
+    if (vals.referencias.length) items[idx].referencias = vals.referencias;
+    items[idx].version = nextV;
+    items[idx].estado = 'corregido';
+    items[idx].fechaCorreccion = nowIso;
+    items[idx].historial = hist;
+    delete items[idx].borrador;
+
+    var newOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
+    var newFix = items.filter(function(x){ return x.estado === 'cambios' || x.estado === 'en_correccion'; }).length;
+    var newCorregidos = items.filter(function(x){ return x.estado === 'corregido'; }).length;
+    var newPend = items.filter(function(x){ return x.estado === 'pendiente' || !x.estado; }).length;
+
+    var newEstadoGeneral = (newFix > 0) ? 'Con cambios' :
+                           (newCorregidos > 0 ? 'En revisión' :
+                           ((newOk === items.length && items.length > 0) ? 'Aprobado' : (newOk > 0 ? 'Parcial' : 'Pendiente')));
+
+    if (btnPieceFinalize) {
+      btnPieceFinalize.disabled = true;
+      btnPieceFinalize.textContent = 'Finalizando…';
+    }
+
+    db.collection('tableros').doc(t.id).set({
+      contenidos: items,
+      aprobados: newOk,
+      cambios: newFix,
+      pendientes: newPend,
+      estado: newEstadoGeneral,
+      actualizado: nowIso
+    }, { merge: true })
+    .then(function(){
+      t.contenidos = items;
+      t.aprobados = newOk;
+      t.cambios = newFix;
+      t.pendientes = newPend;
+      t.estado = newEstadoGeneral;
+      if (boardCache[t.id]) boardCache[t.id].contenidos = items;
+
+      if (btnPieceFinalize) {
+        btnPieceFinalize.disabled = false;
+        btnPieceFinalize.textContent = '✓ Finalizar corrección';
+      }
+      closePieceEditor(true);
+      toast('✓ ¡Corrección finalizada (v' + nextV + ')! La pieza pasó a Contenidos Corregidos.');
+      // Abrir tab de corregidos en el workspace para visibilidad inmediata
+      currentWorkspaceTab = 'corregidos';
+      renderBoardWorkspace();
+      applyFiltersAndRender();
+      if (typeof updateGlobalMetrics === 'function') updateGlobalMetrics(allTableros);
+    })
+    .catch(function(err){
+      console.error('Error finalizando corrección:', err);
+      if (btnPieceFinalize) {
+        btnPieceFinalize.disabled = false;
+        btnPieceFinalize.textContent = '✓ Finalizar corrección';
+      }
+      toast('Error al guardar la corrección en Firestore');
+    });
+  }
+
+  // ==========================================================================
+  // APARTADO CONTENIDOS CORREGIDOS & GENERADOR DE ENLACES DE RE-REVISIÓN
+  // ==========================================================================
+  function openShareShipmentModal(t){
+    if (!t) return;
+    currentShipmentBoard = t;
+    var bData = boardCache[t.id];
+    var items = getMergedItems(t, bData);
+    var corregidos = items.filter(function(x){ return x.estado === 'corregido'; });
+
+    if (!corregidos.length) {
+      toast('No hay piezas corregidas listas para enviar en este momento.');
+      return;
+    }
+
+    if (shipmentItemsList) {
+      var rowsHtml = '';
+      corregidos.forEach(function(c){
+        var num = (c.n < 10 ? '0' : '') + c.n;
+        rowsHtml += '<label class="shipment-select-row">' +
+          '<input type="checkbox" class="cb-shipment-piece" data-n="' + c.n + '" checked>' +
+          '<span style="font-weight:700;font-size:12px;color:#BAE6FD;">#' + num + '</span>' +
+          '<span style="font-size:12.5px;color:#fff;flex:1;">' + escapeHtml(c.titulo || 'Contenido') + ' (' + escapeHtml(c.formato || 'Post') + ')</span>' +
+          '<span class="ws-pill version">' + (c.version ? ('v' + c.version) : 'v2') + '</span>' +
+        '</label>';
+      });
+      shipmentItemsList.innerHTML = rowsHtml;
+
+      var cbs = shipmentItemsList.querySelectorAll('.cb-shipment-piece');
+      cbs.forEach(function(cb){
+        cb.onchange = updateGeneratedShipmentUrl;
+      });
+    }
+
+    if (btnToggleAllShipment) {
+      btnToggleAllShipment.onclick = function(){
+        var cbs = shipmentItemsList.querySelectorAll('.cb-shipment-piece');
+        var allChecked = Array.from(cbs).every(function(x){ return x.checked; });
+        cbs.forEach(function(x){ x.checked = !allChecked; });
+        btnToggleAllShipment.textContent = allChecked ? 'Seleccionar todas' : 'Deseleccionar todas';
+        updateGeneratedShipmentUrl();
+      };
+    }
+
+    updateGeneratedShipmentUrl();
+
+    if (modalShareShipment) {
+      modalShareShipment.style.display = 'flex';
+      modalShareShipment.setAttribute('aria-hidden', 'false');
+    }
+  }
+
+  function closeShareShipmentModal(){
+    if (modalShareShipment) {
+      modalShareShipment.style.display = 'none';
+      modalShareShipment.setAttribute('aria-hidden', 'true');
+    }
+    currentShipmentBoard = null;
+  }
+
+  function getSelectedShipmentNumbers(){
+    if (!shipmentItemsList) return [];
+    var cbs = shipmentItemsList.querySelectorAll('.cb-shipment-piece:checked');
+    return Array.from(cbs).map(function(x){ return parseInt(x.getAttribute('data-n'), 10); });
+  }
+
+  function updateGeneratedShipmentUrl(){
+    if (!currentShipmentBoard) return;
+    var t = currentShipmentBoard;
+    var nums = getSelectedShipmentNumbers();
+    var baseUrl = t.url || window.location.href.split('?')[0].split('#')[0];
+    var finalUrl = baseUrl;
+    if (nums.length > 0) {
+      var sep = finalUrl.indexOf('?') === -1 ? '?' : '&';
+      finalUrl += sep + 'piezas=' + nums.join(',') + '&review=corregidos';
+    }
+    if (shipmentGeneratedUrl) shipmentGeneratedUrl.value = finalUrl;
+    return finalUrl;
+  }
+
+  function copyShipmentReviewLink(){
+    if (!currentShipmentBoard) return;
+    var t = currentShipmentBoard;
+    var bData = boardCache[t.id];
+    var items = getMergedItems(t, bData);
+    var selectedNums = getSelectedShipmentNumbers();
+
+    if (!selectedNums.length) {
+      toast('Selecciona al menos una pieza para compartir.');
+      return;
+    }
+
+    var selectedItems = items.filter(function(x){ return selectedNums.indexOf(x.n) !== -1; });
+    var targetUrl = updateGeneratedShipmentUrl();
+    var cliente = t.cliente || 'Estimado cliente';
+    var mes = t.mes || '';
+
+    var msg = '¡Hola ' + cliente + '! 👋\n\n' +
+      'Hemos preparado y ajustado las correcciones de tu parrilla de contenidos (*' + mes + '*).\n\n' +
+      'Piezas corregidas listas para tu visto bueno (' + selectedItems.length + '):\n';
+
+    selectedItems.forEach(function(c){
+      var nStr = (c.n < 10 ? '0' : '') + c.n;
+      msg += '• #' + nStr + ' - ' + (c.titulo || 'Contenido') + ' (' + (c.formato || 'Post') + ' · v' + (c.version || 2) + ')\n';
+    });
+
+    msg += '\nPuedes revisar y aprobar directamente estas piezas en tu enlace interactivo:\n' + targetUrl + '\n\n' +
+      'Quedamos atentos a tus comentarios para proceder con producción. ¡Gracias!';
+
+    copyText(msg, '✓ ¡Enlace de revisión y mensaje copiados!');
+    closeShareShipmentModal();
+  }
+
+  // Delegaciones de eventos y listeners de los nuevos modales
+  if (btnCloseWorkspace) btnCloseWorkspace.onclick = closeBoardWorkspace;
+  if (btnClosePieceEditor) btnClosePieceEditor.onclick = function(){ closePieceEditor(false); };
+  if (btnPieceEditorCancel) btnPieceEditorCancel.onclick = function(){ closePieceEditor(false); };
+  if (btnPieceSaveDraft) btnPieceSaveDraft.onclick = savePieceDraft;
+  if (btnPieceFinalize) btnPieceFinalize.onclick = finalizePieceCorrection;
+
+  if (btnCloseShareShipment) btnCloseShareShipment.onclick = closeShareShipmentModal;
+  if (btnCancelShareShipment) btnCancelShareShipment.onclick = closeShareShipmentModal;
+  if (btnCopyShipmentLink) btnCopyShipmentLink.onclick = copyShipmentReviewLink;
+
+  if (modalBoardWorkspace) {
+    modalBoardWorkspace.onclick = function(e){
+      if (e.target === modalBoardWorkspace) closeBoardWorkspace();
+    };
+  }
+  if (modalPieceEditor) {
+    modalPieceEditor.onclick = function(e){
+      if (e.target === modalPieceEditor) closePieceEditor(false);
+    };
+  }
+  if (modalShareShipment) {
+    modalShareShipment.onclick = function(e){
+      if (e.target === modalShareShipment) closeShareShipmentModal();
+    };
+  }
+
+  // Sustituir toggleBoardDetail para abrir de inmediato la ventana amplia de trabajo modal
+  function toggleBoardDetail(tId, btn){
+    openBoardWorkspace(tId, 'todos');
+  }
+
   if (btnCloseEditModal) btnCloseEditModal.onclick = closeEditModal;
   if (btnCancelEditModal) btnCancelEditModal.onclick = closeEditModal;
   if (btnSaveEditModal) btnSaveEditModal.onclick = saveEditContent;
@@ -6641,7 +8218,13 @@ body{
 
   window.addEventListener('keydown', function(e){
     if (e.key === 'Escape') {
-      if (modalExpandedFeedback && modalExpandedFeedback.style.display === 'flex') {
+      if (modalShareShipment && modalShareShipment.style.display === 'flex') {
+        closeShareShipmentModal();
+      } else if (modalPieceEditor && modalPieceEditor.style.display === 'flex') {
+        closePieceEditor(false);
+      } else if (modalBoardWorkspace && modalBoardWorkspace.style.display === 'flex') {
+        closeBoardWorkspace();
+      } else if (modalExpandedFeedback && modalExpandedFeedback.style.display === 'flex') {
         closeExpandedFeedback();
       } else if (modalEditContent && modalEditContent.style.display === 'flex') {
         closeEditModal();

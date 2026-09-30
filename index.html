@@ -2146,28 +2146,35 @@ body{
   margin-top:5px;
 }
 
-/* Footer tarjeta con botones mínimos de 44px */
 .card-foot{
   display:flex;
-  align-items:center;
-  justify-content:space-between;
+  flex-direction:column;
   gap:10px;
   margin-top:6px;
-  padding-top:10px;
-  border-top:1px solid rgba(255,255,255,.06);
+  padding-top:12px;
+  border-top:1px solid rgba(255,255,255,.07);
+}
+.reviewer-info{
   font-size:12px;
   color:var(--ink-2);
-  flex-wrap:wrap;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  line-height:1.4;
 }
-.reviewer-info{flex:1;min-width:140px}
-.reviewer-info strong{color:#fff}
-.card-actions{display:flex;align-items:center;gap:6px}
+.reviewer-info strong{color:#fff;font-weight:600}
+.card-actions-row{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:8px;
+  width:100%;
+}
 .btn-card{
-  min-height:44px;
-  padding:8px 12px;
+  min-height:38px;
+  padding:8px 10px;
   border-radius:10px;
   font:inherit;
-  font-size:12px;
+  font-size:12.5px;
   font-weight:600;
   cursor:pointer;
   display:inline-flex;
@@ -2176,6 +2183,8 @@ body{
   gap:4px;
   text-decoration:none;
   transition:all var(--trans);
+  white-space:nowrap;
+  text-align:center;
 }
 .btn-card.pri{
   background:var(--verde);
@@ -2201,38 +2210,6 @@ body{
   color:#fff;
   border-color:#38BDF8;
 }
-.card-client-link-pill{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:8px;
-  background:rgba(2,132,199,.1);
-  border:1px solid rgba(56,189,248,.25);
-  border-radius:8px;
-  padding:6px 10px;
-  margin-top:6px;
-  font-size:11.5px;
-  color:#BAE6FD;
-}
-.card-client-link-url{
-  font-family:monospace;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  max-width:240px;
-  color:#38BDF8;
-}
-.btn-copy-mini{
-  background:transparent;
-  border:0;
-  color:#38BDF8;
-  font-size:11px;
-  font-weight:700;
-  cursor:pointer;
-  padding:2px 6px;
-  border-radius:4px;
-}
-.btn-copy-mini:hover{background:rgba(56,189,248,.18);color:#fff;}
 
 
 /* Detalle expandido de contenidos del tablero */
@@ -6241,23 +6218,9 @@ body{
     }
 
     var targetOpenUrl = resolveOpenUrl(t.url);
-    var openBtn = targetOpenUrl ? '<a href="' + escapeAttr(targetOpenUrl) + '" target="_blank" rel="noopener" class="btn-card pri">Abrir ↗</a>' : '';
-    var copyBtn = t.url ? '<button class="btn-card sec btn-copy-url" data-url="' + escapeAttr(t.url) + '">Copiar</button>' : '';
+    var openBtn = targetOpenUrl ? '<a href="' + escapeAttr(targetOpenUrl) + '" target="_blank" rel="noopener" class="btn-card pri" title="Abrir tablero en navegador">Abrir ↗</a>' : '';
+    var copyBtn = t.url ? '<button class="btn-card sec btn-copy-url" data-url="' + escapeAttr(resolveOpenUrl(t.url)) + '" title="Copiar enlace enviado al cliente">Copiar</button>' : '';
     var detailBtn = '<button class="btn-card sec btn-toggle-detail" data-id="' + escapeAttr(t.id) + '">Detalle</button>';
-
-    // Detectar si hay piezas con cambios o corregidas para generar/mostrar enlace de envío
-    var hasShipmentLink = !!t.url;
-    var clientLinkHtml = '';
-    if (t.url) {
-      var clientUrlClean = resolveOpenUrl(t.url);
-      clientLinkHtml = '<div class="card-client-link-pill">' +
-        '<div style="display:flex;align-items:center;gap:6px;overflow:hidden;">' +
-          '<span>🔗 <b>Enlace cliente:</b></span>' +
-          '<span class="card-client-link-url" title="' + escapeAttr(clientUrlClean) + '">' + escapeHtml(clientUrlClean) + '</span>' +
-        '</div>' +
-        '<button class="btn-copy-mini btn-copy-url" data-url="' + escapeAttr(clientUrlClean) + '" title="Copiar enlace exacto enviado al cliente">Copiar</button>' +
-      '</div>';
-    }
 
     return '' +
       '<div class="board-card ' + (isSecondary ? 'secondary' : '') + '" data-board-url="' + escapeAttr(t.url || '') + '" title="' + (t.url ? 'Clic para abrir tablero directamente' : '') + '">' +
@@ -6279,10 +6242,13 @@ body{
             '<span>' + p + ' pend.</span>' +
           '</div>' +
         '</div>' +
-        clientLinkHtml +
         '<div class="card-foot">' +
           '<div class="reviewer-info">' + revHtml + '</div>' +
-          '<div class="card-actions">' + copyBtn + detailBtn + openBtn + '</div>' +
+          '<div class="card-actions-row">' +
+            copyBtn +
+            detailBtn +
+            openBtn +
+          '</div>' +
         '</div>' +
         '<div class="board-detail-wrap" id="detail-' + escapeAttr(t.id) + '" style="display:none;"></div>' +
       '</div>';

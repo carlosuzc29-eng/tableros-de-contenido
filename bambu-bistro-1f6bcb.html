@@ -281,8 +281,263 @@ footer .logo svg{height:76px;margin:0 auto 12px}
   .dl-mini{width:40px;height:44px;border-radius:14px;flex-shrink:0}
   .box{padding:22px 18px;border-radius:22px;max-width:92vw}
 }
+/* BOTÓN Y BARRA MODO AGENCIA */
+.btn-agency-access{
+  background:rgba(31,53,73,.07);
+  border:1px solid rgba(31,53,73,.18);
+  color:var(--ink-2);
+  padding:6px 12px;
+  border-radius:10px;
+  font-size:12px;
+  font-weight:600;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  transition:all .2s;
+}
+.btn-agency-access:hover{
+  background:var(--azul-soft);
+  color:var(--azul);
+}
+.btn-agency-access.active{
+  background:var(--azul);
+  color:#fff;
+  border-color:var(--azul);
+  box-shadow:0 4px 12px rgba(31,53,73,.25);
+}
+.agency-active-bar{
+  background:linear-gradient(90deg,#1F3549,#2B4661);
+  color:#fff;
+  padding:10px 16px;
+  border-radius:14px;
+  margin-top:14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  box-shadow:0 8px 24px -6px rgba(31,53,73,.35);
+  border:1px solid rgba(255,255,255,.15);
+  animation:pop .3s var(--ease);
+}
+.agency-active-left{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:13px;
+  font-weight:600;
+}
+.agency-active-badge{
+  background:var(--verde);
+  color:#fff;
+  padding:3px 8px;
+  border-radius:99px;
+  font-size:11px;
+  font-weight:700;
+}
+.btn-agency-logout{
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.2);
+  color:#fff;
+  padding:4px 10px;
+  border-radius:8px;
+  font-size:11.5px;
+  font-weight:600;
+  cursor:pointer;
+  transition:background .2s;
+}
+.btn-agency-logout:hover{
+  background:rgba(255,255,255,.22);
+}
+
+/* Inline Edit Card Box */
+.card-agency-actions{
+  margin-top:20px;
+  padding-top:16px;
+  border-top:1px dashed var(--line);
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+.btn-card-agency-edit{
+  background:linear-gradient(135deg,#38BDF8,#0284C7);
+  color:#fff;
+  border:0;
+  padding:9px 18px;
+  border-radius:12px;
+  font-size:13px;
+  font-weight:700;
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  cursor:pointer;
+  box-shadow:0 4px 12px rgba(2,132,199,.3);
+  transition:all .2s var(--ease);
+}
+.btn-card-agency-edit:hover{
+  transform:translateY(-1px);
+  box-shadow:0 6px 16px rgba(2,132,199,.4);
+}
+.card-agency-editor{
+  margin-top:16px;
+  background:#F8FAFC;
+  border:1.5px solid #BAE6FD;
+  border-radius:18px;
+  padding:20px;
+  display:grid;
+  gap:14px;
+  animation:pop .25s var(--ease);
+}
+.card-agency-editor-title{
+  font-size:14px;
+  font-weight:700;
+  color:#0369A1;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.card-agency-field{
+  display:grid;
+  gap:6px;
+}
+.card-agency-field label{
+  font-size:11.5px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:var(--ink-2);
+}
+.card-agency-field textarea{
+  width:100%;
+  border:1px solid #CBD5E1;
+  border-radius:12px;
+  padding:10px 14px;
+  font:inherit;
+  font-size:14px;
+  min-height:80px;
+  background:#fff;
+  color:var(--ink);
+  resize:vertical;
+}
+.card-agency-field textarea:focus{
+  outline:none;
+  border-color:#0284C7;
+  box-shadow:0 0 0 3px rgba(2,132,199,.15);
+}
+.card-agency-buttons{
+  display:flex;
+  gap:10px;
+  justify-content:flex-end;
+  margin-top:6px;
+}
+.btn-agency-save{
+  background:var(--verde);
+  color:#fff;
+  border:0;
+  padding:9px 18px;
+  border-radius:10px;
+  font-size:13.5px;
+  font-weight:700;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  box-shadow:0 3px 10px rgba(92,184,62,.3);
+  transition:all .2s;
+}
+.btn-agency-save:hover{
+  background:var(--verde-dk);
+}
+.btn-agency-cancel{
+  background:transparent;
+  border:1px solid #CBD5E1;
+  color:var(--ink-2);
+  padding:8px 14px;
+  border-radius:10px;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+/* Modal Login Agencia */
+.agency-modal-box{
+  background:#fff;
+  border-radius:24px;
+  max-width:400px;
+  width:100%;
+  padding:28px 24px;
+  box-shadow:0 30px 60px -20px rgba(31,53,73,.5);
+  animation:pop .3s var(--ease);
+}
+.agency-modal-box h3{
+  font-size:19px;
+  font-weight:700;
+  color:var(--ink);
+  margin-bottom:6px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.agency-modal-box p{
+  font-size:13px;
+  color:var(--ink-2);
+  margin-bottom:18px;
+  line-height:1.5;
+}
+.agency-field{
+  margin-bottom:14px;
+}
+.agency-field label{
+  display:block;
+  font-size:12px;
+  font-weight:700;
+  color:var(--ink);
+  margin-bottom:5px;
+}
+.agency-field select,
+.agency-field input{
+  width:100%;
+  border:1.5px solid var(--line);
+  background:#F8FAFC;
+  border-radius:12px;
+  padding:10px 14px;
+  font:inherit;
+  font-size:14px;
+  color:var(--ink);
+  transition:border-color .2s;
+}
+.agency-field select:focus,
+.agency-field input:focus{
+  outline:none;
+  border-color:var(--azul);
+  background:#fff;
+}
+.agency-err{
+  color:var(--naranja);
+  font-size:12.5px;
+  font-weight:600;
+  margin-bottom:12px;
+  display:none;
+}
+.agency-err.show{
+  display:block;
+}
+.agency-modal-btns{
+  display:flex;
+  gap:10px;
+  margin-top:18px;
+}
+.agency-modal-btns button{
+  flex:1;
+  padding:11px 16px;
+  border-radius:12px;
+  font-size:14px;
+  font-weight:700;
+}
+
 @media (prefers-reduced-motion:reduce){.card{opacity:1;transform:none;transition:none}}
-@media print{.dock,.index,.modal,.toast,.page-network-canvas{display:none!important}.layout{grid-template-columns:1fr}.card{opacity:1;transform:none;break-inside:avoid}}
+@media print{.dock,.index,.modal,.toast,.page-network-canvas,.shipment-banner,.btn-agency-access,.agency-active-bar,.card-agency-actions,.card-agency-editor{display:none!important}.layout{grid-template-columns:1fr}.card{opacity:1;transform:none;break-inside:avoid}}
 </style>
 </head>
 <body class="has-send">
@@ -290,8 +545,24 @@ footer .logo svg{height:76px;margin:0 auto 12px}
 
 <div class="topbar"><div class="shell">
   <div class="logo" data-logo=""><svg role="img" aria-label="NEXO Agencia Creativa" xmlns="http://www.w3.org/2000/svg" viewBox="758 532 862 1350"><g transform="translate(0,2364) scale(1,-1)"><path fill="#1F3549" d="M763 1617 l0 -210 47 0 46 0 0 129 0 129 3 -4 c3 -4 29 -32 31 -34 1 -1 5 -6 10 -11 4 -4 15 -16 23 -25 9 -10 17 -20 20 -22 2 -2 11 -12 19 -21 9 -10 16 -18 16 -19 1 0 5 -5 10 -10 17 -18 28 -32 29 -33 2 -1 15 -15 33 -35 9 -10 16 -18 16 -19 5 -4 18 -19 20 -22 l3 -3 47 0 46 0 0 210 0 209 -46 0 -46 0 0 -129 c0 -106 0 -128 -1 -127 -1 1 -4 5 -8 8 -6 7 -21 24 -24 27 -2 2 -6 7 -44 49 -15 15 -28 31 -31 33 -2 2 -5 5 -6 7 -1 1 -5 6 -10 11 -5 5 -9 10 -10 11 -1 1 -5 6 -10 11 -37 41 -53 58 -60 66 -5 5 -10 11 -11 12 -1 1 -6 6 -10 11 l-9 10 -47 0 -46 0 0 -209z M1238 1825 c-1 0 -1 -21 -1 -46 l0 -46 182 0 182 0 0 47 0 46 -181 0 c-100 0 -182 0 -182 -1z M1237 1615 l0 -46 182 0 182 0 0 46 0 46 -182 0 -182 0 0 -46z M1237 1454 l0 -47 182 0 182 0 0 47 0 46 -182 0 -182 0 0 -46z M764 1351 c0 -1 31 -48 69 -105 38 -57 69 -104 69 -104 -1 -1 -32 -48 -70 -105 l-69 -104 70 0 71 0 34 52 c19 28 35 51 35 51 0 0 16 -23 35 -52 l34 -51 70 0 c60 0 70 0 70 1 -1 1 -32 48 -69 104 -37 56 -68 103 -69 104 0 0 31 47 69 104 38 57 69 104 69 105 0 1 -22 1 -65 1 l-64 0 -40 -59 c-22 -33 -40 -60 -40 -60 0 0 -18 27 -40 60 l-39 59 -66 0 c-52 0 -65 0 -64 -1z M1372 1351 c-96 -9 -175 -84 -188 -180 -21 -147 116 -269 261 -231 109 28 177 142 149 252 -25 101 -119 168 -222 159z m38 -91 c102 -17 136 -150 53 -212 -79 -59 -190 -4 -190 95 0 72 65 128 137 117z"></path><path fill="#5CB83E" d="M803 774 c-18 -40 -32 -73 -33 -74 0 -2 0 -2 10 -2 l9 1 10 21 9 22 27 0 28 0 9 -22 9 -22 10 0 c6 0 9 0 9 1 0 2 -64 148 -65 148 0 0 -15 -33 -32 -73z m43 9 l11 -25 -22 0 c-20 0 -21 0 -21 2 3 6 21 47 21 47 0 0 5 -11 11 -24z M1145 773 l0 -75 8 0 9 0 0 53 1 53 51 -56 c28 -30 51 -55 51 -55 1 0 1 34 1 75 l0 74 -8 0 -9 0 0 -54 0 -53 -52 56 c-28 31 -51 56 -52 56 0 0 0 -34 0 -74z M1480 773 c-18 -40 -32 -74 -32 -74 0 -1 4 -1 10 -1 l9 1 9 21 10 22 27 0 28 0 9 -22 9 -22 10 0 c8 0 9 0 9 2 -1 3 -64 147 -65 147 0 0 -15 -33 -33 -74z m44 10 c5 -13 10 -24 10 -24 0 -1 -9 -1 -21 -1 -12 0 -21 0 -21 1 0 1 20 48 21 48 0 0 5 -11 11 -24z M952 844 c-36 -6 -58 -35 -58 -75 0 -36 18 -61 49 -71 12 -4 38 -4 50 0 27 10 43 32 45 64 l0 11 -30 0 -30 0 0 -8 0 -8 21 0 20 0 -1 -4 c-5 -34 -42 -52 -75 -36 -38 18 -41 80 -4 104 15 10 39 10 55 1 5 -2 15 -12 18 -17 l2 -2 7 5 c4 3 7 7 7 8 0 3 -16 17 -24 21 -14 7 -35 10 -52 7z M1338 843 c-25 -6 -45 -25 -53 -48 -3 -12 -4 -32 -1 -44 12 -50 70 -72 115 -44 l6 3 0 12 0 12 -7 -6 c-24 -23 -58 -22 -81 0 -12 13 -16 24 -16 42 0 51 59 77 96 43 4 -3 7 -6 7 -6 1 0 1 5 1 11 l0 12 -6 3 c-18 11 -41 15 -61 10z M1051 770 l0 -72 38 0 39 1 0 8 0 8 -29 0 -30 0 0 27 0 27 30 0 29 0 0 8 0 8 -29 0 -30 0 0 20 0 20 30 0 29 0 0 9 0 8 -38 0 -39 0 0 -72z M1422 770 l0 -72 9 0 9 0 0 72 0 72 -9 0 -9 0 0 -72z M825 688 c-33 -5 -57 -31 -61 -65 -6 -61 47 -101 104 -78 l6 2 0 22 c0 11 0 21 -1 21 0 0 -3 -3 -7 -6 -29 -25 -68 -2 -62 36 3 21 16 33 36 33 12 0 16 -2 28 -12 l6 -5 0 22 0 22 -7 2 c-13 6 -29 8 -42 6z M1128 687 c-21 -7 -32 -25 -32 -52 0 -25 8 -42 25 -50 6 -3 7 -3 18 -3 16 0 22 2 30 11 l6 6 0 -7 0 -7 17 0 16 0 0 50 0 50 -16 0 -17 0 0 -7 0 -7 -3 3 c-4 5 -8 8 -13 11 -6 3 -25 4 -31 2z m37 -30 c14 -7 15 -34 2 -42 -13 -9 -30 -4 -34 11 -7 23 12 41 32 31z M883 614 l0 -72 19 0 19 0 0 27 0 26 16 -26 15 -27 23 0 c12 0 22 0 22 0 0 1 -9 14 -19 29 -21 30 -20 29 -17 29 7 0 20 10 25 20 3 7 3 7 3 20 0 18 -4 28 -16 37 -11 7 -14 7 -54 8 l-36 0 0 -71z m60 37 c7 -4 10 -15 6 -23 -3 -7 -8 -9 -19 -10 l-9 0 0 18 0 18 9 0 c7 0 10 -1 13 -3z M1000 614 l0 -72 44 0 44 0 0 17 0 16 -25 0 -25 0 0 12 0 11 24 0 23 0 0 16 0 15 -23 0 -24 0 0 12 0 12 25 0 25 0 0 16 0 16 -44 0 -44 0 0 -71z M1220 631 l0 -55 -23 0 -23 0 0 -17 1 -16 58 -1 59 0 0 17 0 17 -16 0 -16 0 0 55 0 54 -20 0 -20 0 0 -54z M1302 614 l0 -72 20 0 20 0 0 72 0 71 -20 0 -20 0 0 -71z M1349 685 c0 0 13 -32 30 -71 l30 -71 15 -1 16 0 29 70 c16 38 29 70 30 71 0 2 -1 2 -21 2 l-21 0 -16 -42 c-9 -22 -17 -41 -17 -41 0 0 -8 19 -16 42 l-16 41 -22 0 c-11 0 -21 0 -21 0z M1510 684 c-1 -1 -14 -33 -30 -71 -16 -38 -29 -70 -29 -70 0 -1 9 -1 21 -1 l21 0 2 5 c1 3 8 21 16 41 7 19 14 35 14 36 0 2 6 -11 17 -40 l16 -42 22 0 21 0 -4 9 c-2 5 -16 37 -30 72 l-26 62 -15 0 c-12 0 -16 0 -16 -1z"></path></g></svg></div>
-  <div class="meta">Parrilla de contenidos<b id="metaTitle">Bambú Bistro · <i>Octubre 2026</i></b></div>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <button type="button" class="btn-agency-access" id="btnAgencyAccess">🔒 Correcciones de agencia</button>
+    <div class="meta">Parrilla de contenidos<b id="metaTitle">Bambú Bistro · <i>Octubre 2026</i></b></div>
+  </div>
 </div></div>
+
+<div class="shell" id="agencyActiveBarWrap" style="display:none;padding:0 16px;">
+  <div class="agency-active-bar">
+    <div class="agency-active-left">
+      <span class="agency-active-badge">✓ MODO AGENCIA ACTIVO</span>
+      <span id="agencyUserLabel">andrevmuedit@gmail.com</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-size:12px;opacity:.8;">Edita piezas y guarda correcciones v2</span>
+      <button type="button" class="btn-agency-logout" id="btnAgencyLogout">Cerrar sesión</button>
+    </div>
+  </div>
+</div>
 
 <header class="hero"><div class="shell">
   <div class="hero-grid">
@@ -415,6 +686,31 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
 </div>
 
 <div class="modal" id="modal"><div class="box" id="box"></div></div>
+
+<!-- MODAL ACCESO AGENCIA -->
+<div class="modal" id="modalAgencyLogin">
+  <div class="agency-modal-box">
+    <h3>🔒 Acceso Agencia</h3>
+    <p>Área reservada exclusivamente para el equipo de Nexo para realizar correcciones y ajustes directos al tablero.</p>
+    <div class="agency-field">
+      <label for="agencyEmailSelect">Usuario autorizado</label>
+      <select id="agencyEmailSelect">
+        <option value="andrevmuedit@gmail.com">andrevmuedit@gmail.com (Andrea)</option>
+        <option value="carlosuzc29@gmail.com">carlosuzc29@gmail.com (Carlos)</option>
+      </select>
+    </div>
+    <div class="agency-field">
+      <label for="agencyPassword">Contraseña de acceso</label>
+      <input type="password" id="agencyPassword" placeholder="Introduce la contraseña" autocomplete="current-password">
+    </div>
+    <div class="agency-err" id="agencyLoginErr">Contraseña o usuario incorrecto</div>
+    <div class="agency-modal-btns">
+      <button type="button" class="btn-agency-cancel" id="btnAgencyModalCancel">Cancelar</button>
+      <button type="button" class="btn-agency-save" id="btnAgencyModalSubmit">Ingresar al modo editor</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <template id="nexo-logo"><svg role="img" aria-label="NEXO Agencia Creativa" xmlns="http://www.w3.org/2000/svg" viewBox="758 532 862 1350"><g transform="translate(0,2364) scale(1,-1)"><path fill="#1F3549" d="M763 1617 l0 -210 47 0 46 0 0 129 0 129 3 -4 c3 -4 29 -32 31 -34 1 -1 5 -6 10 -11 4 -4 15 -16 23 -25 9 -10 17 -20 20 -22 2 -2 11 -12 19 -21 9 -10 16 -18 16 -19 1 0 5 -5 10 -10 17 -18 28 -32 29 -33 2 -1 15 -15 33 -35 9 -10 16 -18 16 -19 5 -4 18 -19 20 -22 l3 -3 47 0 46 0 0 210 0 209 -46 0 -46 0 0 -129 c0 -106 0 -128 -1 -127 -1 1 -4 5 -8 8 -6 7 -21 24 -24 27 -2 2 -6 7 -44 49 -15 15 -28 31 -31 33 -2 2 -5 5 -6 7 -1 1 -5 6 -10 11 -5 5 -9 10 -10 11 -1 1 -5 6 -10 11 -37 41 -53 58 -60 66 -5 5 -10 11 -11 12 -1 1 -6 6 -10 11 l-9 10 -47 0 -46 0 0 -209z M1238 1825 c-1 0 -1 -21 -1 -46 l0 -46 182 0 182 0 0 47 0 46 -181 0 c-100 0 -182 0 -182 -1z M1237 1615 l0 -46 182 0 182 0 0 46 0 46 -182 0 -182 0 0 -46z M1237 1454 l0 -47 182 0 182 0 0 47 0 46 -182 0 -182 0 0 -46z M764 1351 c0 -1 31 -48 69 -105 38 -57 69 -104 69 -104 -1 -1 -32 -48 -70 -105 l-69 -104 70 0 71 0 34 52 c19 28 35 51 35 51 0 0 16 -23 35 -52 l34 -51 70 0 c60 0 70 0 70 1 -1 1 -32 48 -69 104 -37 56 -68 103 -69 104 0 0 31 47 69 104 38 57 69 104 69 105 0 1 -22 1 -65 1 l-64 0 -40 -59 c-22 -33 -40 -60 -40 -60 0 0 -18 27 -40 60 l-39 59 -66 0 c-52 0 -65 0 -64 -1z M1372 1351 c-96 -9 -175 -84 -188 -180 -21 -147 116 -269 261 -231 109 28 177 142 149 252 -25 101 -119 168 -222 159z m38 -91 c102 -17 136 -150 53 -212 -79 -59 -190 -4 -190 95 0 72 65 128 137 117z"></path><path fill="#5CB83E" d="M803 774 c-18 -40 -32 -73 -33 -74 0 -2 0 -2 10 -2 l9 1 10 21 9 22 27 0 28 0 9 -22 9 -22 10 0 c6 0 9 0 9 1 0 2 -64 148 -65 148 0 0 -15 -33 -32 -73z m43 9 l11 -25 -22 0 c-20 0 -21 0 -21 2 3 6 21 47 21 47 0 0 5 -11 11 -24z M1145 773 l0 -75 8 0 9 0 0 53 1 53 51 -56 c28 -30 51 -55 51 -55 1 0 1 34 1 75 l0 74 -8 0 -9 0 0 -54 0 -53 -52 56 c-28 31 -51 56 -52 56 0 0 0 -34 0 -74z M1480 773 c-18 -40 -32 -74 -32 -74 0 -1 4 -1 10 -1 l9 1 9 21 10 22 27 0 28 0 9 -22 9 -22 10 0 c8 0 9 0 9 2 -1 3 -64 147 -65 147 0 0 -15 -33 -33 -74z m44 10 c5 -13 10 -24 10 -24 0 -1 -9 -1 -21 -1 -12 0 -21 0 -21 1 0 1 20 48 21 48 0 0 5 -11 11 -24z M952 844 c-36 -6 -58 -35 -58 -75 0 -36 18 -61 49 -71 12 -4 38 -4 50 0 27 10 43 32 45 64 l0 11 -30 0 -30 0 0 -8 0 -8 21 0 20 0 -1 -4 c-5 -34 -42 -52 -75 -36 -38 18 -41 80 -4 104 15 10 39 10 55 1 5 -2 15 -12 18 -17 l2 -2 7 5 c4 3 7 7 7 8 0 3 -16 17 -24 21 -14 7 -35 10 -52 7z M1338 843 c-25 -6 -45 -25 -53 -48 -3 -12 -4 -32 -1 -44 12 -50 70 -72 115 -44 l6 3 0 12 0 12 -7 -6 c-24 -23 -58 -22 -81 0 -12 13 -16 24 -16 42 0 51 59 77 96 43 4 -3 7 -6 7 -6 1 0 1 5 1 11 l0 12 -6 3 c-18 11 -41 15 -61 10z M1051 770 l0 -72 38 0 39 1 0 8 0 8 -29 0 -30 0 0 27 0 27 30 0 29 0 0 8 0 8 -29 0 -30 0 0 20 0 20 30 0 29 0 0 9 0 8 -38 0 -39 0 0 -72z M1422 770 l0 -72 9 0 9 0 0 72 0 72 -9 0 -9 0 0 -72z M825 688 c-33 -5 -57 -31 -61 -65 -6 -61 47 -101 104 -78 l6 2 0 22 c0 11 0 21 -1 21 0 0 -3 -3 -7 -6 -29 -25 -68 -2 -62 36 3 21 16 33 36 33 12 0 16 -2 28 -12 l6 -5 0 22 0 22 -7 2 c-13 6 -29 8 -42 6z M1128 687 c-21 -7 -32 -25 -32 -52 0 -25 8 -42 25 -50 6 -3 7 -3 18 -3 16 0 22 2 30 11 l6 6 0 -7 0 -7 17 0 16 0 0 50 0 50 -16 0 -17 0 0 -7 0 -7 -3 3 c-4 5 -8 8 -13 11 -6 3 -25 4 -31 2z m37 -30 c14 -7 15 -34 2 -42 -13 -9 -30 -4 -34 11 -7 23 12 41 32 31z M883 614 l0 -72 19 0 19 0 0 27 0 26 16 -26 15 -27 23 0 c12 0 22 0 22 0 0 1 -9 14 -19 29 -21 30 -20 29 -17 29 7 0 20 10 25 20 3 7 3 7 3 20 0 18 -4 28 -16 37 -11 7 -14 7 -54 8 l-36 0 0 -71z m60 37 c7 -4 10 -15 6 -23 -3 -7 -8 -9 -19 -10 l-9 0 0 18 0 18 9 0 c7 0 10 -1 13 -3z M1000 614 l0 -72 44 0 44 0 0 17 0 16 -25 0 -25 0 0 12 0 11 24 0 23 0 0 16 0 15 -23 0 -24 0 0 12 0 12 25 0 25 0 0 16 0 16 -44 0 -44 0 0 -71z M1220 631 l0 -55 -23 0 -23 0 0 -17 1 -16 58 -1 59 0 0 17 0 17 -16 0 -16 0 0 55 0 54 -20 0 -20 0 0 -54z M1302 614 l0 -72 20 0 20 0 0 72 0 71 -20 0 -20 0 0 -71z M1349 685 c0 0 13 -32 30 -71 l30 -71 15 -1 16 0 29 70 c16 38 29 70 30 71 0 2 -1 2 -21 2 l-21 0 -16 -42 c-9 -22 -17 -41 -17 -41 0 0 -8 19 -16 42 l-16 41 -22 0 c-11 0 -21 0 -21 0z M1510 684 c-1 -1 -14 -33 -30 -71 -16 -38 -29 -70 -29 -70 0 -1 9 -1 21 -1 l21 0 2 5 c1 3 8 21 16 41 7 19 14 35 14 36 0 2 6 -11 17 -40 l16 -42 22 0 21 0 -4 9 c-2 5 -16 37 -30 72 l-26 62 -15 0 c-12 0 -16 0 -16 -1z"></path></g></svg></template>
@@ -1546,7 +1842,12 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
     var hasCopy = (it.copy || it.hashtags);
     var body = el('div', 'c-body' + (hasCopy ? '' : ' single'));
     var g = el('div', 'guion');
-    if (it.guion) { g.appendChild(el('span', 'lbl', it.guionLabel || 'Guion / descripción')); g.appendChild(el('p', null, it.guion)); }
+    var pGuion = null;
+    if (it.guion) {
+      g.appendChild(el('span', 'lbl', it.guionLabel || 'Guion / descripción'));
+      pGuion = el('p', null, it.guion);
+      g.appendChild(pGuion);
+    }
     var refs = (it.referencias || []).filter(function(r){ return safeUrl(r.url); });
     if (refs.length) {
       var rw = el('div', 'refs');
@@ -1554,15 +1855,16 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
       g.appendChild(rw);
     }
     body.appendChild(g);
+    var pCopy = null;
     if (hasCopy) {
       var cw = el('div'); cw.appendChild(el('span', 'lbl', 'Copy'));
       var post = el('div', 'post'); var ph = el('div', 'post-h');
       ph.appendChild(el('div', 'av', (handle || 'N').charAt(0).toUpperCase()));
       var pn = el('div'); pn.appendChild(el('b', null, handle || 'tu cuenta')); pn.appendChild(el('small', null, 'Vista previa del copy'));
       ph.appendChild(pn); post.appendChild(ph);
-      var p = el('p', null, it.copy || '');
-      if (it.hashtags) p.appendChild(el('span', 'hash', it.hashtags));
-      post.appendChild(p); cw.appendChild(post); body.appendChild(cw);
+      pCopy = el('p', null, it.copy || '');
+      if (it.hashtags) pCopy.appendChild(el('span', 'hash', it.hashtags));
+      post.appendChild(pCopy); cw.appendChild(post); body.appendChild(cw);
     }
     card.appendChild(body);
 
@@ -1714,7 +2016,10 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
       paint: paint,
       paintFmt: paintFmt,
       fs: fs,
-      h2Title: h2Title
+      h2Title: h2Title,
+      tagsEl: tags,
+      guionParagraph: pGuion,
+      copyParagraph: pCopy
     });
   });
 
@@ -1901,6 +2206,26 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
           if (fsItem.titulo) {
             it.titulo = fsItem.titulo;
             if (cObj.h2Title) cObj.h2Title.textContent = fsItem.titulo;
+          }
+          if (fsItem.guion) {
+            it.guion = fsItem.guion;
+            if (cObj.guionParagraph) cObj.guionParagraph.textContent = fsItem.guion;
+          }
+          if (fsItem.copy) {
+            it.copy = fsItem.copy;
+            if (cObj.copyParagraph) cObj.copyParagraph.textContent = fsItem.copy;
+          }
+          if (fsItem.version) {
+            it.version = parseInt(fsItem.version, 10);
+            if (it.version > 1 && cObj.tagsEl) {
+              var existingV = cObj.tagsEl.querySelector('.tag.version');
+              if (!existingV) {
+                var vTag = el('span', 'tag version', 'v' + it.version + ' Corregido');
+                cObj.tagsEl.insertBefore(vTag, cObj.tagsEl.firstChild);
+              } else {
+                existingV.textContent = 'v' + it.version + ' Corregido';
+              }
+            }
           }
 
           if (it.comentario) {
@@ -2187,6 +2512,306 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
   refresh(); applyFilter();
   if (typeof NexoNetworkBackground !== 'undefined') {
     NexoNetworkBackground.init(document.body);
+  }
+
+  // ==============================================================
+  // MÓDULO EXCLUSIVO DE AGENCIA: CORRECCIONES DIRECTAS EN EL TABLERO
+  // Usuarios permitidos: carlosuzc29@gmail.com, andrevmuedit@gmail.com
+  // Clave autorizada: Cambios19
+  // ==============================================================
+  var AGENCY_ALLOWED = ['carlosuzc29@gmail.com', 'andrevmuedit@gmail.com'];
+  var AGENCY_PASS = 'Cambios19';
+  var agencyUser = null;
+
+  try {
+    var storedAgency = localStorage.getItem('nexo_agency_logged_user') || sessionStorage.getItem('nexo_agency_logged_user');
+    if (storedAgency && AGENCY_ALLOWED.indexOf(storedAgency) !== -1) {
+      agencyUser = storedAgency;
+    }
+  } catch(e) {}
+
+  function updateAgencyUI(){
+    var isAgency = !!agencyUser;
+    var accessBtn = $('btnAgencyAccess');
+    var activeBar = $('agencyActiveBarWrap');
+    var userLbl = $('agencyUserLabel');
+
+    if (accessBtn) {
+      accessBtn.classList.toggle('active', isAgency);
+      accessBtn.textContent = isAgency ? '✓ Modo Agencia' : '🔒 Correcciones de agencia';
+    }
+    if (activeBar) {
+      activeBar.style.display = isAgency ? 'block' : 'none';
+    }
+    if (userLbl && agencyUser) {
+      userLbl.textContent = agencyUser + ' (Modo Correcciones)';
+    }
+
+    // Actualizar cada tarjeta para mostrar u ocultar la barra de corrección de agencia
+    cards.forEach(function(cObj){
+      if (cObj.updateAgencyActions) cObj.updateAgencyActions(isAgency);
+    });
+  }
+
+  // Modal Login de Agencia
+  var modalLogin = $('modalAgencyLogin');
+  var passInp = $('agencyPassword');
+  var emailSel = $('agencyEmailSelect');
+  var errEl = $('agencyLoginErr');
+  var btnLoginSubmit = $('btnAgencyModalSubmit');
+  var btnLoginCancel = $('btnAgencyModalCancel');
+  var btnAgencyAccess = $('btnAgencyAccess');
+  var btnAgencyLogout = $('btnAgencyLogout');
+
+  function openAgencyLogin(){
+    if (modalLogin) {
+      if (passInp) passInp.value = '';
+      if (errEl) errEl.classList.remove('show');
+      modalLogin.classList.add('show');
+      setTimeout(function(){ if (passInp) passInp.focus(); }, 150);
+    }
+  }
+  function closeAgencyLogin(){
+    if (modalLogin) modalLogin.classList.remove('show');
+  }
+
+  if (btnAgencyAccess) {
+    btnAgencyAccess.onclick = function(){
+      if (agencyUser) {
+        toast('Modo editor de agencia ya activo');
+      } else {
+        openAgencyLogin();
+      }
+    };
+  }
+
+  if (btnLoginCancel) btnLoginCancel.onclick = closeAgencyLogin;
+  if (modalLogin) {
+    modalLogin.addEventListener('click', function(e){
+      if (e.target === this) closeAgencyLogin();
+    });
+  }
+
+  function handleAgencyLogin(){
+    var email = (emailSel ? emailSel.value : '').toLowerCase().trim();
+    var pass = (passInp ? passInp.value : '').trim();
+
+    if (AGENCY_ALLOWED.indexOf(email) === -1) {
+      if (errEl) { errEl.textContent = 'Usuario no autorizado para realizar correcciones'; errEl.classList.add('show'); }
+      return;
+    }
+    if (pass !== AGENCY_PASS) {
+      if (errEl) { errEl.textContent = 'Contraseña incorrecta'; errEl.classList.add('show'); }
+      if (passInp) { passInp.focus(); passInp.select(); }
+      return;
+    }
+
+    agencyUser = email;
+    try {
+      localStorage.setItem('nexo_agency_logged_user', email);
+      sessionStorage.setItem('nexo_agency_logged_user', email);
+    } catch(e){}
+    closeAgencyLogin();
+    updateAgencyUI();
+    toast('✓ Acceso de agencia verificado: ¡Modo corrección activo!');
+  }
+
+  if (btnLoginSubmit) btnLoginSubmit.onclick = handleAgencyLogin;
+  if (passInp) {
+    passInp.addEventListener('keydown', function(e){
+      if (e.key === 'Enter') handleAgencyLogin();
+    });
+  }
+
+  if (btnAgencyLogout) {
+    btnAgencyLogout.onclick = function(){
+      agencyUser = null;
+      try {
+        localStorage.removeItem('nexo_agency_logged_user');
+        sessionStorage.removeItem('nexo_agency_logged_user');
+      } catch(e){}
+      updateAgencyUI();
+      toast('Sesión de agencia cerrada');
+    };
+  }
+
+  // Guardar corrección directa en Firestore y actualizar tarjeta
+  function saveCardCorrection(it, cObj, newGuion, newCopy, editorBox, btnSave){
+    if (btnSave) { btnSave.disabled = true; btnSave.textContent = 'Guardando…'; }
+
+    var nextVersion = (parseInt(it.version, 10) || 1) + 1;
+    it.guion = newGuion;
+    it.copy = newCopy;
+    it.version = nextVersion;
+
+    // Agregar nota automática en el hilo de comentarios indicando la corrección por la agencia
+    it.comentarios = it.comentarios || [];
+    it.comentarios.push({
+      autor: 'Agencia (' + (agencyUser === 'carlosuzc29@gmail.com' ? 'Carlos' : 'Andrea') + ')',
+      texto: '✓ Pieza corregida a versión v' + nextVersion + ' lista para nueva revisión.',
+      fecha: new Date().toISOString()
+    });
+    it.comentario = formatComentariosString(it.comentarios);
+
+    // Actualizar visualización en vivo de la tarjeta
+    if (cObj.guionParagraph) {
+      cObj.guionParagraph.textContent = newGuion;
+    }
+    if (cObj.copyParagraph) {
+      cObj.copyParagraph.textContent = newCopy;
+    }
+    if (cObj.tagsEl) {
+      var existingV = cObj.tagsEl.querySelector('.tag.version');
+      if (!existingV) {
+        var vTag = el('span', 'tag version', 'v' + nextVersion + ' Corregido');
+        cObj.tagsEl.insertBefore(vTag, cObj.tagsEl.firstChild);
+      } else {
+        existingV.textContent = 'v' + nextVersion + ' Corregido';
+      }
+    }
+    if (cObj.renderThread) cObj.renderThread();
+    saveDraft();
+
+    // Actualizar en Firestore si está conectado
+    if (FB && FB.projectId && DATA.id) {
+      var totalGlobalOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
+      var totalGlobalFix = items.filter(function(x){ return x.estado === 'cambios'; }).length;
+      var totalGlobalPend = items.filter(function(x){ return x.estado === 'pendiente' || !x.estado; }).length;
+      var estadoGeneral = (totalGlobalFix > 0) ? 'Con cambios' : (totalGlobalOk === items.length ? 'Aprobado' : (totalGlobalOk > 0 ? 'Parcial' : 'Sin revisar'));
+
+      var firestoreContenidos = items.map(function(item, i){
+        var cList = (item.comentarios && item.comentarios.length) ? item.comentarios : (item.comentario ? [{ autor: item.revisadoPor || 'Cliente', texto: item.comentario, fecha: '' }] : []);
+        var fullComment = formatComentariosString(cList) || item.comentario || '';
+        var lastAuthor = (cList.length && cList[cList.length - 1].autor) ? cList[cList.length - 1].autor : (item.revisadoPor || 'Cliente');
+        var fMap = {
+          n: { integerValue: String(i + 1) },
+          id: { stringValue: String(item.id || ('c' + (i + 1))) },
+          titulo: { stringValue: String(item.titulo || '') },
+          formato: { stringValue: String(item.formato || '') },
+          formatoOriginal: { stringValue: String(item.formatoOriginal || '') },
+          estado: { stringValue: String(item.estado || 'pendiente') },
+          comentario: { stringValue: String(fullComment) },
+          revisadoPor: { stringValue: String(lastAuthor) }
+        };
+        if (item.guion != null) fMap.guion = { stringValue: String(item.guion) };
+        if (item.copy != null) fMap.copy = { stringValue: String(item.copy) };
+        if (item.version != null) fMap.version = { integerValue: String(item.version) };
+        return {
+          mapValue: { fields: fMap }
+        };
+      });
+
+      var fsUrl = 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(FB.projectId) +
+        '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
+        '?updateMask.fieldPaths=contenidos&updateMask.fieldPaths=estado&key=' + encodeURIComponent(FB.apiKey);
+
+      fetch(fsUrl, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fields: {
+            estado: { stringValue: estadoGeneral },
+            contenidos: { arrayValue: { values: firestoreContenidos } }
+          }
+        })
+      })
+      .then(function(r){
+        if (btnSave) { btnSave.disabled = false; btnSave.textContent = '💾 Guardar cambios (v' + (nextVersion + 1) + ')'; }
+        if (editorBox) editorBox.style.display = 'none';
+        toast('✓ Cambios guardados y sincronizados en el tablero');
+      })
+      .catch(function(err){
+        console.error('Error guardando corrección en Firestore:', err);
+        if (btnSave) { btnSave.disabled = false; btnSave.textContent = '💾 Guardar cambios'; }
+        if (editorBox) editorBox.style.display = 'none';
+        toast('✓ Cambios guardados localmente (verifica conexión)');
+      });
+    } else {
+      if (btnSave) { btnSave.disabled = false; btnSave.textContent = '💾 Guardar cambios'; }
+      if (editorBox) editorBox.style.display = 'none';
+      toast('✓ Cambios guardados');
+    }
+  }
+
+  // Insertar controles de edición de agencia en cada tarjeta
+  cards.forEach(function(cObj){
+    var it = cObj.it;
+    var card = cObj.card;
+
+    var agencyActions = el('div', 'card-agency-actions');
+    agencyActions.style.display = agencyUser ? 'flex' : 'none';
+
+    var btnEdit = el('button', 'btn-card-agency-edit');
+    btnEdit.type = 'button';
+    btnEdit.innerHTML = '<span>✎ Modificar contenido</span> <small style="font-weight:600;opacity:.9">(v' + ((parseInt(it.version, 10) || 1) + 1) + ')</small>';
+
+    var editorBox = el('div', 'card-agency-editor');
+    editorBox.style.display = 'none';
+
+    var edTitle = el('div', 'card-agency-editor-title');
+    edTitle.innerHTML = '<b>✎ Modificar contenido · Agencia Nexo</b> <span>(Actualiza y guarda nueva versión)</span>';
+    editorBox.appendChild(edTitle);
+
+    var fGuion = el('div', 'card-agency-field');
+    fGuion.appendChild(el('label', null, 'Guion / Texto corregido'));
+    var taGuion = el('textarea');
+    taGuion.value = it.guion || '';
+    taGuion.rows = 5;
+    fGuion.appendChild(taGuion);
+    editorBox.appendChild(fGuion);
+
+    var fCopy = el('div', 'card-agency-field');
+    fCopy.appendChild(el('label', null, 'Copy corregido'));
+    var taCopy = el('textarea');
+    taCopy.value = it.copy || '';
+    taCopy.rows = 4;
+    fCopy.appendChild(taCopy);
+    editorBox.appendChild(fCopy);
+
+    var edBtns = el('div', 'card-agency-buttons');
+    var btnCancel = el('button', 'btn-agency-cancel', 'Cerrar sin guardar');
+    btnCancel.type = 'button';
+    btnCancel.onclick = function(){ editorBox.style.display = 'none'; };
+
+    var btnSave = el('button', 'btn-agency-save');
+    btnSave.type = 'button';
+    btnSave.innerHTML = '💾 Guardar cambios (v' + ((parseInt(it.version, 10) || 1) + 1) + ')';
+    btnSave.onclick = function(){
+      saveCardCorrection(it, cObj, taGuion.value, taCopy.value, editorBox, btnSave);
+    };
+
+    edBtns.appendChild(btnCancel);
+    edBtns.appendChild(btnSave);
+    editorBox.appendChild(edBtns);
+
+    btnEdit.onclick = function(){
+      taGuion.value = it.guion || '';
+      taCopy.value = it.copy || '';
+      editorBox.style.display = (editorBox.style.display === 'none') ? 'grid' : 'none';
+      if (editorBox.style.display === 'grid') {
+        setTimeout(function(){ taGuion.focus(); }, 100);
+      }
+    };
+
+    agencyActions.appendChild(btnEdit);
+    agencyActions.appendChild(editorBox);
+    card.appendChild(agencyActions);
+
+    cObj.updateAgencyActions = function(active){
+      agencyActions.style.display = active ? 'flex' : 'none';
+      if (!active) editorBox.style.display = 'none';
+    };
+  });
+
+  updateAgencyUI();
+
+  // Si se abre con ?agencia=1 o #agencia y aún no está iniciada la sesión, abrir modal de autenticación inmediatamente
+  if (window.location.search.indexOf('agencia=1') !== -1 || window.location.hash.indexOf('agencia') !== -1) {
+    if (!agencyUser) {
+      setTimeout(function(){
+        openAgencyLogin();
+      }, 400);
+    }
   }
 })();
 </script>

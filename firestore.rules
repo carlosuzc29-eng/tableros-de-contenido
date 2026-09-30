@@ -38,7 +38,9 @@ service cloud.firestore {
         request.resource.data.contenidos.size() == 0
       );
 
-      // Actualización: equipo autenticado o cliente enviando su revisión
+      // Actualización:
+      // 1) Equipo autenticado exclusivo (andrevmuedit@gmail.com, carlosuzc29@gmail.com) para correcciones, fusión y edición.
+      // 2) Cliente evaluando y enviando su revisión habitual.
       allow update: if isAuthenticated() || (
         request.resource.data.id == resource.data.id &&
         request.resource.data.cliente == resource.data.cliente &&
@@ -53,6 +55,7 @@ service cloud.firestore {
         allow read, write: if isAuthenticated();
       }
     }
+
 
     // Colección de tableros de producción en vivo (rodajes)
     match /produccion/{prodId} {

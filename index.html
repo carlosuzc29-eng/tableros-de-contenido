@@ -2190,6 +2190,50 @@ body{
 }
 .btn-card.sec:hover{background:rgba(255,255,255,.12);color:#fff}
 .btn-card.on{background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.3)}
+.btn-card.link-envio{
+  background:rgba(56,189,248,.12);
+  color:#BAE6FD;
+  border:1px solid rgba(56,189,248,.35);
+  font-weight:700;
+}
+.btn-card.link-envio:hover{
+  background:rgba(56,189,248,.22);
+  color:#fff;
+  border-color:#38BDF8;
+}
+.card-client-link-pill{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  background:rgba(2,132,199,.1);
+  border:1px solid rgba(56,189,248,.25);
+  border-radius:8px;
+  padding:6px 10px;
+  margin-top:6px;
+  font-size:11.5px;
+  color:#BAE6FD;
+}
+.card-client-link-url{
+  font-family:monospace;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:240px;
+  color:#38BDF8;
+}
+.btn-copy-mini{
+  background:transparent;
+  border:0;
+  color:#38BDF8;
+  font-size:11px;
+  font-weight:700;
+  cursor:pointer;
+  padding:2px 6px;
+  border-radius:4px;
+}
+.btn-copy-mini:hover{background:rgba(56,189,248,.18);color:#fff;}
+
 
 /* Detalle expandido de contenidos del tablero */
 .board-detail-wrap{
@@ -6201,6 +6245,20 @@ body{
     var copyBtn = t.url ? '<button class="btn-card sec btn-copy-url" data-url="' + escapeAttr(t.url) + '">Copiar</button>' : '';
     var detailBtn = '<button class="btn-card sec btn-toggle-detail" data-id="' + escapeAttr(t.id) + '">Detalle</button>';
 
+    // Detectar si hay piezas con cambios o corregidas para generar/mostrar enlace de envío
+    var hasShipmentLink = !!t.url;
+    var clientLinkHtml = '';
+    if (t.url) {
+      var clientUrlClean = resolveOpenUrl(t.url);
+      clientLinkHtml = '<div class="card-client-link-pill">' +
+        '<div style="display:flex;align-items:center;gap:6px;overflow:hidden;">' +
+          '<span>🔗 <b>Enlace cliente:</b></span>' +
+          '<span class="card-client-link-url" title="' + escapeAttr(clientUrlClean) + '">' + escapeHtml(clientUrlClean) + '</span>' +
+        '</div>' +
+        '<button class="btn-copy-mini btn-copy-url" data-url="' + escapeAttr(clientUrlClean) + '" title="Copiar enlace exacto enviado al cliente">Copiar</button>' +
+      '</div>';
+    }
+
     return '' +
       '<div class="board-card ' + (isSecondary ? 'secondary' : '') + '" data-board-url="' + escapeAttr(t.url || '') + '" title="' + (t.url ? 'Clic para abrir tablero directamente' : '') + '">' +
         '<div class="card-top">' +
@@ -6221,6 +6279,7 @@ body{
             '<span>' + p + ' pend.</span>' +
           '</div>' +
         '</div>' +
+        clientLinkHtml +
         '<div class="card-foot">' +
           '<div class="reviewer-info">' + revHtml + '</div>' +
           '<div class="card-actions">' + copyBtn + detailBtn + openBtn + '</div>' +

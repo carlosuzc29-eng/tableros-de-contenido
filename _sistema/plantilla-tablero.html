@@ -2462,7 +2462,7 @@ __DATA__
   var agencyUser = null;
 
   try {
-    var storedAgency = sessionStorage.getItem('nexo_agency_logged_user');
+    var storedAgency = localStorage.getItem('nexo_agency_logged_user') || sessionStorage.getItem('nexo_agency_logged_user');
     if (storedAgency && AGENCY_ALLOWED.indexOf(storedAgency) !== -1) {
       agencyUser = storedAgency;
     }
@@ -2545,7 +2545,10 @@ __DATA__
     }
 
     agencyUser = email;
-    try { sessionStorage.setItem('nexo_agency_logged_user', email); } catch(e){}
+    try {
+      localStorage.setItem('nexo_agency_logged_user', email);
+      sessionStorage.setItem('nexo_agency_logged_user', email);
+    } catch(e){}
     closeAgencyLogin();
     updateAgencyUI();
     toast('✓ Acceso de agencia verificado: ¡Modo corrección activo!');
@@ -2561,7 +2564,10 @@ __DATA__
   if (btnAgencyLogout) {
     btnAgencyLogout.onclick = function(){
       agencyUser = null;
-      try { sessionStorage.removeItem('nexo_agency_logged_user'); } catch(e){}
+      try {
+        localStorage.removeItem('nexo_agency_logged_user');
+        sessionStorage.removeItem('nexo_agency_logged_user');
+      } catch(e){}
       updateAgencyUI();
       toast('Sesión de agencia cerrada');
     };
@@ -2648,20 +2654,20 @@ __DATA__
         })
       })
       .then(function(r){
-        if (btnSave) { btnSave.disabled = false; btnSave.textContent = '✓ Guardar corrección (v' + (nextVersion + 1) + ')'; }
+        if (btnSave) { btnSave.disabled = false; btnSave.textContent = '💾 Guardar cambios (v' + (nextVersion + 1) + ')'; }
         if (editorBox) editorBox.style.display = 'none';
-        toast('✓ Corrección v' + nextVersion + ' guardada y sincronizada en el tablero');
+        toast('✓ Cambios guardados y sincronizados en el tablero');
       })
       .catch(function(err){
         console.error('Error guardando corrección en Firestore:', err);
-        if (btnSave) { btnSave.disabled = false; btnSave.textContent = 'Guardar corrección'; }
+        if (btnSave) { btnSave.disabled = false; btnSave.textContent = '💾 Guardar cambios'; }
         if (editorBox) editorBox.style.display = 'none';
-        toast('✓ Corrección guardada localmente (verifica conexión)');
+        toast('✓ Cambios guardados localmente (verifica conexión)');
       });
     } else {
-      if (btnSave) { btnSave.disabled = false; btnSave.textContent = 'Guardar corrección'; }
+      if (btnSave) { btnSave.disabled = false; btnSave.textContent = '💾 Guardar cambios'; }
       if (editorBox) editorBox.style.display = 'none';
-      toast('✓ Corrección guardada');
+      toast('✓ Cambios guardados');
     }
   }
 
@@ -2675,13 +2681,13 @@ __DATA__
 
     var btnEdit = el('button', 'btn-card-agency-edit');
     btnEdit.type = 'button';
-    btnEdit.innerHTML = '<span>✎ Realizar corrección directa</span> <small style="font-weight:500;opacity:.85">(v' + ((parseInt(it.version, 10) || 1) + 1) + ')</small>';
+    btnEdit.innerHTML = '<span>✎ Modificar contenido</span> <small style="font-weight:600;opacity:.9">(v' + ((parseInt(it.version, 10) || 1) + 1) + ')</small>';
 
     var editorBox = el('div', 'card-agency-editor');
     editorBox.style.display = 'none';
 
     var edTitle = el('div', 'card-agency-editor-title');
-    edTitle.innerHTML = '<b>✎ Editor de corrección · Agencia Nexo</b> <span>(Actualiza y crea nueva versión)</span>';
+    edTitle.innerHTML = '<b>✎ Modificar contenido · Agencia Nexo</b> <span>(Actualiza y guarda nueva versión)</span>';
     editorBox.appendChild(edTitle);
 
     var fGuion = el('div', 'card-agency-field');
@@ -2707,7 +2713,7 @@ __DATA__
 
     var btnSave = el('button', 'btn-agency-save');
     btnSave.type = 'button';
-    btnSave.innerHTML = '💾 Guardar corrección (v' + ((parseInt(it.version, 10) || 1) + 1) + ')';
+    btnSave.innerHTML = '💾 Guardar cambios (v' + ((parseInt(it.version, 10) || 1) + 1) + ')';
     btnSave.onclick = function(){
       saveCardCorrection(it, cObj, taGuion.value, taCopy.value, editorBox, btnSave);
     };
@@ -2736,6 +2742,15 @@ __DATA__
   });
 
   updateAgencyUI();
+
+  // Si se abre con ?agencia=1 o #agencia y aún no está iniciada la sesión, abrir modal de autenticación inmediatamente
+  if (window.location.search.indexOf('agencia=1') !== -1 || window.location.hash.indexOf('agencia') !== -1) {
+    if (!agencyUser) {
+      setTimeout(function(){
+        openAgencyLogin();
+      }, 400);
+    }
+  }
 })();
 </script>
 </body>

@@ -2165,7 +2165,7 @@ body{
 .reviewer-info strong{color:#fff;font-weight:600}
 .card-actions-row{
   display:grid;
-  grid-template-columns:1fr 1fr 1fr;
+  grid-template-columns:1fr 1.6fr;
   gap:8px;
   width:100%;
 }
@@ -6217,10 +6217,10 @@ body{
       revHtml = '<span>Sin revisiones registradas</span>';
     }
 
-    var targetOpenUrl = resolveOpenUrl(t.url);
-    var openBtn = targetOpenUrl ? '<a href="' + escapeAttr(targetOpenUrl) + '" target="_blank" rel="noopener" class="btn-card pri" title="Abrir tablero en navegador">Abrir ↗</a>' : '';
-    var copyBtn = t.url ? '<button class="btn-card sec btn-copy-url" data-url="' + escapeAttr(resolveOpenUrl(t.url)) + '" title="Copiar enlace enviado al cliente">Copiar</button>' : '';
-    var detailBtn = '<button class="btn-card sec btn-toggle-detail" data-id="' + escapeAttr(t.id) + '">Detalle</button>';
+    var baseTargetUrl = resolveOpenUrl(t.url);
+    var targetOpenUrl = baseTargetUrl ? (baseTargetUrl + (baseTargetUrl.indexOf('?') === -1 ? '?agencia=1' : '&agencia=1')) : '';
+    var openBtn = targetOpenUrl ? '<a href="' + escapeAttr(targetOpenUrl) + '" target="_blank" rel="noopener" class="btn-card pri btn-ver-respuesta" title="Ver respuesta y modificar contenidos">Ver respuesta ↗</a>' : '';
+    var copyBtn = t.url ? '<button class="btn-card sec btn-copy-url" data-url="' + escapeAttr(resolveOpenUrl(t.url)) + '" title="Copiar enlace enviado al cliente">Copiar enlace</button>' : '';
 
     return '' +
       '<div class="board-card ' + (isSecondary ? 'secondary' : '') + '" data-board-url="' + escapeAttr(t.url || '') + '" title="' + (t.url ? 'Clic para abrir tablero directamente' : '') + '">' +
@@ -6246,11 +6246,9 @@ body{
           '<div class="reviewer-info">' + revHtml + '</div>' +
           '<div class="card-actions-row">' +
             copyBtn +
-            detailBtn +
             openBtn +
           '</div>' +
         '</div>' +
-        '<div class="board-detail-wrap" id="detail-' + escapeAttr(t.id) + '" style="display:none;"></div>' +
       '</div>';
   }
 

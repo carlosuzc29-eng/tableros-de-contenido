@@ -427,79 +427,67 @@ footer .logo svg{height:76px;margin:0 auto 12px}
 }
 
 /* Inline Edit Card Box */
-.card-agency-actions{
-  margin-top:20px;
-  padding-top:16px;
-  border-top:1px dashed var(--line);
+/* === AGENCY INLINE EDIT STYLES === */
+.card-agency-edit-hint{
+  display:none;
+  font-size:11px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:var(--verde-dk);
+  margin-bottom:5px;
+  opacity:.85;
+  pointer-events:none;
+}
+.card-agency-edit-mode .card-agency-edit-hint{
+  display:block;
+}
+.card-agency-edit-mode .guion p[contenteditable="true"],
+.card-agency-edit-mode .post p[contenteditable="true"]{
+  outline:2px dashed rgba(92,184,62,.6);
+  outline-offset:4px;
+  border-radius:8px;
+  padding:10px 14px;
+  cursor:text;
+  background:rgba(92,184,62,.04);
+  white-space:pre-wrap;
+  transition:outline-color .2s,background .2s,box-shadow .2s;
+  line-height:1.75;
+  word-break:break-word;
+}
+.card-agency-edit-mode .guion p[contenteditable="true"]:hover,
+.card-agency-edit-mode .post p[contenteditable="true"]:hover{
+  background:rgba(92,184,62,.07);
+  outline-color:rgba(92,184,62,.85);
+}
+.card-agency-edit-mode .guion p[contenteditable="true"]:focus,
+.card-agency-edit-mode .post p[contenteditable="true"]:focus{
+  outline:2.5px solid var(--verde);
+  background:rgba(92,184,62,.09);
+  box-shadow:0 0 0 5px rgba(92,184,62,.13);
+}
+.card-agency-bar{
   display:flex;
-  gap:10px;
   align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:14px 20px;
+  background:linear-gradient(135deg,rgba(31,53,73,.04),rgba(92,184,62,.07));
+  border-top:1.5px solid rgba(92,184,62,.22);
+  border-radius:0 0 20px 20px;
   flex-wrap:wrap;
+  margin-top:4px;
 }
-.btn-card-agency-edit{
-  background:linear-gradient(135deg,#38BDF8,#0284C7);
-  color:#fff;
-  border:0;
-  padding:9px 18px;
-  border-radius:12px;
-  font-size:13px;
+.agency-bar-info{
+  font-size:12px;
+  color:var(--verde-dk);
   font-weight:700;
-  display:inline-flex;
-  align-items:center;
-  gap:7px;
-  cursor:pointer;
-  box-shadow:0 4px 12px rgba(2,132,199,.3);
-  transition:all .2s var(--ease);
-}
-.btn-card-agency-edit:hover{
-  transform:translateY(-1px);
-  box-shadow:0 6px 16px rgba(2,132,199,.4);
-}
-.card-agency-editor{
-  margin-top:16px;
-  background:#F8FAFC;
-  border:1.5px solid #BAE6FD;
-  border-radius:18px;
-  padding:20px;
-  display:grid;
-  gap:14px;
-  animation:pop .25s var(--ease);
-}
-.card-agency-editor-title{
-  font-size:14px;
-  font-weight:700;
-  color:#0369A1;
-  display:flex;
-  align-items:center;
-  gap:8px;
+  opacity:.9;
+  letter-spacing:.02em;
 }
 .card-agency-field{
   display:grid;
   gap:6px;
-}
-.card-agency-field label{
-  font-size:11.5px;
-  font-weight:700;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  color:var(--ink-2);
-}
-.card-agency-field textarea{
-  width:100%;
-  border:1px solid #CBD5E1;
-  border-radius:12px;
-  padding:10px 14px;
-  font:inherit;
-  font-size:14px;
-  min-height:80px;
-  background:#fff;
-  color:var(--ink);
-  resize:vertical;
-}
-.card-agency-field textarea:focus{
-  outline:none;
-  border-color:#0284C7;
-  box-shadow:0 0 0 3px rgba(2,132,199,.15);
 }
 .card-agency-buttons{
   display:flex;
@@ -613,7 +601,7 @@ footer .logo svg{height:76px;margin:0 auto 12px}
 }
 
 @media (prefers-reduced-motion:reduce){.card{opacity:1;transform:none;transition:none}}
-@media print{.dock,.index,.modal,.toast,.page-network-canvas,.shipment-banner,.btn-agency-access,.agency-active-bar,.card-agency-actions,.card-agency-editor{display:none!important}.layout{grid-template-columns:1fr}.card{opacity:1;transform:none;break-inside:avoid}}
+@media print{.dock,.index,.modal,.toast,.page-network-canvas,.shipment-banner,.btn-agency-access,.agency-active-bar,.card-agency-bar,.card-agency-edit-hint{display:none!important}.layout{grid-template-columns:1fr}.card{opacity:1;transform:none;break-inside:avoid}}
 </style>
 </head>
 <body>
@@ -2654,90 +2642,84 @@ __DATA__
         })
       })
       .then(function(r){
-        if (btnSave) { btnSave.disabled = false; btnSave.textContent = '💾 Guardar cambios (v' + (nextVersion + 1) + ')'; }
-        if (editorBox) editorBox.style.display = 'none';
+        if (btnSave) { btnSave.disabled = false; btnSave.textContent = '💾 Guardar cambios'; }
         toast('✓ Cambios guardados y sincronizados en el tablero');
       })
       .catch(function(err){
         console.error('Error guardando corrección en Firestore:', err);
         if (btnSave) { btnSave.disabled = false; btnSave.textContent = '💾 Guardar cambios'; }
-        if (editorBox) editorBox.style.display = 'none';
         toast('✓ Cambios guardados localmente (verifica conexión)');
       });
     } else {
       if (btnSave) { btnSave.disabled = false; btnSave.textContent = '💾 Guardar cambios'; }
-      if (editorBox) editorBox.style.display = 'none';
       toast('✓ Cambios guardados');
     }
   }
 
-  // Insertar controles de edición de agencia en cada tarjeta
+  // Insertar controles de edición de agencia directamente en cada tarjeta (contenteditable inline)
   cards.forEach(function(cObj){
     var it = cObj.it;
     var card = cObj.card;
 
-    var agencyActions = el('div', 'card-agency-actions');
-    agencyActions.style.display = agencyUser ? 'flex' : 'none';
+    // Añadir etiqueta de ayuda sobre el guion
+    if (cObj.guionParagraph && cObj.guionParagraph.parentNode) {
+      var gHint = el('div', 'card-agency-edit-hint', '✎ Haz clic en el texto para editar el guion');
+      cObj.guionParagraph.parentNode.insertBefore(gHint, cObj.guionParagraph);
+    }
+    // Añadir etiqueta de ayuda sobre el copy
+    if (cObj.copyParagraph && cObj.copyParagraph.parentNode) {
+      var cHint = el('div', 'card-agency-edit-hint', '✎ Haz clic en el texto para editar el copy');
+      cObj.copyParagraph.parentNode.insertBefore(cHint, cObj.copyParagraph);
+    }
 
-    var btnEdit = el('button', 'btn-card-agency-edit');
-    btnEdit.type = 'button';
-    btnEdit.innerHTML = '<span>✎ Modificar contenido</span> <small style="font-weight:600;opacity:.9">(v' + ((parseInt(it.version, 10) || 1) + 1) + ')</small>';
+    // Barra inferior de acciones de agencia con botón Guardar
+    var agencyBar = el('div', 'card-agency-bar');
+    agencyBar.style.display = 'none';
 
-    var editorBox = el('div', 'card-agency-editor');
-    editorBox.style.display = 'none';
-
-    var edTitle = el('div', 'card-agency-editor-title');
-    edTitle.innerHTML = '<b>✎ Modificar contenido · Agencia Nexo</b> <span>(Actualiza y guarda nueva versión)</span>';
-    editorBox.appendChild(edTitle);
-
-    var fGuion = el('div', 'card-agency-field');
-    fGuion.appendChild(el('label', null, 'Guion / Texto corregido'));
-    var taGuion = el('textarea');
-    taGuion.value = it.guion || '';
-    taGuion.rows = 5;
-    fGuion.appendChild(taGuion);
-    editorBox.appendChild(fGuion);
-
-    var fCopy = el('div', 'card-agency-field');
-    fCopy.appendChild(el('label', null, 'Copy corregido'));
-    var taCopy = el('textarea');
-    taCopy.value = it.copy || '';
-    taCopy.rows = 4;
-    fCopy.appendChild(taCopy);
-    editorBox.appendChild(fCopy);
-
-    var edBtns = el('div', 'card-agency-buttons');
-    var btnCancel = el('button', 'btn-agency-cancel', 'Cerrar sin guardar');
-    btnCancel.type = 'button';
-    btnCancel.onclick = function(){ editorBox.style.display = 'none'; };
+    var vNum = parseInt(it.version, 10) || 1;
+    var barInfo = el('span', 'agency-bar-info', '✎ Modo corrección agencia · v' + vNum + ' actual');
+    agencyBar.appendChild(barInfo);
 
     var btnSave = el('button', 'btn-agency-save');
     btnSave.type = 'button';
-    btnSave.innerHTML = '💾 Guardar cambios (v' + ((parseInt(it.version, 10) || 1) + 1) + ')';
+    btnSave.textContent = '💾 Guardar cambios';
     btnSave.onclick = function(){
-      saveCardCorrection(it, cObj, taGuion.value, taCopy.value, editorBox, btnSave);
+      var newGuion = cObj.guionParagraph ? cObj.guionParagraph.textContent.trim() : (it.guion || '');
+      var newCopy = cObj.copyParagraph ? cObj.copyParagraph.textContent.trim() : (it.copy || '');
+      saveCardCorrection(it, cObj, newGuion, newCopy, null, btnSave);
+      // Actualizar info de versión tras guardar
+      setTimeout(function(){
+        var nv = parseInt(it.version, 10) || 1;
+        barInfo.textContent = '✎ Modo corrección agencia · v' + nv + ' actual';
+      }, 300);
     };
-
-    edBtns.appendChild(btnCancel);
-    edBtns.appendChild(btnSave);
-    editorBox.appendChild(edBtns);
-
-    btnEdit.onclick = function(){
-      taGuion.value = it.guion || '';
-      taCopy.value = it.copy || '';
-      editorBox.style.display = (editorBox.style.display === 'none') ? 'grid' : 'none';
-      if (editorBox.style.display === 'grid') {
-        setTimeout(function(){ taGuion.focus(); }, 100);
-      }
-    };
-
-    agencyActions.appendChild(btnEdit);
-    agencyActions.appendChild(editorBox);
-    card.appendChild(agencyActions);
+    agencyBar.appendChild(btnSave);
+    card.appendChild(agencyBar);
 
     cObj.updateAgencyActions = function(active){
-      agencyActions.style.display = active ? 'flex' : 'none';
-      if (!active) editorBox.style.display = 'none';
+      if (active) {
+        card.classList.add('card-agency-edit-mode');
+        agencyBar.style.display = 'flex';
+        if (cObj.guionParagraph) {
+          cObj.guionParagraph.setAttribute('contenteditable', 'true');
+          cObj.guionParagraph.setAttribute('spellcheck', 'true');
+        }
+        if (cObj.copyParagraph) {
+          cObj.copyParagraph.setAttribute('contenteditable', 'true');
+          cObj.copyParagraph.setAttribute('spellcheck', 'true');
+        }
+      } else {
+        card.classList.remove('card-agency-edit-mode');
+        agencyBar.style.display = 'none';
+        if (cObj.guionParagraph) {
+          cObj.guionParagraph.removeAttribute('contenteditable');
+          cObj.guionParagraph.removeAttribute('spellcheck');
+        }
+        if (cObj.copyParagraph) {
+          cObj.copyParagraph.removeAttribute('contenteditable');
+          cObj.copyParagraph.removeAttribute('spellcheck');
+        }
+      }
     };
   });
 

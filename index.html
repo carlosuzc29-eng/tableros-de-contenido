@@ -2165,16 +2165,21 @@ body{
 .reviewer-info strong{color:#fff;font-weight:600}
 .card-actions-row{
   display:grid;
-  grid-template-columns:1fr 1.6fr;
-  gap:8px;
+  grid-template-columns:1fr 1.25fr 1.35fr;
+  gap:6px;
   width:100%;
 }
+@media(max-width:600px){
+  .card-actions-row{
+    grid-template-columns:1fr;
+  }
+}
 .btn-card{
-  min-height:38px;
-  padding:8px 10px;
+  min-height:36px;
+  padding:6px 6px;
   border-radius:10px;
   font:inherit;
-  font-size:12.5px;
+  font-size:11.5px;
   font-weight:600;
   cursor:pointer;
   display:inline-flex;
@@ -4902,17 +4907,17 @@ body{
   <div class="share-shipment-card">
     <div class="modal-head">
       <div>
-        <span class="modal-eyebrow" style="color:#38BDF8;">ENVÍO DE RE-REVISIÓN AL CLIENTE</span>
-        <h3 style="color:#fff;margin:0;">Compartir piezas corregidas</h3>
+        <span class="modal-eyebrow" style="color:#38BDF8;">ENVÍO POR SEPARADO AL CLIENTE</span>
+        <h3 style="color:#fff;margin:0;">Enviar contenidos por separado</h3>
       </div>
       <button class="btn-modal-close" id="btnCloseShareShipment">&times;</button>
     </div>
     <div class="modal-body">
       <p style="margin:0;font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5;">
-        El cliente recibirá un enlace exclusivo y enfocado para revisar únicamente las piezas que selecciones a continuación (por defecto todas las corregidas):
+        El cliente recibirá un enlace exclusivo y enfocado únicamente en las piezas que selecciones a continuación (para enviar solo los contenidos que pidió corregir):
       </p>
       <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#BAE6FD;font-weight:700;margin-top:6px;">
-        <span>Piezas corregidas disponibles:</span>
+        <span>Contenidos disponibles para enviar:</span>
         <button id="btnToggleAllShipment" type="button" style="background:transparent;border:0;color:#38BDF8;font-size:12px;font-weight:700;cursor:pointer;">Deseleccionar todas</button>
       </div>
       <div class="shipment-items-selector" id="shipmentItemsList">
@@ -6220,7 +6225,8 @@ body{
     var baseTargetUrl = resolveOpenUrl(t.url);
     var targetOpenUrl = baseTargetUrl ? (baseTargetUrl + (baseTargetUrl.indexOf('?') === -1 ? '?agencia=1' : '&agencia=1')) : '';
     var openBtn = targetOpenUrl ? '<a href="' + escapeAttr(targetOpenUrl) + '" target="_blank" rel="noopener" class="btn-card pri btn-ver-respuesta" title="Ver respuesta y modificar contenidos">Ver respuesta ↗</a>' : '';
-    var copyBtn = t.url ? '<button class="btn-card sec btn-copy-url" data-url="' + escapeAttr(resolveOpenUrl(t.url)) + '" title="Copiar enlace enviado al cliente">Copiar enlace</button>' : '';
+    var copyBtn = t.url ? '<button class="btn-card sec btn-copy-url" data-url="' + escapeAttr(resolveOpenUrl(t.url)) + '" title="Copiar enlace enviado al cliente">Copiar</button>' : '';
+    var sendSeparatedBtn = '<button class="btn-card sec link-envio btn-send-separated" data-id="' + escapeAttr(t.id) + '" title="Enviar por separado los contenidos que el cliente quiera que se corrijan">Por separado</button>';
 
     return '' +
       '<div class="board-card ' + (isSecondary ? 'secondary' : '') + '" data-board-url="' + escapeAttr(t.url || '') + '" title="' + (t.url ? 'Clic para abrir tablero directamente' : '') + '">' +
@@ -6246,6 +6252,7 @@ body{
           '<div class="reviewer-info">' + revHtml + '</div>' +
           '<div class="card-actions-row">' +
             copyBtn +
+            sendSeparatedBtn +
             openBtn +
           '</div>' +
         '</div>' +
@@ -6413,12 +6420,22 @@ body{
     });
 
     // Delegar eventos de copiar
-
     var copyBtns = dashContent.querySelectorAll('.btn-copy-url');
     copyBtns.forEach(function(btn){
       btn.onclick = function(e){
         e.stopPropagation();
         copyLink(btn.getAttribute('data-url'));
+      };
+    });
+
+    // Delegar eventos de enviar por separado
+    var sendBtns = dashContent.querySelectorAll('.btn-send-separated');
+    sendBtns.forEach(function(btn){
+      btn.onclick = function(e){
+        e.stopPropagation();
+        var tId = btn.getAttribute('data-id');
+        var t = allTableros.find(function(x){ return x.id === tId; });
+        if (t) openShareShipmentModal(t);
       };
     });
 
@@ -8352,50 +8369,70 @@ body{
   function openShareShipmentModal(t){
     if (!t) return;
     currentShipmentBoard = t;
-    var bData = boardCache[t.id];
-    var items = getMergedItems(t, bData);
-    var corregidos = items.filter(function(x){ return x.estado === 'corregido'; });
+    getBoardData(t, function(err, bData){
+      var items = getMergedItems(t, bData || boardCache[t.id]);
+      if (!items || !items.length) {
+        toast('No se encontraron contenidos en este tablero.');
+        return;
+      }
 
-    if (!corregidos.length) {
-      toast('No hay piezas corregidas listas para enviar en este momento.');
-      return;
-    }
-
-    if (shipmentItemsList) {
-      var rowsHtml = '';
-      corregidos.forEach(function(c){
-        var num = (c.n < 10 ? '0' : '') + c.n;
-        rowsHtml += '<label class="shipment-select-row">' +
-          '<input type="checkbox" class="cb-shipment-piece" data-n="' + c.n + '" checked>' +
-          '<span style="font-weight:700;font-size:12px;color:#BAE6FD;">#' + num + '</span>' +
-          '<span style="font-size:12.5px;color:#fff;flex:1;">' + escapeHtml(c.titulo || 'Contenido') + ' (' + escapeHtml(c.formato || 'Post') + ')</span>' +
-          '<span class="ws-pill version">' + (c.version ? ('v' + c.version) : 'v2') + '</span>' +
-        '</label>';
+      var hasFixOrCorregido = items.some(function(x){
+        return x.estado === 'cambios' || x.estado === 'en_correccion' || x.estado === 'corregido' || (x.version && x.version > 1);
       });
-      shipmentItemsList.innerHTML = rowsHtml;
 
-      var cbs = shipmentItemsList.querySelectorAll('.cb-shipment-piece');
-      cbs.forEach(function(cb){
-        cb.onchange = updateGeneratedShipmentUrl;
-      });
-    }
+      if (shipmentItemsList) {
+        var rowsHtml = '';
+        items.forEach(function(c){
+          var num = (c.n < 10 ? '0' : '') + c.n;
+          var isFixTarget = (c.estado === 'cambios' || c.estado === 'en_correccion' || c.estado === 'corregido' || (c.version && c.version > 1));
+          var isChecked = hasFixOrCorregido ? (isFixTarget ? 'checked' : '') : 'checked';
 
-    if (btnToggleAllShipment) {
-      btnToggleAllShipment.onclick = function(){
+          var statusBadge = '';
+          if (c.estado === 'cambios' || c.estado === 'en_correccion') {
+            statusBadge = '<span class="ws-pill fix" style="font-size:10.5px;padding:2px 7px;">Con cambios</span>';
+          } else if (c.estado === 'corregido') {
+            statusBadge = '<span class="ws-pill ok" style="font-size:10.5px;padding:2px 7px;">Corregido</span>';
+          } else if (c.estado === 'aprobado') {
+            statusBadge = '<span class="ws-pill ok" style="font-size:10.5px;padding:2px 7px;opacity:.75;">Aprobado</span>';
+          } else {
+            statusBadge = '<span class="ws-pill pend" style="font-size:10.5px;padding:2px 7px;">Pendiente</span>';
+          }
+
+          var vBadge = (c.version && c.version > 1) ? ('<span class="ws-pill version" style="font-size:10.5px;padding:2px 7px;">v' + c.version + '</span>') : '';
+
+          rowsHtml += '<label class="shipment-select-row">' +
+            '<input type="checkbox" class="cb-shipment-piece" data-n="' + c.n + '" ' + isChecked + '>' +
+            '<span style="font-weight:700;font-size:12px;color:#BAE6FD;">#' + num + '</span>' +
+            '<span style="font-size:12.5px;color:#fff;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escapeHtml(c.titulo || 'Contenido') + ' <span style="opacity:.6;font-size:11.5px;">(' + escapeHtml(c.formato || 'Post') + ')</span></span>' +
+            statusBadge +
+            vBadge +
+          '</label>';
+        });
+        shipmentItemsList.innerHTML = rowsHtml;
+
         var cbs = shipmentItemsList.querySelectorAll('.cb-shipment-piece');
-        var allChecked = Array.from(cbs).every(function(x){ return x.checked; });
-        cbs.forEach(function(x){ x.checked = !allChecked; });
-        btnToggleAllShipment.textContent = allChecked ? 'Seleccionar todas' : 'Deseleccionar todas';
-        updateGeneratedShipmentUrl();
-      };
-    }
+        cbs.forEach(function(cb){
+          cb.onchange = updateGeneratedShipmentUrl;
+        });
+      }
 
-    updateGeneratedShipmentUrl();
+      if (btnToggleAllShipment) {
+        btnToggleAllShipment.onclick = function(){
+          var cbs = shipmentItemsList.querySelectorAll('.cb-shipment-piece');
+          var allChecked = Array.from(cbs).every(function(x){ return x.checked; });
+          cbs.forEach(function(x){ x.checked = !allChecked; });
+          btnToggleAllShipment.textContent = allChecked ? 'Seleccionar todas' : 'Deseleccionar todas';
+          updateGeneratedShipmentUrl();
+        };
+      }
 
-    if (modalShareShipment) {
-      modalShareShipment.style.display = 'flex';
-      modalShareShipment.setAttribute('aria-hidden', 'false');
-    }
+      updateGeneratedShipmentUrl();
+
+      if (modalShareShipment) {
+        modalShareShipment.style.display = 'flex';
+        modalShareShipment.setAttribute('aria-hidden', 'false');
+      }
+    });
   }
 
   function closeShareShipmentModal(){
@@ -8416,7 +8453,7 @@ body{
     if (!currentShipmentBoard) return;
     var t = currentShipmentBoard;
     var nums = getSelectedShipmentNumbers();
-    var baseUrl = t.url || window.location.href.split('?')[0].split('#')[0];
+    var baseUrl = resolveOpenUrl(t.url) || window.location.href.split('?')[0].split('#')[0];
     var finalUrl = baseUrl;
     if (nums.length > 0) {
       var sep = finalUrl.indexOf('?') === -1 ? '?' : '&';
@@ -8434,7 +8471,7 @@ body{
     var selectedNums = getSelectedShipmentNumbers();
 
     if (!selectedNums.length) {
-      toast('Selecciona al menos una pieza para compartir.');
+      toast('Selecciona al menos una pieza para enviar.');
       return;
     }
 
@@ -8444,12 +8481,12 @@ body{
     var mes = t.mes || '';
 
     var msg = '¡Hola ' + cliente + '! 👋\n\n' +
-      'Hemos preparado y ajustado las correcciones de tu parrilla de contenidos (*' + mes + '*).\n\n' +
-      'Piezas corregidas listas para tu visto bueno (' + selectedItems.length + '):\n';
+      'Hemos preparado y ajustado los contenidos solicitados de tu parrilla de contenidos (*' + mes + '*).\n\n' +
+      'Piezas listas para tu visto bueno (' + selectedItems.length + '):\n';
 
     selectedItems.forEach(function(c){
       var nStr = (c.n < 10 ? '0' : '') + c.n;
-      msg += '• #' + nStr + ' - ' + (c.titulo || 'Contenido') + ' (' + (c.formato || 'Post') + ' · v' + (c.version || 2) + ')\n';
+      msg += '• #' + nStr + ' - ' + (c.titulo || 'Contenido') + ' (' + (c.formato || 'Post') + (c.version ? ' · v' + c.version : '') + ')\n';
     });
 
     msg += '\nPuedes revisar y aprobar directamente estas piezas en tu enlace interactivo:\n' + targetUrl + '\n\n' +

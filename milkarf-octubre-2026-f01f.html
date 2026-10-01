@@ -410,6 +410,34 @@ footer .logo svg{height:76px;margin:0 auto 12px}
   font-size:11px;
   font-weight:700;
 }
+
+.btn-agency-shipment{
+  background:#0284c7;
+  color:#fff;
+  border:0;
+  padding:5px 12px;
+  border-radius:8px;
+  font-size:12px;
+  font-weight:600;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  transition:all .15s ease;
+}
+.btn-agency-shipment:hover{
+  background:#0369a1;
+}
+.agency-shipment-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box;
+}
+.agency-shipment-box{
+  background:#141a23;border:1px solid rgba(56,189,248,0.35);border-radius:16px;
+  width:100%;max-width:540px;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,0.7);
+  color:#fff;box-sizing:border-box;
+}
+
 .btn-agency-logout{
   background:rgba(255,255,255,.12);
   border:1px solid rgba(255,255,255,.2);
@@ -600,7 +628,7 @@ footer .logo svg{height:76px;margin:0 auto 12px}
 }
 
 @media (prefers-reduced-motion:reduce){.card{opacity:1;transform:none;transition:none}}
-@media print{.dock,.index,.modal,.toast,.page-network-canvas,.shipment-banner,.btn-agency-access,.agency-active-bar,.card-agency-bar,.card-agency-edit-hint{display:none!important}.layout{grid-template-columns:1fr}.card{opacity:1;transform:none;break-inside:avoid}}
+@media print{.agency-shipment-overlay,.dock,.index,.modal,.toast,.page-network-canvas,.shipment-banner,.btn-agency-access,.agency-active-bar,.card-agency-bar,.card-agency-edit-hint{display:none!important}.layout{grid-template-columns:1fr}.card{opacity:1;transform:none;break-inside:avoid}}
 </style>
 </head>
 <body class="has-send">
@@ -622,7 +650,38 @@ footer .logo svg{height:76px;margin:0 auto 12px}
     </div>
     <div style="display:flex;align-items:center;gap:10px;">
       <span style="font-size:12px;opacity:.8;">Edita piezas y guarda correcciones v2</span>
+      <button type="button" class="btn-agency-shipment" id="btnAgencyShipment">📤 Enviar por separado</button>
       <button type="button" class="btn-agency-logout" id="btnAgencyLogout">Cerrar sesión</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Envío por Separado en Modo Agencia -->
+<div class="agency-shipment-overlay" id="agencyShipmentModal" style="display:none;">
+  <div class="agency-shipment-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <div>
+        <span style="font-size:11px;font-weight:700;color:#38bdf8;text-transform:uppercase;letter-spacing:1px;">Revisión de contenidos</span>
+        <h3 style="margin:4px 0 0 0;font-size:18px;color:#fff;">Enviar piezas por separado</h3>
+      </div>
+      <button type="button" id="btnCloseAgencyShipment" style="background:transparent;border:0;color:#fff;font-size:24px;cursor:pointer;line-height:1;">&times;</button>
+    </div>
+    <p style="font-size:13px;color:rgba(255,255,255,0.75);margin:0 0 12px 0;line-height:1.4;">
+      Selecciona únicamente los contenidos que el cliente solicitó corregir para enviarle un enlace exclusivo:
+    </p>
+    <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:8px;">
+      <span style="color:#bae6fd;font-weight:600;">Contenidos del tablero:</span>
+      <button type="button" id="btnToggleAllAgencyShipment" style="background:transparent;border:0;color:#38bdf8;font-size:12px;font-weight:700;cursor:pointer;">Deseleccionar todas</button>
+    </div>
+    <div id="agencyShipmentItemsList" style="max-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;background:rgba(0,0,0,0.3);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);margin-bottom:12px;">
+    </div>
+    <div style="margin-bottom:14px;">
+      <label style="display:block;font-size:11.5px;color:rgba(255,255,255,0.7);margin-bottom:4px;">Enlace de revisión generado:</label>
+      <input type="text" id="agencyShipmentUrlInp" readonly style="width:100%;box-sizing:border-box;background:rgba(0,0,0,0.4);border:1px solid rgba(56,189,248,0.4);color:#38bdf8;font-family:monospace;font-size:12px;padding:8px 10px;border-radius:8px;">
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;">
+      <button type="button" id="btnCancelAgencyShipment" style="background:rgba(255,255,255,0.08);color:#fff;border:0;padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;">Cancelar</button>
+      <button type="button" id="btnCopyAgencyShipment" style="background:#0284c7;color:#fff;border:0;padding:8px 16px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;">🔗 Copiar enlace y WhatsApp</button>
     </div>
   </div>
 </div>
@@ -2860,6 +2919,131 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
       if (e.key === 'Enter') handleAgencyLogin();
     });
   }
+
+  
+  // Control modal Envío por Separado en Modo Agencia
+  var btnAgencyShipment = $('btnAgencyShipment');
+  var agencyShipmentModal = $('agencyShipmentModal');
+  var btnCloseAgencyShipment = $('btnCloseAgencyShipment');
+  var btnCancelAgencyShipment = $('btnCancelAgencyShipment');
+  var btnToggleAllAgencyShipment = $('btnToggleAllAgencyShipment');
+  var agencyShipmentItemsList = $('agencyShipmentItemsList');
+  var agencyShipmentUrlInp = $('agencyShipmentUrlInp');
+  var btnCopyAgencyShipment = $('btnCopyAgencyShipment');
+
+  function updateAgencyShipmentUrl(){
+    if (!agencyShipmentItemsList) return '';
+    var cbs = agencyShipmentItemsList.querySelectorAll('.cb-board-shipment:checked');
+    var nums = Array.from(cbs).map(function(x){ return parseInt(x.getAttribute('data-n'), 10); });
+    var baseUrl = window.location.origin + window.location.pathname;
+    var finalUrl = baseUrl;
+    if (nums.length > 0) {
+      finalUrl += '?piezas=' + nums.join(',') + '&review=corregidos';
+    }
+    if (agencyShipmentUrlInp) agencyShipmentUrlInp.value = finalUrl;
+    return finalUrl;
+  }
+
+  function openAgencyShipmentModal(){
+    if (!agencyShipmentModal) return;
+    if (agencyShipmentItemsList) {
+      var hasFix = items.some(function(it){ return it.estado === 'cambios' || (it.version && it.version > 1); });
+      var h = '';
+      items.forEach(function(it, idx){
+        var n = idx + 1;
+        var nStr = (n < 10 ? '0' : '') + n;
+        var isTarget = (it.estado === 'cambios' || (it.version && it.version > 1));
+        var isChecked = hasFix ? (isTarget ? 'checked' : '') : 'checked';
+        var stBadge = '';
+        if (it.estado === 'cambios') stBadge = '<span style="background:rgba(230,74,0,0.2);color:#ff7a45;padding:2px 6px;border-radius:6px;font-size:10px;">Con cambios</span>';
+        else if (it.version && it.version > 1) stBadge = '<span style="background:rgba(92,184,62,0.2);color:#86efac;padding:2px 6px;border-radius:6px;font-size:10px;">v' + it.version + ' Corregido</span>';
+        else if (it.estado === 'aprobado') stBadge = '<span style="background:rgba(92,184,62,0.2);color:#86efac;padding:2px 6px;border-radius:6px;font-size:10px;opacity:.75;">Aprobado</span>';
+        else stBadge = '<span style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);padding:2px 6px;border-radius:6px;font-size:10px;">Pendiente</span>';
+
+        var titleClean = String(it.titulo || 'Contenido').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        var fmtClean = String(it.formato || 'Post').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+        h += '<label style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:rgba(255,255,255,0.04);border-radius:8px;cursor:pointer;font-size:12px;">' +
+          '<input type="checkbox" class="cb-board-shipment" data-n="' + n + '" ' + isChecked + ' style="accent-color:#0284c7;width:15px;height:15px;cursor:pointer;">' +
+          '<span style="font-weight:700;color:#bae6fd;">#' + nStr + '</span>' +
+          '<span style="flex:1;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + titleClean + ' <small style="opacity:.6;">(' + fmtClean + ')</small></span>' +
+          stBadge +
+        '</label>';
+      });
+      agencyShipmentItemsList.innerHTML = h;
+
+      var cbs = agencyShipmentItemsList.querySelectorAll('.cb-board-shipment');
+      cbs.forEach(function(cb){ cb.onchange = updateAgencyShipmentUrl; });
+    }
+
+    if (btnToggleAllAgencyShipment) {
+      btnToggleAllAgencyShipment.onclick = function(){
+        var cbs = agencyShipmentItemsList.querySelectorAll('.cb-board-shipment');
+        var allChecked = Array.from(cbs).every(function(x){ return x.checked; });
+        cbs.forEach(function(x){ x.checked = !allChecked; });
+        btnToggleAllAgencyShipment.textContent = allChecked ? 'Seleccionar todas' : 'Deseleccionar todas';
+        updateAgencyShipmentUrl();
+      };
+    }
+
+    updateAgencyShipmentUrl();
+    agencyShipmentModal.style.display = 'flex';
+  }
+
+  function closeAgencyShipmentModal(){
+    if (agencyShipmentModal) agencyShipmentModal.style.display = 'none';
+  }
+
+  if (btnAgencyShipment) btnAgencyShipment.onclick = openAgencyShipmentModal;
+  if (btnCloseAgencyShipment) btnCloseAgencyShipment.onclick = closeAgencyShipmentModal;
+  if (btnCancelAgencyShipment) btnCancelAgencyShipment.onclick = closeAgencyShipmentModal;
+  if (agencyShipmentModal) {
+    agencyShipmentModal.onclick = function(e){
+      if (e.target === agencyShipmentModal) closeAgencyShipmentModal();
+    };
+  }
+
+  if (btnCopyAgencyShipment) {
+    btnCopyAgencyShipment.onclick = function(){
+      var cbs = agencyShipmentItemsList.querySelectorAll('.cb-board-shipment:checked');
+      var nums = Array.from(cbs).map(function(x){ return parseInt(x.getAttribute('data-n'), 10); });
+      if (!nums.length) {
+        toast('Selecciona al menos una pieza para enviar.');
+        return;
+      }
+      var targetUrl = updateAgencyShipmentUrl();
+      var cliente = DATA.cliente || 'Estimado cliente';
+      var periodo = (DATA.mes || '') + (DATA.anio ? ' ' + DATA.anio : '');
+
+      var msg = '¡Hola ' + cliente + '! 👋\n\n' +
+        'Hemos preparado y ajustado los contenidos solicitados de tu parrilla (*' + periodo + '*).\n\n' +
+        'Piezas listas para tu visto bueno (' + nums.length + '):\n';
+
+      nums.forEach(function(n){
+        var it = items[n - 1];
+        if (it) {
+          var nStr = (n < 10 ? '0' : '') + n;
+          msg += '• #' + nStr + ' - ' + (it.titulo || 'Contenido') + ' (' + (it.formato || 'Post') + (it.version ? ' · v' + it.version : '') + ')\n';
+        }
+      });
+
+      msg += '\nPuedes revisar y dar tu visto bueno directamente en este enlace:\n' + targetUrl + '\n\n' +
+        '¡Quedamos atentos a tus comentarios!';
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(msg).then(function(){
+          toast('✓ ¡Enlace exclusivo y mensaje copiados!');
+          closeAgencyShipmentModal();
+        });
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = msg; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+        toast('✓ ¡Enlace exclusivo y mensaje copiados!');
+        closeAgencyShipmentModal();
+      }
+    };
+  }
+
 
   if (btnAgencyLogout) {
     btnAgencyLogout.onclick = function(){

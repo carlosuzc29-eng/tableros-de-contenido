@@ -3,3 +3,6 @@ borradores/
 *.rtf
 .nexo-config.json
 .github-token
+**/.nexo-config.json
+**/.github-token
+_sistema/herramientas-iniciales/

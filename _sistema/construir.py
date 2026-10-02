@@ -46,6 +46,102 @@ def enlace_previo(ruta, cliente):
             hallados.append((os.path.getmtime(r), d['archivo']))
     return max(hallados)[1] if hallados else None
 
+FORMATOS_VALIDOS = ['Reel', 'Carrusel', 'Carrusel con video', 'Post']
+
+def normalizar_formato(fmt):
+    """Normaliza un string de formato al valor canónico permitido."""
+    if not fmt: return 'Post'
+    lower = str(fmt).strip().lower()
+    if 'carrusel con video' in lower: return 'Carrusel con video'
+    if 'carrusel' in lower: return 'Carrusel'
+    if 'reel' in lower: return 'Reel'
+    return 'Post'
+
+def sincronizar_desde_firestore(cfg, data):
+    """
+    Lee el documento de Firestore y aplica al JSON de data:
+    - estado, formato, guion, copy, version de cada contenido corregido/cambiado.
+    Esto garantiza que los cambios hechos en Modo Agencia (correcciones, cambios de
+    formato) no se pierdan al regenerar el tablero.
+    """
+    fb = cfg.get('firebase', {})
+    api_key = fb.get('apiKey') or 'AIzaSyAsH9TxW0ld2aNQejJw6xxZW7fpZiw212Q'
+    project_id = fb.get('projectId') or 'nexo-tableros-app'
+    doc_id = data.get('id')
+    if not doc_id:
+        return
+    try:
+        doc_url = (f'https://firestore.googleapis.com/v1/projects/{project_id}'
+                   f'/databases/(default)/documents/tableros/{doc_id}?key={api_key}')
+        req = urllib.request.Request(doc_url)
+        with urllib.request.urlopen(req, timeout=10) as res:
+            doc_obj = json.loads(res.read().decode())
+        doc_fields = doc_obj.get('fields', {})
+        fs_contenidos_raw = (doc_fields.get('contenidos', {})
+                             .get('arrayValue', {})
+                             .get('values', []))
+        if not fs_contenidos_raw:
+            return
+
+        # Extraer datos de Firestore en un mapa {n -> item}
+        fs_map = {}
+        for item_raw in fs_contenidos_raw:
+            f = item_raw.get('mapValue', {}).get('fields', {})
+            def sv(key): return (f.get(key) or {}).get('stringValue') or ''
+            def iv(key): return (f.get(key) or {}).get('integerValue') or None
+            n_val = iv('n')
+            if n_val:
+                fs_map[int(n_val)] = {
+                    'estado': sv('estado'),
+                    'formato': sv('formato'),
+                    'guion': sv('guion'),
+                    'copy': sv('copy'),
+                    'version': iv('version'),
+                    'comentario': sv('comentario'),
+                    'revisadoPor': sv('revisadoPor'),
+                    'fechaCorreccion': sv('fechaCorreccion'),
+                }
+
+        # Aplicar datos de Firestore al JSON borrador
+        cambios = 0
+        for i, contenido in enumerate(data.get('contenidos', [])):
+            n = i + 1
+            fs_item = fs_map.get(n)
+            if not fs_item:
+                continue
+            # Solo aplicar si hay algo significativo (estado corregido o formato diferente)
+            fs_estado = fs_item.get('estado')
+            fs_formato = normalizar_formato(fs_item.get('formato'))
+            local_formato = normalizar_formato(contenido.get('formato') or contenido.get('formatoOriginal'))
+
+            if fs_estado and fs_estado in ('corregido', 'aprobado', 'cambios', 'pendiente'):
+                if contenido.get('estado') != fs_estado:
+                    contenido['estado'] = fs_estado
+                    cambios += 1
+            if fs_formato and fs_formato != local_formato:
+                contenido['formato'] = fs_formato
+                contenido['formatoOriginal'] = fs_formato
+                cambios += 1
+            if fs_estado == 'corregido':
+                if fs_item.get('guion'):
+                    contenido['guion'] = fs_item['guion']
+                    cambios += 1
+                if fs_item.get('copy'):
+                    contenido['copy'] = fs_item['copy']
+                    cambios += 1
+                if fs_item.get('version'):
+                    contenido['version'] = int(fs_item['version'])
+                if fs_item.get('fechaCorreccion'):
+                    contenido['fechaCorreccion'] = fs_item['fechaCorreccion']
+                # Limpiar comentario para que no muestre notas internas de agencia
+                contenido['comentario'] = ''
+                contenido['revisadoPor'] = ''
+
+        if cambios:
+            print(f'  ↑ Aplicados {cambios} cambio(s) desde Firestore al JSON (formatos, correcciones)')
+    except Exception as e:
+        print(f'  (No se pudo leer Firestore para sincronizar: {e})')
+
 def registrar_en_firestore(cfg, data, total_contenidos):
     fb = cfg.get('firebase', {})
     if not (fb.get('apiKey') and fb.get('projectId') and fb.get('email') and fb.get('password')):
@@ -167,6 +263,11 @@ def main():
         data['resetAt'] = int(time.time() * 1000)
     for i, c in enumerate(data['contenidos']):
         c.setdefault('id', f'c{i + 1}'); c.setdefault('estado', 'pendiente'); c.setdefault('comentario', '')
+
+    # Sincronizar cambios de Firestore (correcciones de agencia, cambios de formato) al JSON
+    if '--reiniciar' not in sys.argv:
+        sincronizar_desde_firestore(cfg, data)
+
     json.dump(data, open(ruta, 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
 
     html = open(PLANTILLA, encoding='utf-8').read()

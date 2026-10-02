@@ -2508,23 +2508,25 @@ __DATA__
             it.titulo = fsItem.titulo;
             if (cObj.h2Title) cObj.h2Title.textContent = fsItem.titulo;
           }
-          if (fsItem.guion) {
+          if (fsItem.guion != null) {
             it.guion = fsItem.guion;
             if (cObj.guionParagraph) cObj.guionParagraph.textContent = fsItem.guion;
           }
-          if (fsItem.copy) {
+          if (fsItem.copy != null) {
             it.copy = fsItem.copy;
             if (cObj.copyParagraph) cObj.copyParagraph.textContent = fsItem.copy;
           }
           if (fsItem.version) {
             it.version = parseInt(fsItem.version, 10);
           }
-
-          if (it.comentario) {
-            it.comentarios = parseComentarios(it.comentario, it.revisadoPor || revPor || 'Cliente');
-          } else {
-            it.comentarios = [];
+          if (fsItem.fechaCorreccion) {
+            it.fechaCorreccion = fsItem.fechaCorreccion;
           }
+
+          // Filtrar notas de corrección internas del comentario
+          var rawComment = it.comentario || '';
+          var filteredComments = parseComentarios(rawComment, it.revisadoPor || revPor || 'Cliente');
+          it.comentarios = filteredComments;
 
           if (cObj.renderThread) cObj.renderThread();
           if (cObj.paint) cObj.paint();
@@ -3210,6 +3212,7 @@ __DATA__
         if (item.guion != null) fMap.guion = { stringValue: String(item.guion) };
         if (item.copy != null) fMap.copy = { stringValue: String(item.copy) };
         if (item.version != null) fMap.version = { integerValue: String(item.version) };
+        if (item.fechaCorreccion) fMap.fechaCorreccion = { stringValue: String(item.fechaCorreccion) };
         return {
           mapValue: { fields: fMap }
         };

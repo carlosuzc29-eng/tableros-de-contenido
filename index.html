@@ -2075,6 +2075,7 @@ body{
   cursor:pointer;
   transition:transform 0.22s cubic-bezier(0.16,1,0.3,1), border-color 0.22s ease, box-shadow 0.22s ease;
   box-shadow:0 4px 16px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.05);
+  box-sizing:border-box;
 }
 .board-card:hover{
   transform:translateY(-3px);
@@ -2165,33 +2166,43 @@ body{
 .reviewer-info strong{color:#fff;font-weight:600}
 .card-actions-row{
   display:grid;
-  grid-template-columns:repeat(3, minmax(0, 1fr));
-  gap:6px;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
   width:100%;
+  box-sizing:border-box;
 }
-@media(max-width:540px){
+.btn-card.btn-ver-respuesta{
+  grid-column:1 / -1;
+  font-size:12.5px;
+  font-weight:700;
+  min-height:38px;
+}
+@media(max-width:480px){
   .card-actions-row{
     grid-template-columns:1fr;
   }
 }
 .btn-card{
   min-height:36px;
-  padding:6px 4px;
+  padding:6px 10px;
   border-radius:10px;
   font:inherit;
-  font-size:11.5px;
+  font-size:12px;
   font-weight:600;
   cursor:pointer;
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  gap:4px;
+  gap:5px;
   text-decoration:none;
   transition:all var(--trans);
   white-space:nowrap;
   text-align:center;
   min-width:0;
+  max-width:100%;
   box-sizing:border-box;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 .btn-card.pri{
   background:var(--verde);

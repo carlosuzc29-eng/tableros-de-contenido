@@ -5465,6 +5465,9 @@ body{
         if (fsItem.guion !== undefined) copy.guion = fsItem.guion;
         if (fsItem.copy !== undefined) copy.copy = fsItem.copy;
         if (fsItem.hashtags !== undefined) copy.hashtags = fsItem.hashtags;
+        if (fsItem.version !== undefined) copy.version = fsItem.version;
+        if (fsItem.fechaCorreccion !== undefined) copy.fechaCorreccion = fsItem.fechaCorreccion;
+        if (fsItem.historial !== undefined) copy.historial = fsItem.historial;
         if (fsItem.referencias && fsItem.referencias.length) copy.referencias = fsItem.referencias;
       }
       if (!copy.revisadoPor) {

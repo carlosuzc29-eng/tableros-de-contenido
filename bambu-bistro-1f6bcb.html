@@ -73,10 +73,15 @@ button{font:inherit;cursor:pointer}
 .index .n{font-weight:700;font-size:13px;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:var(--azul-soft);color:var(--azul);flex:none;transition:background .25s,color .25s}
 .index a[data-state="aprobado"] .n{background:var(--verde);color:#fff}
 .index a[data-state="cambios"] .n{background:var(--naranja);color:#fff}
+.index a[data-state="corregido"] .n{background:#0284c7;color:#fff}
 .index .t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .filters{display:flex;flex-wrap:wrap;gap:6px;margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
-.chip{border:0;background:transparent;color:var(--ink-2);font-size:12.5px;font-weight:500;padding:6px 12px;border-radius:99px}
+.chip{border:0;background:transparent;color:var(--ink-2);font-size:12.5px;font-weight:500;padding:6px 12px;border-radius:99px;cursor:pointer;transition:all .15s}
 .chip.on{background:var(--azul);color:#fff}
+.chip.chip-corregido{color:#0284c7;border:1px solid rgba(2,132,199,0.3);display:inline-flex;align-items:center;gap:4px}
+.chip.chip-corregido.on{background:#0284c7;color:#fff;border-color:#0284c7}
+.chip.chip-corregido .chip-cnt{background:rgba(2,132,199,0.18);color:#0284c7;padding:1px 6px;border-radius:99px;font-size:10px;font-weight:700}
+.chip.chip-corregido.on .chip-cnt{background:rgba(255,255,255,0.28);color:#fff}
 
 /* CARD */
 .card{background:var(--paper);border-radius:32px;padding:40px;margin-bottom:28px;position:relative;overflow:hidden;scroll-margin-top:24px;box-shadow:0 1px 0 var(--line),0 30px 60px -40px rgba(31,53,73,.25);transition:opacity .6s var(--ease),transform .6s var(--ease)}
@@ -93,10 +98,13 @@ button{font:inherit;cursor:pointer}
 .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--line);transition:background .3s}
 .card[data-state="aprobado"]::before{background:var(--verde)}
 .card[data-state="cambios"]::before{background:var(--naranja)}
+.card[data-state="corregido"]::before{background:#0284c7}
+.card[data-state="corregido"]{box-shadow:0 1px 0 var(--line),0 20px 40px -20px rgba(2,132,199,0.25);border:1px solid rgba(2,132,199,0.2)}
 .c-top{display:grid;grid-template-columns:auto 1fr auto;gap:28px;align-items:start}
 .big{font-size:104px;font-weight:800;line-height:.8;letter-spacing:-.06em;color:transparent;-webkit-text-stroke:2px var(--azul);transition:color .35s,-webkit-text-stroke-color .35s}
 .card[data-state="aprobado"] .big{color:var(--verde);-webkit-text-stroke-color:var(--verde)}
 .card[data-state="cambios"] .big{color:var(--naranja);-webkit-text-stroke-color:var(--naranja)}
+.card[data-state="corregido"] .big{color:#0284c7;-webkit-text-stroke-color:#0284c7}
 .tags{display:flex;gap:8px;flex-wrap:wrap}
 .tag{font-size:12px;font-weight:600;padding:5px 12px;border-radius:99px;background:var(--azul-soft);color:var(--azul)}
 .tag.fmt{background:var(--azul);color:#fff}
@@ -115,6 +123,7 @@ button{font:inherit;cursor:pointer}
 .badge::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
 .card[data-state="aprobado"] .badge{background:var(--verde-soft);color:var(--verde-dk)}
 .card[data-state="cambios"] .badge{background:var(--naranja-soft);color:var(--naranja)}
+.card[data-state="corregido"] .badge{background:rgba(2,132,199,0.12);color:#0284c7;border:1px solid rgba(2,132,199,0.25)}
 .c-body{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:34px}
 .c-body.single{grid-template-columns:1fr}
 .lbl{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--gris);margin-bottom:10px;display:block}
@@ -179,6 +188,25 @@ button{font:inherit;cursor:pointer}
 .dec-status{font-size:12px;color:var(--gris);text-align:center;font-weight:500}
 .dec-status.ok{color:var(--verde-dk);font-weight:600}
 .dec-status.fix{color:var(--naranja);font-weight:600}
+.dec-status.corr{background:rgba(2,132,199,0.08);color:#0284c7;border:1px solid rgba(2,132,199,0.22);padding:6px 14px;border-radius:10px;font-weight:600;display:inline-block}
+
+/* APARTADO CONTENIDOS CORREGIDOS */
+.apartado-corregidos{background:linear-gradient(135deg,rgba(2,132,199,0.08) 0%,rgba(31,53,73,0.03) 100%);border:1.5px solid rgba(2,132,199,0.3);border-radius:22px;padding:18px 22px;margin-bottom:28px;box-shadow:0 10px 30px -10px rgba(2,132,199,0.15);animation:fadeInApartado .35s ease}
+@keyframes fadeInApartado{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.apartado-corregidos-header{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.apartado-corregidos-icon{width:42px;height:42px;border-radius:12px;background:rgba(2,132,199,0.14);color:#0284c7;display:grid;place-items:center;font-size:20px;flex-shrink:0}
+.apartado-corregidos-info{flex:1;min-width:220px}
+.apartado-corregidos-title{font-size:16px;font-weight:800;color:#0284c7;margin:0 0 3px 0;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+.apartado-corregidos-desc{font-size:12.5px;color:var(--gris);margin:0;line-height:1.4}
+.apartado-corregidos-btn{background:#0284c7;color:#fff;border:none;padding:9px 18px;border-radius:99px;font-size:12.5px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 4px 12px rgba(2,132,199,0.25);white-space:nowrap}
+.apartado-corregidos-btn:hover{background:#0369a1;transform:translateY(-1px)}
+.apartado-corregidos-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;padding-top:12px;border-top:1px dashed rgba(2,132,199,0.22)}
+.pill-corregido{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.9);backdrop-filter:blur(8px);border:1px solid rgba(2,132,199,0.3);padding:6px 14px;border-radius:99px;font-size:12px;color:var(--azul);cursor:pointer;text-decoration:none;font-weight:600;transition:all .2s}
+.pill-corregido:hover{background:#0284c7;color:#fff;border-color:#0284c7;transform:translateY(-1px);box-shadow:0 4px 10px rgba(2,132,199,0.2)}
+.pill-corregido .pill-v{background:rgba(2,132,199,0.15);color:#0284c7;padding:1px 6px;border-radius:6px;font-size:10px;font-weight:800}
+.pill-corregido:hover .pill-v{background:rgba(255,255,255,0.25);color:#fff}
+@keyframes pulseHighlight{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(2,132,199,.5)}50%{transform:scale(1.015);box-shadow:0 0 0 10px rgba(2,132,199,0)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(2,132,199,0)}}
+.highlight-pulse{animation:pulseHighlight 1.5s ease}
 
 /* RESALTE OBLIGATORIO DE TARJETA */
 .card.warn{box-shadow:0 0 0 3px var(--naranja), 0 30px 60px -40px rgba(230,74,0,.4);animation:shake .4s}
@@ -281,24 +309,99 @@ footer .logo svg{height:76px;margin:0 auto 12px}
   .dl-mini{width:40px;height:44px;border-radius:14px;flex-shrink:0}
   .box{padding:22px 18px;border-radius:22px;max-width:92vw}
 }
-/* BOTÓN Y BARRA MODO AGENCIA */
-.btn-agency-access{
-  background:rgba(31,53,73,.07);
-  border:1px solid rgba(31,53,73,.18);
-  color:var(--ink-2);
-  padding:6px 12px;
-  border-radius:10px;
-  font-size:12px;
+
+/* MODO REVISIÓN DE PIEZAS CORREGIDAS */
+.shipment-banner{
+  background:linear-gradient(135deg,rgba(56,189,248,.18),rgba(92,184,62,.15));
+  border:1.5px solid rgba(56,189,248,.45);
+  border-radius:18px;
+  padding:16px 20px;
+  margin-top:22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  flex-wrap:wrap;
+}
+.shipment-banner-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.shipment-banner-icon{
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  background:#38BDF8;
+  color:#0B1926;
+  display:grid;
+  place-items:center;
+  font-size:20px;
+  font-weight:800;
+  flex-shrink:0;
+}
+.shipment-banner-title{
+  font-size:15px;
+  font-weight:700;
+  color:#fff;
+  letter-spacing:-.01em;
+}
+.shipment-banner-sub{
+  font-size:12.5px;
+  color:#BAE6FD;
+  margin-top:2px;
+}
+.shipment-banner-action a{
+  color:#38BDF8;
+  font-size:12.5px;
   font-weight:600;
-  cursor:pointer;
+  text-decoration:none;
+  padding:6px 12px;
+  border-radius:99px;
+  background:rgba(56,189,248,.12);
+  border:1px solid rgba(56,189,248,.3);
+  display:inline-block;
+  transition:all .2s;
+}
+.shipment-banner-action a:hover{
+  background:rgba(56,189,248,.25);
+}
+.tag.version{
+  background:#38BDF8;
+  color:#0B1926;
+  font-weight:700;
+}
+.piece-history-badge{
   display:inline-flex;
   align-items:center;
   gap:6px;
-  transition:all .2s;
+  font-size:11.5px;
+  color:#94A3B8;
+  background:rgba(31,53,73,.06);
+  padding:4px 10px;
+  border-radius:8px;
+  margin-top:8px;
+}
+/* AGENCIA DIRECT CORRECTIONS BUTTON & STYLES */
+.btn-agency-access{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  background:rgba(31,53,73,.06);
+  border:1px solid rgba(31,53,73,.15);
+  color:var(--ink-2);
+  padding:6px 14px;
+  border-radius:99px;
+  font-size:12px;
+  font-weight:600;
+  cursor:pointer;
+  transition:all .2s var(--ease);
+  text-decoration:none;
 }
 .btn-agency-access:hover{
-  background:var(--azul-soft);
-  color:var(--azul);
+  background:rgba(31,53,73,.12);
+  color:var(--ink);
+  transform:translateY(-1px);
 }
 .btn-agency-access.active{
   background:var(--azul);
@@ -589,7 +692,7 @@ footer .logo svg{height:76px;margin:0 auto 12px}
         <span style="font-size:11px;font-weight:700;color:#38bdf8;text-transform:uppercase;letter-spacing:1px;">Revisión de contenidos</span>
         <h3 style="margin:4px 0 0 0;font-size:18px;color:#fff;">Enviar piezas por separado</h3>
       </div>
-      <button type="button" id="btnCloseAgencyShipment" style="background:transparent;border:0;color:#fff;font-size:24px;cursor:pointer;line-height:1;">&times;</button>
+      <button type="button" id="btnCloseAgencyShipment" style="background:transparent;border:0;color:#fff;font-size:24px;cursor:pointer;line-height:1;">×</button>
     </div>
     <p style="font-size:13px;color:rgba(255,255,255,0.75);margin:0 0 12px 0;line-height:1.4;">
       Selecciona únicamente los contenidos que el cliente solicitó corregir para enviarle un enlace exclusivo:
@@ -602,7 +705,7 @@ footer .logo svg{height:76px;margin:0 auto 12px}
     </div>
     <div style="margin-bottom:14px;">
       <label style="display:block;font-size:11.5px;color:rgba(255,255,255,0.7);margin-bottom:4px;">Enlace de revisión generado:</label>
-      <input type="text" id="agencyShipmentUrlInp" readonly style="width:100%;box-sizing:border-box;background:rgba(0,0,0,0.4);border:1px solid rgba(56,189,248,0.4);color:#38bdf8;font-family:monospace;font-size:12px;padding:8px 10px;border-radius:8px;">
+      <input type="text" id="agencyShipmentUrlInp" readonly="" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,0.4);border:1px solid rgba(56,189,248,0.4);color:#38bdf8;font-family:monospace;font-size:12px;padding:8px 10px;border-radius:8px;">
     </div>
     <div style="display:flex;justify-content:flex-end;gap:10px;">
       <button type="button" id="btnCancelAgencyShipment" style="background:rgba(255,255,255,0.08);color:#fff;border:0;padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;">Cancelar</button>
@@ -617,46 +720,58 @@ footer .logo svg{height:76px;margin:0 auto 12px}
       <div class="eyebrow">Revisión y aprobación</div>
       <h1>Tus contenidos<br><span class="out">del mes</span></h1>
       <p class="sub" id="intro">Revisa cada pieza con calma. Apruébala o cuéntanos qué ajustar, y al terminar descarga el tablero para enviárnoslo.</p>
-      <div class="reviewed" id="reviewed"></div>
+      <div class="reviewed show" id="reviewed">✓ Revisado por Sebastian Villet el 28 de septiembre de 2026 a las 09:36 a. m.</div>
     </div>
     <div class="ring">
       <svg viewBox="0 0 188 188">
         <circle cx="94" cy="94" r="82" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="12"></circle>
-        <circle id="rOk" cx="94" cy="94" r="82" fill="none" stroke="#5CB83E" stroke-width="12" stroke-linecap="round" stroke-dasharray="0 515.221195188726" stroke-opacity="0"></circle>
-        <circle id="rFix" cx="94" cy="94" r="82" fill="none" stroke="#E64A00" stroke-width="12" stroke-linecap="round" stroke-dasharray="0 515.221195188726" stroke-dashoffset="0" stroke-opacity="0"></circle>
+        <circle id="rOk" cx="94" cy="94" r="82" fill="none" stroke="#5CB83E" stroke-width="12" stroke-linecap="round" stroke-dasharray="515.221195188726 515.221195188726" stroke-opacity="1"></circle>
+        <circle id="rFix" cx="94" cy="94" r="82" fill="none" stroke="#E64A00" stroke-width="12" stroke-linecap="round" stroke-dasharray="0 515.221195188726" stroke-dashoffset="-515.221195188726" stroke-opacity="0"></circle>
       </svg>
-      <div class="center"><div><b id="pct">0%</b><small>revisado</small></div></div>
+      <div class="center"><div><b id="pct">100%</b><small>revisado</small></div></div>
     </div>
   </div>
 </div></header>
 
 <div class="shell" style="padding:0 16px">
   <section class="stats">
-    <div class="stat ok"><i>✓</i><div><b id="sOk">0</b><span>Aprobados</span></div></div>
+    <div class="stat ok"><i>✓</i><div><b id="sOk">8</b><span>Aprobados</span></div></div>
     <div class="stat fix"><i>✎</i><div><b id="sFix">0</b><span>Con cambios</span></div></div>
-    <div class="stat pend"><i>•</i><div><b id="sPend">8</b><span>Pendientes</span></div></div>
+    <div class="stat pend"><i>•</i><div><b id="sPend">0</b><span>Pendientes</span></div></div>
   </section>
   <div class="nojs-note"><b>Estás viendo una vista previa.</b> Para aprobar, comentar y descargar tu revisión, abre este archivo en el navegador (Safari o Chrome). Las vistas previas de WhatsApp o de la app Archivos del iPhone no permiten interactuar.<a class="nojs-btn show" id="openLink" href="https://carlosuzc29-eng.github.io/tableros-de-contenido/bambu-bistro-1f6bcb.html">Abrir en Safari para revisar ↗</a></div>
   <div class="layout">
     <aside class="index">
       <h3>Contenidos</h3>
-      <nav id="nav"><a href="#c1" data-state="pendiente"><span class="n">01</span><span class="t">POV: viniste a almorzar y terminaste pasando la tarde</span></a><a href="#c2" data-state="pendiente"><span class="n">02</span><span class="t">Bucle provocativo al fuego</span></a><a href="#c3" data-state="pendiente"><span class="n">03</span><span class="t">Carrusel distintas opciones</span></a><a href="#c4" data-state="pendiente"><span class="n">04</span><span class="t">Armemos el plato</span></a><a href="#c5" data-state="pendiente"><span class="n">05</span><span class="t">Que probar si vienes por primera vez</span></a><a href="#c6" data-state="pendiente"><span class="n">06</span><span class="t">La comida / La experiencia</span></a><a href="#c7" data-state="pendiente"><span class="n">07</span><span class="t">Sal de la rutina</span></a><a href="#c8" data-state="pendiente"><span class="n">08</span><span class="t">Celebraciones y espacios para reservar</span></a></nav>
+      <nav id="nav"><a href="#c1" data-state="aprobado"><span class="n">01</span><span class="t">POV: viniste a almorzar y terminaste pasando la tarde</span></a><a href="#c2" data-state="aprobado"><span class="n">02</span><span class="t">Bucle provocativo al fuego</span></a><a href="#c3" data-state="aprobado"><span class="n">03</span><span class="t">Carrusel distintas opciones</span></a><a href="#c4" data-state="aprobado"><span class="n">04</span><span class="t">Armemos el plato</span></a><a href="#c5" data-state="aprobado"><span class="n">05</span><span class="t">Que probar si vienes por primera vez</span></a><a href="#c6" data-state="aprobado"><span class="n">06</span><span class="t">La comida / La experiencia</span></a><a href="#c7" data-state="aprobado"><span class="n">07</span><span class="t">Sal de la rutina</span></a><a href="#c8" data-state="aprobado"><span class="n">08</span><span class="t">Celebraciones y espacios para reservar</span></a></nav>
       <div class="filters">
         <button class="chip on" data-f="all">Todos</button>
         <button class="chip" data-f="pendiente">Pendientes</button>
         <button class="chip" data-f="aprobado">Aprobados</button>
         <button class="chip" data-f="cambios">Cambios</button>
+        <button class="chip chip-corregido" data-f="corregido" id="filterCorregidos" style="display:none;">Corregidos <span class="chip-cnt" id="chipCountCorregidos">0</span></button>
       </div>
     </aside>
     <main>
-      <div id="list"><article class="card in" id="c1" data-state="pendiente"><div class="c-top"><div class="big">01</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option><option value="Carrusel con video">Carrusel con video</option></select></label><span class="tag orig">Propuesto: Reel</span></div><h2>POV: viniste a almorzar y terminaste pasando la tarde</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><p>"POV: viniste a almorzar y terminaste pasando la tarde."
+      <section id="apartadoCorregidos" class="apartado-corregidos" style="display:none;" aria-label="Contenidos corregidos">
+        <div class="apartado-corregidos-header">
+          <div class="apartado-corregidos-icon">🔄</div>
+          <div class="apartado-corregidos-info">
+            <h3 class="apartado-corregidos-title">Contenidos corregidos (<span id="apartadoCount">0</span>)</h3>
+            <p class="apartado-corregidos-desc">Hemos preparado los ajustes solicitados. Revisa cada versión corregida y danos tu visto bueno.</p>
+          </div>
+          <button type="button" class="apartado-corregidos-btn" id="btnVerSoloCorregidos" style="background: rgb(2, 132, 199);">Ver solo corregidos (0)</button>
+        </div>
+        <div class="apartado-corregidos-list" id="apartadoCorregidosPills"></div>
+      </section>
+      <div id="list"><article class="card in" id="c1" data-state="aprobado" data-piece-num="1"><div class="c-top"><div class="big">01</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option><option value="Carrusel con video">Carrusel con video</option></select></label><span class="tag orig">Propuesto: Reel</span></div><h2>POV: viniste a almorzar y terminaste pasando la tarde</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>"POV: viniste a almorzar y terminaste pasando la tarde."
 Abrimos directamente con una persona o familia sentándose en una mesa de Bambú. Puede verse el espacio detrás para contextualizar.
 REEL 1 — Bambú se vive
 Concepto: POV: viniste a almorzar y terminaste pasando la tarde.
-El reel mostrará cómo una visita a Bambú que comienza con un almuerzo puede convertirse en un plan para disfrutar por más tiempo. Se verá la llegada de los platos, personas comiendo y compartiendo, la sobremesa y diferentes momentos disfrutando de los espacios y opciones recreativas del lugar. La intención es presentar a Bambú no solo como un restaurante, sino como un lugar para comer, compartir y disfrutar.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status">• Pendiente de evaluación (obligatorio)</div></div></div></article><article class="card in" id="c2" data-state="pendiente"><div class="c-top"><div class="big">02</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option><option value="Carrusel con video">Carrusel con video</option></select></label><span class="tag orig">Propuesto: Reel</span></div><h2>Bucle provocativo al fuego</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><p>El reel mostrará de forma muy cercana y provocativa el proceso de preparación de uno de los platos más atractivos de Bambú: producto entrando al fuego, brasas, cocción, jugos, corte y resultado final. La edición estará construida en bucle, haciendo que el final conecte visualmente con el inicio para que la reproducción pueda repetirse de manera continua y natural.
+El reel mostrará cómo una visita a Bambú que comienza con un almuerzo puede convertirse en un plan para disfrutar por más tiempo. Se verá la llegada de los platos, personas comiendo y compartiendo, la sobremesa y diferentes momentos disfrutando de los espacios y opciones recreativas del lugar. La intención es presentar a Bambú no solo como un restaurante, sino como un lugar para comer, compartir y disfrutar.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c2" data-state="aprobado" data-piece-num="2"><div class="c-top"><div class="big">02</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option><option value="Carrusel con video">Carrusel con video</option></select></label><span class="tag orig">Propuesto: Reel</span></div><h2>Bucle provocativo al fuego</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>El reel mostrará de forma muy cercana y provocativa el proceso de preparación de uno de los platos más atractivos de Bambú: producto entrando al fuego, brasas, cocción, jugos, corte y resultado final. La edición estará construida en bucle, haciendo que el final conecte visualmente con el inicio para que la reproducción pueda repetirse de manera continua y natural.
 La pieza tendrá un enfoque principalmente sensorial, apoyándose en primeros planos, sonidos de cocción y texturas para generar antojo, sin necesidad de explicar demasiado el producto.
 
-Dejar en los comentarios con que plato vamos a trabajar</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status">• Pendiente de evaluación (obligatorio)</div></div></div></article><article class="card in" id="c3" data-state="pendiente"><div class="c-top"><div class="big">03</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option><option value="Carrusel con video" selected="">Carrusel con video</option></select></label><span class="tag orig">Propuesto: Carrusel con video</span></div><h2>Carrusel distintas opciones</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><p>El carrusel mostrará una mesa de Bambú con diferentes platos y opciones del menú, representando cómo cada persona puede elegir según lo que le provoque sin dejar de compartir el mismo plan. La intención es destacar la variedad gastronómica de Bambú desde una situación de consumo real, mostrando el restaurante como una opción para compartir en familia, pareja o con amigos.
+Dejar en los comentarios con que plato vamos a trabajar</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c3" data-state="aprobado" data-piece-num="3"><div class="c-top"><div class="big">03</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option><option value="Carrusel con video" selected="">Carrusel con video</option></select></label><span class="tag orig">Propuesto: Carrusel con video</span></div><h2>Carrusel distintas opciones</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>El carrusel mostrará una mesa de Bambú con diferentes platos y opciones del menú, representando cómo cada persona puede elegir según lo que le provoque sin dejar de compartir el mismo plan. La intención es destacar la variedad gastronómica de Bambú desde una situación de consumo real, mostrando el restaurante como una opción para compartir en familia, pareja o con amigos.
 
 Slide 1:
 Una mesa, diferentes antojos.
@@ -667,7 +782,7 @@ Cada quien pide lo suyo.
 
 Slide 3:
 Ponerse de acuerdo nunca fue tan fácil.
-Nos vemos en Bambú.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status">• Pendiente de evaluación (obligatorio)</div></div></div></article><article class="card in" id="c4" data-state="pendiente"><div class="c-top"><div class="big">04</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option><option value="Carrusel con video">Carrusel con video</option></select></label><span class="tag orig">Propuesto: Reel</span></div><h2>Armemos el plato</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><p>REEL 4 — EL PLATO DEL MES
+Nos vemos en Bambú.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c4" data-state="aprobado" data-piece-num="4"><div class="c-top"><div class="big">04</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option><option value="Carrusel con video">Carrusel con video</option></select></label><span class="tag orig">Propuesto: Reel</span></div><h2>Armemos el plato</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>REEL 4 — EL PLATO DEL MES
 Concepto: Hoy el personal de Bambú elige nuestro plato del mes.
 El reel mostrará una dinámica en la que diferentes integrantes del personal de Bambú responderán preguntas rápidas entre dos opciones. Cada respuesta definirá una parte del plato —proteína, método de preparación, acompañante, salsa y acabado— hasta construir entre todos una combinación final.
 Una vez tomadas todas las decisiones, el equipo de cocina preparará el resultado y se revelará al final como el plato del mes de Bambú.
@@ -686,7 +801,7 @@ Hoy el personal de Bambú elige nuestro plato del mes.
 Cortes en cocina preparando
 Y así quedó el plato elegido por nuestro equipo.
 "Ellos ya eligieron. Ahora te toca venir a probarlo. Ven a Bambu y conoce nuestro_______
-Solo disponible por el mes de octubre</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status">• Pendiente de evaluación (obligatorio)</div></div></div></article><article class="card in" id="c5" data-state="pendiente"><div class="c-top"><div class="big">05</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option><option value="Carrusel con video" selected="">Carrusel con video</option></select></label><span class="tag orig">Propuesto: Carrusel con video</span></div><h2>Que probar si vienes por primera vez</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><p>Slide 1 ¿Qué probar si vienes a Bambú Bistro por primera vez?
+Solo disponible por el mes de octubre</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c5" data-state="aprobado" data-piece-num="5"><div class="c-top"><div class="big">05</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option><option value="Carrusel con video" selected="">Carrusel con video</option></select></label><span class="tag orig">Propuesto: Carrusel con video</span></div><h2>Que probar si vienes por primera vez</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>Slide 1 ¿Qué probar si vienes a Bambú Bistro por primera vez?
 
 Slide 2 Brochetas a la Brasa
 2 brochetas mixtas con vegetales, acompañadas de 2 contornos.
@@ -695,7 +810,7 @@ Slide 3 Pollo con salsa de champiñones
 Pechuga de pollo bañada en salsa de champiñones y .... acompañada de _______
 
 Slide 4 Parrilla Individual
-Solomo, pollo, cerdo y chorizo, acompañados de dos contornos.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status">• Pendiente de evaluación (obligatorio)</div></div></div></article><article class="card in" id="c6" data-state="pendiente"><div class="c-top"><div class="big">06</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option><option value="Carrusel con video" selected="">Carrusel con video</option></select></label><span class="tag orig">Propuesto: Carrusel con video</span></div><h2>La comida / La experiencia</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><p>REEL — COMIDA + EXPERIENCIA
+Solomo, pollo, cerdo y chorizo, acompañados de dos contornos.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c6" data-state="aprobado" data-piece-num="6"><div class="c-top"><div class="big">06</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option><option value="Carrusel con video" selected="">Carrusel con video</option></select></label><span class="tag orig">Propuesto: Carrusel con video</span></div><h2>La comida / La experiencia</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>REEL — COMIDA + EXPERIENCIA
 Concepto: Mostrar simultáneamente la gastronomía y la experiencia de visitar Bambú.
 El video estará dividido horizontalmente en dos durante toda la pieza. En la parte superior se mostrará un plato de Bambú a través de tomas cercanas y provocativas del producto. Al mismo tiempo, en la parte inferior se mostrarán personas disfrutando de las áreas y actividades recreativas del restaurante.
 Ambas partes avanzarán de manera simultánea para comunicar en una misma pieza lo que puedes comer y lo que puedes disfrutar durante una visita a Bambú.
@@ -707,17 +822,17 @@ en el medio de cada imagen tendrá escrito
 
 LA COMIDA
 
-LA EXPERIENCIA</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status">• Pendiente de evaluación (obligatorio)</div></div></div></article><article class="card in" id="c7" data-state="pendiente"><div class="c-top"><div class="big">07</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Post" selected="">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option><option value="Carrusel con video">Carrusel con video</option></select></label><span class="tag orig">Propuesto: Post</span></div><h2>Sal de la rutina</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><p>HOY CAMBIA EL PLAN.
+LA EXPERIENCIA</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c7" data-state="aprobado" data-piece-num="7"><div class="c-top"><div class="big">07</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Post" selected="">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option><option value="Carrusel con video">Carrusel con video</option></select></label><span class="tag orig">Propuesto: Post</span></div><h2>Sal de la rutina</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>HOY CAMBIA EL PLAN.
 Una mesa, algo rico y una tarde diferente.
 Visita Bambú y haz una pausa de la rutina.
-📍 Los Llanitos de Tabay, junto al C.C. El Amanecer.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status">• Pendiente de evaluación (obligatorio)</div></div></div></article><article class="card in" id="c8" data-state="pendiente"><div class="c-top"><div class="big">08</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option><option value="Carrusel con video">Carrusel con video</option></select></label><span class="tag orig">Propuesto: Reel</span></div><h2>Celebraciones y espacios para reservar</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><p>Cumpleaños.
+📍 Los Llanitos de Tabay, junto al C.C. El Amanecer.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c8" data-state="aprobado" data-piece-num="8"><div class="c-top"><div class="big">08</div><div><div class="tags"><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Post">Post</option><option value="Story">Story</option><option value="Video">Video</option><option value="TikTok">TikTok</option><option value="Carrusel con video">Carrusel con video</option></select></label><span class="tag orig">Propuesto: Reel</span></div><h2>Celebraciones y espacios para reservar</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>Cumpleaños.
 Aniversario.
 Graduación.
 Reunión familiar.
 O simplemente algo que merece celebrarse.
 Si ya tienes el motivo, nosotros tenemos el lugar.
 Tomas de comida, mesa preparada, brindis, grupo compartiendo y espacios de Bambú
-Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status">• Pendiente de evaluación (obligatorio)</div></div></div></article></div>
+Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article></div>
       <div class="empty" id="empty" style="display: none;">No hay contenidos en este filtro.</div>
       <footer><div class="logo" data-logo=""><svg role="img" aria-label="NEXO Agencia Creativa" xmlns="http://www.w3.org/2000/svg" viewBox="758 532 862 1350"><g transform="translate(0,2364) scale(1,-1)"><path fill="#1F3549" d="M763 1617 l0 -210 47 0 46 0 0 129 0 129 3 -4 c3 -4 29 -32 31 -34 1 -1 5 -6 10 -11 4 -4 15 -16 23 -25 9 -10 17 -20 20 -22 2 -2 11 -12 19 -21 9 -10 16 -18 16 -19 1 0 5 -5 10 -10 17 -18 28 -32 29 -33 2 -1 15 -15 33 -35 9 -10 16 -18 16 -19 5 -4 18 -19 20 -22 l3 -3 47 0 46 0 0 210 0 209 -46 0 -46 0 0 -129 c0 -106 0 -128 -1 -127 -1 1 -4 5 -8 8 -6 7 -21 24 -24 27 -2 2 -6 7 -44 49 -15 15 -28 31 -31 33 -2 2 -5 5 -6 7 -1 1 -5 6 -10 11 -5 5 -9 10 -10 11 -1 1 -5 6 -10 11 -37 41 -53 58 -60 66 -5 5 -10 11 -11 12 -1 1 -6 6 -10 11 l-9 10 -47 0 -46 0 0 -209z M1238 1825 c-1 0 -1 -21 -1 -46 l0 -46 182 0 182 0 0 47 0 46 -181 0 c-100 0 -182 0 -182 -1z M1237 1615 l0 -46 182 0 182 0 0 46 0 46 -182 0 -182 0 0 -46z M1237 1454 l0 -47 182 0 182 0 0 47 0 46 -182 0 -182 0 0 -46z M764 1351 c0 -1 31 -48 69 -105 38 -57 69 -104 69 -104 -1 -1 -32 -48 -70 -105 l-69 -104 70 0 71 0 34 52 c19 28 35 51 35 51 0 0 16 -23 35 -52 l34 -51 70 0 c60 0 70 0 70 1 -1 1 -32 48 -69 104 -37 56 -68 103 -69 104 0 0 31 47 69 104 38 57 69 104 69 105 0 1 -22 1 -65 1 l-64 0 -40 -59 c-22 -33 -40 -60 -40 -60 0 0 -18 27 -40 60 l-39 59 -66 0 c-52 0 -65 0 -64 -1z M1372 1351 c-96 -9 -175 -84 -188 -180 -21 -147 116 -269 261 -231 109 28 177 142 149 252 -25 101 -119 168 -222 159z m38 -91 c102 -17 136 -150 53 -212 -79 -59 -190 -4 -190 95 0 72 65 128 137 117z"></path><path fill="#5CB83E" d="M803 774 c-18 -40 -32 -73 -33 -74 0 -2 0 -2 10 -2 l9 1 10 21 9 22 27 0 28 0 9 -22 9 -22 10 0 c6 0 9 0 9 1 0 2 -64 148 -65 148 0 0 -15 -33 -32 -73z m43 9 l11 -25 -22 0 c-20 0 -21 0 -21 2 3 6 21 47 21 47 0 0 5 -11 11 -24z M1145 773 l0 -75 8 0 9 0 0 53 1 53 51 -56 c28 -30 51 -55 51 -55 1 0 1 34 1 75 l0 74 -8 0 -9 0 0 -54 0 -53 -52 56 c-28 31 -51 56 -52 56 0 0 0 -34 0 -74z M1480 773 c-18 -40 -32 -74 -32 -74 0 -1 4 -1 10 -1 l9 1 9 21 10 22 27 0 28 0 9 -22 9 -22 10 0 c8 0 9 0 9 2 -1 3 -64 147 -65 147 0 0 -15 -33 -33 -74z m44 10 c5 -13 10 -24 10 -24 0 -1 -9 -1 -21 -1 -12 0 -21 0 -21 1 0 1 20 48 21 48 0 0 5 -11 11 -24z M952 844 c-36 -6 -58 -35 -58 -75 0 -36 18 -61 49 -71 12 -4 38 -4 50 0 27 10 43 32 45 64 l0 11 -30 0 -30 0 0 -8 0 -8 21 0 20 0 -1 -4 c-5 -34 -42 -52 -75 -36 -38 18 -41 80 -4 104 15 10 39 10 55 1 5 -2 15 -12 18 -17 l2 -2 7 5 c4 3 7 7 7 8 0 3 -16 17 -24 21 -14 7 -35 10 -52 7z M1338 843 c-25 -6 -45 -25 -53 -48 -3 -12 -4 -32 -1 -44 12 -50 70 -72 115 -44 l6 3 0 12 0 12 -7 -6 c-24 -23 -58 -22 -81 0 -12 13 -16 24 -16 42 0 51 59 77 96 43 4 -3 7 -6 7 -6 1 0 1 5 1 11 l0 12 -6 3 c-18 11 -41 15 -61 10z M1051 770 l0 -72 38 0 39 1 0 8 0 8 -29 0 -30 0 0 27 0 27 30 0 29 0 0 8 0 8 -29 0 -30 0 0 20 0 20 30 0 29 0 0 9 0 8 -38 0 -39 0 0 -72z M1422 770 l0 -72 9 0 9 0 0 72 0 72 -9 0 -9 0 0 -72z M825 688 c-33 -5 -57 -31 -61 -65 -6 -61 47 -101 104 -78 l6 2 0 22 c0 11 0 21 -1 21 0 0 -3 -3 -7 -6 -29 -25 -68 -2 -62 36 3 21 16 33 36 33 12 0 16 -2 28 -12 l6 -5 0 22 0 22 -7 2 c-13 6 -29 8 -42 6z M1128 687 c-21 -7 -32 -25 -32 -52 0 -25 8 -42 25 -50 6 -3 7 -3 18 -3 16 0 22 2 30 11 l6 6 0 -7 0 -7 17 0 16 0 0 50 0 50 -16 0 -17 0 0 -7 0 -7 -3 3 c-4 5 -8 8 -13 11 -6 3 -25 4 -31 2z m37 -30 c14 -7 15 -34 2 -42 -13 -9 -30 -4 -34 11 -7 23 12 41 32 31z M883 614 l0 -72 19 0 19 0 0 27 0 26 16 -26 15 -27 23 0 c12 0 22 0 22 0 0 1 -9 14 -19 29 -21 30 -20 29 -17 29 7 0 20 10 25 20 3 7 3 7 3 20 0 18 -4 28 -16 37 -11 7 -14 7 -54 8 l-36 0 0 -71z m60 37 c7 -4 10 -15 6 -23 -3 -7 -8 -9 -19 -10 l-9 0 0 18 0 18 9 0 c7 0 10 -1 13 -3z M1000 614 l0 -72 44 0 44 0 0 17 0 16 -25 0 -25 0 0 12 0 11 24 0 23 0 0 16 0 15 -23 0 -24 0 0 12 0 12 25 0 25 0 0 16 0 16 -44 0 -44 0 0 -71z M1220 631 l0 -55 -23 0 -23 0 0 -17 1 -16 58 -1 59 0 0 17 0 17 -16 0 -16 0 0 55 0 54 -20 0 -20 0 0 -54z M1302 614 l0 -72 20 0 20 0 0 72 0 71 -20 0 -20 0 0 -71z M1349 685 c0 0 13 -32 30 -71 l30 -71 15 -1 16 0 29 70 c16 38 29 70 30 71 0 2 -1 2 -21 2 l-21 0 -16 -42 c-9 -22 -17 -41 -17 -41 0 0 -8 19 -16 42 l-16 41 -22 0 c-11 0 -21 0 -21 0z M1510 684 c-1 -1 -14 -33 -30 -71 -16 -38 -29 -70 -29 -70 0 -1 9 -1 21 -1 l21 0 2 5 c1 3 8 21 16 41 7 19 14 35 14 36 0 2 6 -11 17 -40 l16 -42 22 0 21 0 -4 9 c-2 5 -16 37 -30 72 l-26 62 -15 0 c-12 0 -16 0 -16 -1z"></path></g></svg></div>Mérida, Venezuela</footer>
     </main>
@@ -725,7 +840,7 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
 </div>
 
 <div class="dock">
-  <span class="prog"><b id="dN">0/8</b> revisados</span>
+  <span class="prog"><b id="dN">8/8</b> revisados</span>
   <span class="sep"></span>
   <input id="who" placeholder="Tu nombre" autocomplete="name">
   <button class="dl" id="dl">Enviar revisión ✓</button>
@@ -1598,7 +1713,8 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
       "referencias": [],
       "id": "c1",
       "estado": "pendiente",
-      "comentario": ""
+      "comentario": "",
+      "clickupId": "17tjyy3gz0y"
     },
     {
       "formato": "Reel",
@@ -1612,7 +1728,8 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
       "referencias": [],
       "id": "c2",
       "estado": "pendiente",
-      "comentario": ""
+      "comentario": "",
+      "clickupId": "17tjyy3gz11"
     },
     {
       "formato": "Carrusel con video",
@@ -1626,7 +1743,8 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
       "referencias": [],
       "id": "c3",
       "estado": "pendiente",
-      "comentario": ""
+      "comentario": "",
+      "clickupId": "17tjyy3gz15"
     },
     {
       "formato": "Reel",
@@ -1640,7 +1758,8 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
       "referencias": [],
       "id": "c4",
       "estado": "pendiente",
-      "comentario": ""
+      "comentario": "",
+      "clickupId": "17tjyy3gz1e"
     },
     {
       "formato": "Carrusel con video",
@@ -1654,7 +1773,8 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
       "referencias": [],
       "id": "c5",
       "estado": "pendiente",
-      "comentario": ""
+      "comentario": "",
+      "clickupId": "17tjyy3gzrn"
     },
     {
       "formato": "Carrusel con video",
@@ -1668,7 +1788,8 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
       "referencias": [],
       "id": "c6",
       "estado": "pendiente",
-      "comentario": ""
+      "comentario": "",
+      "clickupId": "17tjyy3gzrt"
     },
     {
       "formato": "Post",
@@ -1682,7 +1803,8 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
       "referencias": [],
       "id": "c7",
       "estado": "pendiente",
-      "comentario": ""
+      "comentario": "",
+      "clickupId": "17tjyy3gzrv"
     },
     {
       "formato": "Reel",
@@ -1696,11 +1818,12 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
       "referencias": [],
       "id": "c8",
       "estado": "pendiente",
-      "comentario": ""
+      "comentario": "",
+      "clickupId": "17tjyy3gzrx"
     }
   ],
   "id": "bambu-bistro-2026-octubre-4698e871",
-  "resetAt": 1790561584457,
+  "resetAt": 1790914161222,
   "revision": {
     "revisadoPor": "",
     "fecha": ""
@@ -1710,7 +1833,8 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
     "apiKey": "AIzaSyAsH9TxW0ld2aNQejJw6xxZW7fpZiw212Q",
     "projectId": "nexo-tableros-app"
   },
-  "token": "4698e871"
+  "token": "4698e871",
+  "sincronizadoClickup": "2026-09-28"
 }
 </script>
 <script>
@@ -1718,7 +1842,7 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
   document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/, 'js');
   var DATA = JSON.parse(document.getElementById('board-data').textContent);
   var items = DATA.contenidos || [];
-  var LBL = {pendiente:'Pendiente', aprobado:'Aprobado', cambios:'Con cambios'};
+  var LBL = {pendiente:'Pendiente', aprobado:'Aprobado', cambios:'Con cambios', corregido:'Corregido'};
   var KEY = 'nexo-revision-' + (DATA.id || (DATA.cliente + '-' + DATA.mes + '-' + DATA.anio));
   var C = 2 * Math.PI * 82;
   var $ = function(id){ return document.getElementById(id); };
@@ -1783,7 +1907,7 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
 
   items.forEach(function(it, i){
     if (!it.id) it.id = 'c' + (i + 1);
-    if (['pendiente','aprobado','cambios'].indexOf(it.estado) < 0) it.estado = 'pendiente';
+    if (['pendiente','aprobado','cambios','corregido'].indexOf(it.estado) < 0) it.estado = 'pendiente';
     if (typeof it.comentario !== 'string') it.comentario = '';
     if (!Array.isArray(it.comentarios)) it.comentarios = [];
     if (typeof it.formatoOriginal !== 'string') it.formatoOriginal = it.formato || '';
@@ -1811,6 +1935,10 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
             if (s.formato) it.formato = s.formato;
             if (Array.isArray(s.comentarios) && s.comentarios.length) it.comentarios = s.comentarios;
             if (s.revisadoPor) it.revisadoPor = s.revisadoPor;
+            if (s.guion != null) it.guion = s.guion;
+            if (s.copy != null) it.copy = s.copy;
+            if (s.version != null) it.version = s.version;
+            if (s.fechaCorreccion) it.fechaCorreccion = s.fechaCorreccion;
           }
         });
         if (saved.who) {
@@ -1831,7 +1959,11 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
           comentario: it.comentario,
           formato: it.formato,
           comentarios: it.comentarios,
-          revisadoPor: it.revisadoPor
+          revisadoPor: it.revisadoPor,
+          guion: it.guion,
+          copy: it.copy,
+          version: it.version,
+          fechaCorreccion: it.fechaCorreccion
         };
       });
       localStorage.setItem(KEY, JSON.stringify(o));
@@ -1856,6 +1988,33 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
     $('reviewed').classList.add('show');
   }
 
+  // DETECCIÓN DE ENVÍO DE CORRECCIONES / FILTRO SELECTIVO DE PIEZAS
+  var urlParams = new URLSearchParams(window.location.search);
+  var piezasParam = urlParams.get('piezas');
+  var isReviewShipment = urlParams.get('review') === 'corregidos' || !!piezasParam;
+  var targetPieceNumbers = null;
+  if (piezasParam) {
+    targetPieceNumbers = piezasParam.split(',').map(function(s){ return parseInt(s.trim(), 10); }).filter(function(n){ return !isNaN(n) && n > 0; });
+  }
+
+  if (isReviewShipment && targetPieceNumbers && targetPieceNumbers.length > 0) {
+    var banner = el('div', 'shipment-banner');
+    banner.innerHTML = '<div class="shipment-banner-left">' +
+      '<div class="shipment-banner-icon">🔄</div>' +
+      '<div>' +
+        '<div class="shipment-banner-title">Revisión de contenidos corregidos (' + targetPieceNumbers.length + ' ' + (targetPieceNumbers.length === 1 ? 'pieza' : 'piezas') + ')</div>' +
+        '<div class="shipment-banner-sub">La agencia aplicó los ajustes solicitados. Revisa cada versión y confírmanos tu aprobación.</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="shipment-banner-action">' +
+      '<a href="' + window.location.pathname + '" title="Ver todo el tablero completo">Ver tablero completo ↗</a>' +
+    '</div>';
+    var introEl = $('intro');
+    if (introEl && introEl.parentNode) {
+      introEl.parentNode.insertBefore(banner, introEl.nextSibling);
+    }
+  }
+
   // Tarjetas
   var list = $('list'), nav = $('nav'), cards = [];
   list.innerHTML = ''; nav.innerHTML = '';
@@ -1863,12 +2022,20 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
   (DATA.formatos || ['Reel','Carrusel','Post','Story','Video','TikTok']).concat(items.map(function(it){ return it.formatoOriginal; }), items.map(function(it){ return it.formato; })).forEach(function(x){ if (x && FORMATOS.indexOf(x) < 0) FORMATOS.push(x); });
   var handle = (DATA.cuenta || DATA.cliente || '').replace(/^@/, '');
   items.forEach(function(it, i){
-    var num = pad(i + 1);
+    var pieceNum = i + 1;
+    var num = pad(pieceNum);
     var card = el('article', 'card'); card.id = it.id; card.dataset.state = it.estado;
+    card.dataset.pieceNum = pieceNum;
 
     var top = el('div', 'c-top');
     top.appendChild(el('div', 'big', num));
     var tw = el('div'); var tags = el('div', 'tags');
+
+    // Versión pill si tiene versión > 1 o estado corregido
+    if (it.version && it.version > 1) {
+      tags.appendChild(el('span', 'tag version', 'v' + it.version + ' Corregido'));
+    }
+
     var fw = el('label', 'fmt-wrap'); var fs = el('select', 'fmt-sel'); fs.setAttribute('aria-label', 'Tipo de contenido');
     FORMATOS.forEach(function(x){ var o = el('option', null, x); o.value = x; fs.appendChild(o); });
     if (!it.formato) { var o0 = el('option', null, 'Tipo de contenido'); o0.value = ''; fs.insertBefore(o0, fs.firstChild); }
@@ -1881,7 +2048,9 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
     paintFmt();
     if (it.pilar) tags.appendChild(el('span', 'tag', it.pilar));
     if (it.fechaPublicacion) tags.appendChild(el('span', 'tag date', '📅 ' + it.fechaPublicacion));
-    tw.appendChild(tags); var h2Title = el('h2', null, it.titulo || 'Contenido ' + num); tw.appendChild(h2Title);
+    tw.appendChild(tags);
+    var h2Title = el('h2', null, it.titulo || 'Contenido ' + num);
+    tw.appendChild(h2Title);
     top.appendChild(tw);
     var badge = el('span', 'badge', LBL[it.estado]); top.appendChild(badge);
     card.appendChild(top);
@@ -2015,7 +2184,7 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
     renderThread();
 
     function paint(){
-      card.dataset.state = it.estado; a.dataset.state = it.estado; badge.textContent = LBL[it.estado];
+      card.dataset.state = it.estado; a.dataset.state = it.estado; badge.textContent = LBL[it.estado] || it.estado;
       ap.classList.toggle('on', it.estado === 'aprobado'); ch.classList.toggle('on', it.estado === 'cambios');
       ap.setAttribute('aria-pressed', it.estado === 'aprobado'); ch.setAttribute('aria-pressed', it.estado === 'cambios');
       if (it.estado === 'aprobado') {
@@ -2024,6 +2193,9 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
       } else if (it.estado === 'cambios') {
         decStatus.className = 'dec-status fix';
         decStatus.textContent = '✎ Marcado para Solicitar cambios (indica qué ajustar arriba)';
+      } else if (it.estado === 'corregido') {
+        decStatus.className = 'dec-status corr';
+        decStatus.textContent = '🔄 Contenido corregido (v' + (it.version || 2) + ') · Revisa los cambios y confirma tu visto bueno';
       } else {
         decStatus.className = 'dec-status';
         decStatus.textContent = '• Pendiente de evaluación (obligatorio)';
@@ -2034,9 +2206,9 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
       // Si el usuario escribió un texto en el textarea y no tocó "Agregar comentario", se guarda automáticamente
       if (ta.value.trim()) addCommentFromInput();
 
-      it.estado = it.estado === s ? 'pendiente' : s;
+      it.estado = it.estado === s ? (it.version > 1 ? 'corregido' : 'pendiente') : s;
       card.classList.remove('warn');
-      paint(); refresh(); applyFilter(); saveDraft();
+      paint(); refresh(); updateApartadoCorregidos(); applyFilter(); saveDraft();
 
       if (it.estado === 'cambios') {
         var hasComments = (it.comentarios && it.comentarios.length > 0);
@@ -2070,27 +2242,146 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
     });
   });
 
-  function counts(){ var o = {aprobado:0, cambios:0, pendiente:0}; items.forEach(function(it){ o[it.estado]++; }); return o; }
+  function counts(){
+    var o = {aprobado:0, cambios:0, pendiente:0, corregido:0};
+    var evaluatedItems = (targetPieceNumbers && targetPieceNumbers.length > 0)
+      ? items.filter(function(it, idx){ return targetPieceNumbers.indexOf(idx + 1) !== -1; })
+      : items;
+    evaluatedItems.forEach(function(it){
+      var st = it.estado || 'pendiente';
+      o[st] = (o[st] || 0) + 1;
+    });
+    return o;
+  }
   function refresh(){
-    var n = items.length || 1, k = counts();
+    var evaluatedItems = (targetPieceNumbers && targetPieceNumbers.length > 0)
+      ? items.filter(function(it, idx){ return targetPieceNumbers.indexOf(idx + 1) !== -1; })
+      : items;
+    var n = evaluatedItems.length || 1, k = counts();
     $('sOk').textContent = k.aprobado; $('sFix').textContent = k.cambios; $('sPend').textContent = k.pendiente;
-    $('dN').textContent = (k.aprobado + k.cambios) + '/' + items.length;
+    $('dN').textContent = (k.aprobado + k.cambios) + '/' + evaluatedItems.length;
     $('pct').textContent = Math.round((k.aprobado + k.cambios) / n * 100) + '%';
     var lo = C * k.aprobado / n, lf = C * k.cambios / n;
     $('rOk').setAttribute('stroke-dasharray', lo + ' ' + C);
     $('rFix').setAttribute('stroke-dasharray', lf + ' ' + C);
     $('rFix').setAttribute('stroke-dashoffset', -lo);
     $('rOk').setAttribute('stroke-opacity', k.aprobado ? 1 : 0); $('rFix').setAttribute('stroke-opacity', k.cambios ? 1 : 0);
+
+    var chipCount = $('chipCountCorregidos');
+    var filterBtn = $('filterCorregidos');
+    if (chipCount) chipCount.textContent = k.corregido || 0;
+    if (filterBtn) filterBtn.style.display = (k.corregido > 0) ? 'inline-flex' : 'none';
   }
 
   var f = 'all';
   function applyFilter(){
     var vis = 0;
-    cards.forEach(function(c){ var v = (f === 'all' || c.it.estado === f); c.card.style.display = v ? '' : 'none'; c.nav.style.display = v ? '' : 'none'; if (v) vis++; });
+    cards.forEach(function(c){
+      var isIncludedInShipment = (!targetPieceNumbers || targetPieceNumbers.indexOf(parseInt(c.card.dataset.pieceNum, 10)) !== -1);
+      var matchesFilter = (f === 'all') || (c.it.estado === f);
+      var v = isIncludedInShipment && matchesFilter;
+      c.card.style.display = v ? '' : 'none';
+      c.nav.style.display = isIncludedInShipment ? (v ? '' : 'none') : 'none';
+      if (v) vis++;
+    });
     $('empty').style.display = vis ? 'none' : 'block';
+
+    [].forEach.call(document.querySelectorAll('.chip'), function(x){
+      x.classList.toggle('on', x.dataset.f === f);
+    });
+
+    var btnVerSolo = $('btnVerSoloCorregidos');
+    if (btnVerSolo) {
+      var corregidosCount = items.filter(function(it){ return it.estado === 'corregido'; }).length;
+      if (f === 'corregido') {
+        btnVerSolo.textContent = 'Ver todos los contenidos';
+        btnVerSolo.style.background = '#1F3549';
+      } else {
+        btnVerSolo.textContent = 'Ver solo corregidos (' + corregidosCount + ')';
+        btnVerSolo.style.background = '#0284c7';
+      }
+    }
   }
+
+  function updateApartadoCorregidos(){
+    var apartado = $('apartadoCorregidos');
+    var pillsContainer = $('apartadoCorregidosPills');
+    var chipCount = $('chipCountCorregidos');
+    var apartadoCount = $('apartadoCount');
+    var filterBtn = $('filterCorregidos');
+    var btnVerSolo = $('btnVerSoloCorregidos');
+
+    var corregidos = items.filter(function(it, idx){
+      var isIncludedInShipment = (!targetPieceNumbers || targetPieceNumbers.indexOf(idx + 1) !== -1);
+      return isIncludedInShipment && (it.estado === 'corregido');
+    });
+
+    var count = corregidos.length;
+    if (chipCount) chipCount.textContent = count;
+    if (apartadoCount) apartadoCount.textContent = count;
+
+    if (filterBtn) {
+      filterBtn.style.display = count > 0 ? 'inline-flex' : 'none';
+    }
+
+    if (!apartado) return;
+
+    if (count > 0) {
+      apartado.style.display = 'block';
+      if (btnVerSolo) {
+        if (f === 'corregido') {
+          btnVerSolo.textContent = 'Ver todos los contenidos';
+          btnVerSolo.style.background = '#1F3549';
+        } else {
+          btnVerSolo.textContent = 'Ver solo corregidos (' + count + ')';
+          btnVerSolo.style.background = '#0284c7';
+        }
+        btnVerSolo.onclick = function(){
+          f = (f === 'corregido') ? 'all' : 'corregido';
+          applyFilter();
+        };
+      }
+      if (pillsContainer) {
+        pillsContainer.innerHTML = '';
+        corregidos.forEach(function(it){
+          var pieceIdx = items.indexOf(it);
+          var num = (pieceIdx + 1 < 10 ? '0' : '') + (pieceIdx + 1);
+          var vStr = 'v' + (it.version || 2);
+          var a = el('a', 'pill-corregido');
+          a.href = '#' + (it.id || ('c' + (pieceIdx + 1)));
+          a.innerHTML = '<span style="color:#0284c7;font-weight:700;">#' + num + '</span> ' +
+            '<span>' + (it.titulo || 'Contenido') + '</span> ' +
+            '<span class="pill-v">' + vStr + '</span>';
+          a.onclick = function(e){
+            e.preventDefault();
+            var targetCard = $('list').querySelector('#' + (it.id || ('c' + (pieceIdx + 1))));
+            if (targetCard) {
+              if (f !== 'all' && f !== 'corregido') {
+                f = 'all';
+                applyFilter();
+              }
+              targetCard.scrollIntoView({behavior:'smooth', block:'center'});
+              targetCard.classList.add('highlight-pulse');
+              setTimeout(function(){ targetCard.classList.remove('highlight-pulse'); }, 1500);
+            }
+          };
+          pillsContainer.appendChild(a);
+        });
+      }
+    } else {
+      apartado.style.display = 'none';
+      if (f === 'corregido') {
+        f = 'all';
+        applyFilter();
+      }
+    }
+  }
+
   [].forEach.call(document.querySelectorAll('.chip'), function(b){
-    b.onclick = function(){ [].forEach.call(document.querySelectorAll('.chip'), function(x){ x.classList.remove('on'); }); b.classList.add('on'); f = b.dataset.f; applyFilter(); };
+    b.onclick = function(){
+      f = b.dataset.f;
+      applyFilter();
+    };
   });
 
   try {
@@ -2231,7 +2522,7 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
         });
 
         if (fsItem) {
-          if (fsItem.estado && ['aprobado', 'cambios', 'pendiente'].indexOf(fsItem.estado) >= 0) {
+          if (fsItem.estado && ['aprobado', 'cambios', 'pendiente', 'corregido'].indexOf(fsItem.estado) >= 0) {
             it.estado = fsItem.estado;
           }
           if (fsItem.comentario != null) {
@@ -2246,9 +2537,6 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
           }
           if (fsItem.formatoOriginal) {
             it.formatoOriginal = fsItem.formatoOriginal;
-          }
-          if (fsItem.revisadoPor) {
-            it.revisadoPor = fsItem.revisadoPor;
           }
           if (fsItem.titulo) {
             it.titulo = fsItem.titulo;
@@ -2287,6 +2575,7 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
       });
 
       refresh();
+      updateApartadoCorregidos();
       applyFilter();
       saveDraft();
     }
@@ -2363,7 +2652,10 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
     var revName = getReviewerName() || 'Cliente';
     DATA.revision = {revisadoPor: revName, fecha: new Date().toISOString()};
     var k = counts();
-    var estadoGeneral = (k.cambios > 0) ? 'Con cambios' : (k.aprobado === items.length ? 'Aprobado' : 'Parcial');
+    var totalGlobalOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
+    var totalGlobalFix = items.filter(function(x){ return x.estado === 'cambios'; }).length;
+    var totalGlobalPend = items.filter(function(x){ return x.estado === 'pendiente' || !x.estado; }).length;
+    var estadoGeneral = (totalGlobalFix > 0) ? 'Con cambios' : (totalGlobalOk === items.length ? 'Aprobado' : (totalGlobalOk > 0 ? 'Parcial' : 'Sin revisar'));
 
     var btn = $('dl');
     btn.disabled = true; btn.textContent = 'Enviando…';
@@ -2374,7 +2666,7 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
         kind:'ok',
         icon:'✓',
         title:'¡Revisión enviada!',
-        text:'Nexo ya recibió tus respuestas: ' + k.aprobado + ' aprobados y ' + k.cambios + ' con cambios. Si cambias algo, puedes volver a enviarla.',
+        text:'Nexo ya recibió tus respuestas: ' + k.aprobado + ' aprobados y ' + k.cambios + ' con cambios.' + (isReviewShipment ? ' (Envío de revisión procesado).' : '') + ' Si cambias algo, puedes volver a enviarla.',
         buttons:[{label:'Descargar una copia', fn:doDownload}, {label:'Listo', primary:true}]
       });
     }
@@ -2395,18 +2687,22 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
       var cList = (it.comentarios && it.comentarios.length) ? it.comentarios : (it.comentario ? [{ autor: it.revisadoPor || revName, texto: it.comentario, fecha: '' }] : []);
       var fullComment = formatComentariosString(cList) || it.comentario || '';
       var lastAuthor = (cList.length && cList[cList.length - 1].autor) ? cList[cList.length - 1].autor : (it.revisadoPor || revName);
+      var fMap = {
+        n: { integerValue: String(i + 1) },
+        id: { stringValue: String(it.id || ('c' + (i + 1))) },
+        titulo: { stringValue: String(it.titulo || '') },
+        formato: { stringValue: String(it.formato || '') },
+        formatoOriginal: { stringValue: String(it.formatoOriginal || '') },
+        estado: { stringValue: String(it.estado || 'pendiente') },
+        comentario: { stringValue: String(fullComment) },
+        revisadoPor: { stringValue: String(lastAuthor) }
+      };
+      if (it.guion != null) fMap.guion = { stringValue: String(it.guion) };
+      if (it.copy != null) fMap.copy = { stringValue: String(it.copy) };
+      if (it.version != null) fMap.version = { integerValue: String(it.version) };
       return {
         mapValue: {
-          fields: {
-            n: { integerValue: String(i + 1) },
-            id: { stringValue: String(it.id || ('c' + (i + 1))) },
-            titulo: { stringValue: String(it.titulo || '') },
-            formato: { stringValue: String(it.formato || '') },
-            formatoOriginal: { stringValue: String(it.formatoOriginal || '') },
-            estado: { stringValue: String(it.estado || 'pendiente') },
-            comentario: { stringValue: String(fullComment) },
-            revisadoPor: { stringValue: String(lastAuthor) }
-          }
+          fields: fMap
         }
       };
     });
@@ -2418,9 +2714,9 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
 
     var fsBody = JSON.stringify({
       fields: {
-        aprobados: { integerValue: String(k.aprobado) },
-        cambios: { integerValue: String(k.cambios) },
-        pendientes: { integerValue: String(k.pendiente) },
+        aprobados: { integerValue: String(totalGlobalOk) },
+        cambios: { integerValue: String(totalGlobalFix) },
+        pendientes: { integerValue: String(totalGlobalPend) },
         estado: { stringValue: estadoGeneral },
         revisadoPor: { stringValue: revName },
         ultimaRevision: { stringValue: DATA.revision.fecha },
@@ -2451,8 +2747,13 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
   function validate(next, label){
     commitAllDraftComments();
 
-    // 1. PASO OBLIGATORIO: Todos los contenidos deben estar evaluados (Aprobar o Solicitar cambios)
-    var pend = cards.filter(function(c){ return c.it.estado === 'pendiente'; });
+    // Evaluar solo las piezas del envío si estamos en modo revisión específica
+    var cardsToValidate = (targetPieceNumbers && targetPieceNumbers.length > 0)
+      ? cards.filter(function(c){ return targetPieceNumbers.indexOf(parseInt(c.card.dataset.pieceNum, 10)) !== -1; })
+      : cards;
+
+    // 1. PASO OBLIGATORIO: Todos los contenidos evaluables deben estar evaluados (Aprobar o Solicitar cambios)
+    var pend = cardsToValidate.filter(function(c){ return c.it.estado === 'pendiente' || !c.it.estado; });
     if (pend.length) {
       f = 'all'; applyFilter();
       [].forEach.call(document.querySelectorAll('.chip'), function(x){ x.classList.toggle('on', x.dataset.f === 'all'); });
@@ -2464,7 +2765,7 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
         kind: 'warn',
         icon: '!',
         title: pend.length === 1 ? 'Paso obligatorio: falta 1 contenido por evaluar' : 'Paso obligatorio: faltan ' + pend.length + ' contenidos por evaluar',
-        text: 'Debes evaluar todos los contenidos (Aprobar o Solicitar cambios) antes de enviar la revisión. No se pueden dejar contenidos pendientes.',
+        text: 'Debes evaluar todos los contenidos del envío (Aprobar o Solicitar cambios) antes de enviar la revisión. No se pueden dejar contenidos pendientes.',
         list: pend.map(function(c){ return c.nav.textContent.replace(/^(\d+)/, '$1 · '); }),
         buttons: [{
           label: 'Evaluar pendientes ahora',
@@ -2478,8 +2779,35 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
       return;
     }
 
+    // Si hay contenidos corregidos aún sin evaluación del cliente (Aprobar o Pedir cambios)
+    var corrPendientes = cardsToValidate.filter(function(c){ return c.it.estado === 'corregido'; });
+    if (corrPendientes.length) {
+      f = 'corregido'; applyFilter();
+      [].forEach.call(document.querySelectorAll('.chip'), function(x){ x.classList.toggle('on', x.dataset.f === 'corregido'); });
+      cards.forEach(function(c){ c.card.classList.remove('warn'); });
+      corrPendientes.forEach(function(c){ c.card.classList.add('warn'); });
+      corrPendientes[0].card.scrollIntoView({behavior:'smooth', block:'center'});
+
+      modal({
+        kind: 'warn',
+        icon: '🔄',
+        title: corrPendientes.length === 1 ? 'Falta dar visto bueno a 1 contenido corregido' : 'Falta dar visto bueno a ' + corrPendientes.length + ' contenidos corregidos',
+        text: 'La agencia preparó los ajustes en estas piezas. Por favor márcalas como "Aprobado" o "Solicitar cambios" antes de enviar tu visto bueno definitivo.',
+        list: corrPendientes.map(function(c){ return c.nav.textContent.replace(/^(\d+)/, '$1 · '); }),
+        buttons: [{
+          label: 'Evaluar corregidos ahora',
+          primary: true,
+          fn: function(){
+            f = 'corregido'; applyFilter();
+            corrPendientes[0].card.scrollIntoView({behavior:'smooth', block:'center'});
+          }
+        }]
+      });
+      return;
+    }
+
     // 2. PASO OBLIGATORIO: Si se solicitaron cambios, debe existir comentario explicando qué ajustar
-    var sinComentario = cards.filter(function(c){
+    var sinComentario = cardsToValidate.filter(function(c){
       if (c.it.estado !== 'cambios') return false;
       var hasComments = (c.it.comentarios && c.it.comentarios.length > 0 && c.it.comentarios.some(function(x){ return x.texto && x.texto.trim(); }));
       var hasSingle = !!(c.it.comentario && c.it.comentario.trim());
@@ -2556,7 +2884,7 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
   $('dl').onclick = function(){ if (SEND) validate(doSend, 'Enviar'); else validate(doDownload, 'Descargar'); };
   $('dlMini').onclick = function(){ doDownload(); };
 
-  refresh(); applyFilter();
+  refresh(); updateApartadoCorregidos(); applyFilter();
   if (typeof NexoNetworkBackground !== 'undefined') {
     NexoNetworkBackground.init(document.body);
   }
@@ -2815,6 +3143,8 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
     it.guion = newGuion;
     it.copy = newCopy;
     it.version = nextVersion;
+    it.estado = 'corregido';
+    it.fechaCorreccion = new Date().toISOString();
 
     // Agregar nota automática en el hilo de comentarios indicando la corrección por la agencia
     it.comentarios = it.comentarios || [];
@@ -2842,14 +3172,20 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
       }
     }
     if (cObj.renderThread) cObj.renderThread();
+    if (cObj.paint) cObj.paint();
+    refresh();
+    updateApartadoCorregidos();
     saveDraft();
 
     // Actualizar en Firestore si está conectado
     if (FB && FB.projectId && DATA.id) {
       var totalGlobalOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
       var totalGlobalFix = items.filter(function(x){ return x.estado === 'cambios'; }).length;
+      var totalGlobalCorr = items.filter(function(x){ return x.estado === 'corregido'; }).length;
       var totalGlobalPend = items.filter(function(x){ return x.estado === 'pendiente' || !x.estado; }).length;
-      var estadoGeneral = (totalGlobalFix > 0) ? 'Con cambios' : (totalGlobalOk === items.length ? 'Aprobado' : (totalGlobalOk > 0 ? 'Parcial' : 'Sin revisar'));
+      var estadoGeneral = (totalGlobalFix > 0) ? 'Con cambios' :
+                          (totalGlobalCorr > 0 ? 'En revisión' :
+                          (totalGlobalOk === items.length ? 'Aprobado' : (totalGlobalOk > 0 ? 'Parcial' : 'Sin revisar')));
 
       var firestoreContenidos = items.map(function(item, i){
         var cList = (item.comentarios && item.comentarios.length) ? item.comentarios : (item.comentario ? [{ autor: item.revisadoPor || 'Cliente', texto: item.comentario, fecha: '' }] : []);
@@ -2875,7 +3211,7 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
 
       var fsUrl = 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(FB.projectId) +
         '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
-        '?updateMask.fieldPaths=contenidos&updateMask.fieldPaths=estado&key=' + encodeURIComponent(FB.apiKey);
+        '?updateMask.fieldPaths=contenidos&updateMask.fieldPaths=estado&updateMask.fieldPaths=aprobados&updateMask.fieldPaths=cambios&updateMask.fieldPaths=pendientes&key=' + encodeURIComponent(FB.apiKey);
 
       fetch(fsUrl, {
         method: 'PATCH',
@@ -2883,13 +3219,22 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
         body: JSON.stringify({
           fields: {
             estado: { stringValue: estadoGeneral },
+            aprobados: { integerValue: String(totalGlobalOk) },
+            cambios: { integerValue: String(totalGlobalFix) },
+            pendientes: { integerValue: String(totalGlobalPend) },
             contenidos: { arrayValue: { values: firestoreContenidos } }
           }
         })
       })
       .then(function(r){
+        if (!r.ok) {
+          return r.json().then(function(j){ throw new Error((j.error && j.error.message) || ('HTTP ' + r.status)); });
+        }
+        return r.json();
+      })
+      .then(function(){
         if (btnSave) { btnSave.disabled = false; btnSave.textContent = '💾 Guardar cambios'; }
-        toast('✓ Cambios guardados y sincronizados en el tablero');
+        toast('✓ Corrección guardada (v' + nextVersion + ') y sincronizada en el tablero');
       })
       .catch(function(err){
         console.error('Error guardando corrección en Firestore:', err);
@@ -2898,7 +3243,7 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
       });
     } else {
       if (btnSave) { btnSave.disabled = false; btnSave.textContent = '💾 Guardar cambios'; }
-      toast('✓ Cambios guardados');
+      toast('✓ Corrección guardada (v' + nextVersion + ')');
     }
   }
 

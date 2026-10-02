@@ -12,9 +12,9 @@ service cloud.firestore {
       return request.auth != null && request.auth.token.email in ['carlosuzc29@gmail.com', 'andrevmuedit@gmail.com'];
     }
 
-    // Helper: validar que el id termine en un código aleatorio hexadecimal de 6 a 8 caracteres
+    // Helper: validar que el id termine en un código aleatorio hexadecimal de 4 a 8 caracteres
     function hasValidRandomSuffix(docId) {
-      return docId.matches('.*-[0-9a-f]{6,8}$');
+      return docId.matches('.*-[0-9a-f]{4,8}$');
     }
 
     // Colección principal de tableros de contenido (aprobaciones)
@@ -47,7 +47,7 @@ service cloud.firestore {
         request.resource.data.url == resource.data.url &&
         request.resource.data.total == resource.data.total &&
         request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-          'aprobados', 'cambios', 'pendientes', 'estado', 'revisadoPor', 'ultimaRevision', 'contenidos'
+          'aprobados', 'cambios', 'pendientes', 'estado', 'revisadoPor', 'ultimaRevision', 'contenidos', 'actualizado'
         ])
       );
 

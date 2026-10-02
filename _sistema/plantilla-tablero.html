@@ -1862,34 +1862,7 @@ __DATA__
     targetPieceNumbers = piezasParam.split(',').map(function(s){ return parseInt(s.trim(), 10); }).filter(function(n){ return !isNaN(n) && n > 0; });
   }
 
-  function renderShipmentBannerIfNeeded(){
-    if (!isReviewShipment) return;
-    if (!targetPieceNumbers || targetPieceNumbers.length === 0) {
-      targetPieceNumbers = items.map(function(it, idx){
-        return it.estado === 'corregido' ? (idx + 1) : null;
-      }).filter(Boolean);
-    }
-    if (targetPieceNumbers && targetPieceNumbers.length > 0 && !$('shipmentBannerEl')) {
-      var banner = el('div', 'shipment-banner');
-      banner.id = 'shipmentBannerEl';
-      banner.innerHTML = '<div class="shipment-banner-left">' +
-        '<div class="shipment-banner-icon">✨</div>' +
-        '<div>' +
-          '<div class="shipment-banner-title">Modo Aprobación: Contenidos corregidos (' + targetPieceNumbers.length + ' ' + (targetPieceNumbers.length === 1 ? 'pieza' : 'piezas') + ')</div>' +
-          '<div class="shipment-banner-sub">Hemos aplicado los ajustes solicitados. Revisa la nueva versión y confírmanos tu aprobación.</div>' +
-        '</div>' +
-      '</div>' +
-      '<div class="shipment-banner-action">' +
-        '<a href="' + (window.location.pathname || './') + '" title="Ver todos los contenidos del tablero">Ver tablero completo ↗</a>' +
-      '</div>';
-      var introEl = $('intro');
-      if (introEl && introEl.parentNode) {
-        introEl.parentNode.insertBefore(banner, introEl.nextSibling);
-      }
-    }
-  }
 
-  renderShipmentBannerIfNeeded();
 
   // Tarjetas
   var list = $('list'), nav = $('nav'), cards = [];
@@ -1907,10 +1880,7 @@ __DATA__
     top.appendChild(el('div', 'big', num));
     var tw = el('div'); var tags = el('div', 'tags');
 
-    // Versión pill si tiene versión > 1 o estado corregido
-    if (it.version && it.version > 1) {
-      tags.appendChild(el('span', 'tag version', 'v' + it.version + ' Corregido'));
-    }
+
 
     var fw = el('label', 'fmt-wrap'); var fs = el('select', 'fmt-sel'); fs.setAttribute('aria-label', 'Tipo de contenido');
     FORMATOS.forEach(function(x){ var o = el('option', null, x); o.value = x; fs.appendChild(o); });
@@ -1947,10 +1917,7 @@ __DATA__
     var badge = el('span', 'badge', LBL[it.estado]); top.appendChild(badge);
     card.appendChild(top);
 
-    var corrStrip = el('div', 'card-corregido-strip');
-    corrStrip.style.display = (it.estado === 'corregido') ? 'flex' : 'none';
-    corrStrip.innerHTML = '<span class="ccs-icon">✨</span><span class="ccs-text"><strong>Versión corregida v' + (it.version || 2) + '</strong> · Ajustes aplicados por la agencia, lista para tu visto bueno</span>';
-    card.appendChild(corrStrip);
+
 
     var hasCopy = (it.copy || it.hashtags);
     var body = el('div', 'c-body' + (hasCopy ? '' : ' single'));
@@ -2081,22 +2048,16 @@ __DATA__
     renderThread();
 
     function paint(){
-      card.dataset.state = it.estado; a.dataset.state = it.estado; badge.textContent = LBL[it.estado] || it.estado;
+      card.dataset.state = it.estado; a.dataset.state = it.estado;
+      badge.textContent = (it.estado === 'corregido' && !agencyUser) ? 'Pendiente' : (LBL[it.estado] || it.estado);
       ap.classList.toggle('on', it.estado === 'aprobado'); ch.classList.toggle('on', it.estado === 'cambios');
       ap.setAttribute('aria-pressed', it.estado === 'aprobado'); ch.setAttribute('aria-pressed', it.estado === 'cambios');
-      if (corrStrip) {
-        corrStrip.style.display = (it.estado === 'corregido') ? 'flex' : 'none';
-        corrStrip.innerHTML = '<span class="ccs-icon">✨</span><span class="ccs-text"><strong>Versión corregida v' + (it.version || 2) + '</strong> · Ajustes aplicados por la agencia, lista para tu visto bueno</span>';
-      }
       if (it.estado === 'aprobado') {
         decStatus.className = 'dec-status ok';
         decStatus.textContent = '✓ Marcado como Aprobado';
       } else if (it.estado === 'cambios') {
         decStatus.className = 'dec-status fix';
         decStatus.textContent = '✎ Marcado para Solicitar cambios (indica qué ajustar arriba)';
-      } else if (it.estado === 'corregido') {
-        decStatus.className = 'dec-status corr';
-        decStatus.textContent = '✨ Versión corregida (v' + (it.version || 2) + ') · Revisa los ajustes y confirma tu visto bueno';
       } else {
         decStatus.className = 'dec-status';
         decStatus.textContent = '• Pendiente de evaluación (obligatorio)';
@@ -2495,15 +2456,6 @@ __DATA__
           }
           if (fsItem.version) {
             it.version = parseInt(fsItem.version, 10);
-            if (it.version > 1 && cObj.tagsEl) {
-              var existingV = cObj.tagsEl.querySelector('.tag.version');
-              if (!existingV) {
-                var vTag = el('span', 'tag version', 'v' + it.version + ' Corregido');
-                cObj.tagsEl.insertBefore(vTag, cObj.tagsEl.firstChild);
-              } else {
-                existingV.textContent = 'v' + it.version + ' Corregido';
-              }
-            }
           }
 
           if (it.comentario) {
@@ -2517,7 +2469,6 @@ __DATA__
         }
       });
 
-      renderShipmentBannerIfNeeded();
       refresh();
       updateApartadoCorregidos();
       applyFilter();
@@ -3168,15 +3119,7 @@ __DATA__
     if (cObj.copyParagraph) {
       cObj.copyParagraph.textContent = newCopy;
     }
-    if (cObj.tagsEl) {
-      var existingV = cObj.tagsEl.querySelector('.tag.version');
-      if (!existingV) {
-        var vTag = el('span', 'tag version', 'v' + nextVersion + ' Corregido');
-        cObj.tagsEl.insertBefore(vTag, cObj.tagsEl.firstChild);
-      } else {
-        existingV.textContent = 'v' + nextVersion + ' Corregido';
-      }
-    }
+
     if (cObj.renderThread) cObj.renderThread();
     if (cObj.paint) cObj.paint();
     refresh();

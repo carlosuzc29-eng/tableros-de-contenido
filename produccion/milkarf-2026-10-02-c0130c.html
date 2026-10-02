@@ -1,0 +1,3376 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Tablero NEXO</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%22540%20610%201300%201160%22%3E%3Cg%20transform%3D%22translate(0%2C2364)%20scale(1%2C-1)%22%3E%3Cpath%20fill%3D%22%235CB83E%22%20d%3D%22M1266%201638%20c-67%20-59%20-123%20-108%20-123%20-108%200%20-1%20129%20-214%20131%20-216%201%20-1%202%204%2018%2065%20l17%2064%20116%200%20115%200%200%20-3%20c-1%20-1%20-43%20-157%20-94%20-347%20-51%20-189%20-93%20-344%20-93%20-345%200%200%2051%200%20114%200%20l113%201%2014%2051%20c8%2028%2051%20188%2096%20355%20109%20402%20124%20459%20124%20460%200%201%20-62%201%20-229%201%20-218%200%20-229%200%20-229%202%201%202%2034%20127%2034%20128%200%201%20-17%20-13%20-124%20-108z%20M759%201528%20c-147%20-548%20-209%20-778%20-209%20-779%200%20-1%2073%20-1%20229%20-1%20125%200%20228%200%20228%200%200%200%20-8%20-30%20-17%20-65%20-9%20-35%20-17%20-65%20-16%20-65%200%200%201%201%203%202%201%202%2056%2050%20122%20107%2066%2058%20120%20106%20120%20106%201%201%20-18%2034%20-63%20108%20-75%20123%20-67%20110%20-67%20109%20-1%200%20-9%20-29%20-18%20-65%20l-17%20-64%20-115%200%20-115%200%200%203%20c1%202%20184%20687%20186%20690%200%202%20-6%202%20-114%202%20l-114%200%20-23%20-88z%22%3E%3C%2Fpath%3E%3C%2Fg%3E%3C%2Fsvg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+  <!-- Firebase SDK compat -->
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+
+  <style>
+    /* ── SISTEMA DE DISEÑO ULTRA-MODERNO NEXO STUDIO (DARK & LIGHT) ── */
+    :root, [data-theme="dark"] {
+      --bg-base: #0B1118;
+      --bg-gradient: radial-gradient(circle at 15% 15%, rgba(92, 184, 62, 0.05), transparent 45%),
+                     radial-gradient(circle at 85% 85%, rgba(31, 53, 73, 0.25), transparent 50%),
+                     #0B1118;
+      --surface: #101A24;
+      --surface-elevated: #162332;
+      --surface-card: #131F2C;
+      --surface-card-hover: #182839;
+      --surface-col: rgba(16, 26, 38, 0.76);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --border-hover: rgba(92, 184, 62, 0.4);
+      --text-main: #F3F6FB;
+      --text-muted: #94A3B8;
+      --text-light: #64748B;
+      --nexo-blue: #1F3549;
+      --nexo-blue-dark: #121F2B;
+      --nexo-green: #5CB83E;
+      --nexo-green-soft: rgba(92, 184, 62, 0.16);
+      --nexo-green-glow: 0 0 16px rgba(92, 184, 62, 0.35);
+      --nexo-orange: #F97316;
+      --nexo-orange-soft: rgba(249, 115, 22, 0.16);
+      --nexo-orange-glow: 0 0 16px rgba(249, 115, 22, 0.35);
+      --nexo-cyan: #38BDF8;
+      --nexo-cyan-soft: rgba(56, 189, 248, 0.16);
+      --glass-topbar: rgba(11, 17, 24, 0.88);
+      --glass-drawer: rgba(14, 22, 32, 0.98);
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.35);
+      --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.06);
+      --shadow-card-hover: 0 12px 30px -4px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(92, 184, 62, 0.3);
+      --input-bg: rgba(255, 255, 255, 0.05);
+      --input-focus-bg: #141F2B;
+      --chip-bg: rgba(255, 255, 255, 0.06);
+      --pill-border: rgba(255, 255, 255, 0.1);
+      --empty-bg: rgba(255, 255, 255, 0.02);
+      --scrollbar-thumb: rgba(255, 255, 255, 0.14);
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Space Grotesk', monospace;
+      --trans-fast: 160ms cubic-bezier(0.16, 1, 0.3, 1);
+      --trans-spring: 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    [data-theme="light"] {
+      --bg-base: #EEF3F8;
+      --bg-gradient: radial-gradient(circle at 15% 15%, rgba(92, 184, 62, 0.08), transparent 45%),
+                     radial-gradient(circle at 85% 85%, rgba(31, 53, 73, 0.08), transparent 50%),
+                     #EEF3F8;
+      --surface: #FFFFFF;
+      --surface-elevated: #F8FAFC;
+      --surface-card: #FFFFFF;
+      --surface-card-hover: #FFFFFF;
+      --surface-col: rgba(255, 255, 255, 0.82);
+      --border-color: rgba(15, 23, 42, 0.08);
+      --border-subtle: rgba(15, 23, 42, 0.04);
+      --border-hover: rgba(92, 184, 62, 0.5);
+      --text-main: #0F172A;
+      --text-muted: #64748B;
+      --text-light: #94A3B8;
+      --nexo-blue: #1F3549;
+      --nexo-blue-dark: #121F2B;
+      --nexo-green: #5CB83E;
+      --nexo-green-soft: rgba(92, 184, 62, 0.12);
+      --nexo-green-glow: 0 0 12px rgba(92, 184, 62, 0.25);
+      --nexo-orange: #EA580C;
+      --nexo-orange-soft: rgba(234, 88, 12, 0.12);
+      --nexo-orange-glow: 0 0 12px rgba(234, 88, 12, 0.25);
+      --nexo-cyan: #0284C7;
+      --nexo-cyan-soft: rgba(2, 132, 199, 0.12);
+      --glass-topbar: rgba(255, 255, 255, 0.88);
+      --glass-drawer: rgba(255, 255, 255, 0.98);
+      --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04);
+      --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.06);
+      --shadow-card: 0 2px 8px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(15, 23, 42, 0.06);
+      --shadow-card-hover: 0 12px 28px -4px rgba(15, 23, 42, 0.1), 0 0 0 1px rgba(92, 184, 62, 0.3);
+      --input-bg: rgba(15, 23, 42, 0.04);
+      --input-focus-bg: #FFFFFF;
+      --chip-bg: rgba(15, 23, 42, 0.04);
+      --pill-border: rgba(15, 23, 42, 0.08);
+      --empty-bg: rgba(15, 23, 42, 0.02);
+      --scrollbar-thumb: rgba(15, 23, 42, 0.14);
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Space Grotesk', monospace;
+      --trans-fast: 160ms cubic-bezier(0.16, 1, 0.3, 1);
+      --trans-spring: 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-gradient);
+      font-family: var(--font-sans);
+      color: var(--text-main);
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    /* CANVAS DE FONDO ANIMADO DE CONEXIONES NEXO */
+    #nexo-bg-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ENCABEZADO ULTRA-MODERNO DE AUTOR (~62px) */
+    .topbar {
+      position: relative;
+      z-index: 50;
+      height: 62px;
+      min-height: 62px;
+      max-height: 62px;
+      background: var(--glass-topbar);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      gap: 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      flex-shrink: 0;
+    }
+
+    .nexo-logo-badge {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, #1F3549 0%, #101B26 100%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      flex-shrink: 0;
+      transition: transform var(--trans-fast);
+    }
+    .nexo-logo-badge:hover {
+      transform: scale(1.04);
+    }
+    .nexo-logo-badge svg {
+      width: 22px;
+      height: 22px;
+      display: block;
+      filter: drop-shadow(0 1px 3px rgba(92, 184, 62, 0.4));
+    }
+
+    .topbar-titles {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .client-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.4px;
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 220px;
+    }
+    .prod-pill {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      padding: 2px 7px;
+      border-radius: 6px;
+      background: var(--nexo-green-soft);
+      color: var(--nexo-green);
+      border: 1px solid rgba(92, 184, 62, 0.25);
+      user-select: none;
+    }
+    .header-sep {
+      color: var(--text-light);
+      font-weight: 400;
+      user-select: none;
+      font-size: 14px;
+    }
+    .client-date {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.2px;
+      text-transform: capitalize;
+    }
+
+    /* BUSCADOR COMPACTO LINEAR-STYLE */
+    .topbar-center {
+      flex: 1;
+      max-width: 340px;
+      display: flex;
+      align-items: center;
+    }
+    .compact-search {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      background: var(--input-bg);
+      padding: 0 12px;
+      border-radius: 10px;
+      width: 100%;
+      height: 38px;
+      border: 1px solid var(--border-color);
+      transition: var(--trans-fast);
+      position: relative;
+    }
+    .compact-search:focus-within {
+      background: var(--input-focus-bg);
+      border-color: var(--nexo-green);
+      box-shadow: 0 0 0 3px rgba(92, 184, 62, 0.18), 0 1px 4px rgba(0, 0, 0, 0.1);
+    }
+    .compact-search svg {
+      width: 16px;
+      height: 16px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+      transition: color var(--trans-fast);
+    }
+    .compact-search:focus-within svg {
+      color: var(--nexo-green);
+    }
+    .compact-search input {
+      border: none;
+      background: transparent;
+      outline: none;
+      width: 100%;
+      font-family: inherit;
+      font-size: 13px;
+      color: var(--text-main);
+      font-weight: 500;
+      height: 100%;
+    }
+    .compact-search input::placeholder {
+      color: var(--text-light);
+    }
+    .search-kbd {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-light);
+      background: var(--chip-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 5px;
+      padding: 2px 6px;
+      user-select: none;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .btn-search-clear {
+      background: none;
+      border: none;
+      color: var(--text-light);
+      cursor: pointer;
+      padding: 2px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      transition: color var(--trans-fast);
+    }
+    .btn-search-clear:hover { color: var(--text-main); }
+
+    /* DERECHA DEL ENCABEZADO */
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    /* DENSIDAD DEL TABLERO */
+    .density-toggle {
+      display: flex;
+      background: var(--chip-bg);
+      padding: 3px;
+      border-radius: 9px;
+      border: 1px solid var(--border-color);
+    }
+    .density-btn {
+      background: transparent;
+      border: none;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 4px 10px;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: var(--trans-fast);
+      user-select: none;
+    }
+    .density-btn.active {
+      background: var(--surface-card);
+      color: var(--text-main);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+      font-weight: 700;
+    }
+
+    /* PROGRESO GENERAL CON DEGRADADO */
+    .header-progress-box {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+      min-width: 84px;
+    }
+    .hp-info {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.2px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .hp-info span {
+      color: var(--nexo-green);
+      font-weight: 800;
+    }
+    .hp-bar-track {
+      width: 80px;
+      height: 4px;
+      background: var(--chip-bg);
+      border-radius: 99px;
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+    }
+    .hp-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--nexo-green) 0%, var(--nexo-cyan) 100%);
+      border-radius: 99px;
+      transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 0 8px rgba(92, 184, 62, 0.4);
+    }
+
+    /* INDICADOR EN VIVO (BEACON PULSING) */
+    .live-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 4px 8px;
+      border-radius: 99px;
+      background: var(--chip-bg);
+      border: 1px solid var(--border-color);
+    }
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #94A3B8;
+      transition: var(--trans-fast);
+      position: relative;
+    }
+    .live-status.online {
+      color: var(--nexo-green);
+      border-color: rgba(92, 184, 62, 0.25);
+      background: var(--nexo-green-soft);
+    }
+    .live-status.online .live-dot {
+      background: var(--nexo-green);
+      box-shadow: 0 0 8px rgba(92, 184, 62, 0.8);
+      animation: beaconPulse 2s infinite ease-in-out;
+    }
+    @keyframes beaconPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.65; }
+    }
+
+    /* BOTONES DE ACCIÓN DE ENCABEZADO */
+    .btn-icon-top {
+      background: var(--chip-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      transition: var(--trans-fast);
+      position: relative;
+    }
+    .btn-icon-top:hover {
+      background: var(--surface-card);
+      color: var(--text-main);
+      border-color: var(--border-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    }
+    .btn-icon-top svg { width: 16px; height: 16px; }
+
+    .btn-mobile-search-toggle {
+      display: none;
+    }
+
+    .btn-primary-top {
+      background: linear-gradient(135deg, #5CB83E 0%, #46962D 100%);
+      color: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      padding: 0 15px;
+      height: 38px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      box-shadow: 0 3px 12px rgba(92, 184, 62, 0.35);
+      transition: var(--trans-fast);
+      white-space: nowrap;
+    }
+    .btn-primary-top:hover {
+      background: linear-gradient(135deg, #64C545 0%, #4FA334 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 5px 18px rgba(92, 184, 62, 0.5);
+    }
+    .btn-primary-top svg { width: 16px; height: 16px; }
+
+    /* BUSCADOR DESPLEGABLE EN MÓVIL */
+    .mobile-search-bar {
+      display: none;
+      padding: 8px 14px 10px 14px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border-color);
+      z-index: 45;
+      position: relative;
+    }
+    .mobile-search-bar.show {
+      display: flex;
+    }
+
+    /* PESTAÑAS MÓVILES (RODAJE CON 1 MANO) */
+    .mobile-col-tabs {
+      display: none;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border-color);
+      padding: 8px 12px;
+      gap: 6px;
+      z-index: 40;
+      position: relative;
+    }
+    .m-tab-btn {
+      flex: 1 1 0;
+      min-width: 0;
+      min-height: 44px;
+      height: 44px;
+      border: 1px solid var(--border-color);
+      background: var(--chip-bg);
+      border-radius: 9px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 0 6px;
+      transition: var(--trans-fast);
+      user-select: none;
+      white-space: nowrap;
+    }
+    .m-tab-btn.active {
+      background: var(--surface-card);
+      border-color: var(--text-main);
+      color: var(--text-main);
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+    .m-tab-btn.active[data-tab="grabando"] {
+      color: var(--nexo-orange);
+      border-color: var(--nexo-orange);
+    }
+    .m-tab-btn.active[data-tab="listo"] {
+      color: var(--nexo-green);
+      border-color: var(--nexo-green);
+    }
+    .m-tab-count {
+      font-size: 11px;
+      background: var(--chip-bg);
+      padding: 1px 7px;
+      border-radius: 99px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+    .m-tab-btn.active .m-tab-count {
+      background: var(--text-main);
+      color: var(--bg-base);
+    }
+    .m-tab-btn.active[data-tab="grabando"] .m-tab-count {
+      background: var(--nexo-orange);
+      color: #FFFFFF;
+    }
+    .m-tab-btn.active[data-tab="listo"] .m-tab-count {
+      background: var(--nexo-green);
+      color: #FFFFFF;
+    }
+
+    /* MESA KANBAN ULTRA-MODERNA */
+    .kanban-area {
+      position: relative;
+      z-index: 10;
+      flex: 1 1 0%;
+      padding: 16px 20px 20px 20px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-rows: minmax(0, 1fr);
+      gap: 16px;
+      overflow: hidden;
+      min-height: 0;
+      height: calc(100vh - 62px);
+      max-height: calc(100vh - 62px);
+    }
+
+    /* COLUMNA ESTILO MESA DE CONTROL */
+    .k-col {
+      display: flex;
+      flex-direction: column;
+      background: var(--surface-col);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 14px;
+      min-width: 0;
+      min-height: 0;
+      max-height: 100%;
+      height: 100%;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      transition: border-color var(--trans-fast), box-shadow var(--trans-fast);
+    }
+    .k-col::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 16px;
+      right: 16px;
+      height: 2px;
+      border-radius: 99px;
+      opacity: 0.6;
+      transition: opacity var(--trans-fast);
+    }
+    .k-col[data-status="todo"]::before {
+      background: linear-gradient(90deg, transparent, var(--nexo-cyan), transparent);
+    }
+    .k-col[data-status="grabando"]::before {
+      background: linear-gradient(90deg, transparent, var(--nexo-orange), transparent);
+    }
+    .k-col[data-status="listo"]::before {
+      background: linear-gradient(90deg, transparent, var(--nexo-green), transparent);
+    }
+
+    /* ENCABEZADO DE COLUMNA PROFESIONAL */
+    .k-col-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2px 2px 12px 2px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+    .k-col-title-group {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .k-col-icon-wrap {
+      width: 26px;
+      height: 26px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--chip-bg);
+      border: 1px solid var(--border-color);
+    }
+    .k-col-icon {
+      width: 14px;
+      height: 14px;
+      color: var(--text-muted);
+    }
+    .k-col-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: 0.2px;
+      text-transform: uppercase;
+    }
+    .k-col-right-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .k-col-count-badge {
+      font-size: 11px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      padding: 2px 8px;
+      border-radius: 99px;
+      background: var(--chip-bg);
+      color: var(--text-muted);
+      border: 1px solid var(--border-subtle);
+    }
+    .k-col-add-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      border: 1px solid var(--border-subtle);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--trans-fast);
+    }
+    .k-col-add-btn:hover {
+      background: var(--surface-card);
+      color: var(--text-main);
+      border-color: var(--border-hover);
+    }
+    .k-col-add-btn svg { width: 13px; height: 13px; }
+
+    /* ESTILOS ESPECÍFICOS POR COLUMNA */
+    .k-col[data-status="grabando"] .k-col-icon-wrap {
+      background: var(--nexo-orange-soft);
+      border-color: rgba(249, 115, 22, 0.3);
+    }
+    .k-col[data-status="grabando"] .k-col-icon { color: var(--nexo-orange); }
+    .k-col[data-status="grabando"] .k-col-title { color: var(--nexo-orange); }
+    .k-col[data-status="grabando"] .k-col-count-badge {
+      background: var(--nexo-orange-soft);
+      color: var(--nexo-orange);
+      border-color: rgba(249, 115, 22, 0.3);
+    }
+
+    .k-col[data-status="listo"] .k-col-icon-wrap {
+      background: var(--nexo-green-soft);
+      border-color: rgba(92, 184, 62, 0.3);
+    }
+    .k-col[data-status="listo"] .k-col-icon { color: var(--nexo-green); }
+    .k-col[data-status="listo"] .k-col-title { color: var(--nexo-green); }
+    .k-col[data-status="listo"] .k-col-count-badge {
+      background: var(--nexo-green-soft);
+      color: var(--nexo-green);
+      border-color: rgba(92, 184, 62, 0.3);
+    }
+
+    /* CONTENEDOR DE TARJETAS */
+    .k-col-cards {
+      flex: 1 1 0%;
+      min-height: 0;
+      max-height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+      padding: 2px 4px 16px 2px;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+      overscroll-behavior-y: contain;
+      scrollbar-width: thin;
+      scrollbar-color: var(--scrollbar-thumb) transparent;
+    }
+    .k-col-cards::-webkit-scrollbar { width: 5px; }
+    .k-col-cards::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+      border-radius: 99px;
+    }
+
+    /* ESTADO VACÍO ULTRA-MODERNO (INTENCIONAL Y ELEGANTE) */
+    .k-empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 9px;
+      padding: 36px 16px;
+      border: 1px dashed var(--border-color);
+      border-radius: 12px;
+      background: var(--empty-bg);
+      user-select: none;
+      transition: var(--trans-fast);
+      margin-top: 6px;
+    }
+    .k-empty-state:hover {
+      border-color: var(--border-hover);
+      background: var(--chip-bg);
+    }
+    .k-empty-icon-wrap {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--chip-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-light);
+      margin-bottom: 2px;
+    }
+    .k-empty-icon-wrap svg { width: 20px; height: 20px; }
+    .k-empty-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+    .k-empty-sub {
+      font-size: 11px;
+      color: var(--text-light);
+      max-width: 200px;
+      line-height: 1.4;
+    }
+    .k-empty-action-btn {
+      margin-top: 6px;
+      background: var(--surface-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: var(--trans-fast);
+    }
+    .k-empty-action-btn:hover {
+      border-color: var(--nexo-green);
+      color: var(--nexo-green);
+      transform: translateY(-1px);
+    }
+    .k-empty-action-btn svg { width: 13px; height: 13px; }
+
+    /* TARJETAS COMO FICHAS DE PRODUCCIÓN DE AUTOR */
+    .card {
+      background: var(--surface-card);
+      border-radius: 11px;
+      padding: 13px 14px;
+      cursor: pointer;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-card);
+      transition: border-color var(--trans-fast), box-shadow var(--trans-fast), transform var(--trans-fast), background var(--trans-fast);
+      position: relative;
+      user-select: none;
+      overflow: visible;
+      border-left: 3px solid transparent;
+    }
+    .card:hover {
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow-card-hover);
+      transform: translateY(-2px);
+      background: var(--surface-card-hover);
+    }
+    .card:active {
+      transform: translateY(0);
+      box-shadow: var(--shadow-card);
+    }
+    .card.is-active-drawer {
+      border-color: var(--nexo-green);
+      box-shadow: 0 0 0 2px rgba(92, 184, 62, 0.25), var(--shadow-card-hover);
+    }
+
+    /* Estados de borde temático */
+    .card[data-card-status="todo"] {
+      border-left-color: var(--nexo-cyan);
+    }
+    .card[data-card-status="grabando"] {
+      border-left-color: var(--nexo-orange);
+    }
+    .card[data-card-status="listo"] {
+      border-left-color: var(--nexo-green);
+    }
+
+    /* FILA SUPERIOR DE TARJETA */
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 7px;
+    }
+    .card-badges {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      flex-wrap: wrap;
+    }
+    .card-seq-num {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-light);
+      background: var(--chip-bg);
+      border: 1px solid var(--border-subtle);
+      padding: 1px 5px;
+      border-radius: 4px;
+      letter-spacing: 0.3px;
+    }
+    .card-type-badge {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+    }
+    .card-sede-pill {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--chip-bg);
+      border: 1px solid var(--border-subtle);
+      padding: 2px 6px;
+      border-radius: 5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .card-sede-pill svg { width: 10px; height: 10px; }
+
+    /* ACCIONES DE TARJETA (3 PUNTOS) */
+    .card-actions {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .btn-card-action {
+      background: transparent;
+      border: none;
+      color: var(--text-light);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--trans-fast);
+      position: relative;
+    }
+    .btn-card-action::after {
+      content: '';
+      position: absolute;
+      inset: -8px;
+    }
+    .btn-card-action:hover {
+      background: var(--chip-bg);
+      color: var(--text-main);
+    }
+    .btn-card-action svg { width: 14px; height: 14px; }
+
+    /* TÍTULO DE LA TARJETA */
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.35;
+      letter-spacing: -0.3px;
+      margin-bottom: 5px;
+      word-break: break-word;
+    }
+
+    /* PREVIEW DE GUIÓN */
+    .card-desc-preview {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.45;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 9px;
+    }
+
+    /* FILA INFERIOR DE TARJETA (METADATA) */
+    .card-bottom-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding-top: 7px;
+      border-top: 1px solid var(--border-subtle);
+      margin-top: 2px;
+    }
+    .card-meta-tags {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+    .card-meta-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--chip-bg);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .card-meta-item svg { width: 11px; height: 11px; }
+
+    .card-mini-progress {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-mini-bar {
+      width: 32px;
+      height: 4px;
+      background: var(--chip-bg);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .card-mini-fill {
+      height: 100%;
+      background: var(--nexo-green);
+      border-radius: 99px;
+      transition: width var(--trans-fast);
+    }
+
+    .card-drag-indicator {
+      color: var(--text-light);
+      cursor: grab;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.4;
+      transition: opacity var(--trans-fast);
+    }
+    .card:hover .card-drag-indicator { opacity: 0.9; }
+    .card-drag-indicator svg { width: 13px; height: 13px; }
+
+    /* ESTADOS SORTABLE (DRAG AND DROP) */
+    .sortable-chosen {
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4) !important;
+      transform: scale(1.02) !important;
+      cursor: grabbing !important;
+      z-index: 100 !important;
+    }
+    .sortable-ghost {
+      opacity: 0.35;
+      background: var(--chip-bg) !important;
+      border: 1px dashed var(--nexo-green) !important;
+    }
+
+    /* MENÚ POPUP FLOTANTE DE TARJETA (3 PUNTOS) */
+    .card-popover-menu {
+      position: absolute;
+      top: 34px;
+      right: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border-color);
+      border-radius: 9px;
+      box-shadow: var(--shadow-lg);
+      padding: 5px;
+      z-index: 100;
+      display: none;
+      flex-direction: column;
+      min-width: 175px;
+      transform-origin: top right;
+      animation: popIn 0.15s ease-out;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .card-popover-menu.show { display: flex; }
+    .popover-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 11px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-main);
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+      transition: var(--trans-fast);
+    }
+    .popover-item:hover {
+      background: var(--chip-bg);
+      color: var(--nexo-green);
+    }
+    .popover-item.danger { color: #EF4444; }
+    .popover-item.danger:hover { background: rgba(239, 68, 68, 0.12); color: #EF4444; }
+    .popover-item svg { width: 14px; height: 14px; }
+    .popover-divider {
+      height: 1px;
+      background: var(--border-subtle);
+      margin: 4px 0;
+    }
+
+    /* ── PANEL LATERAL DE DETALLE (SIDE DRAWER) ────────────────────────── */
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s ease;
+    }
+    .drawer-backdrop.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .side-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 480px;
+      max-width: 100%;
+      background: var(--glass-drawer);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: -12px 0 40px rgba(0, 0, 0, 0.4);
+      z-index: 210;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform var(--trans-spring);
+      border-left: 1px solid var(--border-color);
+    }
+    .side-drawer.show {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-shrink: 0;
+      background: var(--glass-topbar);
+    }
+    .drawer-header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+    .drawer-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .drawer-btn-icon {
+      background: var(--chip-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      cursor: pointer;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--trans-fast);
+    }
+    .drawer-btn-icon:hover {
+      background: var(--surface-card);
+      color: var(--text-main);
+      border-color: var(--border-hover);
+    }
+    .drawer-btn-icon svg { width: 15px; height: 15px; }
+
+    .drawer-btn-close {
+      background: var(--chip-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      cursor: pointer;
+      height: 36px;
+      padding: 0 12px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      transition: var(--trans-fast);
+    }
+    .drawer-btn-close:hover {
+      background: var(--surface-card);
+      border-color: var(--border-hover);
+    }
+    .drawer-btn-close svg { width: 15px; height: 15px; }
+
+    .drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 22px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .drawer-body::-webkit-scrollbar { width: 5px; }
+    .drawer-body::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+      border-radius: 99px;
+    }
+
+    .drawer-card-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.35;
+      letter-spacing: -0.4px;
+      word-break: break-word;
+    }
+
+    .drawer-section {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .drawer-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .drawer-section-label {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .drawer-section-label svg { width: 13px; height: 13px; }
+
+    /* SELECTOR SEGMENTADO DE ESTADO DIRECTO */
+    .status-segmented-control {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      background: var(--chip-bg);
+      border: 1px solid var(--border-color);
+      padding: 3px;
+      border-radius: 9px;
+      gap: 3px;
+    }
+    .status-seg-btn {
+      background: transparent;
+      border: none;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      padding: 8px 10px;
+      border-radius: 7px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: var(--trans-fast);
+      user-select: none;
+    }
+    .status-seg-btn:hover {
+      color: var(--text-main);
+    }
+    .status-seg-btn.active {
+      background: var(--surface-card);
+      color: var(--text-main);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    }
+    .status-seg-btn[data-status="grabando"].active {
+      color: var(--nexo-orange);
+      border: 1px solid rgba(249, 115, 22, 0.3);
+    }
+    .status-seg-btn[data-status="listo"].active {
+      color: var(--nexo-green);
+      border: 1px solid rgba(92, 184, 62, 0.3);
+    }
+    .status-seg-btn svg { width: 14px; height: 14px; }
+
+    /* CAJA DE GUIÓN / TEXTO COMPLETO CON TELEPROMPTER FEEL */
+    .drawer-desc-box {
+      background: var(--surface-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: var(--text-main);
+      white-space: pre-wrap;
+      word-break: break-word;
+      user-select: text;
+    }
+    .btn-copy-script {
+      background: var(--chip-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 9px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: var(--trans-fast);
+    }
+    .btn-copy-script:hover {
+      background: var(--surface-card);
+      color: var(--nexo-green);
+      border-color: var(--nexo-green);
+    }
+    .btn-copy-script svg { width: 12px; height: 12px; }
+
+    /* CHECKLIST DE SUBTAREAS INTERACTIVO */
+    .drawer-check-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .drawer-check-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--surface-card);
+      border: 1px solid var(--border-color);
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--trans-fast);
+      user-select: none;
+      min-height: 40px;
+    }
+    .drawer-check-item:hover {
+      border-color: var(--border-hover);
+    }
+    .drawer-check-box {
+      width: 18px;
+      height: 18px;
+      border-radius: 5px;
+      border: 1.5px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--chip-bg);
+      transition: var(--trans-fast);
+      flex-shrink: 0;
+    }
+    .drawer-check-item.done .drawer-check-box {
+      background: var(--nexo-green);
+      border-color: var(--nexo-green);
+      color: #FFFFFF;
+    }
+    .drawer-check-box svg { width: 12px; height: 12px; display: none; }
+    .drawer-check-item.done .drawer-check-box svg { display: block; }
+    .drawer-check-text {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-main);
+      flex: 1;
+      line-height: 1.35;
+    }
+    .drawer-check-item.done .drawer-check-text {
+      text-decoration: line-through;
+      color: var(--text-light);
+    }
+
+    /* REFERENCIAS MULTIMEDIA */
+    .drawer-media-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .drawer-media-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 12px;
+      background: var(--surface-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--text-main);
+      font-size: 12px;
+      font-weight: 600;
+      transition: var(--trans-fast);
+    }
+    .drawer-media-link:hover {
+      border-color: var(--nexo-green);
+      color: var(--nexo-green);
+      transform: translateX(2px);
+    }
+    .drawer-media-link-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .drawer-media-link-left svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .drawer-media-link-left span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .drawer-media-link-ext svg { width: 13px; height: 13px; color: var(--text-light); flex-shrink: 0; }
+
+    /* FOOTER DEL DRAWER */
+    .drawer-footer {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: var(--glass-topbar);
+      flex-shrink: 0;
+    }
+    .btn-drawer-action-main {
+      flex: 1;
+      background: var(--nexo-blue);
+      color: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: var(--trans-fast);
+    }
+    .btn-drawer-action-main:hover {
+      background: var(--nexo-blue-dark);
+      border-color: var(--nexo-green);
+    }
+    .btn-drawer-action-main svg { width: 15px; height: 15px; }
+
+    /* ── MODAL DE EDICIÓN COMPLETA (CREAR / EDITAR) ────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 300;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .modal-overlay.show {
+      display: flex;
+      opacity: 1;
+    }
+    .modal-sheet {
+      background: var(--surface);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      width: 580px;
+      max-width: 95vw;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      transform: scale(0.96);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .modal-overlay.show .modal-sheet {
+      transform: scale(1);
+    }
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .modal-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.3px;
+    }
+    .modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .form-input, .form-textarea, .form-select {
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-family: inherit;
+      font-size: 13px;
+      color: var(--text-main);
+      outline: none;
+      transition: var(--trans-fast);
+      width: 100%;
+    }
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      background: var(--input-focus-bg);
+      border-color: var(--nexo-green);
+      box-shadow: 0 0 0 3px rgba(92, 184, 62, 0.18);
+    }
+    .form-textarea {
+      min-height: 110px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+    .modal-footer {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .btn-secondary {
+      background: var(--chip-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 9px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--trans-fast);
+    }
+    .btn-secondary:hover {
+      background: var(--surface-card);
+      color: var(--text-main);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #5CB83E 0%, #46962D 100%);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #FFFFFF;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 9px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--trans-fast);
+      box-shadow: 0 2px 8px rgba(92, 184, 62, 0.35);
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #64C545 0%, #4FA334 100%);
+      transform: translateY(-1px);
+    }
+
+    /* ── DENSIDAD CÓMODA ───────────────────────────────────────────────── */
+    body.density-comfortable .card {
+      padding: 16px 18px;
+      border-radius: 13px;
+    }
+    body.density-comfortable .card-title {
+      font-size: 15px;
+      margin-bottom: 7px;
+    }
+    body.density-comfortable .k-col-cards {
+      gap: 14px;
+    }
+
+    /* ── ADAPTACIÓN MÓVIL (PANTALLA RODAJES 390px / 360px) ── */
+    @media (max-width: 768px) {
+      .topbar {
+        height: 56px;
+        min-height: 56px;
+        max-height: 56px;
+        padding: 0 12px;
+        gap: 8px;
+      }
+      .topbar-left {
+        gap: 8px;
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow: hidden;
+      }
+      .nexo-logo-badge {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        flex-shrink: 0;
+      }
+      .nexo-logo-badge svg {
+        width: 18px;
+        height: 18px;
+      }
+      .topbar-titles {
+        min-width: 0;
+        overflow: hidden;
+        display: flex;
+        align-items: baseline;
+        gap: 5px;
+      }
+      .client-title {
+        font-size: 14px;
+        max-width: none;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        min-width: 0;
+        flex-shrink: 1;
+      }
+      .prod-pill {
+        display: none;
+      }
+      .header-sep {
+        flex-shrink: 0;
+      }
+      .client-date {
+        font-size: 11px;
+        flex-shrink: 0;
+        white-space: nowrap;
+      }
+      .topbar-center {
+        display: none;
+      }
+      .density-toggle {
+        display: none;
+      }
+      .header-progress-box {
+        display: none;
+      }
+      .topbar-right {
+        gap: 6px;
+        flex-shrink: 0;
+      }
+      .btn-mobile-search-toggle {
+        display: flex;
+      }
+      .btn-icon-top {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+      }
+      .btn-primary-top {
+        height: 36px;
+        padding: 0 10px;
+        font-size: 12px;
+      }
+      .btn-primary-top span {
+        display: none;
+      }
+
+      /* Buscador móvil desplegable */
+      .mobile-search-bar.show {
+        display: flex;
+      }
+
+      /* Pestañas de columna visibles en móvil */
+      .mobile-col-tabs {
+        display: flex;
+      }
+      .m-tab-btn {
+        min-height: 44px;
+      }
+
+      /* Kanban en móvil: 1 columna a la vez */
+      .kanban-area {
+        display: flex;
+        flex: 1 1 0%;
+        min-height: 0;
+        height: 100%;
+        padding: 10px 12px 16px 12px;
+        gap: 0;
+        overflow: hidden;
+        width: 100%;
+        max-width: 100vw;
+        box-sizing: border-box;
+      }
+      .k-col {
+        display: none;
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        max-height: 100%;
+        overflow: hidden;
+        padding: 10px;
+      }
+      .k-col.mobile-active {
+        display: flex;
+      }
+      .k-col-head {
+        display: none;
+      }
+
+      /* Panel lateral se convierte en pantalla completa */
+      .side-drawer {
+        width: 100%;
+        max-width: 100vw;
+        border-left: none;
+      }
+      .drawer-header {
+        padding: 12px 16px;
+      }
+      .drawer-btn-close {
+        height: 44px;
+        min-height: 44px;
+        padding: 0 14px;
+      }
+      .drawer-btn-icon {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+      }
+      .drawer-body {
+        padding: 16px;
+      }
+      .drawer-footer {
+        padding: 12px 16px;
+      }
+      .status-seg-btn {
+        min-height: 44px;
+        font-size: 13px;
+      }
+      .drawer-check-item {
+        min-height: 44px;
+        padding: 10px 12px;
+      }
+
+      /* Inputs accesibles para touch */
+      input, select, textarea, .form-input {
+        font-size: 16px !important;
+      }
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      .modal-sheet {
+        width: 95%;
+        max-height: 94vh;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body class="density-compact">
+
+  <!-- FONDO ANIMADO DE CONEXIONES NEXO -->
+  <canvas id="nexo-bg-canvas"></canvas>
+
+  <!-- ENCABEZADO ULTRA-MODERNO -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="nexo-logo-badge" title="NEXO Agencia Creativa">
+        <svg viewBox="540 610 1300 1160" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(0,2364) scale(1,-1)">
+            <path fill="#5CB83E" d="M1266 1638 c-67 -59 -123 -108 -123 -108 0 -1 129 -214 131 -216 1 -1 2 4 18 65 l17 64 116 0 115 0 0 -3 c-1 -1 -43 -157 -94 -347 -51 -189 -93 -344 -93 -345 0 0 51 0 114 0 l113 1 14 51 c8 28 51 188 96 355 109 402 124 459 124 460 0 1 -62 1 -229 1 -218 0 -229 0 -229 2 1 2 34 127 34 128 0 1 -17 -13 -124 -108z M759 1528 c-147 -548 -209 -778 -209 -779 0 -1 73 -1 229 -1 125 0 228 0 228 0 0 0 -8 -30 -17 -65 -9 -35 -17 -65 -16 -65 0 0 1 1 3 2 1 2 56 50 122 107 66 58 120 106 120 106 1 1 -18 34 -63 108 -75 123 -67 110 -67 109 -1 0 -9 -29 -18 -65 l-17 -64 -115 0 -115 0 0 3 c1 2 184 687 186 690 0 2 -6 2 -114 2 l-114 0 -23 -88z"/>
+          </g>
+        </svg>
+      </div>
+      <div class="topbar-titles">
+        <h1 id="hdr-client" class="client-title">Tablero NEXO</h1>
+        <span class="prod-pill">PRODUCCIÓN</span>
+        <span class="header-sep">·</span>
+        <span id="hdr-date" class="client-date">Sin Fecha</span>
+      </div>
+    </div>
+
+    <!-- Buscador compacto Linear-style en escritorio -->
+    <div class="topbar-center">
+      <div class="compact-search">
+        <i data-lucide="search"></i>
+        <input type="text" id="search-input" placeholder="Buscar tarjetas..." autocomplete="off">
+        <kbd class="search-kbd" onclick="document.getElementById('search-input').focus()">⌘K</kbd>
+        <button id="search-clear" class="btn-search-clear" onclick="clearSearch()" title="Limpiar"><i data-lucide="x"></i></button>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <!-- Selector de densidad Compacta / Cómoda -->
+      <div class="density-toggle" title="Densidad visual del tablero">
+        <button class="density-btn active" id="btn-density-compact" onclick="setDensity('compact')">Compacta</button>
+        <button class="density-btn" id="btn-density-comfortable" onclick="setDensity('comfortable')">Cómoda</button>
+      </div>
+
+      <!-- Selector de tema Oscuro / Claro -->
+      <button class="btn-icon-top" id="btn-theme-toggle" onclick="toggleTheme()" title="Cambiar tema (Oscuro / Claro)">
+        <i data-lucide="sun" id="theme-toggle-icon"></i>
+      </button>
+
+      <!-- Progreso global discreto -->
+      <div class="header-progress-box" title="Progreso de producción">
+        <div class="hp-info"><span id="hp-count">0 de 0</span> listos</div>
+        <div class="hp-bar-track">
+          <div class="hp-bar-fill" id="hp-fill" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Estado en vivo Firestore -->
+      <div id="live-indicator" class="live-status" style="display:none;" title="Sincronización en la nube">
+        <span class="live-dot"></span>
+        <span id="live-indicator-label">En vivo</span>
+      </div>
+
+      <!-- Botón buscar móvil -->
+      <button class="btn-icon-top btn-mobile-search-toggle" onclick="toggleMobileSearch()" title="Buscar">
+        <i data-lucide="search"></i>
+      </button>
+
+      <!-- Botón Exportar -->
+      <button class="btn-icon-top" onclick="exportData()" title="Exportar datos (JSON)">
+        <i data-lucide="download"></i>
+      </button>
+
+      <!-- Botón Crear Tarjeta -->
+      <button class="btn-primary-top" onclick="openModal()">
+        <i data-lucide="plus"></i> <span>Nueva tarjeta</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- BUSCADOR MÓVIL DESPLEGABLE -->
+  <div id="mobile-search-bar" class="mobile-search-bar">
+    <div class="compact-search" style="width:100%;">
+      <i data-lucide="search"></i>
+      <input type="text" id="mobile-search-input" placeholder="Buscar tarjetas..." autocomplete="off">
+      <button id="mobile-search-clear" class="btn-search-clear" onclick="clearSearch()" title="Limpiar"><i data-lucide="x"></i></button>
+    </div>
+  </div>
+
+  <!-- PESTAÑAS MÓVILES (RODAJE CON 1 MANO) -->
+  <nav class="mobile-col-tabs" aria-label="Columnas de producción">
+    <button class="m-tab-btn active" data-tab="todo" onclick="switchMobileTab('todo')">
+      Por hacer <span class="m-tab-count" id="m-count-todo">0</span>
+    </button>
+    <button class="m-tab-btn" data-tab="grabando" onclick="switchMobileTab('grabando')">
+      Grabando <span class="m-tab-count" id="m-count-grabando">0</span>
+    </button>
+    <button class="m-tab-btn" data-tab="listo" onclick="switchMobileTab('listo')">
+      Listo <span class="m-tab-count" id="m-count-listo">0</span>
+    </button>
+  </nav>
+
+  <!-- MESA KANBAN -->
+  <main class="kanban-area" id="kanban-canvas">
+    <!-- COLUMNA: POR HACER -->
+    <section class="k-col mobile-active" id="section-todo" data-status="todo">
+      <div class="k-col-head">
+        <div class="k-col-title-group">
+          <div class="k-col-icon-wrap"><i data-lucide="circle-dashed" class="k-col-icon"></i></div>
+          <h2 class="k-col-title">Por hacer</h2>
+        </div>
+        <div class="k-col-right-group">
+          <span class="k-col-count-badge" id="count-todo">0</span>
+          <button class="k-col-add-btn" onclick="openModalWithStatus('todo')" title="Añadir tarjeta a Por hacer">
+            <i data-lucide="plus"></i>
+          </button>
+        </div>
+      </div>
+      <div class="k-col-cards" id="col-todo" data-status="todo"></div>
+    </section>
+
+    <!-- COLUMNA: GRABANDO -->
+    <section class="k-col" id="section-grabando" data-status="grabando">
+      <div class="k-col-head">
+        <div class="k-col-title-group">
+          <div class="k-col-icon-wrap"><i data-lucide="video" class="k-col-icon"></i></div>
+          <h2 class="k-col-title">Grabando</h2>
+        </div>
+        <div class="k-col-right-group">
+          <span class="k-col-count-badge" id="count-grabando">0</span>
+          <button class="k-col-add-btn" onclick="openModalWithStatus('grabando')" title="Añadir tarjeta a Grabando">
+            <i data-lucide="plus"></i>
+          </button>
+        </div>
+      </div>
+      <div class="k-col-cards" id="col-grabando" data-status="grabando"></div>
+    </section>
+
+    <!-- COLUMNA: LISTO -->
+    <section class="k-col" id="section-listo" data-status="listo">
+      <div class="k-col-head">
+        <div class="k-col-title-group">
+          <div class="k-col-icon-wrap"><i data-lucide="check-circle-2" class="k-col-icon"></i></div>
+          <h2 class="k-col-title">Listo</h2>
+        </div>
+        <div class="k-col-right-group">
+          <span class="k-col-count-badge" id="count-listo">0</span>
+          <button class="k-col-add-btn" onclick="openModalWithStatus('listo')" title="Añadir tarjeta a Listo">
+            <i data-lucide="plus"></i>
+          </button>
+        </div>
+      </div>
+      <div class="k-col-cards" id="col-listo" data-status="listo"></div>
+    </section>
+  </main>
+
+  <!-- ── PANEL LATERAL DE DETALLE (SIDE DRAWER) ────────────────────────── -->
+  <aside id="side-drawer" class="side-drawer" aria-label="Detalle de tarjeta">
+    <div class="drawer-header">
+      <div class="drawer-header-left">
+        <span id="drawer-type-badge" class="card-type-badge"></span>
+        <span id="drawer-sede-pill" class="card-sede-pill" style="display:none;"></span>
+      </div>
+      <div class="drawer-header-actions">
+        <button class="drawer-btn-icon" onclick="editFromDrawer()" title="Editar tarjeta">
+          <i data-lucide="edit-3"></i>
+        </button>
+        <button class="drawer-btn-icon" onclick="deleteFromDrawer()" title="Eliminar tarjeta">
+          <i data-lucide="trash-2" style="color:#ef4444;"></i>
+        </button>
+        <button class="drawer-btn-close" onclick="closeDrawer()" title="Cerrar panel">
+          <i data-lucide="x"></i> <span>Volver</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="drawer-body">
+      <!-- Título de la tarjeta -->
+      <h2 id="drawer-title" class="drawer-card-title"></h2>
+
+      <!-- Selector directo de estado en rodaje -->
+      <div class="drawer-section">
+        <div class="drawer-section-label"><i data-lucide="sliders"></i> Estado de producción</div>
+        <div class="status-segmented-control" role="group" aria-label="Cambiar estado">
+          <button class="status-seg-btn" data-status="todo" onclick="setCardStatusFromDrawer('todo')">
+            <i data-lucide="circle-dashed"></i> Por hacer
+          </button>
+          <button class="status-seg-btn" data-status="grabando" onclick="setCardStatusFromDrawer('grabando')">
+            <i data-lucide="play-circle"></i> Grabando
+          </button>
+          <button class="status-seg-btn" data-status="listo" onclick="setCardStatusFromDrawer('listo')">
+            <i data-lucide="check-circle-2"></i> Listo
+          </button>
+        </div>
+      </div>
+
+      <!-- Guión / Contenido con botón copiar -->
+      <div class="drawer-section" id="drawer-desc-section">
+        <div class="drawer-section-header">
+          <div class="drawer-section-label"><i data-lucide="file-text"></i> Guión / Contenido a producir</div>
+          <button class="btn-copy-script" id="btn-copy-script" onclick="copyDrawerScript()">
+            <i data-lucide="copy"></i> <span>Copiar</span>
+          </button>
+        </div>
+        <div id="drawer-desc" class="drawer-desc-box"></div>
+      </div>
+
+      <!-- Checklist de producción interactivo -->
+      <div class="drawer-section" id="drawer-check-section">
+        <div class="drawer-section-header">
+          <div class="drawer-section-label"><i data-lucide="check-square"></i> Checklist de rodaje</div>
+          <span id="drawer-check-count" class="card-meta-item">0/0</span>
+        </div>
+        <div id="drawer-checklist" class="drawer-check-list"></div>
+      </div>
+
+      <!-- Referencias multimedia -->
+      <div class="drawer-section" id="drawer-media-section" style="display:none;">
+        <div class="drawer-section-label"><i data-lucide="paperclip"></i> Referencias y materiales</div>
+        <div id="drawer-media-grid" class="drawer-media-grid"></div>
+      </div>
+    </div>
+
+    <div class="drawer-footer">
+      <button class="btn-drawer-action-main" id="btn-drawer-next-step" onclick="advanceCardFromDrawer()">
+        <i data-lucide="arrow-right"></i> <span id="drawer-next-label">Comenzar rodaje</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- TELÓN DEL DRAWER -->
+  <div id="drawer-backdrop" class="drawer-backdrop" onclick="closeDrawer()"></div>
+
+  <!-- ── MODAL DE CREACIÓN / EDICIÓN ───────────────────────────────────── -->
+  <div id="modal-card" class="modal-overlay" onclick="handleModalOverlayClick(event)">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 id="modal-card-title" class="modal-title">Nueva tarjeta de producción</h3>
+        <button class="btn-icon-top" onclick="closeModal()"><i data-lucide="x"></i></button>
+      </div>
+      <form id="form-card" onsubmit="handleFormSubmit(event)">
+        <div class="modal-body">
+          <input type="hidden" id="card-id">
+
+          <div class="form-group">
+            <label class="form-label" for="card-title">Título o Gancho Principal *</label>
+            <input type="text" id="card-title" class="form-input" required placeholder="Ej: POV: Probando el nuevo menú...">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="card-type">Formato *</label>
+              <select id="card-type" class="form-select">
+                <option value="reel">Reel</option>
+                <option value="carrusel">Carrusel</option>
+                <option value="tiktok">TikTok</option>
+                <option value="foto">Foto</option>
+                <option value="otro">Otro</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="card-state">Estado *</label>
+              <select id="card-state" class="form-select">
+                <option value="todo">Por hacer</option>
+                <option value="grabando">Grabando</option>
+                <option value="listo">Listo</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="card-sede">Sede / Locación</label>
+            <input type="text" id="card-sede" class="form-input" placeholder="Ej: Terraza, Cocina, Sede Norte...">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="card-desc">Guión / Indicaciones de rodaje</label>
+            <textarea id="card-desc" class="form-textarea" placeholder="Escribe el concepto, guión, planos clave o indicaciones..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="card-subtasks-input">Subtareas de rodaje (una por línea)</label>
+            <textarea id="card-subtasks-input" class="form-textarea" style="min-height:75px;" placeholder="Plano de entrada al plato&#10;Reacción de cliente&#10;Cierre con logo..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="card-links-input">Enlaces de referencia (URL o Título | URL, uno por línea)</label>
+            <textarea id="card-links-input" class="form-textarea" style="min-height:65px;" placeholder="https://instagram.com/reel/...&#10;Referencia visual | https://drive.google.com/..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" onclick="closeModal()">Cancelar</button>
+          <button type="submit" class="btn-primary">Guardar tarjeta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    // ── DATOS BASE ──────────────────────────────────────────────────────────
+    const DATA = {
+  "fecha": "2026-10-02",
+  "cliente": "Milkarf",
+  "id": "milkarf-2026-10-02-c0130c",
+  "firebase": {
+    "apiKey": "AIzaSyAsH9TxW0ld2aNQejJw6xxZW7fpZiw212Q",
+    "projectId": "nexo-tableros-app"
+  },
+  "contenidos": [
+    {
+      "id": "c1",
+      "titulo": "TESTIMONIOS",
+      "tipo": "carrusel",
+      "sede": "",
+      "estado": "todo",
+      "descripcion": "1. REEL \u2014 EXPERIENCIAS REALES\nGUION / TEXTO\nHay cosas que podemos decirte nosotros sobre Milkarf\u2026 y otras que preferimos que te las cuenten quienes ya lo sirven en casa. (voz en off)\n\u00bfQu\u00e9 te hizo probar Milkarf?\n\u00bfQu\u00e9 hizo que decidieras seguir compr\u00e1ndolo?\n\u00bfQu\u00e9 es lo que m\u00e1s has valorado desde que lo incorporaste a su alimentaci\u00f3n?\nCada perro tiene su propia experiencia y cada familia encuentra una forma diferente de incorporar Milkarf a su rutina.\nSi est\u00e1s pensando en hacer un cambio en su alimentaci\u00f3n, conoce nuestras f\u00f3rmulas y descubre c\u00f3mo puedes comenzar. (voz en off) tomas de perritos comiendo\n\nCAPTION\nCada familia llega a Milkarf por una raz\u00f3n diferente.\nAlgunas buscaban una opci\u00f3n m\u00e1s pr\u00e1ctica, otras quer\u00edan entender mejor qu\u00e9 estaban poniendo en el plato de su perro y otras simplemente quer\u00edan una alimentaci\u00f3n que pudieran incorporar realmente a su rutina.\nPor eso esta vez preferimos que te lo cuenten ellos.\nExperiencias diferentes, perros diferentes y una misma decisi\u00f3n: prestar m\u00e1s atenci\u00f3n a lo que reciben todos los d\u00edas.\nConoce nuestras f\u00f3rmulas desde el link de nuestra bio.",
+      "subtareas": [],
+      "mediaLinks": []
+    },
+    {
+      "id": "c2",
+      "titulo": "\u00bfEST\u00c1 RECIBIENDO TODO LO QUE NECESITA?",
+      "tipo": "reel",
+      "sede": "",
+      "estado": "todo",
+      "descripcion": "Prepararle carne y vegetales a tu perro puede parecer una buena forma de alimentarlo.\nPero hay una pregunta m\u00e1s importante:\n\u00bfEst\u00e1 recibiendo todo lo que necesita?\nPorque un plato puede verse variado y aun as\u00ed no decirte si las proporciones son las adecuadas o si est\u00e1n presentes todos los nutrientes que necesita.\nY ah\u00ed est\u00e1 la diferencia entre simplemente preparar comida y ofrecer una alimentaci\u00f3n completa y balanceada.\nCon Milkarf no tienes que calcular cada ingrediente ni intentar descubrir qu\u00e9 podr\u00eda estar faltando.\nNuestras f\u00f3rmulas est\u00e1n pensadas para darte una opci\u00f3n completa, balanceada y lista para servir.\nT\u00fa te ocupas de cuidarlo. Nosotros hacemos m\u00e1s f\u00e1cil lo que va en su plato.\nConoce nuestras f\u00f3rmulas en el link de la bio.\n\nCAPTION\n\nPreparar su comida con ingredientes reales puede partir de una muy buena intenci\u00f3n.\n\nLa parte complicada aparece cuando tienes que decidir cu\u00e1nto darle de cada cosa, qu\u00e9 nutrientes necesita y si realmente est\u00e1s cubriendo sus necesidades.\n\nPorque no se trata \u00fanicamente de que el plato tenga ingredientes que reconocemos. Tambi\u00e9n debe existir una f\u00f3rmula detr\u00e1s.\n\nMilkarf hace esa parte m\u00e1s sencilla: alimentaci\u00f3n real, completa y balanceada, lista para servir.\n\nConoce nuestras f\u00f3rmulas de Pollo y Carne desde el link de la bio.",
+      "subtareas": [],
+      "mediaLinks": []
+    },
+    {
+      "id": "c3",
+      "titulo": "ISA / \u00bfCRUDO SIGNIFICA INSEGURO?",
+      "tipo": "reel",
+      "sede": "",
+      "estado": "todo",
+      "descripcion": "Que un alimento est\u00e9 crudo no significa que sea una mala opci\u00f3n para tu perro.\nEl punto no es simplemente si est\u00e1 cocido o crudo.\nLo importante es qu\u00e9 est\u00e1s ofreciendo realmente.\nPorque no es lo mismo colocar carne cruda directamente en su plato que ofrecer una alimentaci\u00f3n cruda formulada para cubrir sus necesidades.\nTambi\u00e9n importan las proporciones, los nutrientes y el manejo adecuado del alimento.\nAntes de descartarla solo porque est\u00e1 cruda, entiende qu\u00e9 hay detr\u00e1s de esa alimentaci\u00f3n.\nGuarda este video si todav\u00eda tienes dudas sobre la alimentaci\u00f3n cruda.\n\nCAPTION\n\nLa palabra \u201ccrudo\u201d puede generar dudas antes de que entendamos realmente qu\u00e9 estamos evaluando.\n\nPorque no es lo mismo ofrecer carne cruda por su cuenta que una alimentaci\u00f3n cruda formulada con proporciones y nutrientes pensados para cubrir las necesidades del perro.\n\nPor eso la conversaci\u00f3n no deber\u00eda quedarse solo en si est\u00e1 cocido o crudo, sino en qu\u00e9 hay detr\u00e1s de esa alimentaci\u00f3n y c\u00f3mo est\u00e1 formulada.\n\nEntender esa diferencia tambi\u00e9n ayuda a tomar decisiones con m\u00e1s criterio sobre lo que llega a su plato.\n\nGuarda este video si todav\u00eda est\u00e1s aprendiendo sobre alimentaci\u00f3n cruda para perros.",
+      "subtareas": [],
+      "mediaLinks": []
+    },
+    {
+      "id": "c4",
+      "titulo": "SU COMIDA NO TERMINA EN EL PLATO VAC\u00cdO",
+      "tipo": "reel",
+      "sede": "",
+      "estado": "todo",
+      "descripcion": "Servir su comida no termina cuando deja el plato vac\u00edo.\nDespu\u00e9s de comer, retira lo que haya quedado y lava bien su plato antes de volver a utilizarlo.\nParece algo peque\u00f1o, pero la forma en la que manipulamos sus alimentos tambi\u00e9n forma parte de una buena rutina.\nCon Milkarf: descongela correctamente, sirve su porci\u00f3n, conserva el restante siguiendo las indicaciones y mant\u00e9n limpio su plato.\nAlimentarlo bien tambi\u00e9n est\u00e1 en esos peque\u00f1os h\u00e1bitos.\nGuarda este video para tener presente su rutina de alimentaci\u00f3n.\n\nCAPTION\n\nNos preocupamos mucho por lo que ponemos en su plato, pero tambi\u00e9n importa lo que hacemos despu\u00e9s.\n\nServir la porci\u00f3n correspondiente, conservar correctamente el producto y mantener limpios sus utensilios son peque\u00f1os h\u00e1bitos que forman parte de una buena rutina.\n\nCon Milkarf queremos que alimentarlo mejor tambi\u00e9n sea f\u00e1cil de incorporar a tu d\u00eda a d\u00eda.\n\nGuarda este post para tener estas recomendaciones a mano.",
+      "subtareas": [],
+      "mediaLinks": []
+    },
+    {
+      "id": "c5",
+      "titulo": "ESA ES LA IDEA",
+      "tipo": "carrusel",
+      "sede": "",
+      "estado": "todo",
+      "descripcion": "Slide 1 Que disfrute su plato y que t\u00fa entiendas mejor lo que necesita.\nEsa es la idea\n\nSlide 2\nQue alimentarlo mejor no signifique complicar toda tu rutina.\nEsa es la idea.\n\nSlide 3 Que cuidarlo tambi\u00e9n se sienta posible.\nEsa es la idea.\n\nSlide 4 No se trata de construir una rutina perfecta alrededor de su alimentaci\u00f3n.\nSe trata de entender mejor lo que necesita y encontrar una forma de cuidarlo que tambi\u00e9n puedas mantener en tu d\u00eda a d\u00eda. Milkarf, menos improvisaci\u00f3n, y una alimentaci\u00f3n pensada tanto para ellos como para la rutina de quienes los cuidan.",
+      "subtareas": [],
+      "mediaLinks": []
+    },
+    {
+      "id": "c6",
+      "titulo": "PASTOR BELGA / ENERG\u00cdA",
+      "tipo": "reel",
+      "sede": "",
+      "estado": "todo",
+      "descripcion": "Cuando hablamos de energ\u00eda, probablemente piensas en esto.\nCorrer.\nSaltar.\nJugar.\nY hacer cosas que parecen imposibles. (PERRO BRINCANDO POR TODOS LADOS)\nPero observar el bienestar de tu perro va mucho m\u00e1s all\u00e1 de cu\u00e1nto corre.\nTambi\u00e9n puedes prestar atenci\u00f3n a su apetito, c\u00f3mo disfruta su comida, sus heces, su pelaje y c\u00f3mo se comporta normalmente durante el d\u00eda.\nPorque no se trata de comparar a tu perro con otros.\nSe trata de aprender a reconocer sus propias se\u00f1ales.\nS\u00edguenos para aprender qu\u00e9 puedes observar en su rutina y qu\u00e9 puede ayudarte a entender mejor su alimentaci\u00f3n.\n\nCAPTION\n\nCada perro expresa su bienestar de una manera diferente.\n\nAlgunos parecen tener energ\u00eda infinita y otros prefieren pasar media tarde durmiendo.\n\nPor eso observarlos no significa compararlos, sino aprender qu\u00e9 es normal en cada uno.\n\nSu apetito, su experiencia al comer, sus heces, su pelaje y su comportamiento cotidiano tambi\u00e9n pueden darte informaci\u00f3n.\n\nS\u00edguenos para seguir aprendiendo a mirar m\u00e1s all\u00e1 de su plato.",
+      "subtareas": [],
+      "mediaLinks": []
+    },
+    {
+      "id": "c7",
+      "titulo": "MILKA LE\u00d3N",
+      "tipo": "reel",
+      "sede": "",
+      "estado": "todo",
+      "descripcion": "Yo haci\u00e9ndome pasar por otro perro para que me den cena otra vez.\n\nCAPTION\n\nCambias el look.\n\nCambias la identidad.\n\nY vuelves a intentarlo como si nadie te hubiera visto terminar el plato hace cinco minutos.\n\nSi tu perro tambi\u00e9n tiene un m\u00e1ster en conseguir comida extra, comparte esto con alguien que vive exactamente la misma historia.",
+      "subtareas": [],
+      "mediaLinks": []
+    },
+    {
+      "id": "c8",
+      "titulo": "HALLOWEEN",
+      "tipo": "reel",
+      "sede": "",
+      "estado": "todo",
+      "descripcion": "EL VERDADERO TERROR DE HALLOWEEN:\nAbrir el congelador\u2026\ny descubrir que queda una sola bolsita de Milkarf.\n\nCAPTION\n\nOrganiza su alimentaci\u00f3n haz tu pedido para tener sus porciones listas, para no pasar estos sustos\n\nY si todav\u00eda no sabes cu\u00e1ntas bolsas necesitas o qu\u00e9 presentaci\u00f3n se adapta mejor a su consumo, nuestra gu\u00eda web te orienta seg\u00fan su porci\u00f3n diaria.\n\nHaz tu pedido desde el link de nuestra bio. Y que el \u00fanico susto de Halloween sea el disfraz. \ud83c\udf83",
+      "subtareas": [],
+      "mediaLinks": []
+    },
+    {
+      "id": "c9",
+      "titulo": "LO QUE NADIE TE DICE",
+      "tipo": "reel",
+      "sede": "",
+      "estado": "todo",
+      "descripcion": "CONTENIDO 4 REEL 3 LO QUE NADIE TE DICE\n\nHay algo que nadie te explica cuando un perrito llega a tu vida.\n\nQue vas a aprender a entenderlo sin que pueda decirte nada. Vas a notar cuando est\u00e1 diferente, cuando algo le incomoda y hasta cuando no est\u00e1 comiendo como siempre.\n\nPorque deja de ser solamente una mascota. Se convierte en parte de tu familia y empiezas a preocuparte realmente por su bienestar. Ya no quieres simplemente llenar su plato; quieres sentir que lo que le das verdaderamente le hace bien.\n\nY as\u00ed naci\u00f3 Milkarf: de nuestra propia necesidad, como due\u00f1os de perros, de ofrecerles una alimentaci\u00f3n pensada para su organismo, formulada con los nutrientes que necesitan y f\u00e1cil de integrar a nuestra rutina.\n\nPorque sabemos que todos queremos lo mismo: verlos vivir bien y disfrutar muchos momentos a su lado. Y queremos ayudarte a darles eso a los tuyos.\n\nConoce m\u00e1s sobre Milkarf en el link de nuestra bio.\n\nCAPTION\n\nMilkarf no naci\u00f3 solamente para ofrecer una forma diferente de alimentar a nuestros perros. Naci\u00f3 de una preocupaci\u00f3n que compartimos como due\u00f1os: querer sentir que lo que colocamos en su plato realmente contribuye a su bienestar.\n\nPorque cuando se convierten en familia, cada decisi\u00f3n importa. Tambi\u00e9n la forma en la que los alimentamos \ud83d\udc36\u2764\ufe0f\n\nPor eso creamos una alimentaci\u00f3n real, balanceada y formulada para su naturaleza, pero tambi\u00e9n pr\u00e1ctica para nuestra rutina.",
+      "subtareas": [],
+      "mediaLinks": []
+    },
+    {
+      "id": "c10",
+      "titulo": "EL SONIDO QUE CUALQUIER PERRO RECONOCE",
+      "tipo": "reel",
+      "sede": "",
+      "estado": "todo",
+      "descripcion": "CONTENIDO 7 REEL 5 EL SONIDO QUE CUALQUIER PERRO RECONOCE\n\nEl perro est\u00e1 dormido o distra\u00eddo. La persona abre el congelador o manipula el empaque de Milkarf y el perro aparece inmediatamente.\n\nTexto en pantalla\nHay sonidos que no necesitan explicaci\u00f3n.\n\nCAPTION\n\n\u00bfEl tuyo tambi\u00e9n reconoce el sonido de su comida? \ud83d\udc47",
+      "subtareas": [],
+      "mediaLinks": []
+    },
+    {
+      "id": "c11",
+      "titulo": "LA CARA QUE PONE",
+      "tipo": "reel",
+      "sede": "",
+      "estado": "todo",
+      "descripcion": "Titulo: La cara que pone cuando sabe que es hora de Milkarf\n\nSubtitulo: \u00c9l sabe exactamente qu\u00e9 hay en ese bowl. Nosotros tambi\u00e9n.\n\nConcepto de grabaci\u00f3n\nVideo corto (15\u201325 seg) captando la reacci\u00f3n del perro antes o durante la comida orejas levantadas, cola, salto, expresi\u00f3n de anticipaci\u00f3n. BAILE DE FELICIDAD O CARA DE EMOCI\u00d3N DE CUALQUIER PERRITO\n\nCaption\nNo hay cara m\u00e1s honesta que la de un perro a la hora de comer \ud83d\udc36\nEso es porque lo que tiene adentro es real: sin quimicos, sin aditivos\ud83e\udd29\n\u00bfTu perro har\u00eda esa cara? \ud83d\udc47 Escr\u00edbenos por DM o calcula su porci\u00f3n en el link del bio \ud83d\udd17",
+      "subtareas": [],
+      "mediaLinks": []
+    }
+  ]
+};
+
+    // Tipos de formato y paletas temáticas refinadas
+    const TIPOS = {
+      reel: { label: 'Reel', bg: 'rgba(249, 115, 22, 0.14)', color: 'var(--nexo-orange)', border: 'rgba(249, 115, 22, 0.28)' },
+      carrusel: { label: 'Carrusel', bg: 'rgba(168, 85, 247, 0.14)', color: '#C084FC', border: 'rgba(168, 85, 247, 0.28)' },
+      tiktok: { label: 'TikTok', bg: 'rgba(56, 189, 248, 0.14)', color: 'var(--nexo-cyan)', border: 'rgba(56, 189, 248, 0.28)' },
+      foto: { label: 'Foto', bg: 'rgba(92, 184, 62, 0.14)', color: 'var(--nexo-green)', border: 'rgba(92, 184, 62, 0.28)' },
+      otro: { label: 'Otro', bg: 'rgba(148, 163, 184, 0.14)', color: 'var(--text-muted)', border: 'rgba(148, 163, 184, 0.28)' }
+    };
+
+    // Claves de almacenamiento
+    const LS_KEY = 'nexo-tablero-prod-' + (DATA.id || 'default');
+
+    let state = {
+      fecha: DATA.fecha || '',
+      cliente: DATA.cliente || '',
+      contenidos: []
+    };
+
+    let currentDrawerCardId = null;
+    let searchQuery = '';
+    let sortableInstances = [];
+    let isDragging = false;
+    let currentActiveMenuId = null;
+    let modalPreselectedStatus = 'todo';
+
+    // ── GESTIÓN DE TEMAS (DARK / LIGHT STUDIO) ─────────────────────────────
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      const next = current === 'dark' ? 'light' : 'dark';
+      setTheme(next);
+    }
+
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('nexo-tablero-theme', theme);
+      const icon = document.getElementById('theme-toggle-icon');
+      if (icon) {
+        icon.setAttribute('data-lucide', theme === 'dark' ? 'sun' : 'moon');
+        if (window.lucide) lucide.createIcons();
+      }
+    }
+
+    // ── FIREBASE FIRESTORE SYNC (COMPAT) ───────────────────────────────────
+    let db = null;
+    let prodDocRef = null;
+    let isFirestoreOnline = false;
+
+    function initFirebase() {
+      const fb = DATA.firebase;
+      if (!fb || !fb.apiKey || !fb.projectId || !DATA.id) return;
+
+      try {
+        if (!firebase.apps.length) {
+          firebase.initializeApp({
+            apiKey: fb.apiKey,
+            projectId: fb.projectId
+          });
+        }
+        db = firebase.firestore();
+        prodDocRef = db.collection('tableros_produccion').doc(DATA.id);
+
+        const liveEl = document.getElementById('live-indicator');
+        if (liveEl) liveEl.style.display = 'inline-flex';
+
+        prodDocRef.onSnapshot((doc) => {
+          if (doc.exists) {
+            const remote = doc.data();
+            applyRemoteUpdate(remote);
+            setFirestoreStatus(true);
+          } else {
+            seedFirestoreInitial();
+            setFirestoreStatus(true);
+          }
+        }, (err) => {
+          console.warn('Firestore offline o reglas restringidas:', err);
+          setFirestoreStatus(false);
+        });
+      } catch (e) {
+        console.warn('Error inicializando Firebase:', e);
+        setFirestoreStatus(false);
+      }
+    }
+
+    function setFirestoreStatus(online) {
+      isFirestoreOnline = online;
+      const live = document.getElementById('live-indicator');
+      const label = document.getElementById('live-indicator-label');
+      if (!live) return;
+      if (online) {
+        live.classList.add('online');
+        if (label) label.textContent = 'En vivo';
+      } else {
+        live.classList.remove('online');
+        if (label) label.textContent = 'Local';
+      }
+    }
+
+    function seedFirestoreInitial() {
+      if (!prodDocRef) return;
+      const payload = {
+        id: DATA.id,
+        cliente: DATA.cliente,
+        fecha: DATA.fecha,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        contenidos: state.contenidos.map(cleanCard)
+      };
+      prodDocRef.set(payload, { merge: true }).catch(console.warn);
+    }
+
+    function applyRemoteUpdate(remote) {
+      if (!remote || !Array.isArray(remote.contenidos)) return;
+      let changed = false;
+
+      remote.contenidos.forEach(rCard => {
+        const local = state.contenidos.find(c => c.id === rCard.id);
+        if (local) {
+          if (local.estado !== rCard.estado) {
+            local.estado = rCard.estado;
+            changed = true;
+          }
+          if (rCard.subtareas && Array.isArray(rCard.subtareas)) {
+            rCard.subtareas.forEach(rSub => {
+              const lSub = (local.subtareas || []).find(s => s.id === rSub.id);
+              if (lSub && lSub.done !== rSub.done) {
+                lSub.done = rSub.done;
+                changed = true;
+              }
+            });
+          }
+        } else {
+          state.contenidos.push(cleanCard(rCard));
+          changed = true;
+        }
+      });
+
+      if (changed) {
+        renderCards();
+        saveStateLocalOnly();
+        if (currentDrawerCardId) {
+          const curr = state.contenidos.find(c => c.id === currentDrawerCardId);
+          if (curr) updateDrawerContent(curr);
+        }
+      }
+    }
+
+    function syncToFirestore(cardId, isFullSync) {
+      if (!prodDocRef || !isFirestoreOnline) return;
+      const payload = {
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        contenidos: state.contenidos.map(cleanCard)
+      };
+      prodDocRef.update(payload).catch(err => {
+        console.error('Error sincronizando con Firestore:', err);
+      });
+    }
+
+    // ── RENDER DE TARJETAS KANBAN ──────────────────────────────────────────
+    function createCardElement(c, index) {
+      const el = document.createElement('article');
+      el.className = 'card' + (c.id === currentDrawerCardId ? ' is-active-drawer' : '');
+      el.dataset.id = escapeHTML(c.id);
+      el.dataset.cardStatus = escapeHTML(c.estado || 'todo');
+
+      const tipoCfg = TIPOS[c.tipo] || TIPOS['otro'];
+      const total = c.subtareas ? c.subtareas.length : 0;
+      const done = c.subtareas ? c.subtareas.filter(s => s.done).length : 0;
+      const pct = total ? Math.round((done / total) * 100) : 0;
+      const hasRefs = c.mediaLinks && c.mediaLinks.length > 0;
+      const hasSubtasks = total > 0;
+      const seqNum = '#' + String(index + 1).padStart(2, '0');
+
+      let sedeHtml = '';
+      if (c.sede && c.sede.trim() !== '') {
+        sedeHtml = `<div class="card-sede-pill"><i data-lucide="map-pin"></i>${escapeHTML(c.sede)}</div>`;
+      }
+
+      // Meta items inferiores (SOLO si existen)
+      let metaItemsHtml = '';
+      if (hasRefs) {
+        metaItemsHtml += `
+          <span class="card-meta-item" title="${c.mediaLinks.length} referencia(s) multimedia">
+            <i data-lucide="link"></i> ${c.mediaLinks.length} ref${c.mediaLinks.length > 1 ? 's' : ''}
+          </span>
+        `;
+      }
+      if (hasSubtasks) {
+        metaItemsHtml += `
+          <div class="card-mini-progress" title="${done} de ${total} subtareas completadas">
+            <span class="card-meta-item"><i data-lucide="check-square"></i> ${done}/${total}</span>
+            <div class="card-mini-bar"><div class="card-mini-fill" style="width:${pct}%"></div></div>
+          </div>
+        `;
+      }
+
+      const bottomRowHtml = (hasRefs || hasSubtasks) ? `
+        <div class="card-bottom-row">
+          <div class="card-meta-tags">${metaItemsHtml}</div>
+          <div class="card-drag-indicator" title="Arrastrar para mover">
+            <i data-lucide="grip-vertical"></i>
+          </div>
+        </div>
+      ` : `
+        <div class="card-bottom-row" style="border-top:none; margin-top:2px; padding-top:0; justify-content:flex-end;">
+          <div class="card-drag-indicator" title="Arrastrar para mover">
+            <i data-lucide="grip-vertical"></i>
+          </div>
+        </div>
+      `;
+
+      el.innerHTML = `
+        <div class="card-top">
+          <div class="card-badges">
+            <span class="card-seq-num">${seqNum}</span>
+            <span class="card-type-badge" style="background:${tipoCfg.bg}; color:${tipoCfg.color}; border:1px solid ${tipoCfg.border}">
+              ${escapeHTML(tipoCfg.label)}
+            </span>
+            ${sedeHtml}
+          </div>
+          <div class="card-actions">
+            <button class="btn-card-action" onclick="toggleCardMenu(event, '${escapeHTML(c.id)}')" title="Opciones">
+              <i data-lucide="more-horizontal"></i>
+            </button>
+            <div class="card-popover-menu" id="menu-${escapeHTML(c.id)}">
+              <button class="popover-item" onclick="openDrawer('${escapeHTML(c.id)}')">
+                <i data-lucide="maximize-2"></i> Ver detalle
+              </button>
+              <button class="popover-item" onclick="openModal('${escapeHTML(c.id)}')">
+                <i data-lucide="edit-3"></i> Editar
+              </button>
+              <div class="popover-divider"></div>
+              ${c.estado !== 'todo' ? `
+                <button class="popover-item" onclick="quickMoveCard('${escapeHTML(c.id)}', 'todo')">
+                  <i data-lucide="circle-dashed"></i> Mover a Por hacer
+                </button>` : ''}
+              ${c.estado !== 'grabando' ? `
+                <button class="popover-item" onclick="quickMoveCard('${escapeHTML(c.id)}', 'grabando')">
+                  <i data-lucide="play-circle" style="color:var(--nexo-orange);"></i> Mover a Grabando
+                </button>` : ''}
+              ${c.estado !== 'listo' ? `
+                <button class="popover-item" onclick="quickMoveCard('${escapeHTML(c.id)}', 'listo')">
+                  <i data-lucide="check-circle-2" style="color:var(--nexo-green);"></i> Mover a Listo
+                </button>` : ''}
+              <div class="popover-divider"></div>
+              <button class="popover-item danger" onclick="deleteCard('${escapeHTML(c.id)}')">
+                <i data-lucide="trash-2"></i> Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card-title">${escapeHTML(c.titulo)}</div>
+        ${c.descripcion ? `<div class="card-desc-preview">${escapeHTML(c.descripcion)}</div>` : ''}
+        ${bottomRowHtml}
+      `;
+
+      // Clic para abrir el panel lateral de detalle (distinguiendo de arrastre)
+      el.addEventListener('click', (e) => {
+        if (isDragging) return;
+        if (e.target.closest('.card-actions') || e.target.closest('.card-popover-menu')) return;
+        openDrawer(c.id);
+      });
+
+      return el;
+    }
+
+    function toggleCardMenu(e, cardId) {
+      e.stopPropagation();
+      const menu = document.getElementById('menu-' + cardId);
+      if (!menu) return;
+      const isOpen = menu.classList.contains('show');
+      closeAllCardMenus();
+      if (!isOpen) {
+        menu.classList.add('show');
+        currentActiveMenuId = cardId;
+      }
+    }
+
+    function closeAllCardMenus() {
+      document.querySelectorAll('.card-popover-menu.show').forEach(m => m.classList.remove('show'));
+      currentActiveMenuId = null;
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.card-actions')) closeAllCardMenus();
+    });
+
+    function quickMoveCard(cardId, newStatus) {
+      closeAllCardMenus();
+      const card = state.contenidos.find(c => c.id === cardId);
+      if (!card || card.estado === newStatus) return;
+      card.estado = newStatus;
+      if (newStatus === 'listo') card.subtareas.forEach(s => s.done = true);
+      else if (newStatus === 'todo') card.subtareas.forEach(s => s.done = false);
+      updateUI();
+      syncToFirestore(cardId, false);
+      if (currentDrawerCardId === cardId) updateDrawerContent(card);
+    }
+
+    function openModalWithStatus(status) {
+      modalPreselectedStatus = status || 'todo';
+      openModal();
+    }
+
+    function renderCards() {
+      const cols = {
+        todo: document.getElementById('col-todo'),
+        grabando: document.getElementById('col-grabando'),
+        listo: document.getElementById('col-listo')
+      };
+      cols.todo.innerHTML = '';
+      cols.grabando.innerHTML = '';
+      cols.listo.innerHTML = '';
+
+      let counts = { todo: 0, grabando: 0, listo: 0 };
+
+      state.contenidos.forEach((c, idx) => {
+        if (searchQuery) {
+          const text = (c.titulo + ' ' + (c.descripcion || '')).toLowerCase();
+          const subText = c.subtareas ? c.subtareas.map(s => s.texto).join(' ').toLowerCase() : '';
+          const refText = c.mediaLinks ? c.mediaLinks.map(r => (r.label + ' ' + r.url)).join(' ').toLowerCase() : '';
+          if (!text.includes(searchQuery) && !subText.includes(searchQuery) && !refText.includes(searchQuery)) return;
+        }
+        if (!c.estado) c.estado = 'todo';
+        if (!c.subtareas) c.subtareas = [];
+        if (!c.mediaLinks) c.mediaLinks = [];
+
+        cols[c.estado].appendChild(createCardElement(c, idx));
+        counts[c.estado]++;
+      });
+
+      // Indicadores de columnas vacías ultra-modernos e intencionales
+      const emptyConfig = {
+        todo: {
+          icon: 'film',
+          title: 'Sin contenidos pendientes',
+          sub: 'Crea nuevas ideas o guiones listos para pre-producción',
+          status: 'todo'
+        },
+        grabando: {
+          icon: 'video',
+          title: 'Nada en rodaje actualmente',
+          sub: 'Arrastra tarjetas aquí al iniciar la grabación en set',
+          status: 'grabando'
+        },
+        listo: {
+          icon: 'check-circle-2',
+          title: 'Aún no hay piezas listas',
+          sub: 'Los contenidos grabados y aprobados aparecerán aquí',
+          status: 'listo'
+        }
+      };
+
+      ['todo', 'grabando', 'listo'].forEach(st => {
+        if (counts[st] === 0) {
+          const conf = emptyConfig[st];
+          const empty = document.createElement('div');
+          empty.className = 'k-empty-state';
+          empty.innerHTML = `
+            <div class="k-empty-icon-wrap"><i data-lucide="${conf.icon}"></i></div>
+            <div class="k-empty-title">${conf.title}</div>
+            <div class="k-empty-sub">${conf.sub}</div>
+            <button class="k-empty-action-btn" onclick="openModalWithStatus('${conf.status}')">
+              <i data-lucide="plus"></i> Crear tarjeta
+            </button>
+          `;
+          cols[st].appendChild(empty);
+        }
+      });
+
+      // Actualizar contadores en encabezados y pestañas móviles
+      document.getElementById('count-todo').textContent = counts.todo;
+      document.getElementById('count-grabando').textContent = counts.grabando;
+      document.getElementById('count-listo').textContent = counts.listo;
+
+      const mTodo = document.getElementById('m-count-todo');
+      const mGrabando = document.getElementById('m-count-grabando');
+      const mListo = document.getElementById('m-count-listo');
+      if (mTodo) mTodo.textContent = counts.todo;
+      if (mGrabando) mGrabando.textContent = counts.grabando;
+      if (mListo) mListo.textContent = counts.listo;
+
+      // Actualizar progreso global ("X de Y listos")
+      const total = state.contenidos.length;
+      const pct = total ? Math.round((counts.listo / total) * 100) : 0;
+      const countEl = document.getElementById('hp-count');
+      const fillEl = document.getElementById('hp-fill');
+      if (countEl) countEl.textContent = `${counts.listo} de ${total}`;
+      if (fillEl) fillEl.style.width = `${pct}%`;
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function updateUI() {
+      renderCards();
+      saveState();
+    }
+
+    // ── PANEL LATERAL DE DETALLE (SIDE DRAWER) ──────────────────────────
+    function openDrawer(cardId) {
+      closeAllCardMenus();
+      const card = state.contenidos.find(c => c.id === cardId);
+      if (!card) return;
+      currentDrawerCardId = cardId;
+
+      document.querySelectorAll('.card').forEach(el => {
+        el.classList.toggle('is-active-drawer', el.dataset.id === cardId);
+      });
+
+      updateDrawerContent(card);
+
+      document.getElementById('side-drawer').classList.add('show');
+      document.getElementById('drawer-backdrop').classList.add('show');
+    }
+
+    function updateDrawerContent(card) {
+      const tipoCfg = TIPOS[card.tipo] || TIPOS['otro'];
+      const badge = document.getElementById('drawer-type-badge');
+      if (badge) {
+        badge.textContent = tipoCfg.label;
+        badge.style.background = tipoCfg.bg;
+        badge.style.color = tipoCfg.color;
+        badge.style.border = '1px solid ' + tipoCfg.border;
+      }
+
+      const sedePill = document.getElementById('drawer-sede-pill');
+      if (sedePill) {
+        if (card.sede && card.sede.trim()) {
+          sedePill.innerHTML = `<i data-lucide="map-pin"></i> ${escapeHTML(card.sede)}`;
+          sedePill.style.display = 'inline-flex';
+        } else {
+          sedePill.style.display = 'none';
+        }
+      }
+
+      const title = document.getElementById('drawer-title');
+      if (title) title.textContent = card.titulo;
+
+      // Botones segmentados de estado
+      document.querySelectorAll('.status-seg-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.status === card.estado);
+      });
+
+      // Guión / Descripción
+      const descSection = document.getElementById('drawer-desc-section');
+      const descBox = document.getElementById('drawer-desc');
+      if (card.descripcion && card.descripcion.trim()) {
+        descBox.textContent = card.descripcion;
+        descSection.style.display = 'flex';
+      } else {
+        descSection.style.display = 'none';
+      }
+
+      // Checklist de subtareas
+      const checkSection = document.getElementById('drawer-check-section');
+      const checkList = document.getElementById('drawer-checklist');
+      const checkCount = document.getElementById('drawer-check-count');
+      checkList.innerHTML = '';
+
+      const subs = card.subtareas || [];
+      const doneCount = subs.filter(s => s.done).length;
+      checkCount.textContent = `${doneCount}/${subs.length}`;
+
+      if (subs.length > 0) {
+        checkSection.style.display = 'flex';
+        subs.forEach(sub => {
+          const item = document.createElement('div');
+          item.className = 'drawer-check-item' + (sub.done ? ' done' : '');
+          item.innerHTML = `
+            <div class="drawer-check-box"><i data-lucide="check"></i></div>
+            <div class="drawer-check-text">${escapeHTML(sub.texto)}</div>
+          `;
+          item.onclick = () => toggleSubtask(card.id, sub.id);
+          checkList.appendChild(item);
+        });
+      } else {
+        checkSection.style.display = 'none';
+      }
+
+      // Referencias multimedia
+      const mediaSection = document.getElementById('drawer-media-section');
+      const mediaGrid = document.getElementById('drawer-media-grid');
+      mediaGrid.innerHTML = '';
+      const links = card.mediaLinks || [];
+      if (links.length > 0) {
+        mediaSection.style.display = 'flex';
+        links.forEach(l => {
+          const a = document.createElement('a');
+          a.className = 'drawer-media-link';
+          a.href = l.url;
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          a.innerHTML = `
+            <div class="drawer-media-link-left">
+              <i data-lucide="external-link"></i>
+              <span>${escapeHTML(l.label || l.url)}</span>
+            </div>
+            <div class="drawer-media-link-ext"><i data-lucide="arrow-up-right"></i></div>
+          `;
+          mediaGrid.appendChild(a);
+        });
+      } else {
+        mediaSection.style.display = 'none';
+      }
+
+      // Botón principal de avance de etapa
+      const nextLabel = document.getElementById('drawer-next-label');
+      if (card.estado === 'todo') {
+        nextLabel.textContent = 'Comenzar rodaje';
+      } else if (card.estado === 'grabando') {
+        nextLabel.textContent = 'Marcar como listo';
+      } else {
+        nextLabel.textContent = 'Reiniciar rodaje';
+      }
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function closeDrawer() {
+      currentDrawerCardId = null;
+      document.getElementById('side-drawer').classList.remove('show');
+      document.getElementById('drawer-backdrop').classList.remove('show');
+      document.querySelectorAll('.card.is-active-drawer').forEach(c => c.classList.remove('is-active-drawer'));
+    }
+
+    function setCardStatusFromDrawer(newStatus) {
+      if (!currentDrawerCardId) return;
+      quickMoveCard(currentDrawerCardId, newStatus);
+    }
+
+    function advanceCardFromDrawer() {
+      if (!currentDrawerCardId) return;
+      const card = state.contenidos.find(c => c.id === currentDrawerCardId);
+      if (!card) return;
+      if (card.estado === 'todo') quickMoveCard(card.id, 'grabando');
+      else if (card.estado === 'grabando') quickMoveCard(card.id, 'listo');
+      else quickMoveCard(card.id, 'todo');
+    }
+
+    function toggleSubtask(cardId, subId) {
+      const card = state.contenidos.find(c => c.id === cardId);
+      if (!card || !card.subtareas) return;
+      const sub = card.subtareas.find(s => s.id === subId);
+      if (!sub) return;
+      sub.done = !sub.done;
+
+      updateUI();
+      syncToFirestore(cardId, false);
+      if (currentDrawerCardId === cardId) updateDrawerContent(card);
+    }
+
+    function copyDrawerScript() {
+      const desc = document.getElementById('drawer-desc').textContent;
+      if (!desc) return;
+      navigator.clipboard.writeText(desc).then(() => {
+        const btn = document.getElementById('btn-copy-script');
+        if (btn) {
+          btn.innerHTML = `<i data-lucide="check"></i> <span>¡Copiado!</span>`;
+          btn.style.color = 'var(--nexo-green)';
+          btn.style.borderColor = 'var(--nexo-green)';
+          if (window.lucide) lucide.createIcons();
+          setTimeout(() => {
+            btn.innerHTML = `<i data-lucide="copy"></i> <span>Copiar</span>`;
+            btn.style.color = '';
+            btn.style.borderColor = '';
+            if (window.lucide) lucide.createIcons();
+          }, 2000);
+        }
+      }).catch(err => {
+        console.error('Error al copiar:', err);
+      });
+    }
+
+    function editFromDrawer() {
+      if (!currentDrawerCardId) return;
+      const id = currentDrawerCardId;
+      closeDrawer();
+      openModal(id);
+    }
+
+    function deleteFromDrawer() {
+      if (!currentDrawerCardId) return;
+      const id = currentDrawerCardId;
+      closeDrawer();
+      deleteCard(id);
+    }
+
+    // ── MODAL DE CREACIÓN / EDICIÓN ─────────────────────────────────────
+    function openModal(cardId) {
+      const modal = document.getElementById('modal-card');
+      const title = document.getElementById('modal-card-title');
+      const form = document.getElementById('form-card');
+      form.reset();
+
+      if (cardId) {
+        const c = state.contenidos.find(x => x.id === cardId);
+        if (!c) return;
+        title.textContent = 'Editar tarjeta de producción';
+        document.getElementById('card-id').value = c.id;
+        document.getElementById('card-title').value = c.titulo || '';
+        document.getElementById('card-type').value = c.tipo || 'reel';
+        document.getElementById('card-state').value = c.estado || 'todo';
+        document.getElementById('card-sede').value = c.sede || '';
+        document.getElementById('card-desc').value = c.descripcion || '';
+
+        const subs = (c.subtareas || []).map(s => s.texto).join('\n');
+        document.getElementById('card-subtasks-input').value = subs;
+
+        const links = (c.mediaLinks || []).map(l => l.label ? `${l.label} | ${l.url}` : l.url).join('\n');
+        document.getElementById('card-links-input').value = links;
+      } else {
+        title.textContent = 'Nueva tarjeta de producción';
+        document.getElementById('card-id').value = '';
+        document.getElementById('card-state').value = modalPreselectedStatus || 'todo';
+      }
+
+      modal.classList.add('show');
+      setTimeout(() => document.getElementById('card-title').focus(), 50);
+    }
+
+    function closeModal() {
+      document.getElementById('modal-card').classList.remove('show');
+    }
+
+    function handleModalOverlayClick(e) {
+      if (e.target.id === 'modal-card') closeModal();
+    }
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('card-id').value;
+      const titulo = document.getElementById('card-title').value.trim();
+      if (!titulo) return;
+
+      const tipo = document.getElementById('card-type').value;
+      const estado = document.getElementById('card-state').value;
+      const sede = document.getElementById('card-sede').value.trim();
+      const descripcion = document.getElementById('card-desc').value.trim();
+
+      // Subtareas
+      const subLines = document.getElementById('card-subtasks-input').value.split('\n').map(s => s.trim()).filter(Boolean);
+      let subtareas = [];
+      if (id) {
+        const prev = state.contenidos.find(x => x.id === id);
+        const prevSubs = prev ? (prev.subtareas || []) : [];
+        subtareas = subLines.map((line, idx) => {
+          const matched = prevSubs.find(s => s.texto === line);
+          return {
+            id: matched ? matched.id : 'sub_' + Math.random().toString(36).substr(2, 7),
+            texto: line,
+            done: matched ? matched.done : false
+          };
+        });
+      } else {
+        subtareas = subLines.map(line => ({
+          id: 'sub_' + Math.random().toString(36).substr(2, 7),
+          texto: line,
+          done: false
+        }));
+      }
+
+      // Enlaces multimedia
+      const linkLines = document.getElementById('card-links-input').value.split('\n').map(s => s.trim()).filter(Boolean);
+      const mediaLinks = linkLines.map(l => {
+        if (l.includes('|')) {
+          const parts = l.split('|');
+          return { label: parts[0].trim(), url: parts[1].trim() };
+        }
+        return { label: 'Referencia', url: l };
+      });
+
+      if (id) {
+        const card = state.contenidos.find(x => x.id === id);
+        if (card) {
+          card.titulo = titulo;
+          card.tipo = tipo;
+          card.estado = estado;
+          card.sede = sede;
+          card.descripcion = descripcion;
+          card.subtareas = subtareas;
+          card.mediaLinks = mediaLinks;
+        }
+      } else {
+        const newCard = {
+          id: 'c_' + Math.random().toString(36).substr(2, 8),
+          titulo,
+          tipo,
+          estado,
+          sede,
+          descripcion,
+          subtareas,
+          mediaLinks
+        };
+        state.contenidos.unshift(newCard);
+      }
+
+      closeModal();
+      updateUI();
+      syncToFirestore(id || null, true);
+    }
+
+    function deleteCard(cardId) {
+      if (!confirm('¿Estás seguro de eliminar esta tarjeta de producción?')) return;
+      state.contenidos = state.contenidos.filter(c => c.id !== cardId);
+      if (currentDrawerCardId === cardId) closeDrawer();
+      updateUI();
+      syncToFirestore(cardId, true);
+    }
+
+    // ── DRAG AND DROP (SORTABLEJS) ──────────────────────────────────────────
+    function initDragAndDrop() {
+      const cols = ['col-todo', 'col-grabando', 'col-listo'];
+      sortableInstances.forEach(s => s.destroy());
+      sortableInstances = [];
+
+      cols.forEach(colId => {
+        const el = document.getElementById(colId);
+        if (!el) return;
+
+        const s = new Sortable(el, {
+          group: 'kanban-board',
+          animation: 180,
+          ghostClass: 'sortable-ghost',
+          chosenClass: 'sortable-chosen',
+          handle: '.card-drag-indicator, .card-title, .card-top',
+          delay: 150,
+          delayOnTouchOnly: true,
+          touchStartThreshold: 8,
+          onStart: () => {
+            isDragging = true;
+            closeAllCardMenus();
+          },
+          onEnd: (evt) => {
+            setTimeout(() => { isDragging = false; }, 50);
+            const cardId = evt.item.dataset.id;
+            const targetStatus = evt.to.dataset.status;
+            if (!cardId || !targetStatus) return;
+
+            const card = state.contenidos.find(c => c.id === cardId);
+            if (card) {
+              card.estado = targetStatus;
+              if (targetStatus === 'listo') card.subtareas.forEach(s => s.done = true);
+              updateUI();
+              syncToFirestore(cardId, false);
+            }
+          }
+        });
+        sortableInstances.push(s);
+      });
+    }
+
+    // ── BUSCADOR ────────────────────────────────────────────────────────────
+    function setupSearch() {
+      const input = document.getElementById('search-input');
+      const mobileInput = document.getElementById('mobile-search-input');
+      const clearBtn = document.getElementById('search-clear');
+      const mobileClearBtn = document.getElementById('mobile-search-clear');
+
+      function onSearch(val) {
+        searchQuery = (val || '').trim().toLowerCase();
+        if (input) input.value = val;
+        if (mobileInput) mobileInput.value = val;
+
+        const hasVal = Boolean(searchQuery);
+        if (clearBtn) clearBtn.style.display = hasVal ? 'flex' : 'none';
+        if (mobileClearBtn) mobileClearBtn.style.display = hasVal ? 'flex' : 'none';
+
+        renderCards();
+      }
+
+      if (input) input.addEventListener('input', e => onSearch(e.target.value));
+      if (mobileInput) mobileInput.addEventListener('input', e => onSearch(e.target.value));
+
+      // Atajo de teclado ⌘K o Ctrl+K
+      document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          if (input) {
+            input.focus();
+            input.select();
+          }
+        } else if (e.key === 'Escape') {
+          closeAllCardMenus();
+          closeDrawer();
+          closeModal();
+        }
+      });
+    }
+
+    function clearSearch() {
+      searchQuery = '';
+      const input = document.getElementById('search-input');
+      const mobileInput = document.getElementById('mobile-search-input');
+      if (input) input.value = '';
+      if (mobileInput) mobileInput.value = '';
+      document.getElementById('search-clear').style.display = 'none';
+      const mClear = document.getElementById('mobile-search-clear');
+      if (mClear) mClear.style.display = 'none';
+      renderCards();
+    }
+
+    function toggleMobileSearch() {
+      const bar = document.getElementById('mobile-search-bar');
+      if (!bar) return;
+      bar.classList.toggle('show');
+      if (bar.classList.contains('show')) {
+        const inp = document.getElementById('mobile-search-input');
+        if (inp) inp.focus();
+      }
+    }
+
+    // ── ADAPTACIÓN MÓVIL (PESTAÑAS) ─────────────────────────────────────────
+    function switchMobileTab(tabKey) {
+      document.querySelectorAll('.m-tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === tabKey);
+      });
+
+      const colMap = {
+        todo: 'section-todo',
+        grabando: 'section-grabando',
+        listo: 'section-listo'
+      };
+
+      document.querySelectorAll('.k-col').forEach(col => {
+        col.classList.toggle('mobile-active', col.id === colMap[tabKey]);
+      });
+    }
+
+    // ── DENSIDAD VISUAL ─────────────────────────────────────────────────────
+    function setDensity(density) {
+      const b = document.body;
+      const btnCompact = document.getElementById('btn-density-compact');
+      const btnComfortable = document.getElementById('btn-density-comfortable');
+
+      if (density === 'comfortable') {
+        b.classList.remove('density-compact');
+        b.classList.add('density-comfortable');
+        if (btnCompact) btnCompact.classList.remove('active');
+        if (btnComfortable) btnComfortable.classList.add('active');
+      } else {
+        b.classList.remove('density-comfortable');
+        b.classList.add('density-compact');
+        if (btnComfortable) btnComfortable.classList.remove('active');
+        if (btnCompact) btnCompact.classList.add('active');
+      }
+      localStorage.setItem('nexo-tablero-density', density);
+    }
+
+    // ── EXPORTACIÓN JSON ────────────────────────────────────────────────────
+    function exportData() {
+      const dataToExport = {
+        cliente: state.cliente,
+        fecha: state.fecha,
+        exportedAt: new Date().toISOString(),
+        totalContenidos: state.contenidos.length,
+        contenidos: state.contenidos
+      };
+
+      const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `produccion-${slugify(state.cliente || 'nexo')}-${state.fecha || 'tablero'}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // ── UTILIDADES ─────────────────────────────────────────────────────────
+    function escapeHTML(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function slugify(s) {
+      return String(s || '').toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    }
+
+    function formatDateFriendly(dateStr) {
+      if (!dateStr) return 'Sin fecha';
+      const m = String(dateStr).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (m) {
+        const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+        const day = m[3];
+        const month = meses[parseInt(m[2], 10) - 1] || m[2];
+        const year = m[1];
+        return `${day} ${month} ${year}`;
+      }
+      return dateStr;
+    }
+
+    function cleanCard(c) {
+      if (!c || typeof c !== 'object') return null;
+      return {
+        id: String(c.id || ''),
+        titulo: String(c.titulo || ''),
+        tipo: String(c.tipo || 'otro'),
+        sede: String(c.sede || ''),
+        estado: String(c.estado || 'todo'),
+        descripcion: String(c.descripcion || ''),
+        subtareas: Array.isArray(c.subtareas) ? c.subtareas.map(s => ({
+          id: String(s.id || ''),
+          texto: String(s.texto || ''),
+          done: Boolean(s.done)
+        })) : [],
+        mediaLinks: Array.isArray(c.mediaLinks) ? c.mediaLinks.map(m => ({
+          label: String(m.label || ''),
+          url: String(m.url || '')
+        })) : []
+      };
+    }
+
+    function saveState() {
+      localStorage.setItem(LS_KEY, JSON.stringify({
+        cliente: state.cliente,
+        fecha: state.fecha,
+        contenidos: state.contenidos
+      }));
+    }
+
+    function saveStateLocalOnly() {
+      localStorage.setItem(LS_KEY, JSON.stringify({
+        cliente: state.cliente,
+        fecha: state.fecha,
+        contenidos: state.contenidos
+      }));
+    }
+
+    // ── FONDO ANIMADO DE CONEXIONES NEXO (CANVAS 2D ULTRA-LIGERO) ─────────
+    function initNexoBackground() {
+      const canvas = document.getElementById('nexo-bg-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let width = 0, height = 0;
+      let mouseX = 0, mouseY = 0;
+      let targetOffsetX = 0, targetOffsetY = 0;
+      let currentOffsetX = 0, currentOffsetY = 0;
+      let animId = null;
+
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = Math.floor(width * dpr);
+        canvas.height = Math.floor(height * dpr);
+        ctx.scale(dpr, dpr);
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        targetOffsetX = (mouseX - width / 2) * 0.02;
+        targetOffsetY = (mouseY - height / 2) * 0.02;
+      });
+
+      // Partículas y eslabones de conexión NEXO
+      const nodes = [];
+      const nodeCount = 28;
+      for (let i = 0; i < nodeCount; i++) {
+        nodes.push({
+          x: Math.random(),
+          y: Math.random(),
+          vx: (Math.random() - 0.5) * 0.0003,
+          vy: (Math.random() - 0.5) * 0.0003,
+          size: 1.5 + Math.random() * 2,
+          pulse: Math.random() * Math.PI * 2
+        });
+      }
+
+      // Estructuras principales de enlaces orgánicos
+      const shapes = [
+        {
+          xPct: 0.15, yPct: 0.25,
+          radius: 240, length: 340, angle: 0.45,
+          rotPeriod: 46000, driftX: 30, driftY: 20, driftPeriod: 32000,
+          type: 'stadium'
+        },
+        {
+          xPct: 0.85, yPct: 0.35,
+          radius: 210, length: 300, angle: -0.6,
+          rotPeriod: -48000, driftX: -25, driftY: 25, driftPeriod: 36000,
+          type: 'double-loop'
+        },
+        {
+          xPct: 0.50, yPct: 0.85,
+          radius: 280, length: 440, angle: 0.25,
+          rotPeriod: 52000, driftX: 35, driftY: -20, driftPeriod: 38000,
+          type: 'stadium'
+        },
+        {
+          xPct: 0.20, yPct: 0.88,
+          radius: 190, length: 260, angle: 0.8,
+          rotPeriod: -34000, driftX: -20, driftY: -25, driftPeriod: 30000,
+          type: 'ribbon'
+        }
+      ];
+
+      function drawStadium(ctx, len, r) {
+        ctx.beginPath();
+        const half = len / 2;
+        ctx.moveTo(-half, -r);
+        ctx.lineTo(half, -r);
+        ctx.arc(half, 0, r, -Math.PI / 2, Math.PI / 2);
+        ctx.lineTo(-half, r);
+        ctx.arc(-half, 0, r, Math.PI / 2, -Math.PI / 2);
+        ctx.closePath();
+        ctx.stroke();
+
+        ctx.beginPath();
+        const rIn = r * 0.55;
+        const halfIn = len * 0.35;
+        ctx.moveTo(-halfIn, -rIn);
+        ctx.lineTo(halfIn, -rIn);
+        ctx.arc(halfIn, 0, rIn, -Math.PI / 2, Math.PI / 2);
+        ctx.lineTo(-halfIn, rIn);
+        ctx.arc(-halfIn, 0, rIn, Math.PI / 2, -Math.PI / 2);
+        ctx.closePath();
+        ctx.stroke();
+      }
+
+      function drawDoubleLoop(ctx, len, r) {
+        drawStadium(ctx, len, r * 0.75);
+        ctx.save();
+        ctx.rotate(Math.PI / 3);
+        drawStadium(ctx, len * 0.85, r * 0.65);
+        ctx.restore();
+      }
+
+      function drawRibbon(ctx, len, r) {
+        ctx.beginPath();
+        ctx.moveTo(-len/2, -r);
+        ctx.bezierCurveTo(-len/4, -r*1.5, len/4, r*1.5, len/2, r);
+        ctx.bezierCurveTo(len/4, r*0.5, -len/4, -r*0.5, -len/2, -r);
+        ctx.stroke();
+      }
+
+      function render(now) {
+        ctx.clearRect(0, 0, width, height);
+
+        currentOffsetX += (targetOffsetX - currentOffsetX) * 0.05;
+        currentOffsetY += (targetOffsetY - currentOffsetY) * 0.05;
+
+        const isDark = (document.documentElement.getAttribute('data-theme') || 'dark') === 'dark';
+        const strokeGreen = isDark ? 'rgba(92, 184, 62, 0.09)' : 'rgba(92, 184, 62, 0.06)';
+        const strokeBlue = isDark ? 'rgba(56, 189, 248, 0.06)' : 'rgba(31, 53, 73, 0.04)';
+        const nodeColor = isDark ? 'rgba(92, 184, 62, 0.35)' : 'rgba(92, 184, 62, 0.25)';
+        const filamentColor = isDark ? 'rgba(92, 184, 62, 0.07)' : 'rgba(31, 53, 73, 0.04)';
+
+        // 1. Dibujar filamentos y nodos flotantes
+        if (!prefersReduced) {
+          for (let i = 0; i < nodes.length; i++) {
+            nodes[i].x += nodes[i].vx;
+            nodes[i].y += nodes[i].vy;
+            if (nodes[i].x < 0) nodes[i].x = 1;
+            if (nodes[i].x > 1) nodes[i].x = 0;
+            if (nodes[i].y < 0) nodes[i].y = 1;
+            if (nodes[i].y > 1) nodes[i].y = 0;
+          }
+        }
+
+        // Conectar nodos cercanos
+        for (let i = 0; i < nodes.length; i++) {
+          const n1 = nodes[i];
+          const x1 = n1.x * width + currentOffsetX * 0.3;
+          const y1 = n1.y * height + currentOffsetY * 0.3;
+
+          for (let j = i + 1; j < nodes.length; j++) {
+            const n2 = nodes[j];
+            const x2 = n2.x * width + currentOffsetX * 0.3;
+            const y2 = n2.y * height + currentOffsetY * 0.3;
+            const dx = x1 - x2;
+            const dy = y1 - y2;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < 180) {
+              ctx.beginPath();
+              ctx.moveTo(x1, y1);
+              ctx.lineTo(x2, y2);
+              ctx.strokeStyle = filamentColor;
+              ctx.lineWidth = 1;
+              ctx.stroke();
+            }
+          }
+
+          ctx.beginPath();
+          ctx.arc(x1, y1, n1.size, 0, Math.PI * 2);
+          ctx.fillStyle = nodeColor;
+          ctx.fill();
+        }
+
+        // 2. Dibujar formas de conexión maestras
+        shapes.forEach((s, idx) => {
+          const tRot = prefersReduced ? 0 : (now / s.rotPeriod) * (Math.PI * 2);
+          const tDrift = prefersReduced ? 0 : (now / s.driftPeriod) * (Math.PI * 2);
+
+          const cx = (width * s.xPct) + (Math.sin(tDrift) * s.driftX) + currentOffsetX;
+          const cy = (height * s.yPct) + (Math.cos(tDrift) * s.driftY) + currentOffsetY;
+
+          ctx.save();
+          ctx.translate(cx, cy);
+          ctx.rotate(s.angle + tRot);
+          ctx.strokeStyle = (idx % 2 === 0) ? strokeGreen : strokeBlue;
+          ctx.lineWidth = 1.6;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+
+          if (s.type === 'double-loop') drawDoubleLoop(ctx, s.length, s.radius);
+          else if (s.type === 'ribbon') drawRibbon(ctx, s.length, s.radius);
+          else drawStadium(ctx, s.length, s.radius);
+
+          ctx.restore();
+        });
+
+        if (!prefersReduced && !document.hidden) {
+          animId = requestAnimationFrame(render);
+        }
+      }
+
+      animId = requestAnimationFrame(render);
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          if (animId) cancelAnimationFrame(animId);
+        } else {
+          if (!prefersReduced) animId = requestAnimationFrame(render);
+        }
+      });
+    }
+
+    // ── INICIALIZACIÓN GENERAL ─────────────────────────────────────────────
+    function init() {
+      // Tema por defecto: dark (Dark Studio creativo)
+      const savedTheme = localStorage.getItem('nexo-tablero-theme') || 'dark';
+      setTheme(savedTheme);
+
+      const savedDensity = localStorage.getItem('nexo-tablero-density') || 'compact';
+      setDensity(savedDensity);
+
+      const local = localStorage.getItem(LS_KEY);
+      if (local) {
+        try {
+          const parsed = JSON.parse(local);
+          if (parsed.fecha === DATA.fecha && parsed.cliente === DATA.cliente) {
+            state = JSON.parse(JSON.stringify(DATA));
+            state.contenidos.forEach(card => {
+              const saved = (parsed.contenidos || []).find(c => c.id === card.id);
+              if (saved) {
+                card.estado = saved.estado || card.estado;
+                card.subtareas.forEach(sub => {
+                  const savedSub = (saved.subtareas || []).find(s => s.id === sub.id);
+                  if (savedSub) sub.done = savedSub.done;
+                });
+              }
+            });
+          } else {
+            state = JSON.parse(JSON.stringify(DATA));
+          }
+        } catch (e) {
+          state = JSON.parse(JSON.stringify(DATA));
+        }
+      } else {
+        state = JSON.parse(JSON.stringify(DATA));
+      }
+
+      // Asegurar estructura
+      if (!Array.isArray(state.contenidos)) state.contenidos = [];
+      state.contenidos.forEach((c, i) => {
+        if (!c.id) c.id = 'c' + (i + 1);
+        if (!c.estado) c.estado = 'todo';
+        if (!c.subtareas) c.subtareas = [];
+        if (!c.mediaLinks) c.mediaLinks = [];
+      });
+
+      // Renderizar datos del cliente y fecha en encabezado
+      if (state.cliente) document.getElementById('hdr-client').textContent = state.cliente;
+      if (state.fecha) document.getElementById('hdr-date').textContent = formatDateFriendly(state.fecha);
+
+      renderCards();
+      initDragAndDrop();
+      setupSearch();
+      initFirebase();
+      initNexoBackground();
+
+      // Deep linking con hash: #card-c1 abre el drawer
+      if (window.location.hash) {
+        const hash = window.location.hash.replace('#', '');
+        if (hash.startsWith('card-')) {
+          const cId = hash.replace('card-', '');
+          setTimeout(() => openDrawer(cId), 150);
+        }
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

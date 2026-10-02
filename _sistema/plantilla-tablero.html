@@ -108,14 +108,16 @@ button{font:inherit;cursor:pointer}
 .card[data-state="corregido"] .big{color:#7c3aed;-webkit-text-stroke-color:#7c3aed}
 .tags{display:flex;gap:8px;flex-wrap:wrap}
 .tag{font-size:12px;font-weight:600;padding:5px 12px;border-radius:99px;background:var(--azul-soft);color:var(--azul)}
-.tag.fmt{background:var(--azul);color:#fff}
-.fmt-wrap{position:relative;display:inline-flex}
-.fmt-sel{-webkit-appearance:none;appearance:none;border:0;background:var(--azul);color:#fff;font:inherit;font-size:12px;font-weight:600;line-height:1.5;padding:5px 30px 5px 12px;border-radius:99px;cursor:pointer;transition:background .2s}
-.fmt-sel:hover{background:var(--azul-2)}
-.fmt-sel:focus{outline:2px solid var(--verde);outline-offset:2px}
-.fmt-sel option{color:var(--ink);background:#fff}
-.fmt-wrap::after{content:"";position:absolute;right:12px;top:50%;width:6px;height:6px;border-right:1.5px solid #fff;border-bottom:1.5px solid #fff;transform:translateY(-70%) rotate(45deg);pointer-events:none}
-.fmt-wrap.changed .fmt-sel{background:var(--naranja)}
+.tag.fmt{background:var(--azul);color:#fff;transition:background .2s,transform .15s}
+.tag.fmt.agency-editable{cursor:pointer;padding-right:22px;position:relative}
+.tag.fmt.agency-editable::after{content:"";position:absolute;right:9px;top:50%;width:5px;height:5px;border-right:1.5px solid rgba(255,255,255,.85);border-bottom:1.5px solid rgba(255,255,255,.85);transform:translateY(-70%) rotate(45deg);pointer-events:none}
+.tag.fmt.agency-editable:hover{background:var(--azul-2);transform:scale(1.04)}
+.fmt-popover{position:absolute;top:calc(100% + 6px);left:0;z-index:200;background:#fff;border-radius:14px;box-shadow:0 8px 32px -8px rgba(31,53,73,.22),0 2px 8px -2px rgba(31,53,73,.12);border:1px solid var(--line);padding:5px;min-width:160px;display:none;flex-direction:column;gap:2px}
+.fmt-popover.open{display:flex}
+.fmt-popover-opt{font-size:13px;font-weight:600;padding:8px 14px;border-radius:10px;cursor:pointer;color:var(--ink);transition:background .15s}
+.fmt-popover-opt:hover{background:var(--azul-soft);color:var(--azul)}
+.fmt-popover-opt.active{background:var(--azul);color:#fff}
+.fmt-wrap{display:none!important}
 .tag.orig{display:none;background:var(--naranja-soft);color:var(--naranja)}
 .tag.orig.show{display:inline-block}
 .tag.date{background:transparent;box-shadow:inset 0 0 0 1px var(--line);color:var(--ink-2)}
@@ -1930,17 +1932,58 @@ __DATA__
     var tw = el('div'); var tags = el('div', 'tags');
 
     // Formato de contenido:
-    // Para el cliente: etiqueta estática (el cliente no aprueba ni modifica el formato)
-    // Para la agencia (Carlos y Andrea): selector para modificarlo libremente sin necesidad de aprobación
+    // Para el cliente: etiqueta estática
+    // Para la agencia: la etiqueta misma es clickeable y abre un popover con los 4 formatos
+    var fmtWrap = el('div', null); fmtWrap.style.cssText = 'position:relative;display:inline-block';
     var fmtTag = el('span', 'tag fmt', it.formato || 'Post');
-    tags.appendChild(fmtTag);
+    var fmtPopover = el('div', 'fmt-popover');
 
+    function buildPopover() {
+      fmtPopover.innerHTML = '';
+      FORMATOS.forEach(function(x){
+        var opt = el('div', 'fmt-popover-opt' + (x === it.formato ? ' active' : ''), x);
+        opt.addEventListener('mousedown', function(e){
+          e.preventDefault();
+          var newFmt = x;
+          it.formato = newFmt;
+          it.formatoOriginal = newFmt;
+          fmtTag.textContent = newFmt;
+          closeFmtPopover();
+          if (cObj.fmtTag) cObj.fmtTag.textContent = newFmt;
+          saveDraft();
+          toast('Guardando tipo de contenido (' + newFmt + ')…');
+          saveAgencyFormatoChange(it, newFmt);
+        });
+        fmtPopover.appendChild(opt);
+      });
+    }
+
+    var fmtPopoverOpen = false;
+    function openFmtPopover(){
+      buildPopover();
+      fmtPopover.classList.add('open');
+      fmtPopoverOpen = true;
+      setTimeout(function(){ document.addEventListener('click', closeFmtOnOutside); }, 0);
+    }
+    function closeFmtPopover(){
+      fmtPopover.classList.remove('open');
+      fmtPopoverOpen = false;
+      document.removeEventListener('click', closeFmtOnOutside);
+    }
+    function closeFmtOnOutside(e){
+      if (!fmtWrap.contains(e.target)) closeFmtPopover();
+    }
+
+    fmtWrap.appendChild(fmtTag);
+    fmtWrap.appendChild(fmtPopover);
+    tags.appendChild(fmtWrap);
+
+    // fw/fs oculto: sólo se mantiene para compatibilidad interna, nunca visible
     var fw = el('label', 'fmt-wrap');
     var fs = el('select', 'fmt-sel');
     fs.setAttribute('aria-label', 'Tipo de contenido');
     FORMATOS.forEach(function(x){
-      var o = el('option', null, x);
-      o.value = x;
+      var o = el('option', null, x); o.value = x;
       if (x === it.formato) o.setAttribute('selected', '');
       fs.appendChild(o);
     });
@@ -1949,22 +1992,13 @@ __DATA__
     tags.appendChild(fw);
 
     if (agencyUser) {
-      fmtTag.style.display = 'none';
-      fw.style.display = 'inline-flex';
-    } else {
-      fmtTag.style.display = 'inline-block';
-      fw.style.display = 'none';
+      fmtTag.classList.add('agency-editable');
+      fmtTag.addEventListener('click', function(e){
+        e.stopPropagation();
+        if (fmtPopoverOpen) { closeFmtPopover(); } else { openFmtPopover(); }
+      });
     }
 
-    fs.addEventListener('change', function(){
-      var newFmt = fs.value;
-      it.formato = newFmt;
-      it.formatoOriginal = newFmt;
-      fmtTag.textContent = newFmt;
-      saveDraft();
-      toast('Guardando tipo de contenido (' + newFmt + ')…');
-      saveAgencyFormatoChange(it, newFmt);
-    });
     if (it.pilar) tags.appendChild(el('span', 'tag', it.pilar));
     if (it.fechaPublicacion) tags.appendChild(el('span', 'tag date', '📅 ' + it.fechaPublicacion));
     tw.appendChild(tags);
@@ -3153,11 +3187,9 @@ __DATA__
     var nextVersion = (parseInt(it.version, 10) || 1) + 1;
     it.guion = newGuion;
     it.copy = newCopy;
-    if (cObj && cObj.fs) {
-      it.formato = cObj.fs.value;
-      it.formatoOriginal = cObj.fs.value;
-      if (cObj.paintFmt) cObj.paintFmt();
-    }
+      it.formato = cObj.fs ? cObj.fs.value : it.formato;
+      it.formatoOriginal = it.formato;
+      if (cObj.fmtTag) cObj.fmtTag.textContent = it.formato;
     it.version = nextVersion;
     it.estado = 'corregido';
     it.fechaCorreccion = new Date().toISOString();
@@ -3302,8 +3334,17 @@ __DATA__
       if (active) {
         card.classList.add('card-agency-edit-mode');
         agencyBar.style.display = 'flex';
-        if (fmtTag) fmtTag.style.display = 'none';
-        if (fw) fw.style.display = 'inline-flex';
+        if (fmtTag) {
+          fmtTag.classList.add('agency-editable');
+          // Registrar el click solo una vez
+          if (!fmtTag._agencyClickBound) {
+            fmtTag._agencyClickBound = true;
+            fmtTag.addEventListener('click', function(e){
+              e.stopPropagation();
+              if (fmtPopoverOpen) { closeFmtPopover(); } else { openFmtPopover(); }
+            });
+          }
+        }
         if (cObj.guionParagraph) {
           cObj.guionParagraph.setAttribute('contenteditable', 'true');
           cObj.guionParagraph.setAttribute('spellcheck', 'true');
@@ -3316,10 +3357,9 @@ __DATA__
         card.classList.remove('card-agency-edit-mode');
         agencyBar.style.display = 'none';
         if (fmtTag) {
-          fmtTag.style.display = 'inline-block';
-          fmtTag.textContent = it.formato || 'Post';
+          fmtTag.classList.remove('agency-editable');
+          closeFmtPopover();
         }
-        if (fw) fw.style.display = 'none';
         if (cObj.guionParagraph) {
           cObj.guionParagraph.removeAttribute('contenteditable');
           cObj.guionParagraph.removeAttribute('spellcheck');

@@ -4673,6 +4673,7 @@ body{
               <option value="Reel">Reel</option>
               <option value="Carrusel">Carrusel</option>
               <option value="Post">Post / Estático</option>
+              <option value="Story">Story / Historia</option>
               <option value="Historia">Historia</option>
               <option value="Video">Video</option>
               <option value="TikTok">TikTok</option>
@@ -7467,7 +7468,17 @@ body{
     if (editItemEstado) editItemEstado.value = defaultEstado;
 
     if (editItemTitulo) editItemTitulo.value = it.titulo || '';
-    if (editItemFormato) editItemFormato.value = it.formato || 'Reel';
+    if (editItemFormato) {
+      var fmtVal = it.formato || 'Reel';
+      var exists = Array.from(editItemFormato.options).some(function(o){ return o.value.toLowerCase() === fmtVal.toLowerCase(); });
+      if (!exists && fmtVal) {
+        var opt = document.createElement('option');
+        opt.value = fmtVal;
+        opt.textContent = fmtVal;
+        editItemFormato.appendChild(opt);
+      }
+      editItemFormato.value = fmtVal;
+    }
     if (editItemPilar) editItemPilar.value = it.pilar || '';
     if (editItemFecha) editItemFecha.value = it.fechaPublicacion || '';
     if (editItemGuion) editItemGuion.value = it.guion || '';
@@ -7518,6 +7529,7 @@ body{
 
     items[idx].titulo = editItemTitulo ? editItemTitulo.value.trim() : items[idx].titulo;
     items[idx].formato = editItemFormato ? editItemFormato.value : items[idx].formato;
+    items[idx].formatoOriginal = items[idx].formato;
     items[idx].pilar = editItemPilar ? editItemPilar.value.trim() : items[idx].pilar;
     items[idx].fechaPublicacion = editItemFecha ? editItemFecha.value.trim() : items[idx].fechaPublicacion;
     items[idx].guion = editItemGuion ? editItemGuion.value.trim() : items[idx].guion;
@@ -7556,6 +7568,10 @@ body{
       t.estado = newEstado;
       if (boardCache[t.id]) {
         boardCache[t.id].contenidos = items;
+      }
+      var fnKey = t.url ? t.url.split('/').pop().split('?')[0].split('#')[0].replace('.html','') : '';
+      if (fnKey && boardCache[fnKey]) {
+        boardCache[fnKey].contenidos = items;
       }
       if (btnSaveEditModal) {
         btnSaveEditModal.disabled = false;
@@ -8173,7 +8189,17 @@ body{
     // Si tiene borrador no finalizado, cargarlo
     var currentData = it.borrador || it;
     if (pieceInputTitulo) pieceInputTitulo.value = currentData.titulo || '';
-    if (pieceInputFormato) pieceInputFormato.value = currentData.formato || 'Reel';
+    if (pieceInputFormato) {
+      var curFmt = currentData.formato || 'Reel';
+      var existsPiece = Array.from(pieceInputFormato.options).some(function(o){ return o.value.toLowerCase() === curFmt.toLowerCase(); });
+      if (!existsPiece && curFmt) {
+        var optP = document.createElement('option');
+        optP.value = curFmt;
+        optP.textContent = curFmt;
+        pieceInputFormato.appendChild(optP);
+      }
+      pieceInputFormato.value = curFmt;
+    }
     if (pieceInputPilar) pieceInputPilar.value = currentData.pilar || '';
     if (pieceInputFecha) pieceInputFecha.value = currentData.fechaPublicacion || '';
     if (pieceInputGuion) pieceInputGuion.value = currentData.guion || '';
@@ -8197,10 +8223,12 @@ body{
     var curTitulo = pieceInputTitulo ? pieceInputTitulo.value.trim() : '';
     var curGuion = pieceInputGuion ? pieceInputGuion.value.trim() : '';
     var curCopy = pieceInputCopy ? pieceInputCopy.value.trim() : '';
+    var curFormato = pieceInputFormato ? pieceInputFormato.value : '';
     var orig = editingPieceOriginal.borrador || editingPieceOriginal;
     if (curTitulo !== (orig.titulo || '').trim()) return true;
     if (curGuion !== (orig.guion || '').trim()) return true;
     if (curCopy !== (orig.copy || '').trim()) return true;
+    if (curFormato && curFormato !== (orig.formato || 'Reel')) return true;
     return false;
   }
 
@@ -8254,6 +8282,7 @@ body{
     items[idx].borrador = vals;
     items[idx].titulo = vals.titulo || items[idx].titulo;
     items[idx].formato = vals.formato || items[idx].formato;
+    items[idx].formatoOriginal = items[idx].formato;
     // Si estaba con cambios, marcar internamente 'en_correccion'
     if (items[idx].estado === 'cambios') {
       items[idx].estado = 'en_correccion';
@@ -8271,6 +8300,8 @@ body{
     .then(function(){
       t.contenidos = items;
       if (boardCache[t.id]) boardCache[t.id].contenidos = items;
+      var fnKey = t.url ? t.url.split('/').pop().split('?')[0].split('#')[0].replace('.html','') : '';
+      if (fnKey && boardCache[fnKey]) boardCache[fnKey].contenidos = items;
       if (btnPieceSaveDraft) {
         btnPieceSaveDraft.disabled = false;
         btnPieceSaveDraft.textContent = '💾 Guardar borrador';
@@ -8318,6 +8349,7 @@ body{
 
     items[idx].titulo = vals.titulo || items[idx].titulo;
     items[idx].formato = vals.formato || items[idx].formato;
+    items[idx].formatoOriginal = items[idx].formato;
     items[idx].pilar = vals.pilar;
     items[idx].fechaPublicacion = vals.fechaPublicacion;
     items[idx].guion = vals.guion;
@@ -8359,6 +8391,8 @@ body{
       t.pendientes = newPend;
       t.estado = newEstadoGeneral;
       if (boardCache[t.id]) boardCache[t.id].contenidos = items;
+      var fnKey = t.url ? t.url.split('/').pop().split('?')[0].split('#')[0].replace('.html','') : '';
+      if (fnKey && boardCache[fnKey]) boardCache[fnKey].contenidos = items;
 
       if (btnPieceFinalize) {
         btnPieceFinalize.disabled = false;

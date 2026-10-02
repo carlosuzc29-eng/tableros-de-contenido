@@ -1845,7 +1845,7 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
     }
   ],
   "id": "bambu-bistro-2026-octubre-4698e871",
-  "resetAt": 1790914959332,
+  "resetAt": 1790915787441,
   "revision": {
     "revisadoPor": "",
     "fecha": ""
@@ -1954,7 +1954,12 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
           if (s) {
             it.estado = s.estado;
             it.comentario = s.comentario;
-            if (s.formato) it.formato = s.formato;
+            if (s.formato) {
+              it.formato = s.formato;
+              if (it.formatoOriginal && it.formato !== it.formatoOriginal) {
+                it._fmtUserChanged = true;
+              }
+            }
             if (Array.isArray(s.comentarios) && s.comentarios.length) it.comentarios = s.comentarios;
             if (s.revisadoPor) it.revisadoPor = s.revisadoPor;
             if (s.guion != null) it.guion = s.guion;
@@ -2123,7 +2128,23 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
     fw.appendChild(fs); tags.appendChild(fw);
     var orig = el('span', 'tag orig', 'Propuesto: ' + (it.formatoOriginal || '—')); tags.appendChild(orig);
     function paintFmt(){ var ch = !!it.formatoOriginal && it.formato !== it.formatoOriginal; fw.classList.toggle('changed', ch); orig.classList.toggle('show', ch); }
-    fs.addEventListener('change', function(){ it.formato = fs.value; paintFmt(); saveDraft(); toast(it.formato === it.formatoOriginal ? 'Volviste al formato propuesto' : 'Formato cambiado a ' + it.formato); });
+    fs.addEventListener('change', function(){
+      var newFmt = fs.value;
+      it.formato = newFmt;
+      it._fmtUserChanged = true;
+
+      if (agencyUser) {
+        it.formatoOriginal = newFmt;
+        paintFmt();
+        saveDraft();
+        toast('Guardando tipo de contenido (' + newFmt + ')…');
+        saveAgencyFormatoChange(it, newFmt);
+      } else {
+        paintFmt();
+        saveDraft();
+        toast(it.formato === it.formatoOriginal ? 'Volviste al formato propuesto' : 'Cambio a ' + it.formato + ' registrado (se enviará con tu revisión)');
+      }
+    });
     paintFmt();
     if (it.pilar) tags.appendChild(el('span', 'tag', it.pilar));
     if (it.fechaPublicacion) tags.appendChild(el('span', 'tag date', '📅 ' + it.fechaPublicacion));
@@ -2653,16 +2674,21 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
           if (fsItem.comentario != null) {
             it.comentario = fsItem.comentario;
           }
+          var userHasCustomFmt = !!it._fmtUserChanged;
           if (fsItem.formato) {
-            it.formato = fsItem.formato;
-            if (cObj.fs) {
-              cObj.fs.value = fsItem.formato;
-              if (cObj.paintFmt) cObj.paintFmt();
+            if (!userHasCustomFmt || agencyUser) {
+              it.formato = fsItem.formato;
+              if (cObj.fs) {
+                cObj.fs.value = fsItem.formato;
+              }
             }
           }
           if (fsItem.formatoOriginal) {
-            it.formatoOriginal = fsItem.formatoOriginal;
+            if (!userHasCustomFmt || agencyUser) {
+              it.formatoOriginal = fsItem.formatoOriginal;
+            }
           }
+          if (cObj.paintFmt) cObj.paintFmt();
           if (fsItem.titulo) {
             it.titulo = fsItem.titulo;
             if (cObj.h2Title) cObj.h2Title.textContent = fsItem.titulo;
@@ -3261,6 +3287,63 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
     };
   }
 
+  // Guardar cambio de formato directo en Firestore (Modo Agencia)
+  function saveAgencyFormatoChange(it, newFormato){
+    if (!FB || !FB.projectId || !DATA.id) {
+      toast('✓ Formato guardado localmente: ' + newFormato);
+      return;
+    }
+
+    var firestoreContenidos = items.map(function(item, i){
+      var cList = (item.comentarios && item.comentarios.length) ? item.comentarios : (item.comentario ? [{ autor: item.revisadoPor || 'Cliente', texto: item.comentario, fecha: '' }] : []);
+      var fullComment = formatComentariosString(cList) || item.comentario || '';
+      var lastAuthor = (cList.length && cList[cList.length - 1].autor) ? cList[cList.length - 1].autor : (item.revisadoPor || 'Cliente');
+      var fMap = {
+        n: { integerValue: String(i + 1) },
+        id: { stringValue: String(item.id || ('c' + (i + 1))) },
+        titulo: { stringValue: String(item.titulo || '') },
+        formato: { stringValue: String(item.formato || '') },
+        formatoOriginal: { stringValue: String(item.formatoOriginal || item.formato || '') },
+        estado: { stringValue: String(item.estado || 'pendiente') },
+        comentario: { stringValue: String(fullComment) },
+        revisadoPor: { stringValue: String(lastAuthor) }
+      };
+      if (item.guion != null) fMap.guion = { stringValue: String(item.guion) };
+      if (item.copy != null) fMap.copy = { stringValue: String(item.copy) };
+      if (item.version != null) fMap.version = { integerValue: String(item.version) };
+      return {
+        mapValue: { fields: fMap }
+      };
+    });
+
+    var fsUrl = 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(FB.projectId) +
+      '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
+      '?updateMask.fieldPaths=contenidos&key=' + encodeURIComponent(FB.apiKey);
+
+    fetch(fsUrl, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fields: {
+          contenidos: { arrayValue: { values: firestoreContenidos } }
+        }
+      })
+    })
+    .then(function(r){
+      if (!r.ok) {
+        return r.json().then(function(j){ throw new Error((j.error && j.error.message) || ('HTTP ' + r.status)); });
+      }
+      return r.json();
+    })
+    .then(function(){
+      toast('✓ Tipo de contenido (' + newFormato + ') sincronizado en Firestore');
+    })
+    .catch(function(err){
+      console.error('Error guardando formato en Firestore:', err);
+      toast('✓ Formato cambiado localmente (error al sincronizar nube)');
+    });
+  }
+
   // Guardar corrección directa en Firestore y actualizar tarjeta
   function saveCardCorrection(it, cObj, newGuion, newCopy, editorBox, btnSave){
     if (btnSave) { btnSave.disabled = true; btnSave.textContent = 'Guardando…'; }
@@ -3268,6 +3351,11 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
     var nextVersion = (parseInt(it.version, 10) || 1) + 1;
     it.guion = newGuion;
     it.copy = newCopy;
+    if (cObj && cObj.fs) {
+      it.formato = cObj.fs.value;
+      it.formatoOriginal = cObj.fs.value;
+      if (cObj.paintFmt) cObj.paintFmt();
+    }
     it.version = nextVersion;
     it.estado = 'corregido';
     it.fechaCorreccion = new Date().toISOString();

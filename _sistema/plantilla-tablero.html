@@ -564,6 +564,38 @@ footer .logo svg{height:76px;margin:0 auto 12px}
   background:rgba(92,184,62,.09);
   box-shadow:0 0 0 5px rgba(92,184,62,.13);
 }
+.card-agency-edit-mode .c-top h2[contenteditable="true"]{
+  outline: 2px dashed rgba(92,184,62,.6);
+  outline-offset: 4px;
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: text;
+  background: rgba(92,184,62,.04);
+  transition: outline-color .2s, background .2s;
+}
+.card-agency-edit-mode .c-top h2[contenteditable="true"]:focus{
+  outline: 2.5px solid var(--verde);
+  background: rgba(92,184,62,.09);
+  box-shadow: 0 0 0 4px rgba(92,184,62,.13);
+}
+.tag.version{
+  background: rgba(56,189,248,0.15);
+  color: #38bdf8;
+  font-weight: 700;
+  border: 1px solid rgba(56,189,248,0.3);
+}
+.tag.ctx-first{
+  background: rgba(92,184,62,0.12);
+  color: #5cb83e;
+  border: 1px solid rgba(92,184,62,0.25);
+  font-weight: 600;
+}
+.tag.ctx-correction{
+  background: rgba(245,158,11,0.15);
+  color: #f59e0b;
+  border: 1px solid rgba(245,158,11,0.3);
+  font-weight: 600;
+}
 .card-agency-bar{
   display:flex;
   align-items:center;
@@ -1685,7 +1717,15 @@ __DATA__
   document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/, 'js');
   var DATA = JSON.parse(document.getElementById('board-data').textContent);
   var items = DATA.contenidos || [];
-  var LBL = {pendiente:'Pendiente', aprobado:'Aprobado', cambios:'Con cambios', corregido:'✨ Corregido'};
+  var LBL = {
+    borrador: 'Borrador',
+    en_revision: 'En revisión',
+    pendiente: 'En revisión',
+    cambios: 'Cambios solicitados',
+    en_correccion: 'En corrección',
+    corregido: 'Corregido',
+    aprobado: 'Aprobado'
+  };
   var KEY = 'nexo-revision-' + (DATA.id || (DATA.cliente + '-' + DATA.mes + '-' + DATA.anio));
   var C = 2 * Math.PI * 82;
   var $ = function(id){ return document.getElementById(id); };
@@ -1773,11 +1813,11 @@ __DATA__
     var whoEl = $('who');
     var w = whoEl ? whoEl.value.trim() : '';
     if (w) return w;
-    var hasCorr = items.some(function(x){ return x.estado === 'corregido'; });
-    if (isReviewShipment || hasCorr) return '';
     try {
-      var stored = localStorage.getItem('nexo_reviewer_name') || '';
-      if (stored) return stored;
+      var sess = sessionStorage.getItem('nexo_reviewer_name_' + (DATA.id || 'board'));
+      if (sess && sess.trim()) return sess.trim();
+      var stored = localStorage.getItem('nexo_reviewer_name');
+      if (stored && stored.trim()) return stored.trim();
     } catch(e){}
     return DATA.revision.revisadoPor || '';
   }
@@ -1788,14 +1828,21 @@ __DATA__
     var whoEl = $('who');
     if (whoEl) whoEl.value = trimmed;
     try {
-      if (trimmed) localStorage.setItem('nexo_reviewer_name', trimmed);
-      else localStorage.removeItem('nexo_reviewer_name');
+      if (trimmed) {
+        sessionStorage.setItem('nexo_reviewer_name_' + (DATA.id || 'board'), trimmed);
+        localStorage.setItem('nexo_reviewer_name', trimmed);
+      }
     } catch(e){}
   }
 
   items.forEach(function(it, i){
     if (!it.id) it.id = 'c' + (i + 1);
-    if (['pendiente','aprobado','cambios','corregido'].indexOf(it.estado) < 0) it.estado = 'pendiente';
+    if (!it.version) it.version = 1;
+    it.version = parseInt(it.version, 10) || 1;
+    if (['borrador', 'en_revision', 'pendiente', 'cambios', 'en_correccion', 'corregido', 'aprobado'].indexOf(it.estado) < 0) {
+      it.estado = 'en_revision';
+    }
+    if (it.estado === 'pendiente') it.estado = 'en_revision';
     it.formato = normalizeFormato(it.formato || it.formatoOriginal);
     it.formatoOriginal = it.formato;
     if (typeof it.comentario !== 'string') it.comentario = '';
@@ -1924,21 +1971,15 @@ __DATA__
   document.title = 'Revisión de contenidos · ' + (DATA.cliente || '') + ' · ' + periodo;
   $('intro').textContent = DATA.intro || 'Revisa cada pieza con calma. Apruébala o cuéntanos qué ajustar, y al terminar descarga el tablero para enviárnoslo.';
 
-  // Si hay correcciones o estamos en modo agencia o revisión de corregidos, el nombre del revisor queda en blanco
-  var initHasCorregidos = items.some(function(x){ return x.estado === 'corregido'; });
-  if (isReviewShipment || initHasCorregidos || agencyUser) {
-    DATA.revision.revisadoPor = '';
-    DATA.revision.fecha = '';
-    if ($('who')) $('who').value = '';
-    if ($('reviewed')) $('reviewed').classList.remove('show');
-    try { localStorage.removeItem('nexo_reviewer_name'); } catch(e){}
-  } else {
-    $('who').value = DATA.revision.revisadoPor || '';
-    if (DATA.revision.fecha) {
-      var d = new Date(DATA.revision.fecha);
-      $('reviewed').textContent = '✓ Revisado por ' + (DATA.revision.revisadoPor || 'el cliente') + ' el ' + d.toLocaleDateString('es-VE', {day:'2-digit', month:'long', year:'numeric'}) + ' a las ' + d.toLocaleTimeString('es-VE', {hour:'2-digit', minute:'2-digit'});
-      $('reviewed').classList.add('show');
-    }
+  // Inicializar nombre del revisor reutilizando la sesión del cliente
+  var currentStoredReviewer = getReviewerName();
+  if ($('who')) {
+    $('who').value = currentStoredReviewer || DATA.revision.revisadoPor || '';
+  }
+  if (DATA.revision.fecha && !agencyUser) {
+    var d = new Date(DATA.revision.fecha);
+    $('reviewed').textContent = '✓ Revisado por ' + (DATA.revision.revisadoPor || currentStoredReviewer || 'el cliente') + ' el ' + d.toLocaleDateString('es-VE', {day:'2-digit', month:'long', year:'numeric'}) + ' a las ' + d.toLocaleTimeString('es-VE', {hour:'2-digit', minute:'2-digit'});
+    $('reviewed').classList.add('show');
   }
   if (DATA.url) { $('openLink').href = DATA.url; $('openLink').classList.add('show'); }
 
@@ -2028,24 +2069,33 @@ __DATA__
 
     if (it.pilar) tags.appendChild(el('span', 'tag', it.pilar));
     if (it.fechaPublicacion) tags.appendChild(el('span', 'tag date', '📅 ' + it.fechaPublicacion));
+
+    // Versión concreta y contexto de revisión
+    var vNum = parseInt(it.version, 10) || 1;
+    var vTag = el('span', 'tag version', 'v' + vNum);
+    tags.appendChild(vTag);
+    var isCorrectionReview = vNum > 1;
+    var ctxTag = el('span', 'tag ' + (isCorrectionReview ? 'ctx-correction' : 'ctx-first'), isCorrectionReview ? '🔄 Revisión de correcciones' : '✨ Primera revisión');
+    tags.appendChild(ctxTag);
+    if (it.fechaCorreccion || it.fechaEnvio) {
+      tags.appendChild(el('span', 'tag date', '🚀 ' + formatRelTime(it.fechaCorreccion || it.fechaEnvio)));
+    }
+
     tw.appendChild(tags);
     var h2Title = el('h2', null, it.titulo || 'Contenido ' + num);
     tw.appendChild(h2Title);
     top.appendChild(tw);
-    var badge = el('span', 'badge', LBL[it.estado]); top.appendChild(badge);
+    var badge = el('span', 'badge', LBL[it.estado] || it.estado); top.appendChild(badge);
     card.appendChild(top);
-
-
 
     var hasCopy = (it.copy || it.hashtags);
     var body = el('div', 'c-body' + (hasCopy ? '' : ' single'));
     var g = el('div', 'guion');
-    var pGuion = null;
-    if (it.guion) {
-      g.appendChild(el('span', 'lbl', it.guionLabel || 'Guion / descripción'));
-      pGuion = el('p', null, it.guion);
-      g.appendChild(pGuion);
-    }
+    g.appendChild(el('span', 'lbl', it.guionLabel || 'Guion / descripción'));
+    var pGuion = el('p', 'p-guion', it.guion || '');
+    if (!it.guion) pGuion.style.display = agencyUser ? 'block' : 'none';
+    g.appendChild(pGuion);
+
     var refs = (it.referencias || []).filter(function(r){ return safeUrl(r.url); });
     if (refs.length) {
       var rw = el('div', 'refs');
@@ -2053,20 +2103,36 @@ __DATA__
       g.appendChild(rw);
     }
     body.appendChild(g);
-    var pCopy = null;
-    if (hasCopy) {
-      var cw = el('div'); cw.appendChild(el('span', 'lbl', 'Copy'));
-      var post = el('div', 'post'); var ph = el('div', 'post-h');
-      ph.appendChild(el('div', 'av', (handle || 'N').charAt(0).toUpperCase()));
-      var pn = el('div'); pn.appendChild(el('b', null, handle || 'tu cuenta')); pn.appendChild(el('small', null, 'Vista previa del copy'));
-      ph.appendChild(pn); post.appendChild(ph);
-      pCopy = el('p', null, it.copy || '');
-      if (it.hashtags) pCopy.appendChild(el('span', 'hash', it.hashtags));
-      post.appendChild(pCopy); cw.appendChild(post); body.appendChild(cw);
-    }
+
+    var cw = el('div', 'copy-wrap');
+    cw.appendChild(el('span', 'lbl', 'Copy'));
+    var post = el('div', 'post'); var ph = el('div', 'post-h');
+    ph.appendChild(el('div', 'av', (handle || 'N').charAt(0).toUpperCase()));
+    var pn = el('div'); pn.appendChild(el('b', null, handle || 'tu cuenta')); pn.appendChild(el('small', null, 'Vista previa del copy'));
+    ph.appendChild(pn); post.appendChild(ph);
+    var pCopy = el('p', 'p-copy', it.copy || '');
+    if (it.hashtags) pCopy.appendChild(el('span', 'hash', it.hashtags));
+    if (!hasCopy) cw.style.display = agencyUser ? 'block' : 'none';
+    post.appendChild(pCopy); cw.appendChild(post); body.appendChild(cw);
     card.appendChild(body);
 
     var rv = el('div', 'review');
+
+    // Resumen de versión corregida
+    if ((parseInt(it.version, 10) || 1) > 1) {
+      var corrBox = el('div', 'correction-summary-box');
+      corrBox.style.cssText = 'margin-bottom:12px;background:rgba(2,132,199,0.08);border:1px solid rgba(56,189,248,0.25);border-radius:8px;padding:10px 12px;';
+      var lastH = Array.isArray(it.historial) && it.historial.length ? it.historial[it.historial.length - 1] : null;
+      var hAction = (lastH && lastH.accion) ? lastH.accion : 'Ajustes realizados por el equipo según las observaciones de la versión anterior.';
+      corrBox.innerHTML = '<div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#38BDF8;margin-bottom:4px;">' +
+        '<span>🔄 Versión corregida (v' + it.version + ')</span>' +
+        (it.fechaCorreccion ? '<span style="font-weight:400;color:rgba(255,255,255,0.5);font-size:11px;">· ' + formatRelTime(it.fechaCorreccion) + '</span>' : '') +
+      '</div>' +
+      '<div style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.4;">' +
+        escapeHtml(hAction) +
+      '</div>';
+      rv.appendChild(corrBox);
+    }
 
     // 1. BLOQUE DE COMENTARIOS (ARRIBA)
     var cmBox = el('div', 'comment-box');
@@ -2153,8 +2219,8 @@ __DATA__
     decSec.appendChild(decHead);
 
     var seg = el('div', 'seg');
-    var ap = el('button', 'approve'); ap.type = 'button'; ap.innerHTML = '<span class="ic">✓</span>Aprobar';
-    var ch = el('button', 'change'); ch.type = 'button'; ch.innerHTML = '<span class="ic">✎</span>Pedir cambios';
+    var ap = el('button', 'approve'); ap.type = 'button'; ap.innerHTML = '<span class="ic">✓</span>Aprobar esta versión';
+    var ch = el('button', 'change'); ch.type = 'button'; ch.innerHTML = '<span class="ic">✎</span>Solicitar cambios';
     seg.appendChild(ap); seg.appendChild(ch);
     decSec.appendChild(seg);
 
@@ -2173,15 +2239,30 @@ __DATA__
 
     function paint(){
       card.dataset.state = it.estado; a.dataset.state = it.estado;
-      badge.textContent = (it.estado === 'corregido' && !agencyUser) ? 'Pendiente' : (LBL[it.estado] || it.estado);
-      ap.classList.toggle('on', it.estado === 'aprobado'); ch.classList.toggle('on', it.estado === 'cambios');
-      ap.setAttribute('aria-pressed', it.estado === 'aprobado'); ch.setAttribute('aria-pressed', it.estado === 'cambios');
-      if (it.estado === 'aprobado') {
+      var curSt = it.estado;
+      if (curSt === 'pendiente') curSt = 'en_revision';
+      var stLabel = LBL[curSt] || curSt;
+      if (curSt === 'en_revision') {
+        stLabel = (it.version > 1) ? 'En revisión (v' + it.version + ')' : 'En revisión (v1)';
+      }
+      badge.textContent = (curSt === 'corregido' && !agencyUser) ? 'En revisión (v' + (it.version || 1) + ')' : stLabel;
+      ap.classList.toggle('on', curSt === 'aprobado'); ch.classList.toggle('on', curSt === 'cambios');
+      ap.setAttribute('aria-pressed', curSt === 'aprobado'); ch.setAttribute('aria-pressed', curSt === 'cambios');
+
+      if (curSt === 'aprobado') {
         decStatus.className = 'dec-status ok';
-        decStatus.textContent = '✓ Marcado como Aprobado';
-      } else if (it.estado === 'cambios') {
+        var revWho = (it.aprobacion && it.aprobacion.usuario) || it.revisadoPor || getReviewerName() || 'Cliente';
+        var revWhen = (it.aprobacion && it.aprobacion.fecha) || DATA.revision.fecha || '';
+        decStatus.textContent = '✓ Versión v' + (it.version || 1) + ' aprobada' + (revWho ? ' por ' + revWho : '') + (revWhen ? ' el ' + formatRelTime(revWhen) : '');
+      } else if (curSt === 'cambios') {
         decStatus.className = 'dec-status fix';
-        decStatus.textContent = '✎ Marcado para Solicitar cambios (indica qué ajustar arriba)';
+        decStatus.textContent = '✎ Marcado para Solicitar cambios (observaciones registradas)';
+      } else if (curSt === 'en_correccion') {
+        decStatus.className = 'dec-status fix';
+        decStatus.textContent = '⚙ En corrección por el equipo';
+      } else if (curSt === 'corregido') {
+        decStatus.className = 'dec-status ok';
+        decStatus.textContent = '🔄 Ajustes terminados (v' + (it.version || 1) + ') · Pendiente de envío';
       } else {
         decStatus.className = 'dec-status';
         decStatus.textContent = '• Pendiente de evaluación (obligatorio)';
@@ -2189,20 +2270,45 @@ __DATA__
     }
 
     function set(s){
-      // Si el usuario escribió un texto en el textarea y no tocó "Agregar comentario", se guarda automáticamente
-      if (ta.value.trim()) addCommentFromInput();
-
-      it.estado = it.estado === s ? (it.version > 1 ? 'corregido' : 'pendiente') : s;
-      card.classList.remove('warn');
-      paint(); refresh(); updateApartadoCorregidos(); applyFilter(); saveDraft();
-
-      if (it.estado === 'cambios') {
-        var hasComments = (it.comentarios && it.comentarios.length > 0);
+      if (s === 'cambios') {
+        if (ta.value.trim()) addCommentFromInput();
+        var hasComments = (it.comentarios && it.comentarios.length > 0 && it.comentarios.some(function(x){ return x.texto && x.texto.trim(); }));
         if (!hasComments) {
           ta.placeholder = 'Cuéntanos qué te gustaría ajustar (requerido para pedir cambios)…';
           ta.focus({preventScroll:true});
+          toast('Por favor escribe qué cambios solicitas antes de enviar');
+          card.classList.add('warn');
+          return;
         }
+        delete it.aprobacion;
+        it.estado = 'cambios';
+        card.classList.remove('warn');
+        paint(); refresh(); updateApartadoCorregidos(); applyFilter(); saveDraft();
+        toast('✎ Cambios solicitados para versión v' + (it.version || 1));
+        return;
       }
+
+      if (ta.value.trim()) addCommentFromInput();
+
+      if (s === 'aprobado') {
+        var revWho = getReviewerName() || 'Cliente';
+        var nowIso = new Date().toISOString();
+        it.aprobacion = {
+          version: parseInt(it.version, 10) || 1,
+          usuario: revWho,
+          fecha: nowIso
+        };
+        it.revisadoPor = revWho;
+        it.estado = 'aprobado';
+        card.classList.remove('warn');
+        paint(); refresh(); updateApartadoCorregidos(); applyFilter(); saveDraft();
+        toast('✓ Versión v' + (it.version || 1) + ' aprobada');
+        return;
+      }
+
+      it.estado = s;
+      card.classList.remove('warn');
+      paint(); refresh(); updateApartadoCorregidos(); applyFilter(); saveDraft();
     }
 
     ap.onclick = function(){ set('aprobado'); };
@@ -2220,12 +2326,17 @@ __DATA__
       renderThread: renderThread,
       paint: paint,
       fmtTag: fmtTag,
+      openFmtPopover: openFmtPopover,
+      closeFmtPopover: closeFmtPopover,
       fw: fw,
       fs: fs,
       h2Title: h2Title,
       tagsEl: tags,
+      vTag: vTag,
+      ctxTag: ctxTag,
       guionParagraph: pGuion,
-      copyParagraph: pCopy
+      copyParagraph: pCopy,
+      copyContainer: cw
     });
   });
 
@@ -2553,8 +2664,20 @@ __DATA__
         });
 
         if (fsItem) {
-          if (fsItem.estado && ['aprobado', 'cambios', 'pendiente', 'corregido'].indexOf(fsItem.estado) >= 0) {
-            it.estado = fsItem.estado;
+          if (fsItem.estado && ['borrador', 'en_revision', 'pendiente', 'cambios', 'en_correccion', 'corregido', 'aprobado'].indexOf(fsItem.estado) >= 0) {
+            it.estado = (fsItem.estado === 'pendiente') ? 'en_revision' : fsItem.estado;
+          }
+          if (fsItem.version) {
+            it.version = parseInt(fsItem.version, 10);
+            if (cObj.vTag) cObj.vTag.textContent = 'v' + it.version;
+            if (cObj.ctxTag) {
+              var isCorr = it.version > 1;
+              cObj.ctxTag.className = 'tag ' + (isCorr ? 'ctx-correction' : 'ctx-first');
+              cObj.ctxTag.textContent = isCorr ? '🔄 Revisión de correcciones' : '✨ Primera revisión';
+            }
+          }
+          if (fsItem.aprobacion) {
+            it.aprobacion = fsItem.aprobacion;
           }
           if (fsItem.comentario != null) {
             it.comentario = fsItem.comentario;
@@ -2578,9 +2701,6 @@ __DATA__
           if (fsItem.copy != null) {
             it.copy = fsItem.copy;
             if (cObj.copyParagraph) cObj.copyParagraph.textContent = fsItem.copy;
-          }
-          if (fsItem.version) {
-            it.version = parseInt(fsItem.version, 10);
           }
           if (fsItem.fechaCorreccion) {
             it.fechaCorreccion = fsItem.fechaCorreccion;
@@ -2737,6 +2857,19 @@ __DATA__
       if (it.guion != null) fMap.guion = { stringValue: String(it.guion) };
       if (it.copy != null) fMap.copy = { stringValue: String(it.copy) };
       if (it.version != null) fMap.version = { integerValue: String(it.version) };
+      if (it.fechaCorreccion) fMap.fechaCorreccion = { stringValue: String(it.fechaCorreccion) };
+      if (it.fechaEnvio) fMap.fechaEnvio = { stringValue: String(it.fechaEnvio) };
+      if (it.aprobacion && it.estado === 'aprobado') {
+        fMap.aprobacion = {
+          mapValue: {
+            fields: {
+              version: { integerValue: String(it.aprobacion.version || it.version || 1) },
+              usuario: { stringValue: String(it.aprobacion.usuario || revName) },
+              fecha: { stringValue: String(it.aprobacion.fecha || DATA.revision.fecha) }
+            }
+          }
+        };
+      }
       return {
         mapValue: {
           fields: fMap
@@ -3228,31 +3361,48 @@ __DATA__
   function saveCardCorrection(it, cObj, newGuion, newCopy, editorBox, btnSave){
     if (btnSave) { btnSave.disabled = true; btnSave.textContent = 'Guardando…'; }
 
-    var nextVersion = (parseInt(it.version, 10) || 1) + 1;
+    var curV = parseInt(it.version, 10) || 1;
+    var nextVersion = (it.estado === 'cambios' || it.estado === 'en_correccion' || it.estado === 'aprobado') ? (curV + 1) : curV;
     it.guion = newGuion;
     it.copy = newCopy;
-      it.formato = cObj.fs ? cObj.fs.value : it.formato;
-      it.formatoOriginal = it.formato;
-      if (cObj.fmtTag) cObj.fmtTag.textContent = it.formato;
+    it.formato = cObj.fs ? cObj.fs.value : it.formato;
+    it.formatoOriginal = it.formato;
+    if (cObj.fmtTag) cObj.fmtTag.textContent = it.formato;
     it.version = nextVersion;
     it.estado = 'corregido';
     it.fechaCorreccion = new Date().toISOString();
+    delete it.aprobacion; // Nueva versión requiere nueva aprobación del cliente
+
+    it.historial = it.historial || [];
+    it.historial.push({
+      version: nextVersion,
+      accion: 'Corrección guardada (v' + nextVersion + ')',
+      usuario: agencyUser ? ('Agencia (' + agencyUser + ')') : 'Equipo Nexo',
+      fecha: it.fechaCorreccion
+    });
 
     it.revisadoPor = '';
     it.comentario = formatComentariosString(it.comentarios);
 
-    // Al guardar correcciones, el nombre del revisor queda en blanco para que el cliente lo ingrese al aprobar
-    if ($('who')) $('who').value = '';
-    DATA.revision.revisadoPor = '';
-    try { localStorage.removeItem('nexo_reviewer_name'); } catch(e){}
     if ($('reviewed')) $('reviewed').classList.remove('show');
 
     // Actualizar visualización en vivo de la tarjeta
+    if (cObj.h2Title && it.titulo) {
+      cObj.h2Title.textContent = it.titulo;
+    }
     if (cObj.guionParagraph) {
       cObj.guionParagraph.textContent = newGuion;
     }
     if (cObj.copyParagraph) {
       cObj.copyParagraph.textContent = newCopy;
+    }
+    if (cObj.vTag) {
+      cObj.vTag.textContent = 'v' + nextVersion;
+    }
+    if (cObj.ctxTag) {
+      var isCorr = nextVersion > 1;
+      cObj.ctxTag.className = 'tag ' + (isCorr ? 'ctx-correction' : 'ctx-first');
+      cObj.ctxTag.textContent = isCorr ? '🔄 Revisión de correcciones' : '✨ Primera revisión';
     }
 
     if (cObj.renderThread) cObj.renderThread();
@@ -3264,9 +3414,9 @@ __DATA__
     // Actualizar en Firestore si está conectado
     if (FB && FB.projectId && DATA.id) {
       var totalGlobalOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
-      var totalGlobalFix = items.filter(function(x){ return x.estado === 'cambios'; }).length;
+      var totalGlobalFix = items.filter(function(x){ return x.estado === 'cambios' || x.estado === 'en_correccion'; }).length;
       var totalGlobalCorr = items.filter(function(x){ return x.estado === 'corregido'; }).length;
-      var totalGlobalPend = items.filter(function(x){ return x.estado === 'pendiente' || !x.estado; }).length;
+      var totalGlobalPend = items.filter(function(x){ return x.estado === 'pendiente' || x.estado === 'en_revision' || !x.estado; }).length;
       var estadoGeneral = (totalGlobalFix > 0) ? 'Con cambios' :
                           (totalGlobalCorr > 0 ? 'En revisión' :
                           (totalGlobalOk === items.length ? 'Aprobado' : (totalGlobalOk > 0 ? 'Parcial' : 'Sin revisar')));
@@ -3281,7 +3431,7 @@ __DATA__
           titulo: { stringValue: String(item.titulo || '') },
           formato: { stringValue: String(item.formato || '') },
           formatoOriginal: { stringValue: String(item.formatoOriginal || '') },
-          estado: { stringValue: String(item.estado || 'pendiente') },
+          estado: { stringValue: String(item.estado || 'en_revision') },
           comentario: { stringValue: String(fullComment) },
           revisadoPor: { stringValue: String(lastAuthor) }
         };
@@ -3289,6 +3439,18 @@ __DATA__
         if (item.copy != null) fMap.copy = { stringValue: String(item.copy) };
         if (item.version != null) fMap.version = { integerValue: String(item.version) };
         if (item.fechaCorreccion) fMap.fechaCorreccion = { stringValue: String(item.fechaCorreccion) };
+        if (item.fechaEnvio) fMap.fechaEnvio = { stringValue: String(item.fechaEnvio) };
+        if (item.aprobacion && item.estado === 'aprobado') {
+          fMap.aprobacion = {
+            mapValue: {
+              fields: {
+                version: { integerValue: String(item.aprobacion.version || item.version || 1) },
+                usuario: { stringValue: String(item.aprobacion.usuario || '') },
+                fecha: { stringValue: String(item.aprobacion.fecha || '') }
+              }
+            }
+          };
+        }
         return {
           mapValue: { fields: fMap }
         };
@@ -3362,13 +3524,15 @@ __DATA__
     btnSave.type = 'button';
     btnSave.textContent = '💾 Guardar cambios';
     btnSave.onclick = function(){
+      var newTitle = cObj.h2Title ? cObj.h2Title.textContent.trim() : (it.titulo || '');
       var newGuion = cObj.guionParagraph ? cObj.guionParagraph.textContent.trim() : (it.guion || '');
       var newCopy = cObj.copyParagraph ? cObj.copyParagraph.textContent.trim() : (it.copy || '');
+      it.titulo = newTitle;
       saveCardCorrection(it, cObj, newGuion, newCopy, null, btnSave);
-      // Actualizar info de versión tras guardar
       setTimeout(function(){
         var nv = parseInt(it.version, 10) || 1;
         barInfo.textContent = '✎ Modo corrección agencia · v' + nv + ' actual';
+        if (cObj.vTag) cObj.vTag.textContent = 'v' + nv;
       }, 300);
     };
     agencyBar.appendChild(btnSave);
@@ -3378,16 +3542,22 @@ __DATA__
       if (active) {
         card.classList.add('card-agency-edit-mode');
         agencyBar.style.display = 'flex';
-        if (fmtTag) {
-          fmtTag.classList.add('agency-editable');
-          // Registrar el click solo una vez
-          if (!fmtTag._agencyClickBound) {
-            fmtTag._agencyClickBound = true;
-            fmtTag.addEventListener('click', function(e){
+        if (cObj.guionParagraph) cObj.guionParagraph.style.display = 'block';
+        if (cObj.copyContainer) cObj.copyContainer.style.display = 'block';
+        if (cObj.fmtTag) {
+          cObj.fmtTag.classList.add('agency-editable');
+          if (!cObj.fmtTag._agencyClickBound) {
+            cObj.fmtTag._agencyClickBound = true;
+            cObj.fmtTag.addEventListener('click', function(e){
               e.stopPropagation();
-              if (fmtPopoverOpen) { closeFmtPopover(); } else { openFmtPopover(); }
+              if (cObj.openFmtPopover) cObj.openFmtPopover();
             });
           }
+        }
+        if (cObj.h2Title) {
+          cObj.h2Title.setAttribute('contenteditable', 'true');
+          cObj.h2Title.setAttribute('spellcheck', 'true');
+          cObj.h2Title.setAttribute('title', 'Haz clic para editar el título');
         }
         if (cObj.guionParagraph) {
           cObj.guionParagraph.setAttribute('contenteditable', 'true');
@@ -3400,9 +3570,13 @@ __DATA__
       } else {
         card.classList.remove('card-agency-edit-mode');
         agencyBar.style.display = 'none';
-        if (fmtTag) {
-          fmtTag.classList.remove('agency-editable');
-          closeFmtPopover();
+        if (cObj.fmtTag) {
+          cObj.fmtTag.classList.remove('agency-editable');
+          if (cObj.closeFmtPopover) cObj.closeFmtPopover();
+        }
+        if (cObj.h2Title) {
+          cObj.h2Title.removeAttribute('contenteditable');
+          cObj.h2Title.removeAttribute('spellcheck');
         }
         if (cObj.guionParagraph) {
           cObj.guionParagraph.removeAttribute('contenteditable');

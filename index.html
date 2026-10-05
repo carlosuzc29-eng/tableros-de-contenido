@@ -3540,7 +3540,7 @@ body{
 .piece-editor-body {
   flex: 1;
   display: grid;
-  grid-template-columns: 420px 1fr;
+  grid-template-columns: 1fr 420px;
   gap: 0;
   overflow: hidden;
 }
@@ -3550,22 +3550,136 @@ body{
     overflow-y: auto;
   }
 }
-.piece-left-pane {
+.piece-main-pane {
+  padding: 22px 26px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.015);
+}
+.piece-side-pane {
   background: rgba(0, 0, 0, 0.28);
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
   padding: 20px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
-.piece-right-pane {
-  padding: 20px 24px;
-  overflow-y: auto;
+.save-status-badge {
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.save-status-badge.saved {
+  background: rgba(92, 184, 62, 0.15);
+  color: #86EFAC;
+  border: 1px solid rgba(92, 184, 62, 0.3);
+}
+.save-status-badge.saving {
+  background: rgba(56, 189, 248, 0.15);
+  color: #7DD3FC;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+.save-status-badge.unsaved {
+  background: rgba(245, 158, 11, 0.15);
+  color: #FCD34D;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+.save-status-badge.error {
+  background: rgba(239, 68, 68, 0.15);
+  color: #FCA5A5;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+.obs-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 10px 12px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  background: rgba(255, 255, 255, 0.015);
+  gap: 6px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.obs-item.atendida {
+  background: rgba(92, 184, 62, 0.06);
+  border-color: rgba(92, 184, 62, 0.3);
+}
+.obs-check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+}
+.obs-check-row input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  cursor: pointer;
+  accent-color: var(--verde);
+  margin-top: 2px;
+}
+.obs-text {
+  font-size: 13px;
+  color: #fff;
+  line-height: 1.45;
+  flex: 1;
+}
+.obs-item.atendida .obs-text {
+  color: rgba(255, 255, 255, 0.65);
+  text-decoration: line-through;
+}
+.obs-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  padding-top: 4px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.08);
+}
+.obs-tag {
+  font-size: 10.5px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-weight: 700;
+}
+.obs-tag.pending {
+  background: rgba(230, 74, 0, 0.2);
+  color: #FFA07A;
+}
+.obs-tag.done {
+  background: rgba(92, 184, 62, 0.2);
+  color: #86EFAC;
+}
+.btn-finalize-and-send {
+  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+  color: #fff;
+  border: 0;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+  transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-finalize-and-send:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.45);
+}
+.btn-finalize-and-send:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 .piece-editor-foot {
   padding: 14px 24px;
@@ -4780,10 +4894,12 @@ body{
     <!-- Navegación por apartados del flujo -->
     <div class="workspace-nav-tabs">
       <button class="ws-tab-btn active" data-tab="todos">Todos (<span id="wsCountAll">0</span>)</button>
-      <button class="ws-tab-btn" data-tab="cambios" style="color:#FFA07A;">⚠ Correcciones pendientes (<span id="wsCountChanges">0</span>)</button>
-      <button class="ws-tab-btn tab-corregidos" data-tab="corregidos">🔄 Contenidos corregidos (<span id="wsCountCorrected">0</span>)</button>
+      <button class="ws-tab-btn" data-tab="en_revision" style="color:#60A5FA;">👁️ En revisión (<span id="wsCountRevision">0</span>)</button>
+      <button class="ws-tab-btn" data-tab="cambios" style="color:#FFA07A;">💬 Cambios solicitados (<span id="wsCountChanges">0</span>)</button>
+      <button class="ws-tab-btn" data-tab="en_correccion" style="color:#F59E0B;">⚙ En corrección (<span id="wsCountInCorr">0</span>)</button>
+      <button class="ws-tab-btn tab-corregidos" data-tab="corregidos" style="color:#38BDF8;">🔄 Corregidos (<span id="wsCountCorrected">0</span>)</button>
       <button class="ws-tab-btn" data-tab="aprobados" style="color:#86EFAC;">✓ Aprobados (<span id="wsCountApproved">0</span>)</button>
-      <button class="ws-tab-btn" data-tab="pendientes">• Sin revisar (<span id="wsCountPending">0</span>)</button>
+      <button class="ws-tab-btn" data-tab="borradores" style="color:#94A3B8;">📝 Borradores (<span id="wsCountBorradores">0</span>)</button>
       <button class="ws-tab-btn tab-listos" data-tab="listos" id="wsTabBtnListos">🏆 Contenidos listos</button>
     </div>
 
@@ -4801,10 +4917,11 @@ body{
   <div class="piece-editor-card">
     <div class="piece-editor-head">
       <div>
-        <span class="modal-eyebrow" id="pieceEditorEyebrow">CORRECCIÓN EN ESPACIO DE TRABAJO</span>
+        <span class="modal-eyebrow" id="pieceEditorEyebrow">ESPACIO DE TRABAJO Y CORRECCIÓN · NEXO</span>
         <h3 id="pieceEditorTitle" style="margin:0;font-size:18px;color:#fff;">Contenido #00</h3>
       </div>
-      <div style="display:flex;align-items:center;gap:10px;">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <span id="pieceEditorAutoSaveStatus" class="save-status-badge saved">✓ Guardado</span>
         <span id="pieceEditorStateBadge" class="badge">Estado</span>
         <span id="pieceEditorVersionBadge" class="ws-pill version">v1</span>
         <button class="btn-modal-close" id="btnClosePieceEditor" aria-label="Cerrar editor">&times;</button>
@@ -4812,33 +4929,9 @@ body{
     </div>
 
     <div class="piece-editor-body">
-      <!-- Panel Izquierdo: Observaciones del cliente & Versión anterior comentada -->
-      <div class="piece-left-pane">
-        <div class="pane-section-title">💬 Observaciones del Cliente</div>
-        <div class="client-fb-hero">
-          <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#FFA07A;font-weight:700;">
-            <span id="pieceEditorClientAuthor">👤 Cliente</span>
-            <span id="pieceEditorClientDate">Fecha</span>
-          </div>
-          <div class="client-fb-hero-text" id="pieceEditorClientComment">“Sin observaciones registradas.”</div>
-        </div>
-
-        <div class="version-snapshot-box">
-          <div class="version-snapshot-title">📋 Versión que recibió los comentarios (Comparación)</div>
-          <div class="version-snapshot-body" id="pieceEditorSnapshot">Cargando material previo…</div>
-        </div>
-
-        <div class="version-snapshot-box" style="margin-top:auto;">
-          <div class="version-snapshot-title">📜 Historial de versiones y revisiones</div>
-          <div id="pieceEditorHistoryList" style="font-size:12px;display:flex;flex-direction:column;gap:6px;max-height:160px;overflow-y:auto;color:rgba(255,255,255,0.7);">
-            <!-- Items de historial -->
-          </div>
-        </div>
-      </div>
-
-      <!-- Panel Derecho: Formulario de Corrección de Campos y Archivos -->
-      <div class="piece-right-pane">
-        <div class="pane-section-title" style="color:var(--verde);">✎ Campos y Material Corregido</div>
+      <!-- Área Principal (Izquierda): Contenido editable -->
+      <div class="piece-main-pane">
+        <div class="pane-section-title" style="color:var(--verde);">✎ Contenido Editable (Modifica directamente aquí)</div>
 
         <div class="form-row-2">
           <div class="form-group">
@@ -4883,8 +4976,33 @@ body{
             <input type="text" id="pieceInputHashtags" class="modal-input" placeholder="#marca #campaña">
           </div>
           <div class="form-group">
-            <label for="pieceInputReferencias">Enlaces de archivos / Referencias sustituidas (URLs separadas por comas o saltos)</label>
+            <label for="pieceInputReferencias">Enlaces de archivos / Referencias sustituidas (URLs)</label>
             <textarea id="pieceInputReferencias" class="modal-textarea" rows="2" placeholder="https://drive.google.com/... o referencias"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Costado (Derecha): Observaciones del Cliente & Comparación & Historial -->
+      <div class="piece-side-pane">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div class="pane-section-title">💬 Observaciones del Cliente</div>
+          <span id="pieceEditorObsCounter" style="font-size:11.5px;color:#BAE6FD;font-weight:700;">0 de 0 atendidas</span>
+        </div>
+
+        <!-- Lista interactiva de observaciones para marcar como atendidas -->
+        <div id="pieceEditorObsList" style="display:flex;flex-direction:column;gap:10px;max-height:220px;overflow-y:auto;">
+          <!-- Items interactivos con checkboxes -->
+        </div>
+
+        <div class="version-snapshot-box">
+          <div class="version-snapshot-title">📋 Versión que recibió los comentarios (Comparación)</div>
+          <div class="version-snapshot-body" id="pieceEditorSnapshot" style="font-size:12px;max-height:160px;overflow-y:auto;white-space:pre-wrap;color:rgba(255,255,255,0.75);">Cargando material previo…</div>
+        </div>
+
+        <div class="version-snapshot-box" style="margin-top:auto;">
+          <div class="version-snapshot-title">📜 Historial cronológico de versiones</div>
+          <div id="pieceEditorHistoryList" style="font-size:12px;display:flex;flex-direction:column;gap:6px;max-height:150px;overflow-y:auto;color:rgba(255,255,255,0.7);">
+            <!-- Items de historial -->
           </div>
         </div>
       </div>
@@ -4892,15 +5010,19 @@ body{
 
     <!-- Acciones del Editor de Pieza -->
     <div class="piece-editor-foot">
-      <div>
-        <button class="btn-modal-sec" id="btnPieceEditorCancel">Cerrar sin guardar</button>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn-modal-sec" id="btnPieceEditorCancel">Cerrar</button>
+        <button class="btn-modal-sec" id="btnPieceCopyContent" title="Copiar texto de esta versión al portapapeles">📋 Copiar contenido</button>
       </div>
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-        <button class="btn-save-draft" id="btnPieceSaveDraft" title="Guarda el avance sin cambiar la pieza a corregida ni mostrar al cliente">
+        <button class="btn-save-draft" id="btnPieceSaveDraft" title="Guarda el borrador sin cambiar la pieza a corregida ni exponerla al cliente">
           💾 Guardar borrador
         </button>
-        <button class="btn-finalize-correction" id="btnPieceFinalize" title="Guarda una nueva versión y mueve la pieza automáticamente a Contenidos Corregidos">
-          ✓ Finalizar corrección
+        <button class="btn-finalize-correction" id="btnPieceFinalize" title="Guarda la versión como corregida y la mueve a Contenidos Corregidos">
+          ✓ Guardar como corregido
+        </button>
+        <button class="btn-finalize-and-send" id="btnPieceFinalizeAndSend" title="Guarda la corrección y la envía directamente a revisión del cliente en una sola acción">
+          🚀 Finalizar y enviar a revisión
         </button>
       </div>
     </div>
@@ -5434,10 +5556,13 @@ body{
         copy.n = n;
         copy.id = copy.id || ('c' + n);
         copy.titulo = copy.titulo || ('Contenido ' + (n < 10 ? '0' : '') + n);
-        copy.estado = copy.estado || 'pendiente';
+        copy.estado = copy.estado || 'en_revision';
+        if (copy.estado === 'pendiente') copy.estado = 'en_revision';
+        copy.version = parseInt(copy.version, 10) || 1;
         copy.formato = copy.formato || '';
         copy.formatoOriginal = copy.formatoOriginal || copy.formato || '';
         copy.comentario = copy.comentario || '';
+        copy.comentarios = Array.isArray(copy.comentarios) ? copy.comentarios : [];
         copy.revisadoPor = copy.revisadoPor || t.revisadoPor || '';
         return copy;
       });
@@ -5451,7 +5576,9 @@ body{
       copy.n = n;
       copy.id = copy.id || ('c' + n);
       copy.titulo = copy.titulo || ('Contenido ' + (n < 10 ? '0' : '') + n);
-      copy.estado = copy.estado || 'pendiente';
+      copy.estado = copy.estado || 'en_revision';
+      if (copy.estado === 'pendiente') copy.estado = 'en_revision';
+      copy.version = parseInt(copy.version, 10) || 1;
       copy.comentario = copy.comentario || '';
       copy.formatoOriginal = copy.formatoOriginal || copy.formato || '';
 
@@ -5459,8 +5586,9 @@ body{
         return (+x.n === n) || (x.id && x.id === copy.id) || (x.titulo && x.titulo === copy.titulo);
       });
       if (fsItem) {
-        if (fsItem.estado) copy.estado = fsItem.estado;
+        if (fsItem.estado) copy.estado = (fsItem.estado === 'pendiente') ? 'en_revision' : fsItem.estado;
         if (fsItem.comentario != null && fsItem.comentario !== '') copy.comentario = fsItem.comentario;
+        if (fsItem.comentarios !== undefined) copy.comentarios = fsItem.comentarios;
         if (fsItem.formato) copy.formato = fsItem.formato;
         if (fsItem.formatoOriginal) copy.formatoOriginal = fsItem.formatoOriginal;
         if (fsItem.revisadoPor) copy.revisadoPor = fsItem.revisadoPor;
@@ -5470,10 +5598,15 @@ body{
         if (fsItem.guion !== undefined) copy.guion = fsItem.guion;
         if (fsItem.copy !== undefined) copy.copy = fsItem.copy;
         if (fsItem.hashtags !== undefined) copy.hashtags = fsItem.hashtags;
-        if (fsItem.version !== undefined) copy.version = fsItem.version;
+        if (fsItem.version !== undefined) copy.version = parseInt(fsItem.version, 10) || 1;
         if (fsItem.fechaCorreccion !== undefined) copy.fechaCorreccion = fsItem.fechaCorreccion;
+        if (fsItem.fechaEnvio !== undefined) copy.fechaEnvio = fsItem.fechaEnvio;
         if (fsItem.historial !== undefined) copy.historial = fsItem.historial;
         if (fsItem.referencias && fsItem.referencias.length) copy.referencias = fsItem.referencias;
+        if (fsItem.slides !== undefined) copy.slides = fsItem.slides;
+        if (fsItem.borrador !== undefined) copy.borrador = fsItem.borrador;
+        if (fsItem.versiones !== undefined) copy.versiones = fsItem.versiones;
+        if (fsItem.aprobacion !== undefined) copy.aprobacion = fsItem.aprobacion;
       }
       if (!copy.revisadoPor) {
         copy.revisadoPor = (boardData && boardData.revision && boardData.revision.revisadoPor) || t.revisadoPor || '';
@@ -6247,12 +6380,13 @@ body{
 
     var baseTargetUrl = resolveOpenUrl(t.url);
     var targetOpenUrl = baseTargetUrl ? (baseTargetUrl + (baseTargetUrl.indexOf('?') === -1 ? '?agencia=1' : '&agencia=1')) : '';
-    var openBtn = targetOpenUrl ? '<a href="' + escapeAttr(targetOpenUrl) + '" target="_blank" rel="noopener" class="btn-card pri btn-ver-respuesta" title="Ver respuesta y modificar contenidos">Ver respuesta ↗</a>' : '';
+    var workspaceBtn = '<button class="btn-card pri btn-open-board-ws" data-id="' + escapeAttr(t.id) + '" title="Abrir espacio de trabajo amplio para correcciones y aprobación">Ver detalles ↗</button>';
+    var openBtn = targetOpenUrl ? '<a href="' + escapeAttr(targetOpenUrl) + '" target="_blank" rel="noopener" class="btn-card sec btn-ver-respuesta" title="Ver enlace enviado al cliente">Público ↗</a>' : '';
     var copyBtn = t.url ? '<button class="btn-card sec btn-copy-url" data-url="' + escapeAttr(getPublicBoardUrl(t.url)) + '" title="Copiar enlace enviado al cliente">Copiar</button>' : '';
     var sendSeparatedBtn = '<button class="btn-card sec link-envio btn-send-separated" data-id="' + escapeAttr(t.id) + '" title="Enviar por separado los contenidos que el cliente quiera que se corrijan">Por separado</button>';
 
     return '' +
-      '<div class="board-card ' + (isSecondary ? 'secondary' : '') + '" data-board-url="' + escapeAttr(t.url || '') + '" title="' + (t.url ? 'Clic para abrir tablero directamente' : '') + '">' +
+      '<div class="board-card ' + (isSecondary ? 'secondary' : '') + '" data-board-url="' + escapeAttr(t.url || '') + '" title="' + (t.url ? 'Clic para abrir espacio de trabajo' : '') + '">' +
         '<div class="card-top">' +
           '<div>' +
             '<div class="card-period">' + escapeHtml(t.mes || 'Periodo') + ' ' + escapeHtml(t.anio || '') + '</div>' +
@@ -6274,6 +6408,7 @@ body{
         '<div class="card-foot">' +
           '<div class="reviewer-info">' + revHtml + '</div>' +
           '<div class="card-actions-row">' +
+            workspaceBtn +
             copyBtn +
             sendSeparatedBtn +
             openBtn +
@@ -6462,13 +6597,23 @@ body{
       };
     });
 
+    // Delegar eventos de abrir espacio de trabajo amplio
+    var wsOpenBtns = dashContent.querySelectorAll('.btn-open-board-ws');
+    wsOpenBtns.forEach(function(btn){
+      btn.onclick = function(e){
+        e.stopPropagation();
+        var tId = btn.getAttribute('data-id');
+        openBoardWorkspace(tId, 'todos');
+      };
+    });
+
     // Delegar eventos de toggle detalle
     var detailBtns = dashContent.querySelectorAll('.btn-toggle-detail');
     detailBtns.forEach(function(btn){
       btn.onclick = function(e){
         e.stopPropagation();
         var tId = btn.getAttribute('data-id');
-        toggleBoardDetail(tId, btn);
+        openBoardWorkspace(tId, 'todos');
       };
     });
 
@@ -6484,9 +6629,13 @@ body{
             e.target.closest('textarea')) {
           return;
         }
-        var u = card.getAttribute('data-board-url');
-        if (u) {
-          window.open(resolveOpenUrl(u), '_blank');
+        var boardCardBtn = card.querySelector('.btn-open-board-ws');
+        var tId = boardCardBtn ? boardCardBtn.getAttribute('data-id') : null;
+        if (tId) {
+          openBoardWorkspace(tId, 'todos');
+        } else {
+          var u = card.getAttribute('data-board-url');
+          if (u) window.open(resolveOpenUrl(u), '_blank');
         }
       };
     });
@@ -7719,14 +7868,23 @@ body{
   var btnPieceEditorCancel = document.getElementById('btnPieceEditorCancel');
   var btnPieceSaveDraft = document.getElementById('btnPieceSaveDraft');
   var btnPieceFinalize = document.getElementById('btnPieceFinalize');
+  var btnPieceFinalizeAndSend = document.getElementById('btnPieceFinalizeAndSend');
+  var btnPieceCopyContent = document.getElementById('btnPieceCopyContent');
   var pieceEditorTitle = document.getElementById('pieceEditorTitle');
+  var pieceEditorAutoSaveStatus = document.getElementById('pieceEditorAutoSaveStatus');
   var pieceEditorStateBadge = document.getElementById('pieceEditorStateBadge');
   var pieceEditorVersionBadge = document.getElementById('pieceEditorVersionBadge');
   var pieceEditorClientAuthor = document.getElementById('pieceEditorClientAuthor');
   var pieceEditorClientDate = document.getElementById('pieceEditorClientDate');
   var pieceEditorClientComment = document.getElementById('pieceEditorClientComment');
+  var pieceEditorObsCounter = document.getElementById('pieceEditorObsCounter');
+  var pieceEditorObsList = document.getElementById('pieceEditorObsList');
   var pieceEditorSnapshot = document.getElementById('pieceEditorSnapshot');
   var pieceEditorHistoryList = document.getElementById('pieceEditorHistoryList');
+
+  var pieceAutoSaveTimer = null;
+  var pieceSaveInFlight = false;
+  var pieceHasPendingChanges = false;
 
   var pieceInputTitulo = document.getElementById('pieceInputTitulo');
   var pieceInputFormato = document.getElementById('pieceInputFormato');
@@ -7817,28 +7975,34 @@ body{
     var items = getMergedItems(t, bData);
 
     var countAll = items.length;
-    var countOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
-    var countFix = items.filter(function(x){ return x.estado === 'cambios' || x.estado === 'en_correccion'; }).length;
-    var countCorregido = items.filter(function(x){ return x.estado === 'corregido'; }).length;
-    var countPend = items.filter(function(x){ return x.estado === 'pendiente' || !x.estado; }).length;
+    var countRevision = items.filter(function(x){ return x.estado === 'en_revision' || x.estado === 'pendiente' || !x.estado; }).length;
+    var countChanges = items.filter(function(x){ return x.estado === 'cambios'; }).length;
+    var countInCorr = items.filter(function(x){ return x.estado === 'en_correccion'; }).length;
+    var countCorrected = items.filter(function(x){ return x.estado === 'corregido'; }).length;
+    var countApproved = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
+    var countBorradores = items.filter(function(x){ return x.estado === 'borrador'; }).length;
 
-    var isAllApproved = (countAll > 0 && countOk === countAll);
+    var isAllApproved = (countAll > 0 && countApproved === countAll);
 
-    // Actualizar contadores en tabs
+    // Actualizar contadores reales en las pestañas
     var elCountAll = document.getElementById('wsCountAll');
+    var elCountRevision = document.getElementById('wsCountRevision');
     var elCountChanges = document.getElementById('wsCountChanges');
+    var elCountInCorr = document.getElementById('wsCountInCorr');
     var elCountCorrected = document.getElementById('wsCountCorrected');
     var elCountApproved = document.getElementById('wsCountApproved');
-    var elCountPending = document.getElementById('wsCountPending');
+    var elCountBorradores = document.getElementById('wsCountBorradores');
 
     if (elCountAll) elCountAll.textContent = countAll;
-    if (elCountChanges) elCountChanges.textContent = countFix;
-    if (elCountCorrected) elCountCorrected.textContent = countCorregido;
-    if (elCountApproved) elCountApproved.textContent = countOk;
-    if (elCountPending) elCountPending.textContent = countPend;
+    if (elCountRevision) elCountRevision.textContent = countRevision;
+    if (elCountChanges) elCountChanges.textContent = countChanges;
+    if (elCountInCorr) elCountInCorr.textContent = countInCorr;
+    if (elCountCorrected) elCountCorrected.textContent = countCorrected;
+    if (elCountApproved) elCountApproved.textContent = countApproved;
+    if (elCountBorradores) elCountBorradores.textContent = countBorradores;
 
     if (wsBoardProg) {
-      wsBoardProg.innerHTML = 'Progreso: <b>' + countOk + ' de ' + countAll + ' aprobados</b> (' + (countAll ? Math.round((countOk / countAll) * 100) : 0) + '%)';
+      wsBoardProg.innerHTML = 'Progreso: <b>' + countApproved + ' de ' + countAll + ' aprobados</b> (' + (countAll ? Math.round((countApproved / countAll) * 100) : 0) + '%)';
     }
 
     if (wsBoardBadge) {
@@ -7854,9 +8018,9 @@ body{
         wsTabBtnListos.style.opacity = '1';
         wsTabBtnListos.title = 'Todas las piezas de este conjunto están aprobadas';
       } else {
-        wsTabBtnListos.innerHTML = '🏆 Contenidos listos (' + countOk + '/' + countAll + ')';
+        wsTabBtnListos.innerHTML = '🏆 Contenidos listos (' + countApproved + '/' + countAll + ')';
         wsTabBtnListos.style.opacity = '0.75';
-        wsTabBtnListos.title = 'Faltan ' + (countAll - countOk) + ' contenidos por aprobar';
+        wsTabBtnListos.title = 'Faltan ' + (countAll - countApproved) + ' contenidos por aprobar';
       }
     }
 
@@ -7875,7 +8039,7 @@ body{
 
     // Renderizar pestaña seleccionada
     if (currentWorkspaceTab === 'listos') {
-      renderTabListosContent(t, bData, items, countOk, countAll, isAllApproved);
+      renderTabListosContent(t, bData, items, countApproved, countAll, isAllApproved);
     } else {
       renderTabGridItems(t, bData, items);
     }
@@ -7883,10 +8047,12 @@ body{
 
   function renderTabGridItems(t, bData, allItems){
     var filtered = allItems.filter(function(it){
-      if (currentWorkspaceTab === 'cambios') return it.estado === 'cambios' || it.estado === 'en_correccion';
+      if (currentWorkspaceTab === 'en_revision') return it.estado === 'en_revision' || it.estado === 'pendiente' || !it.estado;
+      if (currentWorkspaceTab === 'cambios') return it.estado === 'cambios';
+      if (currentWorkspaceTab === 'en_correccion') return it.estado === 'en_correccion';
       if (currentWorkspaceTab === 'corregidos') return it.estado === 'corregido';
       if (currentWorkspaceTab === 'aprobados') return it.estado === 'aprobado';
-      if (currentWorkspaceTab === 'pendientes') return it.estado === 'pendiente' || !it.estado;
+      if (currentWorkspaceTab === 'borradores') return it.estado === 'borrador';
       return true;
     });
 
@@ -7913,11 +8079,11 @@ body{
       html += '<div class="ws-corregidos-hub">' +
         '<div class="ws-hub-left">' +
           '<h4><span>🔄 ' + pluralText + ' para nueva revisión del cliente</span></h4>' +
-          '<p>Las correcciones ya fueron finalizadas. Genera un enlace exclusivo para compartir únicamente las piezas corregidas seleccionadas.</p>' +
+          '<p>Las correcciones ya fueron finalizadas por el equipo. Puedes enviarlas directamente a revisión o generar un enlace interactivo de revisión exclusiva.</p>' +
         '</div>' +
         '<div class="ws-hub-actions">' +
           '<button class="btn-finalize-correction btn-ws-open-shipment" type="button" style="background:#0284C7;">' +
-            '<span>🔗 Copiar enlace de revisión</span>' +
+            '<span>🔗 Compartir enlace de revisión</span>' +
           '</button>' +
           '<button class="btn-detail-action btn-ws-wa-shipment" type="button" title="Notificar por WhatsApp">' +
             '<span>💬 WhatsApp</span>' +
@@ -7936,34 +8102,98 @@ body{
     html += '<div class="ws-grid-items">';
     filtered.forEach(function(it){
       var num = (it.n < 10 ? '0' : '') + it.n;
-      var isAprob = it.estado === 'aprobado';
-      var isCambios = it.estado === 'cambios' || it.estado === 'en_correccion';
-      var isCorregido = it.estado === 'corregido';
+      var curSt = it.estado || 'en_revision';
+      var isAprob = curSt === 'aprobado';
+      var isCambios = curSt === 'cambios';
+      var isEnCorr = curSt === 'en_correccion';
+      var isCorregido = curSt === 'corregido';
+      var isBorrador = curSt === 'borrador';
+      var isEnRevision = curSt === 'en_revision' || curSt === 'pendiente';
 
-      var cardCls = isCambios ? 'is-cambios' : (isCorregido ? 'is-corregido' : (isAprob ? 'is-aprobado' : ''));
+      var cardCls = isCambios ? 'is-cambios' : (isEnCorr ? 'is-cambios' : (isCorregido ? 'is-corregido' : (isAprob ? 'is-aprobado' : '')));
 
+      // Badge de estado oficial
       var stBadge = isAprob ? '<span class="badge badge-ok">✓ Aprobado</span>' :
-                    (isCambios ? '<span class="badge badge-fix">⚠ Con cambios</span>' :
+                    (isCambios ? '<span class="badge badge-fix">💬 Cambios solicitados</span>' :
+                    (isEnCorr ? '<span class="badge" style="background:rgba(245,158,11,0.2);color:#F59E0B;border:1px solid rgba(245,158,11,0.3);">⚙ En corrección</span>' :
                     (isCorregido ? '<span class="badge badge-corregido">🔄 Corregido</span>' :
-                    '<span class="badge badge-wait">• Pendiente</span>'));
+                    (isBorrador ? '<span class="badge" style="background:rgba(148,163,184,0.2);color:#94A3B8;border:1px solid rgba(148,163,184,0.3);">📝 Borrador</span>' :
+                    '<span class="badge badge-wait" style="background:rgba(96,165,250,0.2);color:#60A5FA;border:1px solid rgba(96,165,250,0.3);">👁️ En revisión</span>'))));
 
       var vNum = it.version ? ('v' + it.version) : 'v1';
+      var isCorrReview = (parseInt(it.version, 10) || 1) > 1;
+      var ctxBadge = isCorrReview ?
+        '<span class="ws-pill" style="color:#BAE6FD;border-color:rgba(186,230,253,0.3);font-size:10.5px;">🔄 Revisión de correcciones</span>' :
+        '<span class="ws-pill" style="color:#86EFAC;border-color:rgba(134,239,172,0.3);font-size:10.5px;">✨ Primera revisión</span>';
 
+      // Observaciones pendientes de atención
+      var cList = Array.isArray(it.comentarios) ? it.comentarios : (it.comentario ? [{ texto: it.comentario, autor: it.revisadoPor || 'Cliente', atendido: false }] : []);
+      var pendingObsCount = cList.filter(function(c){ return !c.atendido; }).length;
+      var obsBadge = '';
+      if (cList.length > 0) {
+        if (pendingObsCount > 0) {
+          obsBadge = '<span class="ws-pill fix" style="font-size:11px;">💬 ' + pendingObsCount + ' obs. pendiente' + (pendingObsCount > 1 ? 's' : '') + '</span>';
+        } else {
+          obsBadge = '<span class="ws-pill ok" style="font-size:11px;">💬 Todas atendidas ✓</span>';
+        }
+      }
+
+      // Previsualización de observación
       var fbPreview = '';
-      if (it.comentario && it.comentario.trim()) {
-        var author = it.revisadoPor || t.revisadoPor || 'Cliente';
+      if (cList.length > 0) {
+        var lastComment = cList[cList.length - 1];
+        var author = lastComment.autor || it.revisadoPor || t.revisadoPor || 'Cliente';
         fbPreview = '<div class="ws-client-comment-preview ' + (isCorregido ? 'corregido' : '') + '">' +
-          '<b>' + (isCambios ? 'Ajustes solicitados' : (isCorregido ? 'Corrección atendida' : 'Comentarios')) + ' (' + escapeHtml(author) + '):</b><br>' +
-          '“' + escapeHtml(it.comentario.trim()) + '”' +
+          '<b>' + (isCambios ? 'Observación del cliente' : (isCorregido ? 'Última observación atendida' : 'Comentario')) + ' (' + escapeHtml(author) + '):</b><br>' +
+          '“' + escapeHtml((lastComment.texto || '').trim()) + '”' +
         '</div>';
       }
 
-      var guionSnip = it.guion ? ('<div style="font-size:12px;color:rgba(255,255,255,0.7);max-height:48px;overflow:hidden;text-overflow:ellipsis;line-height:1.4;">' + escapeHtml(it.guion) + '</div>') : '';
+      var guionSnip = it.guion ? ('<div style="font-size:12px;color:rgba(255,255,255,0.7);max-height:44px;overflow:hidden;text-overflow:ellipsis;line-height:1.4;">' + escapeHtml(it.guion) + '</div>') : '';
 
-      var quickAprobBtn = (isCambios || isCorregido) ?
-        ('<button class="btn-quick-approve btn-ws-quick-approve" data-n="' + it.n + '" title="Marcar como aprobado">✓ Aprobar</button>') : '';
+      // Última actividad
+      var lastActStr = '';
+      if (isAprob && it.aprobacion && it.aprobacion.fecha) {
+        lastActStr = 'Aprobado: ' + formatFecha(it.aprobacion.fecha) + (it.aprobacion.usuario ? ' (' + it.aprobacion.usuario + ')' : '');
+      } else if (it.fechaCorreccion) {
+        lastActStr = 'Corregido: ' + formatFecha(it.fechaCorreccion);
+      } else if (it.fechaEnvio) {
+        lastActStr = 'Enviado: ' + formatFecha(it.fechaEnvio);
+      } else if (it.fechaRevision) {
+        lastActStr = 'Revisado: ' + formatFecha(it.fechaRevision);
+      } else if (t.ultimaRevision) {
+        lastActStr = 'Actividad: ' + formatFecha(t.ultimaRevision);
+      } else {
+        lastActStr = (it.revisadoPor ? ('👤 ' + it.revisadoPor) : 'Sin actividad');
+      }
 
-      var actionLabel = (isCambios || isCorregido) ? 'Corregir / Editar' : 'Detalles & Editar';
+      // Botón de acción principal según el estado
+      var primaryActionBtn = '';
+      if (isCambios) {
+        primaryActionBtn = '<button class="btn-modal-pri btn-ws-start-correction" data-n="' + it.n + '" style="background:#FFA07A;color:#0f172a;font-weight:700;padding:6px 12px;font-size:12px;" title="Comenzar a trabajar en los ajustes">' +
+          '<span>Comenzar corrección</span>' +
+        '</button>';
+      } else if (isEnCorr) {
+        primaryActionBtn = '<button class="btn-modal-pri btn-ws-continue-correction" data-n="' + it.n + '" style="background:#F59E0B;color:#0f172a;font-weight:700;padding:6px 12px;font-size:12px;" title="Continuar editando el borrador de corrección">' +
+          '<span>Continuar corrigiendo</span>' +
+        '</button>';
+      } else if (isCorregido) {
+        primaryActionBtn = '<button class="btn-modal-pri btn-ws-send-revision" data-n="' + it.n + '" style="background:#0284C7;color:#fff;font-weight:700;padding:6px 12px;font-size:12px;" title="Enviar esta nueva versión al cliente para su revisión">' +
+          '<span>Enviar a revisión</span>' +
+        '</button>';
+      } else if (isEnRevision) {
+        primaryActionBtn = '<button class="btn-modal-sec btn-ws-open-piece" data-n="' + it.n + '" style="padding:6px 12px;font-size:12px;" title="Ver la versión enviada al cliente">' +
+          '<span>Ver versión enviada</span>' +
+        '</button>';
+      } else if (isAprob) {
+        primaryActionBtn = '<button class="btn-modal-sec btn-ws-open-piece" data-n="' + it.n + '" style="padding:6px 12px;font-size:12px;border-color:rgba(134,239,172,0.4);color:#86EFAC;" title="Ver los detalles de la aprobación">' +
+          '<span>Ver aprobación</span>' +
+        '</button>';
+      } else if (isBorrador) {
+        primaryActionBtn = '<button class="btn-modal-pri btn-ws-send-revision" data-n="' + it.n + '" style="background:#0284C7;color:#fff;font-weight:700;padding:6px 12px;font-size:12px;" title="Enviar este borrador a revisión del cliente">' +
+          '<span>Enviar a revisión</span>' +
+        '</button>';
+      }
 
       html += '<div class="ws-item-card ' + cardCls + '">' +
         '<div class="ws-card-header">' +
@@ -7971,28 +8201,27 @@ body{
             '<span class="ws-card-num">#' + num + '</span>' +
             '<h3 class="ws-card-title">' + escapeHtml(it.titulo || 'Sin título') + '</h3>' +
           '</div>' +
-          '<div style="display:flex;align-items:center;gap:6px;">' +
+          '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">' +
             '<span class="ws-pill version">' + vNum + '</span>' +
             stBadge +
           '</div>' +
         '</div>' +
         '<div class="ws-card-meta">' +
           (it.formato ? '<span class="ws-pill">' + escapeHtml(it.formato) + '</span>' : '') +
-          (it.pilar ? '<span class="ws-pill">' + escapeHtml(it.pilar) + '</span>' : '') +
+          ctxBadge +
+          obsBadge +
           (it.fechaPublicacion ? '<span class="ws-pill">📅 ' + escapeHtml(it.fechaPublicacion) + '</span>' : '') +
-          (it.fechaCorreccion ? '<span class="ws-pill" style="color:#BAE6FD;">🔄 Corregido: ' + formatFecha(it.fechaCorreccion) + '</span>' : '') +
         '</div>' +
         fbPreview +
         guionSnip +
         '<div class="ws-card-foot">' +
-          '<div style="font-size:11.5px;color:var(--ink-2);">' +
-            (it.revisadoPor ? ('👤 ' + escapeHtml(it.revisadoPor)) : 'Sin revisor') +
+          '<div style="font-size:11px;color:rgba(255,255,255,0.6);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px;" title="' + escapeHtml(lastActStr) + '">' +
+            escapeHtml(lastActStr) +
           '</div>' +
-          '<div style="display:flex;align-items:center;gap:6px;">' +
-            quickAprobBtn +
-            '<button class="btn-modal-pri btn-ws-open-piece" data-n="' + it.n + '" style="padding:6px 12px;font-size:12px;background:var(--azul);">' +
-              '<span>' + actionLabel + '</span>' +
-            '</button>' +
+          '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">' +
+            '<button class="btn-modal-sec btn-ws-copy-content" data-n="' + it.n + '" style="padding:5px 9px;font-size:11.5px;" title="Copiar contenido de esta versión al portapapeles">📋 Copiar</button>' +
+            (isCorregido ? '<button class="btn-modal-sec btn-ws-open-piece" data-n="' + it.n + '" style="padding:5px 9px;font-size:11.5px;" title="Ver y editar contenido">Editar</button>' : '') +
+            primaryActionBtn +
           '</div>' +
         '</div>' +
       '</div>';
@@ -8037,7 +8266,7 @@ body{
     allItems.forEach(function(it){
       var num = (it.n < 10 ? '0' : '') + it.n;
       var isAprob = it.estado === 'aprobado';
-      var stBadge = isAprob ? '<span class="badge badge-ok">✓ Aprobado</span>' : '<span class="badge badge-wait">• Pendiente (' + escapeHtml(it.estado) + ')</span>';
+      var stBadge = isAprob ? '<span class="badge badge-ok">✓ Aprobado</span>' : '<span class="badge badge-wait">• Pendiente (' + escapeHtml(it.estado || 'en_revision') + ')</span>';
 
       html += '<div class="ws-item-card ' + (isAprob ? 'is-aprobado' : '') + '">' +
         '<div class="ws-card-header">' +
@@ -8056,8 +8285,11 @@ body{
         (it.guion ? ('<div style="font-size:12px;color:rgba(255,255,255,0.8);line-height:1.45;background:rgba(0,0,0,0.2);padding:8px 10px;border-radius:6px;"><b>Guion:</b> ' + escapeHtml(it.guion) + '</div>') : '') +
         (it.copy ? ('<div style="font-size:12px;color:rgba(255,255,255,0.8);line-height:1.45;background:rgba(0,0,0,0.2);padding:8px 10px;border-radius:6px;"><b>Copy:</b> ' + escapeHtml(it.copy) + '</div>') : '') +
         '<div class="ws-card-foot">' +
-          '<span style="font-size:11.5px;color:var(--ink-2);">' + (it.fechaAprobacion ? ('Aprobado: ' + formatFecha(it.fechaAprobacion)) : (it.revisadoPor || '')) + '</span>' +
-          '<button class="btn-modal-sec btn-ws-open-piece" data-n="' + it.n + '" style="padding:4px 10px;font-size:11.5px;">Inspeccionar</button>' +
+          '<span style="font-size:11.5px;color:var(--ink-2);">' + ((it.aprobacion && it.aprobacion.fecha) ? ('Aprobado: ' + formatFecha(it.aprobacion.fecha)) : (it.fechaAprobacion ? ('Aprobado: ' + formatFecha(it.fechaAprobacion)) : (it.revisadoPor || ''))) + '</span>' +
+          '<div style="display:flex;align-items:center;gap:6px;">' +
+            '<button class="btn-modal-sec btn-ws-copy-content" data-n="' + it.n + '" style="padding:4px 9px;font-size:11.5px;">📋 Copiar</button>' +
+            '<button class="btn-modal-sec btn-ws-open-piece" data-n="' + it.n + '" style="padding:4px 10px;font-size:11.5px;">Inspeccionar</button>' +
+          '</div>' +
         '</div>' +
       '</div>';
     });
@@ -8070,6 +8302,7 @@ body{
   function bindWorkspaceBodyEvents(t, bData){
     if (!wsBodyContent) return;
 
+    // Abrir editor de pieza
     var pieceBtns = wsBodyContent.querySelectorAll('.btn-ws-open-piece');
     pieceBtns.forEach(function(pb){
       pb.onclick = function(e){
@@ -8079,13 +8312,43 @@ body{
       };
     });
 
-    var qaBtns = wsBodyContent.querySelectorAll('.btn-ws-quick-approve');
-    qaBtns.forEach(function(qb){
-      qb.onclick = function(e){
+    // Comenzar corrección (Cambios solicitados -> En corrección)
+    var startCorrBtns = wsBodyContent.querySelectorAll('.btn-ws-start-correction');
+    startCorrBtns.forEach(function(scb){
+      scb.onclick = function(e){
         e.stopPropagation();
-        var n = parseInt(qb.getAttribute('data-n'), 10);
-        quickApproveItem(t.id, n);
-        setTimeout(function(){ renderBoardWorkspace(); }, 400);
+        var n = parseInt(scb.getAttribute('data-n'), 10);
+        startPieceCorrection(t.id, n);
+      };
+    });
+
+    // Continuar corrigiendo (En corrección -> abre editor)
+    var contCorrBtns = wsBodyContent.querySelectorAll('.btn-ws-continue-correction');
+    contCorrBtns.forEach(function(ccb){
+      ccb.onclick = function(e){
+        e.stopPropagation();
+        var n = parseInt(ccb.getAttribute('data-n'), 10);
+        openPieceEditor(t.id, n);
+      };
+    });
+
+    // Enviar a revisión (Corregido / Borrador -> En revisión)
+    var sendRevBtns = wsBodyContent.querySelectorAll('.btn-ws-send-revision');
+    sendRevBtns.forEach(function(srb){
+      srb.onclick = function(e){
+        e.stopPropagation();
+        var n = parseInt(srb.getAttribute('data-n'), 10);
+        sendPieceToReview(t.id, n);
+      };
+    });
+
+    // Copiar contenido al portapapeles
+    var copyBtns = wsBodyContent.querySelectorAll('.btn-ws-copy-content');
+    copyBtns.forEach(function(cpb){
+      cpb.onclick = function(e){
+        e.stopPropagation();
+        var n = parseInt(cpb.getAttribute('data-n'), 10);
+        copyPieceContent(t.id, n);
       };
     });
 
@@ -8121,7 +8384,6 @@ body{
       };
     });
 
-
     var btnPdf = wsBodyContent.querySelector('.btn-ws-pdf-clickup');
     if (btnPdf) btnPdf.onclick = function(e){ e.stopPropagation(); descargarPdfClickUp(t, bData); };
 
@@ -8135,6 +8397,153 @@ body{
     if (btnCpJson) btnCpJson.onclick = function(e){ e.stopPropagation(); copiarJsonActualizado(t, bData); };
   }
 
+  // Copiar contenido formateado indicando qué versión se copió
+  function copyPieceContent(tId, itemN){
+    var t = allTableros.find(function(x){ return x.id === tId; });
+    if (!t) return;
+    var bData = boardCache[tId];
+    var items = getMergedItems(t, bData);
+    var it = items.find(function(x){ return x.n === itemN; }) || items[itemN - 1];
+    if (!it) return;
+
+    var num = (itemN < 10 ? '0' : '') + itemN;
+    var vStr = 'v' + (it.version || 1);
+    var lines = [];
+    lines.push('========================================');
+    lines.push('#' + num + ' · ' + (it.titulo || 'Sin título') + ' (' + vStr + ')');
+    lines.push('Estado: ' + (it.estado || 'en_revision'));
+    if (it.formato) lines.push('Formato: ' + it.formato);
+    if (it.pilar) lines.push('Pilar: ' + it.pilar);
+    if (it.fechaPublicacion) lines.push('Fecha programada: ' + it.fechaPublicacion);
+    lines.push('========================================');
+    if (it.guion) {
+      lines.push('\n[GUION / INSTRUCCIONES]:\n' + it.guion);
+    }
+    if (it.copy) {
+      lines.push('\n[COPY]:\n' + it.copy);
+    }
+    if (it.hashtags) {
+      lines.push('\n[HASHTAGS]:\n' + it.hashtags);
+    }
+    if (it.referencias && it.referencias.length) {
+      lines.push('\n[REFERENCIAS / ARCHIVOS]:\n' + it.referencias.map(function(r){ return r.url || r.label || ''; }).filter(Boolean).join('\n'));
+    }
+    var fullText = lines.join('\n');
+    copyText(fullText, '✓ Contenido copiado (' + vStr + ')');
+  }
+
+  // Transición directa: Cambios solicitados -> En corrección
+  function startPieceCorrection(tId, itemN){
+    var t = allTableros.find(function(x){ return x.id === tId; });
+    if (!t) return;
+    var bData = boardCache[tId];
+    var items = getMergedItems(t, bData);
+    var idx = items.findIndex(function(x){ return x.n === itemN; });
+    if (idx === -1) idx = itemN - 1;
+    if (idx < 0 || idx >= items.length) return;
+
+    items[idx].estado = 'en_correccion';
+    var curV = parseInt(items[idx].version, 10) || 1;
+    var nowIso = new Date().toISOString();
+
+    items[idx].historial = items[idx].historial || [];
+    items[idx].historial.push({
+      version: curV,
+      accion: 'Equipo comenzó a trabajar en los ajustes',
+      usuario: 'Equipo Nexo',
+      fecha: nowIso
+    });
+
+    db.collection('tableros').doc(t.id).set({
+      contenidos: items,
+      actualizado: nowIso
+    }, { merge: true })
+    .then(function(){
+      t.contenidos = items;
+      if (boardCache[t.id]) boardCache[t.id].contenidos = items;
+      toast('✓ Estado cambiado a "En corrección". Abriendo editor…');
+      renderBoardWorkspace();
+      openPieceEditor(t.id, itemN);
+    })
+    .catch(function(err){
+      console.error('Error actualizando estado a en_correccion:', err);
+      // Abrir editor igualmente con el cambio local
+      openPieceEditor(t.id, itemN);
+    });
+  }
+
+  // Transición directa: Corregido / Borrador -> En revisión
+  function sendPieceToReview(tId, itemN){
+    var t = allTableros.find(function(x){ return x.id === tId; });
+    if (!t) return;
+    var bData = boardCache[tId];
+    var items = getMergedItems(t, bData);
+    var idx = items.findIndex(function(x){ return x.n === itemN; });
+    if (idx === -1) idx = itemN - 1;
+    if (idx < 0 || idx >= items.length) return;
+
+    var curV = parseInt(items[idx].version, 10) || 1;
+    var nowIso = new Date().toISOString();
+
+    items[idx].estado = 'en_revision';
+    items[idx].fechaEnvio = nowIso;
+    delete items[idx].borrador;
+
+    // Almacenar copia de la versión enviada
+    items[idx].versiones = items[idx].versiones || {};
+    items[idx].versiones['v' + curV] = {
+      version: curV,
+      titulo: items[idx].titulo,
+      guion: items[idx].guion,
+      copy: items[idx].copy,
+      referencias: items[idx].referencias || [],
+      fechaEnvio: nowIso
+    };
+
+    items[idx].historial = items[idx].historial || [];
+    items[idx].historial.push({
+      version: curV,
+      accion: 'Versión v' + curV + ' enviada a revisión del cliente',
+      usuario: 'Equipo Nexo',
+      fecha: nowIso
+    });
+
+    var newOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
+    var newFix = items.filter(function(x){ return x.estado === 'cambios' || x.estado === 'en_correccion'; }).length;
+    var newCorregidos = items.filter(function(x){ return x.estado === 'corregido'; }).length;
+    var newPend = items.filter(function(x){ return x.estado === 'en_revision' || x.estado === 'pendiente' || !x.estado; }).length;
+
+    var newEstadoGeneral = (newFix > 0) ? 'Con cambios' :
+                           (newCorregidos > 0 ? 'En revisión' :
+                           ((newOk === items.length && items.length > 0) ? 'Aprobado' : (newOk > 0 ? 'Parcial' : 'En revisión')));
+
+    db.collection('tableros').doc(t.id).set({
+      contenidos: items,
+      aprobados: newOk,
+      cambios: newFix,
+      pendientes: newPend,
+      estado: newEstadoGeneral,
+      actualizado: nowIso
+    }, { merge: true })
+    .then(function(){
+      t.contenidos = items;
+      t.aprobados = newOk;
+      t.cambios = newFix;
+      t.pendientes = newPend;
+      t.estado = newEstadoGeneral;
+      if (boardCache[t.id]) boardCache[t.id].contenidos = items;
+      toast('✓ Versión v' + curV + ' enviada a revisión del cliente');
+      currentWorkspaceTab = 'en_revision';
+      renderBoardWorkspace();
+      applyFiltersAndRender();
+      if (typeof updateGlobalMetrics === 'function') updateGlobalMetrics(allTableros);
+    })
+    .catch(function(err){
+      console.error('Error enviando a revisión:', err);
+      toast('Error al registrar envío en Firestore');
+    });
+  }
+
   // ==========================================================================
   // VENTANA DE TRABAJO AMPLIA DE CORRECCIÓN (SPLIT-VIEW)
   // ==========================================================================
@@ -8146,10 +8555,36 @@ body{
     var it = items.find(function(x){ return x.n === itemN; }) || items[itemN - 1];
     if (!it) return;
 
+    // Regla de versionado estricto: Si se modifica un contenido que ya estaba aprobado,
+    // se inicia un nuevo borrador de la siguiente versión (vX+1) sin sobrescribir la vX aprobada.
+    if (it.estado === 'aprobado' && !it.borrador) {
+      var curApprovedV = parseInt(it.version, 10) || 1;
+      var nextV = curApprovedV + 1;
+      var okFork = confirm(
+        'Esta pieza se encuentra formalmente APROBADA en su versión v' + curApprovedV + '.\n\n' +
+        'Al editarla, se creará un nuevo borrador para la versión v' + nextV + ', conservando el registro de la v' + curApprovedV + ' aprobada en el historial.\n\n' +
+        '¿Deseas iniciar la corrección de la versión v' + nextV + '?'
+      );
+      if (!okFork) return;
+
+      it.borrador = {
+        titulo: it.titulo || '',
+        formato: it.formato || 'Reel',
+        pilar: it.pilar || '',
+        fechaPublicacion: it.fechaPublicacion || '',
+        guion: it.guion || '',
+        copy: it.copy || '',
+        hashtags: it.hashtags || '',
+        referencias: Array.isArray(it.referencias) ? JSON.parse(JSON.stringify(it.referencias)) : []
+      };
+      it.version = nextV;
+      it.estado = 'en_correccion';
+      delete it.aprobacion; // La nueva versión requerirá nueva aprobación
+    }
+
     editingBoardId = tId;
     editingItemN = itemN;
     editingPieceItem = it;
-    // Guardar copia original para detectar cambios no guardados al cerrar
     editingPieceOriginal = JSON.parse(JSON.stringify(it));
 
     var num = (itemN < 10 ? '0' : '') + itemN;
@@ -8158,54 +8593,15 @@ body{
     var vCur = it.version || 1;
     if (pieceEditorVersionBadge) pieceEditorVersionBadge.textContent = 'v' + vCur;
 
-    var author = it.revisadoPor || t.revisadoPor || 'Cliente';
-    if (pieceEditorClientAuthor) pieceEditorClientAuthor.textContent = '👤 ' + author;
-    if (pieceEditorClientDate) pieceEditorClientDate.textContent = it.fechaRevision ? formatFecha(it.fechaRevision) : (t.ultimaRevision ? formatFecha(t.ultimaRevision) : '');
-
-    var cText = (it.comentario && it.comentario.trim()) ? it.comentario.trim() : 'Sin observaciones registradas para esta pieza.';
-    if (pieceEditorClientComment) pieceEditorClientComment.textContent = '“' + cText + '”';
-
     if (pieceEditorStateBadge) {
-      pieceEditorStateBadge.className = 'badge ' + (it.estado === 'aprobado' ? 'badge-ok' : (it.estado === 'cambios' ? 'badge-fix' : (it.estado === 'corregido' ? 'badge-corregido' : 'badge-wait')));
-      pieceEditorStateBadge.textContent = it.estado || 'pendiente';
+      pieceEditorStateBadge.className = 'badge ' + (it.estado === 'aprobado' ? 'badge-ok' : (it.estado === 'cambios' ? 'badge-fix' : (it.estado === 'corregido' ? 'badge-corregido' : (it.estado === 'en_correccion' ? 'badge-fix' : 'badge-wait'))));
+      pieceEditorStateBadge.textContent = it.estado || 'en_revision';
     }
 
-    // Comparación: Snapshot de la versión que recibió los comentarios
-    if (pieceEditorSnapshot) {
-      var snapshotLines = [];
-      snapshotLines.push('• Título: ' + (it.titulo || '—'));
-      snapshotLines.push('• Formato propuesto: ' + (it.formatoOriginal || it.formato || '—'));
-      if (it.formato && it.formatoOriginal && it.formato !== it.formatoOriginal) {
-        snapshotLines.push('• Formato solicitado por cliente: ' + it.formato);
-      }
-      if (it.pilar) snapshotLines.push('• Pilar: ' + it.pilar);
-      if (it.guion) snapshotLines.push('\n[Guion / Instrucciones]:\n' + it.guion);
-      if (it.copy) snapshotLines.push('\n[Copy]:\n' + it.copy);
-      if (it.hashtags) snapshotLines.push('\n[Hashtags]:\n' + it.hashtags);
-      if (it.referencias && it.referencias.length) {
-        snapshotLines.push('\n[Referencias]:\n' + it.referencias.map(function(r){ return (r.label || r.url || 'Ref'); }).join('\n'));
-      }
-      pieceEditorSnapshot.textContent = snapshotLines.join('\n');
-    }
+    // Indicador inicial de auto-guardado
+    updatePieceAutoSaveStatus('saved');
 
-    // Historial de revisiones
-    if (pieceEditorHistoryList) {
-      var histHtml = '';
-      var histArr = Array.isArray(it.historial) ? it.historial : [];
-      if (!histArr.length) {
-        histHtml = '<div style="font-style:italic;">Versión inicial v1 sin historial previo.</div>';
-      } else {
-        histArr.forEach(function(h, idx){
-          histHtml += '<div style="padding:4px 6px;border-left:2px solid rgba(255,255,255,0.2);">' +
-            '<b>v' + (h.version || (idx + 1)) + '</b> (' + (h.fecha ? formatFecha(h.fecha) : '—') + '): ' +
-            '<span>' + escapeHtml(h.accion || h.comentario || 'Ajuste guardado') + '</span>' +
-          '</div>';
-        });
-      }
-      pieceEditorHistoryList.innerHTML = histHtml;
-    }
-
-    // Si tiene borrador no finalizado, cargarlo
+    // Cargar datos en los campos editables del área principal
     var currentData = it.borrador || it;
     if (pieceInputTitulo) pieceInputTitulo.value = currentData.titulo || '';
     if (pieceInputFormato) {
@@ -8230,6 +8626,18 @@ body{
       pieceInputReferencias.value = refsText;
     }
 
+    // Renderizar lista interactiva de observaciones del cliente con checkboxes para marcar como atendidas
+    renderPieceObservationsList(it, t);
+
+    // Comparación: Snapshot de la versión enviada que recibió los comentarios
+    renderPieceSnapshot(it);
+
+    // Historial cronológico de versiones
+    renderPieceHistory(it);
+
+    // Conectar auto-guardado debounced al tipear en cualquiera de los campos editables
+    bindPieceEditorAutoSave();
+
     if (modalPieceEditor) {
       modalPieceEditor.style.display = 'flex';
       modalPieceEditor.setAttribute('aria-hidden', 'false');
@@ -8237,17 +8645,155 @@ body{
     }
   }
 
+  function updatePieceAutoSaveStatus(state){
+    if (!pieceEditorAutoSaveStatus) return;
+    if (state === 'saving') {
+      pieceEditorAutoSaveStatus.className = 'save-status-badge saving';
+      pieceEditorAutoSaveStatus.textContent = '⏳ Guardando…';
+    } else if (state === 'unsaved') {
+      pieceEditorAutoSaveStatus.className = 'save-status-badge unsaved';
+      pieceEditorAutoSaveStatus.textContent = '● Cambios sin guardar';
+    } else if (state === 'error') {
+      pieceEditorAutoSaveStatus.className = 'save-status-badge error';
+      pieceEditorAutoSaveStatus.textContent = '⚠ No se pudo guardar';
+    } else {
+      pieceEditorAutoSaveStatus.className = 'save-status-badge saved';
+      pieceEditorAutoSaveStatus.textContent = '✓ Guardado';
+    }
+  }
+
+  function renderPieceObservationsList(it, t){
+    if (!pieceEditorObsList) return;
+    var cList = Array.isArray(it.comentarios) ? it.comentarios : (it.comentario ? [{ texto: it.comentario, autor: it.revisadoPor || t.revisadoPor || 'Cliente', atendido: false, fecha: '' }] : []);
+
+    if (!cList.length) {
+      pieceEditorObsList.innerHTML = '<div style="font-size:12.5px;color:rgba(255,255,255,0.6);font-style:italic;padding:8px 0;">Sin observaciones registradas para este contenido.</div>';
+      if (pieceEditorObsCounter) pieceEditorObsCounter.textContent = '0 de 0 atendidas';
+      return;
+    }
+
+    var attendedCount = cList.filter(function(c){ return !!c.atendido; }).length;
+    if (pieceEditorObsCounter) {
+      pieceEditorObsCounter.textContent = attendedCount + ' de ' + cList.length + ' atendidas';
+    }
+
+    var html = '';
+    cList.forEach(function(cm, idx){
+      var isAtendida = !!cm.atendido;
+      var author = cm.autor || it.revisadoPor || t.revisadoPor || 'Cliente';
+      var dateStr = cm.fecha ? formatFecha(cm.fecha) : '';
+
+      html += '<div class="obs-item ' + (isAtendida ? 'atendida' : '') + '" data-obs-idx="' + idx + '">' +
+        '<div class="obs-check-row">' +
+          '<label style="display:flex;align-items:center;gap:6px;cursor:pointer;flex:1;">' +
+            '<input type="checkbox" class="cb-obs-check" data-obs-idx="' + idx + '" ' + (isAtendida ? 'checked' : '') + '>' +
+            '<span style="font-size:11.5px;font-weight:700;color:' + (isAtendida ? '#86EFAC' : '#FFA07A') + ';">' +
+              (isAtendida ? '✓ Observación atendida' : '○ Pendiente de atender') +
+            '</span>' +
+          '</label>' +
+          '<span class="obs-tag" title="Esta marca es para control interno del equipo">' + (cm.version ? ('v' + cm.version) : 'v' + (it.version || 1)) + '</span>' +
+        '</div>' +
+        '<div class="obs-text">“' + escapeHtml((cm.texto || '').trim()) + '”</div>' +
+        '<div class="obs-meta">' +
+          '<span>👤 ' + escapeHtml(author) + '</span>' +
+          (dateStr ? ('<span>• ' + dateStr + '</span>') : '') +
+          '<span style="margin-left:auto;color:rgba(255,255,255,0.4);font-size:10px;">Control interno</span>' +
+        '</div>' +
+      '</div>';
+    });
+
+    pieceEditorObsList.innerHTML = html;
+
+    // Delegación de checkboxes para marcar observaciones como atendidas
+    var cbs = pieceEditorObsList.querySelectorAll('.cb-obs-check');
+    cbs.forEach(function(cb){
+      cb.onchange = function(){
+        var obsIdx = parseInt(cb.getAttribute('data-obs-idx'), 10);
+        if (cList[obsIdx]) {
+          cList[obsIdx].atendido = cb.checked;
+          it.comentarios = cList;
+          var parentItem = cb.closest('.obs-item');
+          if (parentItem) parentItem.classList.toggle('atendida', cb.checked);
+          var labelTxt = parentItem ? parentItem.querySelector('label span') : null;
+          if (labelTxt) {
+            labelTxt.textContent = cb.checked ? '✓ Observación atendida' : '○ Pendiente de atender';
+            labelTxt.style.color = cb.checked ? '#86EFAC' : '#FFA07A';
+          }
+          var attNow = cList.filter(function(c){ return !!c.atendido; }).length;
+          if (pieceEditorObsCounter) pieceEditorObsCounter.textContent = attNow + ' de ' + cList.length + ' atendidas';
+          triggerAutoSave();
+        }
+      };
+    });
+  }
+
+  function renderPieceSnapshot(it){
+    if (!pieceEditorSnapshot) return;
+    var snapLines = [];
+    var sentV = (it.versiones && it.version && it.versiones['v' + (it.version - 1)]) ? it.versiones['v' + (it.version - 1)] : (it.versiones && it.versiones['v' + it.version]) ? it.versiones['v' + it.version] : it;
+
+    snapLines.push('• Título: ' + (sentV.titulo || it.titulo || '—'));
+    snapLines.push('• Formato: ' + (sentV.formato || it.formato || 'Reel'));
+    if (it.pilar) snapLines.push('• Pilar: ' + it.pilar);
+    if (sentV.guion) snapLines.push('\n[Guion original enviado]:\n' + sentV.guion);
+    if (sentV.copy) snapLines.push('\n[Copy original enviado]:\n' + sentV.copy);
+    if (it.hashtags) snapLines.push('\n[Hashtags]:\n' + it.hashtags);
+    if (sentV.referencias && sentV.referencias.length) {
+      snapLines.push('\n[Referencias]:\n' + sentV.referencias.map(function(r){ return r.url || r.label || ''; }).filter(Boolean).join('\n'));
+    }
+    pieceEditorSnapshot.textContent = snapLines.join('\n');
+  }
+
+  function renderPieceHistory(it){
+    if (!pieceEditorHistoryList) return;
+    var histHtml = '';
+    var histArr = Array.isArray(it.historial) ? it.historial : [];
+    if (!histArr.length) {
+      histHtml = '<div style="font-style:italic;color:rgba(255,255,255,0.5);">Versión inicial sin historial previo.</div>';
+    } else {
+      histArr.slice().reverse().forEach(function(h){
+        histHtml += '<div style="padding:6px 8px;border-left:2px solid var(--azul);background:rgba(255,255,255,0.03);border-radius:0 4px 4px 0;">' +
+          '<b>v' + (h.version || 1) + '</b> ' +
+          '<span style="color:rgba(255,255,255,0.5);font-size:11px;">(' + (h.fecha ? formatFecha(h.fecha) : '—') + ' · ' + escapeHtml(h.usuario || 'Equipo') + ')</span>:<br>' +
+          '<span>' + escapeHtml(h.accion || h.comentario || 'Ajuste registrado') + '</span>' +
+        '</div>';
+      });
+    }
+    pieceEditorHistoryList.innerHTML = histHtml;
+  }
+
+  function bindPieceEditorAutoSave(){
+    var inputs = [pieceInputTitulo, pieceInputFormato, pieceInputPilar, pieceInputFecha, pieceInputGuion, pieceInputCopy, pieceInputHashtags, pieceInputReferencias];
+    inputs.forEach(function(inp){
+      if (!inp || inp._autoSaveBound) return;
+      inp._autoSaveBound = true;
+      inp.addEventListener('input', function(){
+        triggerAutoSave();
+      });
+      inp.addEventListener('change', function(){
+        triggerAutoSave();
+      });
+    });
+  }
+
+  function triggerAutoSave(){
+    updatePieceAutoSaveStatus('unsaved');
+    if (pieceAutoSaveTimer) clearTimeout(pieceAutoSaveTimer);
+    pieceAutoSaveTimer = setTimeout(function(){
+      executeSavePieceDraft(true);
+    }, 800);
+  }
+
   function hasUnsavedPieceChanges(){
     if (!editingPieceOriginal) return false;
-    var curTitulo = pieceInputTitulo ? pieceInputTitulo.value.trim() : '';
-    var curGuion = pieceInputGuion ? pieceInputGuion.value.trim() : '';
-    var curCopy = pieceInputCopy ? pieceInputCopy.value.trim() : '';
-    var curFormato = pieceInputFormato ? pieceInputFormato.value : '';
+    var cur = getPieceFormValues();
     var orig = editingPieceOriginal.borrador || editingPieceOriginal;
-    if (curTitulo !== (orig.titulo || '').trim()) return true;
-    if (curGuion !== (orig.guion || '').trim()) return true;
-    if (curCopy !== (orig.copy || '').trim()) return true;
-    if (curFormato && curFormato !== (orig.formato || 'Reel')) return true;
+    if ((cur.titulo || '').trim() !== (orig.titulo || '').trim()) return true;
+    if ((cur.guion || '').trim() !== (orig.guion || '').trim()) return true;
+    if ((cur.copy || '').trim() !== (orig.copy || '').trim()) return true;
+    if (cur.formato !== (orig.formato || 'Reel')) return true;
+    if ((cur.pilar || '').trim() !== (orig.pilar || '').trim()) return true;
+    if ((cur.fechaPublicacion || '').trim() !== (orig.fechaPublicacion || '').trim()) return true;
     return false;
   }
 
@@ -8257,6 +8803,7 @@ body{
         return;
       }
     }
+    if (pieceAutoSaveTimer) clearTimeout(pieceAutoSaveTimer);
     if (modalPieceEditor) {
       modalPieceEditor.style.display = 'none';
       modalPieceEditor.setAttribute('aria-hidden', 'true');
@@ -8286,152 +8833,328 @@ body{
     };
   }
 
-  // 1. Guardar Borrador: Guarda el avance sin cambiar la pieza a corregida ni exponerla al cliente
-  function savePieceDraft(){
-    if (!editingBoardId || !editingItemN) return;
+  // 1. Guardar Borrador: Guarda el avance automáticamente con breve espera (800ms) o explícitamente
+  function executeSavePieceDraft(isSilent, callback){
+    if (!editingBoardId || !editingItemN) {
+      if (callback) callback(null);
+      return;
+    }
     var t = allTableros.find(function(x){ return x.id === editingBoardId; });
-    if (!t) return;
+    if (!t) {
+      if (callback) callback(null);
+      return;
+    }
     var bData = boardCache[editingBoardId];
     var items = getMergedItems(t, bData);
     var idx = items.findIndex(function(x){ return x.n === editingItemN; });
     if (idx === -1) idx = editingItemN - 1;
-    if (idx < 0 || idx >= items.length) return;
+    if (idx < 0 || idx >= items.length) {
+      if (callback) callback(null);
+      return;
+    }
 
     var vals = getPieceFormValues();
     items[idx].borrador = vals;
     items[idx].titulo = vals.titulo || items[idx].titulo;
     items[idx].formato = vals.formato || items[idx].formato;
     items[idx].formatoOriginal = items[idx].formato;
-    // Si estaba con cambios, marcar internamente 'en_correccion'
+
+    // Si estaba en 'cambios', la acción de comenzar a editar lo pasa automáticamente a 'en_correccion'
     if (items[idx].estado === 'cambios') {
       items[idx].estado = 'en_correccion';
     }
 
-    if (btnPieceSaveDraft) {
+    updatePieceAutoSaveStatus('saving');
+
+    if (btnPieceSaveDraft && !isSilent) {
       btnPieceSaveDraft.disabled = true;
       btnPieceSaveDraft.textContent = 'Guardando…';
     }
+
+    pieceSaveInFlight = true;
 
     db.collection('tableros').doc(t.id).set({
       contenidos: items,
       actualizado: new Date().toISOString()
     }, { merge: true })
     .then(function(){
+      pieceSaveInFlight = false;
       t.contenidos = items;
       if (boardCache[t.id]) boardCache[t.id].contenidos = items;
       var fnKey = t.url ? t.url.split('/').pop().split('?')[0].split('#')[0].replace('.html','') : '';
       if (fnKey && boardCache[fnKey]) boardCache[fnKey].contenidos = items;
-      if (btnPieceSaveDraft) {
+
+      updatePieceAutoSaveStatus('saved');
+      editingPieceOriginal = JSON.parse(JSON.stringify(items[idx]));
+
+      if (btnPieceSaveDraft && !isSilent) {
         btnPieceSaveDraft.disabled = false;
         btnPieceSaveDraft.textContent = '💾 Guardar borrador';
+        toast('✓ Borrador guardado exitosamente');
       }
-      toast('✓ Borrador guardado exitosamente (pieza continúa en corrección)');
-      closePieceEditor(true);
-      renderBoardWorkspace();
-      applyFiltersAndRender();
+      if (callback) callback(null);
     })
     .catch(function(err){
+      pieceSaveInFlight = false;
       console.error('Error guardando borrador:', err);
-      if (btnPieceSaveDraft) {
+      updatePieceAutoSaveStatus('error');
+      if (btnPieceSaveDraft && !isSilent) {
         btnPieceSaveDraft.disabled = false;
         btnPieceSaveDraft.textContent = '💾 Guardar borrador';
       }
       toast('Error al guardar borrador en Firestore');
+      if (callback) callback(err);
     });
   }
 
-  // 2. Finalizar Corrección: Incrementa versión, estado='corregido', registra historial y pasa a Contenidos Corregidos
+  // Esperar a que se guarden todos los cambios pendientes antes de finalizar o enviar
+  function ensureSaved(callback){
+    if (pieceAutoSaveTimer) {
+      clearTimeout(pieceAutoSaveTimer);
+      pieceAutoSaveTimer = null;
+    }
+    if (pieceSaveInFlight) {
+      // Si hay un guardado en curso, esperar un breve instante
+      setTimeout(function(){
+        ensureSaved(callback);
+      }, 200);
+      return;
+    }
+    executeSavePieceDraft(true, function(err){
+      callback(err);
+    });
+  }
+
+  // 2. Finalizar Corrección: Incrementa versión, estado='corregido', registra historial y pasa al apartado 'Corregidos'
   function finalizePieceCorrection(){
     if (!editingBoardId || !editingItemN) return;
     var t = allTableros.find(function(x){ return x.id === editingBoardId; });
     if (!t) return;
-    var bData = boardCache[editingBoardId];
-    var items = getMergedItems(t, bData);
-    var idx = items.findIndex(function(x){ return x.n === editingItemN; });
-    if (idx === -1) idx = editingItemN - 1;
-    if (idx < 0 || idx >= items.length) return;
-
-    var vals = getPieceFormValues();
-    var curV = parseInt(items[idx].version, 10) || 1;
-    var nextV = curV + 1;
-    var nowIso = new Date().toISOString();
-
-    // Historial
-    var hist = Array.isArray(items[idx].historial) ? items[idx].historial.slice() : [];
-    hist.push({
-      version: curV,
-      fecha: nowIso,
-      estadoAnterior: items[idx].estado,
-      comentarioPrevio: items[idx].comentario || '',
-      accion: 'Corrección finalizada a versión v' + nextV
-    });
-
-    items[idx].titulo = vals.titulo || items[idx].titulo;
-    items[idx].formato = vals.formato || items[idx].formato;
-    items[idx].formatoOriginal = items[idx].formato;
-    items[idx].pilar = vals.pilar;
-    items[idx].fechaPublicacion = vals.fechaPublicacion;
-    items[idx].guion = vals.guion;
-    items[idx].copy = vals.copy;
-    items[idx].hashtags = vals.hashtags;
-    if (vals.referencias.length) items[idx].referencias = vals.referencias;
-    items[idx].version = nextV;
-    items[idx].estado = 'corregido';
-    items[idx].fechaCorreccion = nowIso;
-    items[idx].historial = hist;
-    delete items[idx].borrador;
-
-    var newOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
-    var newFix = items.filter(function(x){ return x.estado === 'cambios' || x.estado === 'en_correccion'; }).length;
-    var newCorregidos = items.filter(function(x){ return x.estado === 'corregido'; }).length;
-    var newPend = items.filter(function(x){ return x.estado === 'pendiente' || !x.estado; }).length;
-
-    var newEstadoGeneral = (newFix > 0) ? 'Con cambios' :
-                           (newCorregidos > 0 ? 'En revisión' :
-                           ((newOk === items.length && items.length > 0) ? 'Aprobado' : (newOk > 0 ? 'Parcial' : 'Pendiente')));
 
     if (btnPieceFinalize) {
       btnPieceFinalize.disabled = true;
-      btnPieceFinalize.textContent = 'Finalizando…';
+      btnPieceFinalize.textContent = 'Guardando ajustes…';
     }
 
-    db.collection('tableros').doc(t.id).set({
-      contenidos: items,
-      aprobados: newOk,
-      cambios: newFix,
-      pendientes: newPend,
-      estado: newEstadoGeneral,
-      actualizado: nowIso
-    }, { merge: true })
-    .then(function(){
-      t.contenidos = items;
-      t.aprobados = newOk;
-      t.cambios = newFix;
-      t.pendientes = newPend;
-      t.estado = newEstadoGeneral;
-      if (boardCache[t.id]) boardCache[t.id].contenidos = items;
-      var fnKey = t.url ? t.url.split('/').pop().split('?')[0].split('#')[0].replace('.html','') : '';
-      if (fnKey && boardCache[fnKey]) boardCache[fnKey].contenidos = items;
+    ensureSaved(function(saveErr){
+      if (saveErr) {
+        if (btnPieceFinalize) {
+          btnPieceFinalize.disabled = false;
+          btnPieceFinalize.textContent = '✓ Guardar como corregido';
+        }
+        toast('No se pudo confirmar el guardado de los cambios pendientes');
+        return;
+      }
 
-      if (btnPieceFinalize) {
-        btnPieceFinalize.disabled = false;
-        btnPieceFinalize.textContent = '✓ Finalizar corrección';
+      var bData = boardCache[editingBoardId];
+      var items = getMergedItems(t, bData);
+      var idx = items.findIndex(function(x){ return x.n === editingItemN; });
+      if (idx === -1) idx = editingItemN - 1;
+      if (idx < 0 || idx >= items.length) return;
+
+      var vals = getPieceFormValues();
+      var curV = parseInt(items[idx].version, 10) || 1;
+      var nextV = curV + 1;
+      var nowIso = new Date().toISOString();
+
+      // Guardar copia de la versión finalizada
+      items[idx].versiones = items[idx].versiones || {};
+      items[idx].versiones['v' + nextV] = {
+        version: nextV,
+        titulo: vals.titulo || items[idx].titulo,
+        guion: vals.guion,
+        copy: vals.copy,
+        referencias: vals.referencias,
+        fechaCorreccion: nowIso
+      };
+
+      // Historial cronológico estricto
+      var hist = Array.isArray(items[idx].historial) ? items[idx].historial.slice() : [];
+      hist.push({
+        version: nextV,
+        fecha: nowIso,
+        estadoAnterior: items[idx].estado,
+        accion: 'Ajustes guardados como corregidos (v' + nextV + ')',
+        usuario: 'Equipo Nexo'
+      });
+
+      items[idx].titulo = vals.titulo || items[idx].titulo;
+      items[idx].formato = vals.formato || items[idx].formato;
+      items[idx].formatoOriginal = items[idx].formato;
+      items[idx].pilar = vals.pilar;
+      items[idx].fechaPublicacion = vals.fechaPublicacion;
+      items[idx].guion = vals.guion;
+      items[idx].copy = vals.copy;
+      items[idx].hashtags = vals.hashtags;
+      items[idx].referencias = vals.referencias;
+      items[idx].version = nextV;
+      items[idx].estado = 'corregido';
+      items[idx].fechaCorreccion = nowIso;
+      items[idx].historial = hist;
+      delete items[idx].borrador;
+
+      var newOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
+      var newFix = items.filter(function(x){ return x.estado === 'cambios' || x.estado === 'en_correccion'; }).length;
+      var newCorregidos = items.filter(function(x){ return x.estado === 'corregido'; }).length;
+      var newPend = items.filter(function(x){ return x.estado === 'en_revision' || x.estado === 'pendiente' || !x.estado; }).length;
+
+      var newEstadoGeneral = (newFix > 0) ? 'Con cambios' :
+                             (newCorregidos > 0 ? 'En revisión' :
+                             ((newOk === items.length && items.length > 0) ? 'Aprobado' : (newOk > 0 ? 'Parcial' : 'En revisión')));
+
+      db.collection('tableros').doc(t.id).set({
+        contenidos: items,
+        aprobados: newOk,
+        cambios: newFix,
+        pendientes: newPend,
+        estado: newEstadoGeneral,
+        actualizado: nowIso
+      }, { merge: true })
+      .then(function(){
+        t.contenidos = items;
+        t.aprobados = newOk;
+        t.cambios = newFix;
+        t.pendientes = newPend;
+        t.estado = newEstadoGeneral;
+        if (boardCache[t.id]) boardCache[t.id].contenidos = items;
+        var fnKey = t.url ? t.url.split('/').pop().split('?')[0].split('#')[0].replace('.html','') : '';
+        if (fnKey && boardCache[fnKey]) boardCache[fnKey].contenidos = items;
+
+        if (btnPieceFinalize) {
+          btnPieceFinalize.disabled = false;
+          btnPieceFinalize.textContent = '✓ Guardar como corregido';
+        }
+        closePieceEditor(true);
+        toast('✓ ¡Contenido guardado como corregido (v' + nextV + ')! La tarjeta pasó a Corregidos.');
+        currentWorkspaceTab = 'corregidos';
+        renderBoardWorkspace();
+        applyFiltersAndRender();
+        if (typeof updateGlobalMetrics === 'function') updateGlobalMetrics(allTableros);
+      })
+      .catch(function(err){
+        console.error('Error finalizando corrección:', err);
+        if (btnPieceFinalize) {
+          btnPieceFinalize.disabled = false;
+          btnPieceFinalize.textContent = '✓ Guardar como corregido';
+        }
+        toast('Error al guardar la corrección en Firestore');
+      });
+    });
+  }
+
+  // 3. Finalizar y Enviar a Revisión: En una sola acción, guarda los ajustes y pasa directamente de En corrección a En revisión
+  function finalizeAndSendPiece(){
+    if (!editingBoardId || !editingItemN) return;
+    var t = allTableros.find(function(x){ return x.id === editingBoardId; });
+    if (!t) return;
+
+    if (btnPieceFinalizeAndSend) {
+      btnPieceFinalizeAndSend.disabled = true;
+      btnPieceFinalizeAndSend.textContent = 'Enviando a revisión…';
+    }
+
+    ensureSaved(function(saveErr){
+      if (saveErr) {
+        if (btnPieceFinalizeAndSend) {
+          btnPieceFinalizeAndSend.disabled = false;
+          btnPieceFinalizeAndSend.textContent = '🚀 Finalizar y enviar a revisión';
+        }
+        toast('No se pudo confirmar el guardado de los cambios antes del envío');
+        return;
       }
-      closePieceEditor(true);
-      toast('✓ ¡Corrección finalizada (v' + nextV + ')! La pieza pasó a Contenidos Corregidos.');
-      // Abrir tab de corregidos en el workspace para visibilidad inmediata
-      currentWorkspaceTab = 'corregidos';
-      renderBoardWorkspace();
-      applyFiltersAndRender();
-      if (typeof updateGlobalMetrics === 'function') updateGlobalMetrics(allTableros);
-    })
-    .catch(function(err){
-      console.error('Error finalizando corrección:', err);
-      if (btnPieceFinalize) {
-        btnPieceFinalize.disabled = false;
-        btnPieceFinalize.textContent = '✓ Finalizar corrección';
-      }
-      toast('Error al guardar la corrección en Firestore');
+
+      var bData = boardCache[editingBoardId];
+      var items = getMergedItems(t, bData);
+      var idx = items.findIndex(function(x){ return x.n === editingItemN; });
+      if (idx === -1) idx = editingItemN - 1;
+      if (idx < 0 || idx >= items.length) return;
+
+      var vals = getPieceFormValues();
+      var curV = parseInt(items[idx].version, 10) || 1;
+      var nextV = curV + 1;
+      var nowIso = new Date().toISOString();
+
+      // Guardar copia de la versión que el cliente está revisando
+      items[idx].versiones = items[idx].versiones || {};
+      items[idx].versiones['v' + nextV] = {
+        version: nextV,
+        titulo: vals.titulo || items[idx].titulo,
+        guion: vals.guion,
+        copy: vals.copy,
+        referencias: vals.referencias,
+        fechaEnvio: nowIso
+      };
+
+      var hist = Array.isArray(items[idx].historial) ? items[idx].historial.slice() : [];
+      hist.push({
+        version: nextV,
+        fecha: nowIso,
+        estadoAnterior: items[idx].estado,
+        accion: 'Corrección finalizada y enviada directamente a revisión (v' + nextV + ')',
+        usuario: 'Equipo Nexo'
+      });
+
+      items[idx].titulo = vals.titulo || items[idx].titulo;
+      items[idx].formato = vals.formato || items[idx].formato;
+      items[idx].formatoOriginal = items[idx].formato;
+      items[idx].pilar = vals.pilar;
+      items[idx].fechaPublicacion = vals.fechaPublicacion;
+      items[idx].guion = vals.guion;
+      items[idx].copy = vals.copy;
+      items[idx].hashtags = vals.hashtags;
+      items[idx].referencias = vals.referencias;
+      items[idx].version = nextV;
+      items[idx].estado = 'en_revision';
+      items[idx].fechaEnvio = nowIso;
+      items[idx].historial = hist;
+      delete items[idx].borrador;
+
+      var newOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
+      var newFix = items.filter(function(x){ return x.estado === 'cambios' || x.estado === 'en_correccion'; }).length;
+      var newCorregidos = items.filter(function(x){ return x.estado === 'corregido'; }).length;
+      var newPend = items.filter(function(x){ return x.estado === 'en_revision' || x.estado === 'pendiente' || !x.estado; }).length;
+
+      var newEstadoGeneral = (newFix > 0) ? 'Con cambios' :
+                             (newCorregidos > 0 ? 'En revisión' :
+                             ((newOk === items.length && items.length > 0) ? 'Aprobado' : (newOk > 0 ? 'Parcial' : 'En revisión')));
+
+      db.collection('tableros').doc(t.id).set({
+        contenidos: items,
+        aprobados: newOk,
+        cambios: newFix,
+        pendientes: newPend,
+        estado: newEstadoGeneral,
+        actualizado: nowIso
+      }, { merge: true })
+      .then(function(){
+        t.contenidos = items;
+        t.aprobados = newOk;
+        t.cambios = newFix;
+        t.pendientes = newPend;
+        t.estado = newEstadoGeneral;
+        if (boardCache[t.id]) boardCache[t.id].contenidos = items;
+        var fnKey = t.url ? t.url.split('/').pop().split('?')[0].split('#')[0].replace('.html','') : '';
+        if (fnKey && boardCache[fnKey]) boardCache[fnKey].contenidos = items;
+
+        if (btnPieceFinalizeAndSend) {
+          btnPieceFinalizeAndSend.disabled = false;
+          btnPieceFinalizeAndSend.textContent = '🚀 Finalizar y enviar a revisión';
+        }
+        closePieceEditor(true);
+        toast('✓ ¡Versión v' + nextV + ' guardada y enviada a revisión del cliente!');
+        currentWorkspaceTab = 'en_revision';
+        renderBoardWorkspace();
+        applyFiltersAndRender();
+        if (typeof updateGlobalMetrics === 'function') updateGlobalMetrics(allTableros);
+      })
+      .catch(function(err){
+        console.error('Error finalizando y enviando corrección:', err);
+        if (btnPieceFinalizeAndSend) {
+          btnPieceFinalizeAndSend.disabled = false;
+          btnPieceFinalizeAndSend.textContent = '🚀 Finalizar y enviar a revisión';
+        }
+        toast('Error al guardar y enviar corrección a Firestore');
+      });
     });
   }
 
@@ -8925,8 +9648,12 @@ body{
   if (btnCloseWorkspace) btnCloseWorkspace.onclick = closeBoardWorkspace;
   if (btnClosePieceEditor) btnClosePieceEditor.onclick = function(){ closePieceEditor(false); };
   if (btnPieceEditorCancel) btnPieceEditorCancel.onclick = function(){ closePieceEditor(false); };
-  if (btnPieceSaveDraft) btnPieceSaveDraft.onclick = savePieceDraft;
+  if (btnPieceSaveDraft) btnPieceSaveDraft.onclick = function(){ executeSavePieceDraft(false); };
   if (btnPieceFinalize) btnPieceFinalize.onclick = finalizePieceCorrection;
+  if (btnPieceFinalizeAndSend) btnPieceFinalizeAndSend.onclick = finalizeAndSendPiece;
+  if (btnPieceCopyContent) btnPieceCopyContent.onclick = function(){
+    if (editingBoardId && editingPieceItem) copyPieceContent(editingBoardId, editingPieceItem.n);
+  };
 
   if (btnCloseShareShipment) btnCloseShareShipment.onclick = closeShareShipmentModal;
   if (btnCancelShareShipment) btnCancelShareShipment.onclick = closeShareShipmentModal;

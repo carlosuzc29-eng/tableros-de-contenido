@@ -15,13 +15,17 @@ Responde siempre en español latinoamericano neutro, con "tú". Sé breve, rigur
 ## Flujo para un tablero nuevo o actualización
 
 1. **Leer el documento del mes** que pase Carlos (guiones, copies, formatos).
-2. **Crear o actualizar** `borradores/<cliente>-<mes>-<año>.json` (siguiendo estrictamente `_sistema/FORMATO-DATOS.md`).
+2. **Crear o actualizar** `borradores/<cliente>-<mes>-<año>.json` (siguiendo estrictamente `_sistema/FORMATO-DATOS.md` y `CLAUDE.md`).
    - El mes en el nombre de archivo y en el JSON debe ser el nombre del mes (ej. `"Octubre"`), no un número, para evitar IDs inconsistentes.
-3. **Construir y publicar**:
+3. **Validar esquema y datos**:
+   ```bash
+   python3 _sistema/validar_tablero.py borradores/<cliente>-<mes>-<año>.json
+   ```
+4. **Construir y publicar**:
    ```bash
    python3 _sistema/construir.py borradores/<cliente>-<mes>-<año>.json --publicar
    ```
-4. **Verificar que no existan errores**:
+5. **Verificar que no existan errores**:
    - Tablero con 0 revisiones previas (estado inicial limpio: 0 aprobados, 0 con cambios, todos pendientes).
    - En móviles: desplazamiento vertical completamente fluido sin rebotes ni saltos a la parte superior.
    - Sincronizado en tiempo real en el Banco de trabajo (`index.html`).

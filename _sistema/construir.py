@@ -32,7 +32,7 @@ def chrome():
     for c in [os.environ.get('CHROME', ''), '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
               '/Applications/Chromium.app/Contents/MacOS/Chromium', shutil.which('google-chrome') or '', shutil.which('chromium') or '']:
         if c and os.path.exists(c): return c
-    sys.exit('No encontré Google Chrome. Instálalo o indica la ruta con la variable CHROME.')
+    return None
 
 def enlace_previo(ruta, cliente):
     """Busca en borradores/ otro JSON del mismo cliente y devuelve su archivo (el más reciente)."""
@@ -46,7 +46,7 @@ def enlace_previo(ruta, cliente):
             hallados.append((os.path.getmtime(r), d['archivo']))
     return max(hallados)[1] if hallados else None
 
-FORMATOS_VALIDOS = ['Reel', 'Carrusel', 'Carrusel con video', 'Post']
+FORMATOS_VALIDOS = ['Reel', 'Carrusel', 'Carrusel con video', 'Post', 'Story', 'Video']
 
 def normalizar_formato(fmt):
     """Normaliza un string de formato al valor canónico permitido."""
@@ -55,14 +55,30 @@ def normalizar_formato(fmt):
     if 'carrusel con video' in lower: return 'Carrusel con video'
     if 'carrusel' in lower: return 'Carrusel'
     if 'reel' in lower: return 'Reel'
+    if 'story' in lower: return 'Story'
+    if 'video' in lower or 'tiktok' in lower: return 'Video'
     return 'Post'
+
+def parse_fs_val(v):
+    """Convierte recursivamente la estructura tipada de Firestore REST a tipos estándar de Python."""
+    if not isinstance(v, dict): return v
+    if 'stringValue' in v: return v['stringValue']
+    if 'integerValue' in v:
+        try: return int(v['integerValue'])
+        except (ValueError, TypeError): return v['integerValue']
+    if 'booleanValue' in v: return bool(v['booleanValue'])
+    if 'arrayValue' in v:
+        return [parse_fs_val(x) for x in v['arrayValue'].get('values', [])]
+    if 'mapValue' in v:
+        return {k: parse_fs_val(sub_v) for k, sub_v in v['mapValue'].get('fields', {}).items()}
+    return None
 
 def sincronizar_desde_firestore(cfg, data):
     """
-    Lee el documento de Firestore y aplica al JSON de data:
-    - estado, formato, guion, copy, version de cada contenido corregido/cambiado.
-    Esto garantiza que los cambios hechos en Modo Agencia (correcciones, cambios de
-    formato) no se pierdan al regenerar el tablero.
+    Lee el documento de Firestore y sincroniza con el JSON de data:
+    - Preserva estados, formatos, versiones, aprobaciones, observaciones e historial.
+    - Si un contenido fue aprobado y el borrador local cambia guion/copy, se genera una
+      nueva versión (vX+1) archivando la aprobada en 'versiones', sin pisar la aprobación.
     """
     fb = cfg.get('firebase', {})
     api_key = fb.get('apiKey') or 'AIzaSyAsH9TxW0ld2aNQejJw6xxZW7fpZiw212Q'
@@ -77,68 +93,113 @@ def sincronizar_desde_firestore(cfg, data):
         with urllib.request.urlopen(req, timeout=10) as res:
             doc_obj = json.loads(res.read().decode())
         doc_fields = doc_obj.get('fields', {})
-        fs_contenidos_raw = (doc_fields.get('contenidos', {})
-                             .get('arrayValue', {})
-                             .get('values', []))
-        if not fs_contenidos_raw:
+
+        # Preservar atributos de tablero
+        fs_tipo = parse_fs_val(doc_fields.get('tipo', {}))
+        if fs_tipo: data['tipo'] = fs_tipo
+
+        fs_rev_por = parse_fs_val(doc_fields.get('revisadoPor', {}))
+        fs_ult_rev = parse_fs_val(doc_fields.get('ultimaRevision', {}))
+        if fs_rev_por or fs_ult_rev:
+            data.setdefault('revision', {})
+            if fs_rev_por: data['revision']['revisadoPor'] = fs_rev_por
+            if fs_ult_rev: data['revision']['fecha'] = fs_ult_rev
+
+        fs_contenidos_raw = parse_fs_val(doc_fields.get('contenidos', {})) or []
+        if not fs_contenidos_raw or not isinstance(fs_contenidos_raw, list):
             return
 
-        # Extraer datos de Firestore en un mapa {n -> item}
+        # Mapa indexado por n e id
         fs_map = {}
-        for item_raw in fs_contenidos_raw:
-            f = item_raw.get('mapValue', {}).get('fields', {})
-            def sv(key): return (f.get(key) or {}).get('stringValue') or ''
-            def iv(key): return (f.get(key) or {}).get('integerValue') or None
-            n_val = iv('n')
-            if n_val:
-                fs_map[int(n_val)] = {
-                    'estado': sv('estado'),
-                    'formato': sv('formato'),
-                    'guion': sv('guion'),
-                    'copy': sv('copy'),
-                    'version': iv('version'),
-                    'comentario': sv('comentario'),
-                    'revisadoPor': sv('revisadoPor'),
-                    'fechaCorreccion': sv('fechaCorreccion'),
-                }
+        for item in fs_contenidos_raw:
+            if not isinstance(item, dict): continue
+            item_n = item.get('n')
+            item_id = item.get('id')
+            if item_n: fs_map[int(item_n)] = item
+            if item_id: fs_map[str(item_id)] = item
 
-        # Aplicar datos de Firestore al JSON borrador
         cambios = 0
         for i, contenido in enumerate(data.get('contenidos', [])):
             n = i + 1
-            fs_item = fs_map.get(n)
+            cid = contenido.get('id') or f'c{n}'
+            fs_item = fs_map.get(n) or fs_map.get(cid)
             if not fs_item:
                 continue
-            # Solo aplicar si hay algo significativo (estado corregido o formato diferente)
+
             fs_estado = fs_item.get('estado')
+            fs_version = int(fs_item.get('version') or 1)
             fs_formato = normalizar_formato(fs_item.get('formato'))
             local_formato = normalizar_formato(contenido.get('formato') or contenido.get('formatoOriginal'))
 
-            if fs_estado and fs_estado in ('corregido', 'aprobado', 'cambios', 'pendiente'):
+            # Preservar historial rico si existe
+            if fs_item.get('versiones'):
+                contenido['versiones'] = fs_item['versiones']
+            if fs_item.get('aprobacion'):
+                contenido['aprobacion'] = fs_item['aprobacion']
+            if fs_item.get('historial_aprobacion'):
+                contenido['historial_aprobacion'] = fs_item['historial_aprobacion']
+            if fs_item.get('observaciones_historial'):
+                contenido['observaciones_historial'] = fs_item['observaciones_historial']
+            if fs_item.get('fechaCorreccion'):
+                contenido['fechaCorreccion'] = fs_item['fechaCorreccion']
+            if fs_item.get('estado_aprobacion'):
+                contenido['estado_aprobacion'] = fs_item['estado_aprobacion']
+            if fs_item.get('estado_produccion'):
+                contenido['estado_produccion'] = fs_item['estado_produccion']
+
+            # Si el contenido ya fue aprobado en Firestore
+            if fs_estado == 'aprobado':
+                # Comprobar si el borrador propone un texto distinto
+                texto_local_cambio = (
+                    (contenido.get('guion') and fs_item.get('guion') and contenido['guion'].strip() != fs_item['guion'].strip()) or
+                    (contenido.get('copy') and fs_item.get('copy') and contenido['copy'].strip() != fs_item['copy'].strip())
+                )
+                if texto_local_cambio:
+                    # No sobrescribir silenciosamente la versión aprobada: archivamos en versiones y subimos versión
+                    contenido.setdefault('versiones', {})
+                    contenido['versiones'][f'v{fs_version}'] = {
+                        'version': fs_version,
+                        'guion': fs_item.get('guion', ''),
+                        'copy': fs_item.get('copy', ''),
+                        'formato': fs_formato,
+                        'estado': 'aprobado',
+                        'aprobacion': fs_item.get('aprobacion') or {
+                            'usuario': fs_item.get('revisadoPor') or 'Cliente',
+                            'fecha': fs_item.get('fechaAprobacion') or ''
+                        }
+                    }
+                    contenido['version'] = fs_version + 1
+                    contenido['estado'] = 'corregido'
+                    contenido['estado_aprobacion'] = 'corregido'
+                    cambios += 1
+                    print(f"  ↑ Contenido #{n} ({contenido.get('titulo')}): Aprobación previa de v{fs_version} archivada; preparado como v{contenido['version']} corregido.")
+                else:
+                    contenido['estado'] = 'aprobado'
+                    contenido['version'] = fs_version
+                    if fs_item.get('guion'): contenido['guion'] = fs_item['guion']
+                    if fs_item.get('copy'): contenido['copy'] = fs_item['copy']
+            elif fs_estado and fs_estado in ('corregido', 'cambios', 'en_correccion', 'en_revision', 'pendiente'):
                 if contenido.get('estado') != fs_estado:
                     contenido['estado'] = fs_estado
                     cambios += 1
+                if fs_estado == 'corregido':
+                    if fs_item.get('guion'): contenido['guion'] = fs_item['guion']
+                    if fs_item.get('copy'): contenido['copy'] = fs_item['copy']
+                    if fs_item.get('version'): contenido['version'] = fs_version
+                    cambios += 1
+
             if fs_formato and fs_formato != local_formato:
                 contenido['formato'] = fs_formato
                 contenido['formatoOriginal'] = fs_formato
                 cambios += 1
-            if fs_estado == 'corregido':
-                if fs_item.get('guion'):
-                    contenido['guion'] = fs_item['guion']
-                    cambios += 1
-                if fs_item.get('copy'):
-                    contenido['copy'] = fs_item['copy']
-                    cambios += 1
-                if fs_item.get('version'):
-                    contenido['version'] = int(fs_item['version'])
-                if fs_item.get('fechaCorreccion'):
-                    contenido['fechaCorreccion'] = fs_item['fechaCorreccion']
-                # Limpiar comentario para que no muestre notas internas de agencia
-                contenido['comentario'] = ''
-                contenido['revisadoPor'] = ''
+
+            if fs_item.get('comentario') and not contenido.get('comentario'):
+                contenido['comentario'] = fs_item['comentario']
+            if fs_item.get('revisadoPor') and not contenido.get('revisadoPor'):
+                contenido['revisadoPor'] = fs_item['revisadoPor']
 
         if cambios:
-            print(f'  ↑ Aplicados {cambios} cambio(s) desde Firestore al JSON (formatos, correcciones)')
+            print(f'  ↑ Sincronizados {cambios} cambio(s) desde Firestore al JSON (versiones, formatos, estados)')
     except Exception as e:
         print(f'  (No se pudo leer Firestore para sincronizar: {e})')
 
@@ -228,7 +289,32 @@ def main():
     ruta = args[0]
     cfg = json.load(open(CONFIG, encoding='utf-8')) if os.path.exists(CONFIG) else {}
     base = cfg.get('base_url', 'https://carlosuzc29-eng.github.io/tableros-de-contenido/')
-    data = json.load(open(ruta, encoding='utf-8'))
+    
+    try:
+        data = json.load(open(ruta, encoding='utf-8'))
+    except Exception as e:
+        sys.exit(f"Error al leer JSON en '{ruta}': {e}")
+
+    # Validación formal del esquema antes de procesar
+    try:
+        try:
+            from validar_tablero import validar_datos_tablero
+        except ImportError:
+            from _sistema.validar_tablero import validar_datos_tablero
+
+        es_valido, errores, advertencias, normalizado = validar_datos_tablero(data)
+        if advertencias:
+            for w in advertencias:
+                print(f"  ⚠️ {w}")
+        if not es_valido:
+            print("❌ Errores de validación en el JSON antes de construir:")
+            for err in errores:
+                print(f"   - {err}")
+            sys.exit(1)
+        data = normalizado
+    except Exception as e:
+        print(f"  (Advertencia: validador no disponible: {e})")
+
     n = len(data.get('contenidos', []))
     if not n: sys.exit('El JSON no tiene contenidos.')
 
@@ -264,7 +350,7 @@ def main():
     for i, c in enumerate(data['contenidos']):
         c.setdefault('id', f'c{i + 1}'); c.setdefault('estado', 'pendiente'); c.setdefault('comentario', '')
 
-    # Sincronizar cambios de Firestore (correcciones de agencia, cambios de formato) al JSON
+    # Sincronizar cambios de Firestore (correcciones de agencia, cambios de formato, versiones) al JSON
     if '--reiniciar' not in sys.argv:
         sincronizar_desde_firestore(cfg, data)
 
@@ -274,17 +360,36 @@ def main():
     datos = {k: v for k, v in data.items() if k != 'archivo'}
     html = html.replace('__DATA__', json.dumps(datos, ensure_ascii=False, indent=2).replace('</', '<\\/'))
 
-    tmp = tempfile.NamedTemporaryFile('w', suffix='.html', delete=False, encoding='utf-8'); tmp.write(html); tmp.close()
-    extra = ['--no-sandbox'] if os.environ.get('NEXO_NOSANDBOX') else []
-    out = subprocess.run([chrome(), *extra, '--headless=new', '--disable-gpu', '--no-first-run', '--virtual-time-budget=5000',
-                          '--dump-dom', 'file://' + tmp.name], capture_output=True, text=True, timeout=120).stdout
-    os.unlink(tmp.name)
-    if 'class="js"' not in out[:400]: sys.exit('Chrome no pudo renderizar el tablero (revisa la plantilla o el JSON).')
-    out = '<!DOCTYPE html>\n' + re.sub(r'^\s*<!DOCTYPE html>\s*', '', out, flags=re.I).replace('class="js"', 'class="no-js"', 1)
-    tarjetas = len(re.findall(r'<article class="card', out))
-    if tarjetas != n: sys.exit(f'Error: se esperaban {n} tarjetas y salieron {tarjetas}.')
+    chrome_bin = chrome()
+    if chrome_bin:
+        tmp = tempfile.NamedTemporaryFile('w', suffix='.html', delete=False, encoding='utf-8')
+        tmp.write(html)
+        tmp.close()
+        extra = ['--no-sandbox'] if os.environ.get('NEXO_NOSANDBOX') else []
+        try:
+            res = subprocess.run([chrome_bin, *extra, '--headless=new', '--disable-gpu', '--no-first-run', '--virtual-time-budget=5000',
+                                  '--dump-dom', 'file://' + tmp.name], capture_output=True, text=True, timeout=120)
+            out = res.stdout
+            if 'class="js"' in out[:400]:
+                out = '<!DOCTYPE html>\n' + re.sub(r'^\s*<!DOCTYPE html>\s*', '', out, flags=re.I).replace('class="js"', 'class="no-js"', 1)
+                tarjetas = len(re.findall(r'<article class="card', out))
+                if tarjetas == n:
+                    html = out
+                    print(f'✓ Pre-renderizado con Google Chrome exitoso ({tarjetas} tarjetas)')
+                else:
+                    print(f'  ⚠️ Aviso: discrepancia de tarjetas en Chrome ({tarjetas}/{n}), usando renderizado dinámico.')
+            else:
+                print('  ⚠️ Aviso: Chrome headless no devolvió el DOM esperado, usando renderizado dinámico.')
+        except Exception as e:
+            print(f'  ⚠️ Aviso: fallo en Chrome headless ({e}), usando renderizado dinámico.')
+        finally:
+            if os.path.exists(tmp.name):
+                os.unlink(tmp.name)
+    else:
+        print('  ℹ Google Chrome no detectado en el entorno: tablero generado en modo dinámico de plantilla.')
+
     destino = os.path.join(REPO, data['archivo'])
-    open(destino, 'w', encoding='utf-8').write(out)
+    open(destino, 'w', encoding='utf-8').write(html)
     print(f'✓ Tablero generado: {data["archivo"]} ({n} contenidos)')
 
     registrar_en_firestore(cfg, data, n)

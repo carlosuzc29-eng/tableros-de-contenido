@@ -736,22 +736,22 @@ footer .logo svg{height:76px;margin:0 auto 12px}
       <div class="eyebrow">Revisión y aprobación</div>
       <h1>Tus contenidos<br><span class="out">del mes</span></h1>
       <p class="sub" id="intro">Revisa cada pieza con calma. Apruébala o cuéntanos qué ajustar, y al terminar descarga el tablero para enviárnoslo.</p>
-      <div class="reviewed" id="reviewed"></div>
+      <div class="reviewed show" id="reviewed">✓ Revisado por Agencia (Carlos) el 02 de octubre de 2026 a las 05:31 p. m.</div>
     </div>
     <div class="ring">
       <svg viewBox="0 0 188 188">
         <circle cx="94" cy="94" r="82" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="12"></circle>
-        <circle id="rOk" cx="94" cy="94" r="82" fill="none" stroke="#5CB83E" stroke-width="12" stroke-linecap="round" stroke-dasharray="421.54461424532127 515.221195188726" stroke-opacity="1"></circle>
-        <circle id="rFix" cx="94" cy="94" r="82" fill="none" stroke="#E64A00" stroke-width="12" stroke-linecap="round" stroke-dasharray="0 515.221195188726" stroke-dashoffset="-421.54461424532127" stroke-opacity="0"></circle>
+        <circle id="rOk" cx="94" cy="94" r="82" fill="none" stroke="#5CB83E" stroke-width="12" stroke-linecap="round" stroke-dasharray="515.221195188726 515.221195188726" stroke-opacity="1"></circle>
+        <circle id="rFix" cx="94" cy="94" r="82" fill="none" stroke="#E64A00" stroke-width="12" stroke-linecap="round" stroke-dasharray="0 515.221195188726" stroke-dashoffset="-515.221195188726" stroke-opacity="0"></circle>
       </svg>
-      <div class="center"><div><b id="pct">82%</b><small>revisado</small></div></div>
+      <div class="center"><div><b id="pct">100%</b><small>revisado</small></div></div>
     </div>
   </div>
 </div></header>
 
 <div class="shell" style="padding:0 16px">
   <section class="stats">
-    <div class="stat ok"><i>✓</i><div><b id="sOk">9</b><span>Aprobados</span></div></div>
+    <div class="stat ok"><i>✓</i><div><b id="sOk">11</b><span>Aprobados</span></div></div>
     <div class="stat fix"><i>✎</i><div><b id="sFix">0</b><span>Con cambios</span></div></div>
     <div class="stat pend"><i>•</i><div><b id="sPend">0</b><span>Pendientes</span></div></div>
   </section>
@@ -759,21 +759,21 @@ footer .logo svg{height:76px;margin:0 auto 12px}
   <div class="layout">
     <aside class="index">
       <h3>Contenidos</h3>
-      <nav id="nav"><a href="#c1" data-state="aprobado"><span class="n">01</span><span class="t">Experiencias reales</span></a><a href="#c2" data-state="aprobado"><span class="n">02</span><span class="t">¿Está recibiendo todo lo que necesita?</span></a><a href="#c3" data-state="aprobado"><span class="n">03</span><span class="t">Isa / ¿Crudo significa inseguro?</span></a><a href="#c4" data-state="aprobado"><span class="n">04</span><span class="t">Su comida no termina en el plato vacío</span></a><a href="#c5" data-state="aprobado"><span class="n">05</span><span class="t">Esa es la idea</span></a><a href="#c6" data-state="aprobado"><span class="n">06</span><span class="t">Pastor belga / Energía</span></a><a href="#c7" data-state="corregido"><span class="n">07</span><span class="t">No tienes que cambiar todo de una vez</span></a><a href="#c8" data-state="aprobado"><span class="n">08</span><span class="t">¿250 g o 550 g?</span></a><a href="#c9" data-state="corregido"><span class="n">09</span><span class="t">Milka León</span></a><a href="#c10" data-state="aprobado"><span class="n">10</span><span class="t">Halloween</span></a><a href="#c11" data-state="aprobado"><span class="n">11</span><span class="t">Ingredientes reales</span></a></nav>
+      <nav id="nav"><a href="#c1" data-state="aprobado"><span class="n">01</span><span class="t">Experiencias reales</span></a><a href="#c2" data-state="aprobado"><span class="n">02</span><span class="t">¿Está recibiendo todo lo que necesita?</span></a><a href="#c3" data-state="aprobado"><span class="n">03</span><span class="t">Isa / ¿Crudo significa inseguro?</span></a><a href="#c4" data-state="aprobado"><span class="n">04</span><span class="t">Su comida no termina en el plato vacío</span></a><a href="#c5" data-state="aprobado"><span class="n">05</span><span class="t">Esa es la idea</span></a><a href="#c6" data-state="aprobado"><span class="n">06</span><span class="t">Pastor belga / Energía</span></a><a href="#c7" data-state="aprobado"><span class="n">07</span><span class="t">No tienes que cambiar todo de una vez</span></a><a href="#c8" data-state="aprobado"><span class="n">08</span><span class="t">¿250 g o 550 g?</span></a><a href="#c9" data-state="aprobado"><span class="n">09</span><span class="t">Milka León</span></a><a href="#c10" data-state="aprobado"><span class="n">10</span><span class="t">Halloween</span></a><a href="#c11" data-state="aprobado"><span class="n">11</span><span class="t">Ingredientes reales</span></a></nav>
       <div class="filters">
         <button class="chip on" data-f="all">Todos</button>
         <button class="chip" data-f="pendiente">Pendientes</button>
         <button class="chip" data-f="aprobado">Aprobados</button>
         <button class="chip" data-f="cambios">Cambios</button>
-        <button class="chip chip-corregido" data-f="corregido" id="filterCorregidos" style="display: inline-flex;">Corregidos <span class="chip-cnt" id="chipCountCorregidos">2</span></button>
+        <button class="chip chip-corregido" data-f="corregido" id="filterCorregidos" style="display:none;">Corregidos <span class="chip-cnt" id="chipCountCorregidos">0</span></button>
       </div>
     </aside>
     <main>
-      <section id="apartadoCorregidos" class="apartado-corregidos" style="display: block;" aria-label="Contenidos corregidos">
+      <section id="apartadoCorregidos" class="apartado-corregidos" style="display:none;" aria-label="Contenidos corregidos">
         <div class="apartado-corregidos-header">
           <div class="apartado-corregidos-icon">✨</div>
           <div class="apartado-corregidos-info">
-            <h3 class="apartado-corregidos-title">Contenidos corregidos (<span id="apartadoCount">2</span>)</h3>
+            <h3 class="apartado-corregidos-title">Contenidos corregidos (<span id="apartadoCount">0</span>)</h3>
             <p class="apartado-corregidos-desc">Ajustes listos para visto bueno. Puedes revisarlos aquí o copiar el enlace exclusivo para que el cliente apruebe únicamente estos contenidos.</p>
           </div>
           <div class="apartado-corregidos-actions">
@@ -783,10 +783,10 @@ footer .logo svg{height:76px;margin:0 auto 12px}
             <button type="button" class="apartado-btn-wa" id="btnWhatsAppCorregidos" title="Enviar por WhatsApp para aprobación">
               <span>💬</span> WhatsApp
             </button>
-            <button type="button" class="apartado-corregidos-btn" id="btnVerSoloCorregidos">👁️ Ver solo corregidos (2)</button>
+            <button type="button" class="apartado-corregidos-btn" id="btnVerSoloCorregidos">👁️ Ver solo corregidos (0)</button>
           </div>
         </div>
-        <div class="apartado-corregidos-list" id="apartadoCorregidosPills"><a class="pill-corregido" href="#c7"><span style="color:#7c3aed;font-weight:800;">#07</span> <span>No tienes que cambiar todo de una vez</span> <span class="pill-v">v5</span></a><a class="pill-corregido" href="#c9"><span style="color:#7c3aed;font-weight:800;">#09</span> <span>Milka León</span> <span class="pill-v">v3</span></a></div>
+        <div class="apartado-corregidos-list" id="apartadoCorregidosPills"></div>
       </section>
       <div id="list"><article class="card in" id="c1" data-state="aprobado" data-piece-num="1"><div class="c-top"><div class="big">01</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Post</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post" selected="">Post</option></select></label></div><h2>Experiencias reales</h2></div><span class="badge">Aprobado</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>Hay cosas que podemos decirte nosotros sobre Milkarf… y otras que preferimos que te las cuenten quienes ya lo sirven en casa.
 ¿Qué te hizo probar Milkarf?
@@ -879,14 +879,14 @@ Por eso observarlos no significa compararlos, sino aprender qué es normal en ca
 
 Su apetito, su experiencia al comer, sus heces, su pelaje y su comportamiento cotidiano también pueden darte información.
 
-Síguenos para seguir aprendiendo a mirar más allá de su plato.</p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c7" data-state="corregido" data-piece-num="7"><div class="c-top"><div class="big">07</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Carrusel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel" selected="">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label></div><h2>No tienes que cambiar todo de una vez</h2></div><span class="badge">Pendiente</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>¿Y si una sola vez de Milkarf al día fuera suficiente para empezar a notar la diferencia?No tienes que cambiar toda su alimentación de golpe. Solo intégralo a su rutina sin mezclarlo en el mismo plato y observa cómo responde.Eso sí, te advertimos algo…Tú puedes empezar pensando que será solo una vez al día.Pero después de probarlo, puede que tu perro tenga otros planes.Y que poco a poco sea él quien te convenza de hacer el cambio completo.Empieza con una. Milkarf hace el resto.</p></div><div><span class="lbl">Copy</span><div class="post"><div class="post-h"><div class="av">M</div><div><b>milkarfood</b><small>Vista previa del copy</small></div></div><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el copy</div><p>Empezar con Milkarf no significa necesariamente cambiar toda su alimentación de un día para otro.
+Síguenos para seguir aprendiendo a mirar más allá de su plato.</p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c7" data-state="aprobado" data-piece-num="7"><div class="c-top"><div class="big">07</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Carrusel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel" selected="">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label></div><h2>No tienes que cambiar todo de una vez</h2></div><span class="badge">Aprobado</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>¿Y si una sola vez de Milkarf al día fuera suficiente para empezar a notar la diferencia?No tienes que cambiar toda su alimentación de golpe. Solo intégralo a su rutina sin mezclarlo en el mismo plato y observa cómo responde.Eso sí, te advertimos algo…Tú puedes empezar pensando que será solo una vez al día.Pero después de probarlo, puede que tu perro tenga otros planes.Y que poco a poco sea él quien te convenza de hacer el cambio completo.Empieza con una. Milkarf hace el resto.</p></div><div><span class="lbl">Copy</span><div class="post"><div class="post-h"><div class="av">M</div><div><b>milkarfood</b><small>Vista previa del copy</small></div></div><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el copy</div><p>Empezar con Milkarf no significa necesariamente cambiar toda su alimentación de un día para otro.
 
 También puedes incorporarlo progresivamente mientras tu perro y tú se adaptan a una nueva rutina.
 
 Lo importante es respetar sus porciones y organizar correctamente cada comida.
 
 Calcula cuánto necesita desde el link de nuestra bio y escríbenos por WhatsApp para ayudarte a elegir cómo comenzar.</p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: grid;"><div class="cm-bubble"><div class="cm-av">D</div><div class="cm-right"><div class="cm-top"><b class="cm-author">Delia</b><button class="cm-del" type="button" title="Eliminar este comentario">×</button></div><p class="cm-txt">En el comentario antes decía ver cómo decir que así sea más “costoso” es porque tendrá más beneficios que lo seco de la perrarina que dura años ahí en un saco</p></div></div><div class="cm-bubble"><div class="cm-av">D</div><div class="cm-right"><div class="cm-top"><b class="cm-author">Delia</b><button class="cm-del" type="button" title="Eliminar este comentario">×</button></div><p class="cm-txt">Que pena pero no, este no me gusta. Si es mucho rollo ponemos otro de testimonios o algo mientras esto se evalúa mejor con tiempo. Podría ser como que una vez al día también funciona y después le aseguramos que su perrito lo querrá siempre pero, no pude crearlo yo. Ayer lo intenté con Claude pero quedó a medias, si este es mucho tema modificarlo que sea otro de testimonios o no se pero no me gusta el enfoque 🙈🙈
-Si se puede tipo “una vez al día por una semana y tu perro lo pedirá solo”.. no se, pero no nos enfoquemos en lo costoso ni perrarina jaja sorry</p></div></div></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status">• Pendiente de evaluación (obligatorio)</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v5 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c8" data-state="aprobado" data-piece-num="8"><div class="c-top"><div class="big">08</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Carrusel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel" selected="">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label></div><h2>¿250 g o 550 g?</h2></div><span class="badge">Aprobado</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>¿250 g o 550 g?
+Si se puede tipo “una vez al día por una semana y tu perro lo pedirá solo”.. no se, pero no nos enfoquemos en lo costoso ni perrarina jaja sorry</p></div></div></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v5 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c8" data-state="aprobado" data-piece-num="8"><div class="c-top"><div class="big">08</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Carrusel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel" selected="">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label></div><h2>¿250 g o 550 g?</h2></div><span class="badge">Aprobado</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>¿250 g o 550 g?
 Para elegir la presentación, primero necesitas saber cuánto debería comer tu perro al día.
 Te contamos cómo funciona en la descripción. ↓</p></div><div><span class="lbl">Copy</span><div class="post"><div class="post-h"><div class="av">M</div><div><b>milkarfood</b><small>Vista previa del copy</small></div></div><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el copy</div><p>Elegir entre una bolsa de 250 g o 550 g no depende simplemente de cuál te resulte más cómoda.
 
@@ -898,13 +898,13 @@ Así puedes organizar mejor cuánto necesitas, cómo conservarlo y qué opción 
 
 Primero conoce su porción. Después deja que la guía te ayude a elegir la bolsa.
 
-Ingresa a nuestra pagina web www.milkarf.com y conoce todos los detalles.</p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: grid;"><div class="cm-bubble"><div class="cm-av">D</div><div class="cm-right"><div class="cm-top"><b class="cm-author">Delia</b><button class="cm-del" type="button" title="Eliminar este comentario">×</button></div><p class="cm-txt">De último jaja hasta revisar la página a fondo</p></div></div></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c9" data-state="corregido" data-piece-num="9"><div class="c-top"><div class="big">09</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label></div><h2>Milka León</h2></div><span class="badge">Pendiente</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>Yo haciéndome pasar por otro perro para que me den cena otra vez.</p></div><div><span class="lbl">Copy</span><div class="post"><div class="post-h"><div class="av">M</div><div><b>milkarfood</b><small>Vista previa del copy</small></div></div><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el copy</div><p>Cambias el look.
+Ingresa a nuestra pagina web www.milkarf.com y conoce todos los detalles.</p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: grid;"><div class="cm-bubble"><div class="cm-av">D</div><div class="cm-right"><div class="cm-top"><b class="cm-author">Delia</b><button class="cm-del" type="button" title="Eliminar este comentario">×</button></div><p class="cm-txt">De último jaja hasta revisar la página a fondo</p></div></div></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c9" data-state="aprobado" data-piece-num="9"><div class="c-top"><div class="big">09</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label></div><h2>Milka León</h2></div><span class="badge">Aprobado</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>Yo haciéndome pasar por otro perro para que me den cena otra vez.</p></div><div><span class="lbl">Copy</span><div class="post"><div class="post-h"><div class="av">M</div><div><b>milkarfood</b><small>Vista previa del copy</small></div></div><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el copy</div><p>Cambias el look.
 
 Cambias la identidad.
 
 Y vuelves a intentarlo como si nadie te hubiera visto terminar el plato hace cinco minutos.
 
-Si tu perro también tiene un máster en conseguir comida extra, comparte esto con alguien que vive exactamente la misma historia.</p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status">• Pendiente de evaluación (obligatorio)</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v3 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c10" data-state="aprobado" data-piece-num="10"><div class="c-top"><div class="big">10</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label></div><h2>Halloween</h2></div><span class="badge">Aprobado</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>EL VERDADERO TERROR DE HALLOWEEN:
+Si tu perro también tiene un máster en conseguir comida extra, comparte esto con alguien que vive exactamente la misma historia.</p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v3 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c10" data-state="aprobado" data-piece-num="10"><div class="c-top"><div class="big">10</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label></div><h2>Halloween</h2></div><span class="badge">Aprobado</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>EL VERDADERO TERROR DE HALLOWEEN:
 Abrir el congelador…
 y descubrir que queda una sola bolsita de Milkarf.</p></div><div><span class="lbl">Copy</span><div class="post"><div class="post-h"><div class="av">M</div><div><b>milkarfood</b><small>Vista previa del copy</small></div></div><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el copy</div><p>Organiza su alimentación haz tu pedido para tener sus porciones listas, para no pasar estos sustos
 
@@ -928,7 +928,7 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
 </div>
 
 <div class="dock">
-  <span class="prog"><b id="dN">9/11</b> revisados</span>
+  <span class="prog"><b id="dN">11/11</b> revisados</span>
   <span class="sep"></span>
   <input id="who" placeholder="Tu nombre" autocomplete="name">
   <button class="dl" id="dl">Enviar revisión ✓</button>
@@ -1789,7 +1789,7 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
   "mes": "Octubre",
   "anio": 2026,
   "intro": "",
-  "resetAt": 1790972367355,
+  "resetAt": 1791210256596,
   "revision": {
     "revisadoPor": "",
     "fecha": ""
@@ -1809,7 +1809,8 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
       "estado": "aprobado",
       "comentario": "[Delia]: De este dos con gente así cortos y luego uno que pueden ser mis hermanos o cuñada un poco más largo y bloopers que si porque soy la hermana y tal",
       "revisadoPor": "Delia",
-      "formatoOriginal": "Post"
+      "formatoOriginal": "Post",
+      "clickupId": "17tjyy3harb"
     },
     {
       "formato": "Reel",
@@ -1825,7 +1826,8 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
       "estado": "aprobado",
       "comentario": "[Delia]: Enfocarnos más en beneficios que en lo completo de la fórmula con este",
       "version": 2,
-      "revisadoPor": "Delia"
+      "revisadoPor": "Delia",
+      "clickupId": "17tjyy3j7me"
     },
     {
       "formato": "Reel",
@@ -1840,7 +1842,8 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
       "id": "c3",
       "estado": "aprobado",
       "comentario": "",
-      "revisadoPor": "Delia"
+      "revisadoPor": "Delia",
+      "clickupId": "17tjyy3j7mf"
     },
     {
       "formato": "Reel",
@@ -1855,7 +1858,8 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
       "id": "c4",
       "estado": "aprobado",
       "comentario": "",
-      "revisadoPor": "Delia"
+      "revisadoPor": "Delia",
+      "clickupId": "17tjyy3j7mg"
     },
     {
       "formato": "Carrusel",
@@ -1870,7 +1874,8 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
       "id": "c5",
       "estado": "aprobado",
       "comentario": "",
-      "revisadoPor": "Delia"
+      "revisadoPor": "Delia",
+      "clickupId": "17tjyy3hbbe"
     },
     {
       "formato": "Reel",
@@ -1885,7 +1890,8 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
       "id": "c6",
       "estado": "aprobado",
       "comentario": "",
-      "revisadoPor": "Delia"
+      "revisadoPor": "Delia",
+      "clickupId": "17tjyy3j7mh"
     },
     {
       "formato": "Carrusel",
@@ -1898,10 +1904,11 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
       "referencias": [],
       "guionLabel": "Guion / texto",
       "id": "c7",
-      "estado": "corregido",
+      "estado": "aprobado",
       "comentario": "",
       "version": 5,
-      "revisadoPor": ""
+      "revisadoPor": "",
+      "clickupId": "17tjyy3j7mm"
     },
     {
       "formato": "Carrusel",
@@ -1916,7 +1923,8 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
       "id": "c8",
       "estado": "aprobado",
       "comentario": "[Delia]: De último jaja hasta revisar la página a fondo",
-      "revisadoPor": "Delia"
+      "revisadoPor": "Delia",
+      "clickupId": "17tjyy3j7mn"
     },
     {
       "formato": "Reel",
@@ -1929,12 +1937,13 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
       "referencias": [],
       "guionLabel": "Guion / texto",
       "id": "c9",
-      "estado": "corregido",
+      "estado": "aprobado",
       "comentario": "",
       "version": 3,
       "revisadoPor": "",
       "fechaCorreccion": "2026-10-02T00:00:00.000Z",
-      "formatoOriginal": "Reel"
+      "formatoOriginal": "Reel",
+      "clickupId": "17tjyy3j7mj"
     },
     {
       "formato": "Reel",
@@ -1950,7 +1959,8 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
       "estado": "aprobado",
       "comentario": "",
       "revisadoPor": "Delia",
-      "formatoOriginal": "Reel"
+      "formatoOriginal": "Reel",
+      "clickupId": "17tjyy3j7mk"
     },
     {
       "formato": "Post",
@@ -1965,7 +1975,8 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
       "id": "c11",
       "estado": "aprobado",
       "comentario": "",
-      "revisadoPor": "Delia"
+      "revisadoPor": "Delia",
+      "clickupId": "17tjyy3j7mp"
     }
   ],
   "url": "https://carlosuzc29-eng.github.io/tableros-de-contenido/milkarf-octubre-2026-f01f.html",
@@ -1973,7 +1984,9 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
     "apiKey": "AIzaSyAsH9TxW0ld2aNQejJw6xxZW7fpZiw212Q",
     "projectId": "nexo-tableros-app"
   },
-  "token": "784f7b07"
+  "token": "784f7b07",
+  "sincronizadoClickup": "2026-10-02T21:00:00-04:00",
+  "tableroProduccion": "https://carlosuzc29-eng.github.io/tableros-de-contenido/produccion/milkarf-2026-10-02-c0130c.html"
 }
 </script>
 <script>
@@ -2899,7 +2912,7 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
 
   // Sincronización en vivo y autorregistro silencioso en Firestore
   if ((DATA.firebase || FB) && DATA.id && FB && FB.projectId && FB.apiKey) {
-    (function syncAndRegisterBoard(){
+    function syncAndRegisterBoard(){
       try {
         var checkUrl = 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(FB.projectId) +
           '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
@@ -2945,7 +2958,21 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
             // Silencioso: no romper nada ni mostrar errores
           });
       } catch(e) {}
-    })();
+    }
+
+    syncAndRegisterBoard();
+
+    // Mantener la información actualizada en tiempo real ante cambios remotos
+    document.addEventListener('visibilitychange', function(){
+      if (!document.hidden) syncAndRegisterBoard();
+    });
+    window.addEventListener('focus', function(){
+      syncAndRegisterBoard();
+    });
+    // Intervalo de comprobación periódica mientras la pestaña permanezca abierta y visible
+    setInterval(function(){
+      if (!document.hidden) syncAndRegisterBoard();
+    }, 30000);
   }
 
   function doDownload(){

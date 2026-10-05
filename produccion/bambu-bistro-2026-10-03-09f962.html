@@ -2194,19 +2194,42 @@
           });
         }
         db = firebase.firestore();
-        prodDocRef = db.collection('tableros_produccion').doc(DATA.id);
+        if (db && typeof db.enablePersistence === 'function') {
+          db.enablePersistence({ synchronizeTabs: true }).catch((err) => {
+            console.warn('Persistencia Firestore:', err && err.code ? err.code : err);
+          });
+        }
+        // Colección 'produccion': la que permiten las reglas y la que lee el banco de trabajo
+        prodDocRef = db.collection('produccion').doc(DATA.id);
 
         const liveEl = document.getElementById('live-indicator');
         if (liveEl) liveEl.style.display = 'inline-flex';
 
+        let isFirstSync = true;
         prodDocRef.onSnapshot((doc) => {
+          if (!doc) return;
           if (doc.exists) {
-            const remote = doc.data();
-            applyRemoteUpdate(remote);
             setFirestoreStatus(true);
+            const remote = doc.data();
+            if (isFirstSync) {
+              isFirstSync = false;
+              // Si Firestore está en estado inicial (todo por hacer) pero el usuario
+              // ya tenía avance en su navegador (grabando o listo), subimos el avance local a Firestore
+              const local = buildTarjetas(false);
+              const remoteHasNoProgress = (!remote.grabando && !remote.listo) || (remote.todo === (remote.orden || []).length);
+              const localHasProgress = (local.counts.grabando > 0 || local.counts.listo > 0);
+              if (localHasProgress && remoteHasNoProgress) {
+                syncToFirestore(null, true);
+                return;
+              }
+            }
+            if (doc.metadata && doc.metadata.hasPendingWrites) {
+              // Modificación local en tránsito, evitar parpadeos
+              return;
+            }
+            applyRemoteUpdate(remote);
           } else {
             seedFirestoreInitial();
-            setFirestoreStatus(true);
           }
         }, (err) => {
           console.warn('Firestore offline o reglas restringidas:', err);
@@ -2232,23 +2255,83 @@
       }
     }
 
+    window.addEventListener('online', () => {
+      setFirestoreStatus(true);
+      if (prodDocRef) {
+        const local = buildTarjetas(false);
+        if (local.counts.grabando || local.counts.listo) {
+          syncToFirestore(null, true);
+        }
+      }
+    });
+
+    window.addEventListener('offline', () => {
+      setFirestoreStatus(false);
+    });
+
+    function buildTarjetas(forceTodo) {
+      const orden = [];
+      const tarjetas = {};
+      const counts = { todo: 0, grabando: 0, listo: 0 };
+      state.contenidos.forEach(raw => {
+        const c = cleanCard(raw);
+        if (!c || !c.id) return;
+        if (forceTodo) {
+          c.estado = 'todo';
+          c.subtareas.forEach(st => st.done = false);
+        }
+        if (!(c.estado in counts)) c.estado = 'todo';
+        orden.push(c.id);
+        tarjetas[c.id] = c;
+        counts[c.estado]++;
+      });
+      return { orden, tarjetas, counts };
+    }
+
+    let isSeeding = false;
     function seedFirestoreInitial() {
-      if (!prodDocRef) return;
-      const payload = {
-        id: DATA.id,
-        cliente: DATA.cliente,
-        fecha: DATA.fecha,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-        contenidos: state.contenidos.map(cleanCard)
+      if (!prodDocRef || !db || isSeeding) return;
+      isSeeding = true;
+      // Autorregistro: las reglas exigen que el documento nazca con todo en "Por hacer"
+      const b = buildTarjetas(true);
+      const nowIso = new Date().toISOString();
+      const docData = {
+        id: String(DATA.id),
+        cliente: String(DATA.cliente || ''),
+        fecha: String(DATA.fecha || ''),
+        url: String(window.location.href.split('?')[0].split('#')[0]),
+        registrado: nowIso,
+        actualizado: nowIso,
+        orden: b.orden,
+        tarjetas: b.tarjetas,
+        todo: b.orden.length,
+        grabando: 0,
+        listo: 0
       };
-      prodDocRef.set(payload, { merge: true }).catch(console.warn);
+      db.runTransaction(tx => tx.get(prodDocRef).then(d => {
+        if (!d.exists) tx.set(prodDocRef, docData);
+      })).then(() => {
+        isSeeding = false;
+        setFirestoreStatus(true);
+        // Si ya había avance local antes del registro, subirlo
+        const local = buildTarjetas(false);
+        if (local.counts.grabando || local.counts.listo) syncToFirestore(null, true);
+      }).catch(err => {
+        isSeeding = false;
+        console.warn('Autorregistro produccion fallido:', err);
+        setFirestoreStatus(false);
+      });
     }
 
     function applyRemoteUpdate(remote) {
-      if (!remote || !Array.isArray(remote.contenidos)) return;
-      let changed = false;
+      if (!remote || !remote.tarjetas || typeof remote.tarjetas !== 'object') return;
+      const orden = Array.isArray(remote.orden) ? remote.orden : Object.keys(remote.tarjetas);
+      const remoteList = [];
+      orden.forEach(id => { if (remote.tarjetas[id]) remoteList.push(remote.tarjetas[id]); });
+      Object.keys(remote.tarjetas).forEach(id => { if (!orden.includes(id)) remoteList.push(remote.tarjetas[id]); });
 
-      remote.contenidos.forEach(rCard => {
+      let changed = false;
+      remoteList.forEach(rCard => {
         const local = state.contenidos.find(c => c.id === rCard.id);
         if (local) {
           if (local.estado !== rCard.estado) {
@@ -2264,11 +2347,24 @@
               }
             });
           }
+          if (rCard.descripcion && local.descripcion !== rCard.descripcion) {
+            local.descripcion = rCard.descripcion;
+            changed = true;
+          }
+          if (rCard.titulo && local.titulo !== rCard.titulo) {
+            local.titulo = rCard.titulo;
+            changed = true;
+          }
         } else {
-          state.contenidos.push(cleanCard(rCard));
-          changed = true;
+          const cc = cleanCard(rCard);
+          if (cc) { state.contenidos.push(cc); changed = true; }
         }
       });
+      // Tarjetas borradas en otro dispositivo
+      const remoteIds = new Set(remoteList.map(r => r.id));
+      const before = state.contenidos.length;
+      state.contenidos = state.contenidos.filter(c => remoteIds.has(c.id));
+      if (state.contenidos.length !== before) changed = true;
 
       if (changed) {
         renderCards();
@@ -2282,9 +2378,14 @@
 
     function syncToFirestore(cardId, isFullSync) {
       if (!prodDocRef || !isFirestoreOnline) return;
+      const b = buildTarjetas(false);
       const payload = {
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-        contenidos: state.contenidos.map(cleanCard)
+        orden: b.orden,
+        tarjetas: b.tarjetas,
+        todo: b.counts.todo,
+        grabando: b.counts.grabando,
+        listo: b.counts.listo,
+        actualizado: new Date().toISOString()
       };
       prodDocRef.update(payload).catch(err => {
         console.error('Error sincronizando con Firestore:', err);
@@ -2875,6 +2976,16 @@
             if (card) {
               card.estado = targetStatus;
               if (targetStatus === 'listo') card.subtareas.forEach(s => s.done = true);
+              // Reordenar state.contenidos según el orden visual en las columnas
+              const domCardEls = Array.from(document.querySelectorAll('.kanban-column .card'));
+              const domIds = domCardEls.map(el => el.dataset.id).filter(Boolean);
+              if (domIds.length) {
+                const map = new Map(state.contenidos.map(c => [c.id, c]));
+                const newOrdered = [];
+                domIds.forEach(id => { if (map.has(id)) newOrdered.push(map.get(id)); });
+                state.contenidos.forEach(c => { if (!domIds.includes(c.id)) newOrdered.push(c); });
+                state.contenidos = newOrdered;
+              }
               updateUI();
               syncToFirestore(cardId, false);
             }

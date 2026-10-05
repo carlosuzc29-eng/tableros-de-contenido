@@ -6565,9 +6565,22 @@ body{
 
   function getProdCardHtml(p){
     var id = p.id || '';
-    var todo = +p.todo || 0;
-    var grabando = +p.grabando || 0;
-    var listo = +p.listo || 0;
+    var todo = typeof p.todo === 'number' ? p.todo : (+p.todo || 0);
+    var grabando = typeof p.grabando === 'number' ? p.grabando : (+p.grabando || 0);
+    var listo = typeof p.listo === 'number' ? p.listo : (+p.listo || 0);
+
+    // Fallback: si existen tarjetas pero los contadores globales están en 0, calcular desde el mapa
+    if (p.tarjetas && typeof p.tarjetas === 'object' && Object.keys(p.tarjetas).length > 0) {
+      if (todo === 0 && grabando === 0 && listo === 0) {
+        var tKeys = Object.keys(p.tarjetas);
+        tKeys.forEach(function(k){
+          var st = p.tarjetas[k] && p.tarjetas[k].estado;
+          if (st === 'grabando') grabando++;
+          else if (st === 'listo') listo++;
+          else todo++;
+        });
+      }
+    }
     var tot = todo + grabando + listo;
 
     var pctListo = tot > 0 ? Math.round((listo / tot) * 100) : 0;
@@ -7256,6 +7269,8 @@ body{
       renderProduccionCards();
     } else if (activeTab === 'informes') {
       loadAndRenderInformes(false);
+    } else if (activeTab === 'aprobaciones') {
+      applyFiltersAndRender();
     }
   }
 

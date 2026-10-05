@@ -2576,7 +2576,7 @@ __DATA__
 
   // Sincronización en vivo y autorregistro silencioso en Firestore
   if ((DATA.firebase || FB) && DATA.id && FB && FB.projectId && FB.apiKey) {
-    (function syncAndRegisterBoard(){
+    function syncAndRegisterBoard(){
       try {
         var checkUrl = 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(FB.projectId) +
           '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
@@ -2622,7 +2622,21 @@ __DATA__
             // Silencioso: no romper nada ni mostrar errores
           });
       } catch(e) {}
-    })();
+    }
+
+    syncAndRegisterBoard();
+
+    // Mantener la información actualizada en tiempo real ante cambios remotos
+    document.addEventListener('visibilitychange', function(){
+      if (!document.hidden) syncAndRegisterBoard();
+    });
+    window.addEventListener('focus', function(){
+      syncAndRegisterBoard();
+    });
+    // Intervalo de comprobación periódica mientras la pestaña permanezca abierta y visible
+    setInterval(function(){
+      if (!document.hidden) syncAndRegisterBoard();
+    }, 30000);
   }
 
   function doDownload(){

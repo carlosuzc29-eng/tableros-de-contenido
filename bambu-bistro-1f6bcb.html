@@ -107,14 +107,16 @@ button{font:inherit;cursor:pointer}
 .card[data-state="corregido"] .big{color:#7c3aed;-webkit-text-stroke-color:#7c3aed}
 .tags{display:flex;gap:8px;flex-wrap:wrap}
 .tag{font-size:12px;font-weight:600;padding:5px 12px;border-radius:99px;background:var(--azul-soft);color:var(--azul)}
-.tag.fmt{background:var(--azul);color:#fff}
-.fmt-wrap{position:relative;display:inline-flex}
-.fmt-sel{-webkit-appearance:none;appearance:none;border:0;background:var(--azul);color:#fff;font:inherit;font-size:12px;font-weight:600;line-height:1.5;padding:5px 30px 5px 12px;border-radius:99px;cursor:pointer;transition:background .2s}
-.fmt-sel:hover{background:var(--azul-2)}
-.fmt-sel:focus{outline:2px solid var(--verde);outline-offset:2px}
-.fmt-sel option{color:var(--ink);background:#fff}
-.fmt-wrap::after{content:"";position:absolute;right:12px;top:50%;width:6px;height:6px;border-right:1.5px solid #fff;border-bottom:1.5px solid #fff;transform:translateY(-70%) rotate(45deg);pointer-events:none}
-.fmt-wrap.changed .fmt-sel{background:var(--naranja)}
+.tag.fmt{background:var(--azul);color:#fff;transition:background .2s,transform .15s}
+.tag.fmt.agency-editable{cursor:pointer;padding-right:22px;position:relative}
+.tag.fmt.agency-editable::after{content:"";position:absolute;right:9px;top:50%;width:5px;height:5px;border-right:1.5px solid rgba(255,255,255,.85);border-bottom:1.5px solid rgba(255,255,255,.85);transform:translateY(-70%) rotate(45deg);pointer-events:none}
+.tag.fmt.agency-editable:hover{background:var(--azul-2);transform:scale(1.04)}
+.fmt-popover{position:absolute;top:calc(100% + 6px);left:0;z-index:200;background:#fff;border-radius:14px;box-shadow:0 8px 32px -8px rgba(31,53,73,.22),0 2px 8px -2px rgba(31,53,73,.12);border:1px solid var(--line);padding:5px;min-width:160px;display:none;flex-direction:column;gap:2px}
+.fmt-popover.open{display:flex}
+.fmt-popover-opt{font-size:13px;font-weight:600;padding:8px 14px;border-radius:10px;cursor:pointer;color:var(--ink);transition:background .15s}
+.fmt-popover-opt:hover{background:var(--azul-soft);color:var(--azul)}
+.fmt-popover-opt.active{background:var(--azul);color:#fff}
+.fmt-wrap{display:none!important}
 .tag.orig{display:none;background:var(--naranja-soft);color:var(--naranja)}
 .tag.orig.show{display:inline-block}
 .tag.date{background:transparent;box-shadow:inset 0 0 0 1px var(--line);color:var(--ink-2)}
@@ -786,14 +788,14 @@ footer .logo svg{height:76px;margin:0 auto 12px}
         </div>
         <div class="apartado-corregidos-list" id="apartadoCorregidosPills"></div>
       </section>
-      <div id="list"><article class="card in" id="c1" data-state="aprobado" data-piece-num="1"><div class="c-top"><div class="big">01</div><div><div class="tags"><span class="tag fmt" style="display: inline-block;">Reel</span><label class="fmt-wrap" style="display: none;"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label></div><h2>POV: viniste a almorzar y terminaste pasando la tarde</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>"POV: viniste a almorzar y terminaste pasando la tarde."
+      <div id="list"><article class="card in" id="c1" data-state="aprobado" data-piece-num="1"><div class="c-top"><div class="big">01</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label></div><h2>POV: viniste a almorzar y terminaste pasando la tarde</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>"POV: viniste a almorzar y terminaste pasando la tarde."
 Abrimos directamente con una persona o familia sentándose en una mesa de Bambú. Puede verse el espacio detrás para contextualizar.
 REEL 1 — Bambú se vive
 Concepto: POV: viniste a almorzar y terminaste pasando la tarde.
-El reel mostrará cómo una visita a Bambú que comienza con un almuerzo puede convertirse en un plan para disfrutar por más tiempo. Se verá la llegada de los platos, personas comiendo y compartiendo, la sobremesa y diferentes momentos disfrutando de los espacios y opciones recreativas del lugar. La intención es presentar a Bambú no solo como un restaurante, sino como un lugar para comer, compartir y disfrutar.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c2" data-state="aprobado" data-piece-num="2"><div class="c-top"><div class="big">02</div><div><div class="tags"><span class="tag fmt" style="display: inline-block;">Reel</span><label class="fmt-wrap" style="display: none;"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label></div><h2>Bucle provocativo al fuego</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>El reel mostrará de forma muy cercana y provocativa el proceso de preparación de uno de los platos más atractivos de Bambú: producto entrando al fuego, brasas, cocción, jugos, corte y resultado final. La edición estará construida en bucle, haciendo que el final conecte visualmente con el inicio para que la reproducción pueda repetirse de manera continua y natural.
+El reel mostrará cómo una visita a Bambú que comienza con un almuerzo puede convertirse en un plan para disfrutar por más tiempo. Se verá la llegada de los platos, personas comiendo y compartiendo, la sobremesa y diferentes momentos disfrutando de los espacios y opciones recreativas del lugar. La intención es presentar a Bambú no solo como un restaurante, sino como un lugar para comer, compartir y disfrutar.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c2" data-state="aprobado" data-piece-num="2"><div class="c-top"><div class="big">02</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label></div><h2>Bucle provocativo al fuego</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>El reel mostrará de forma muy cercana y provocativa el proceso de preparación de uno de los platos más atractivos de Bambú: producto entrando al fuego, brasas, cocción, jugos, corte y resultado final. La edición estará construida en bucle, haciendo que el final conecte visualmente con el inicio para que la reproducción pueda repetirse de manera continua y natural.
 La pieza tendrá un enfoque principalmente sensorial, apoyándose en primeros planos, sonidos de cocción y texturas para generar antojo, sin necesidad de explicar demasiado el producto.
 
-Dejar en los comentarios con que plato vamos a trabajar</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c3" data-state="aprobado" data-piece-num="3"><div class="c-top"><div class="big">03</div><div><div class="tags"><span class="tag fmt" style="display: inline-block;">Carrusel con video</span><label class="fmt-wrap" style="display: none;"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video" selected="">Carrusel con video</option><option value="Post">Post</option></select></label></div><h2>Carrusel distintas opciones</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>El carrusel mostrará una mesa de Bambú con diferentes platos y opciones del menú, representando cómo cada persona puede elegir según lo que le provoque sin dejar de compartir el mismo plan. La intención es destacar la variedad gastronómica de Bambú desde una situación de consumo real, mostrando el restaurante como una opción para compartir en familia, pareja o con amigos.
+Dejar en los comentarios con que plato vamos a trabajar</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c3" data-state="aprobado" data-piece-num="3"><div class="c-top"><div class="big">03</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Carrusel con video</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video" selected="">Carrusel con video</option><option value="Post">Post</option></select></label></div><h2>Carrusel distintas opciones</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>El carrusel mostrará una mesa de Bambú con diferentes platos y opciones del menú, representando cómo cada persona puede elegir según lo que le provoque sin dejar de compartir el mismo plan. La intención es destacar la variedad gastronómica de Bambú desde una situación de consumo real, mostrando el restaurante como una opción para compartir en familia, pareja o con amigos.
 
 Slide 1:
 Una mesa, diferentes antojos.
@@ -804,7 +806,7 @@ Cada quien pide lo suyo.
 
 Slide 3:
 Ponerse de acuerdo nunca fue tan fácil.
-Nos vemos en Bambú.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c4" data-state="aprobado" data-piece-num="4"><div class="c-top"><div class="big">04</div><div><div class="tags"><span class="tag fmt" style="display: inline-block;">Reel</span><label class="fmt-wrap" style="display: none;"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label></div><h2>Armemos el plato</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>REEL 4 — EL PLATO DEL MES
+Nos vemos en Bambú.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c4" data-state="aprobado" data-piece-num="4"><div class="c-top"><div class="big">04</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label></div><h2>Armemos el plato</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>REEL 4 — EL PLATO DEL MES
 Concepto: Hoy el personal de Bambú elige nuestro plato del mes.
 El reel mostrará una dinámica en la que diferentes integrantes del personal de Bambú responderán preguntas rápidas entre dos opciones. Cada respuesta definirá una parte del plato —proteína, método de preparación, acompañante, salsa y acabado— hasta construir entre todos una combinación final.
 Una vez tomadas todas las decisiones, el equipo de cocina preparará el resultado y se revelará al final como el plato del mes de Bambú.
@@ -823,7 +825,7 @@ Hoy el personal de Bambú elige nuestro plato del mes.
 Cortes en cocina preparando
 Y así quedó el plato elegido por nuestro equipo.
 "Ellos ya eligieron. Ahora te toca venir a probarlo. Ven a Bambu y conoce nuestro_______
-Solo disponible por el mes de octubre</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c5" data-state="aprobado" data-piece-num="5"><div class="c-top"><div class="big">05</div><div><div class="tags"><span class="tag fmt" style="display: inline-block;">Carrusel con video</span><label class="fmt-wrap" style="display: none;"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video" selected="">Carrusel con video</option><option value="Post">Post</option></select></label></div><h2>Que probar si vienes por primera vez</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>Slide 1 ¿Qué probar si vienes a Bambú Bistro por primera vez?
+Solo disponible por el mes de octubre</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c5" data-state="aprobado" data-piece-num="5"><div class="c-top"><div class="big">05</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Carrusel con video</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video" selected="">Carrusel con video</option><option value="Post">Post</option></select></label></div><h2>Que probar si vienes por primera vez</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>Slide 1 ¿Qué probar si vienes a Bambú Bistro por primera vez?
 
 Slide 2 Brochetas a la Brasa
 2 brochetas mixtas con vegetales, acompañadas de 2 contornos.
@@ -832,7 +834,7 @@ Slide 3 Pollo con salsa de champiñones
 Pechuga de pollo bañada en salsa de champiñones y .... acompañada de _______
 
 Slide 4 Parrilla Individual
-Solomo, pollo, cerdo y chorizo, acompañados de dos contornos.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c6" data-state="aprobado" data-piece-num="6"><div class="c-top"><div class="big">06</div><div><div class="tags"><span class="tag fmt" style="display: inline-block;">Carrusel con video</span><label class="fmt-wrap" style="display: none;"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video" selected="">Carrusel con video</option><option value="Post">Post</option></select></label></div><h2>La comida / La experiencia</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>REEL — COMIDA + EXPERIENCIA
+Solomo, pollo, cerdo y chorizo, acompañados de dos contornos.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c6" data-state="aprobado" data-piece-num="6"><div class="c-top"><div class="big">06</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Carrusel con video</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video" selected="">Carrusel con video</option><option value="Post">Post</option></select></label></div><h2>La comida / La experiencia</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>REEL — COMIDA + EXPERIENCIA
 Concepto: Mostrar simultáneamente la gastronomía y la experiencia de visitar Bambú.
 El video estará dividido horizontalmente en dos durante toda la pieza. En la parte superior se mostrará un plato de Bambú a través de tomas cercanas y provocativas del producto. Al mismo tiempo, en la parte inferior se mostrarán personas disfrutando de las áreas y actividades recreativas del restaurante.
 Ambas partes avanzarán de manera simultánea para comunicar en una misma pieza lo que puedes comer y lo que puedes disfrutar durante una visita a Bambú.
@@ -844,10 +846,10 @@ en el medio de cada imagen tendrá escrito
 
 LA COMIDA
 
-LA EXPERIENCIA</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c7" data-state="aprobado" data-piece-num="7"><div class="c-top"><div class="big">07</div><div><div class="tags"><span class="tag fmt" style="display: inline-block;">Post</span><label class="fmt-wrap" style="display: none;"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post" selected="">Post</option></select></label></div><h2>Sal de la rutina</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>HOY CAMBIA EL PLAN.
+LA EXPERIENCIA</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c7" data-state="aprobado" data-piece-num="7"><div class="c-top"><div class="big">07</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Post</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post" selected="">Post</option></select></label></div><h2>Sal de la rutina</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>HOY CAMBIA EL PLAN.
 Una mesa, algo rico y una tarde diferente.
 Visita Bambú y haz una pausa de la rutina.
-📍 Los Llanitos de Tabay, junto al C.C. El Amanecer.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c8" data-state="aprobado" data-piece-num="8"><div class="c-top"><div class="big">08</div><div><div class="tags"><span class="tag fmt" style="display: inline-block;">Reel</span><label class="fmt-wrap" style="display: none;"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label></div><h2>Celebraciones y espacios para reservar</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>Cumpleaños.
+📍 Los Llanitos de Tabay, junto al C.C. El Amanecer.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c8" data-state="aprobado" data-piece-num="8"><div class="c-top"><div class="big">08</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label></div><h2>Celebraciones y espacios para reservar</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>Cumpleaños.
 Aniversario.
 Graduación.
 Reunión familiar.
@@ -1734,7 +1736,7 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
       "hashtags": "",
       "referencias": [],
       "id": "c1",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "comentario": "",
       "clickupId": "17tjyy3gz0y"
     },
@@ -1749,7 +1751,7 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
       "hashtags": "",
       "referencias": [],
       "id": "c2",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "comentario": "",
       "clickupId": "17tjyy3gz11"
     },
@@ -1764,7 +1766,7 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
       "hashtags": "",
       "referencias": [],
       "id": "c3",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "comentario": "",
       "clickupId": "17tjyy3gz15"
     },
@@ -1779,7 +1781,7 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
       "hashtags": "",
       "referencias": [],
       "id": "c4",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "comentario": "",
       "clickupId": "17tjyy3gz1e"
     },
@@ -1794,7 +1796,7 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
       "hashtags": "",
       "referencias": [],
       "id": "c5",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "comentario": "",
       "clickupId": "17tjyy3gzrn"
     },
@@ -1809,7 +1811,7 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
       "hashtags": "",
       "referencias": [],
       "id": "c6",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "comentario": "",
       "clickupId": "17tjyy3gzrt"
     },
@@ -1824,7 +1826,7 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
       "hashtags": "",
       "referencias": [],
       "id": "c7",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "comentario": "",
       "clickupId": "17tjyy3gzrv"
     },
@@ -1839,13 +1841,13 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
       "hashtags": "",
       "referencias": [],
       "id": "c8",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "comentario": "",
       "clickupId": "17tjyy3gzrx"
     }
   ],
   "id": "bambu-bistro-2026-octubre-4698e871",
-  "resetAt": 1790917732224,
+  "resetAt": 1791210052628,
   "revision": {
     "revisadoPor": "",
     "fecha": ""
@@ -2138,17 +2140,58 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
     var tw = el('div'); var tags = el('div', 'tags');
 
     // Formato de contenido:
-    // Para el cliente: etiqueta estática (el cliente no aprueba ni modifica el formato)
-    // Para la agencia (Carlos y Andrea): selector para modificarlo libremente sin necesidad de aprobación
+    // Para el cliente: etiqueta estática
+    // Para la agencia: la etiqueta misma es clickeable y abre un popover con los 4 formatos
+    var fmtWrap = el('div', null); fmtWrap.style.cssText = 'position:relative;display:inline-block';
     var fmtTag = el('span', 'tag fmt', it.formato || 'Post');
-    tags.appendChild(fmtTag);
+    var fmtPopover = el('div', 'fmt-popover');
 
+    function buildPopover() {
+      fmtPopover.innerHTML = '';
+      FORMATOS.forEach(function(x){
+        var opt = el('div', 'fmt-popover-opt' + (x === it.formato ? ' active' : ''), x);
+        opt.addEventListener('mousedown', function(e){
+          e.preventDefault();
+          var newFmt = x;
+          it.formato = newFmt;
+          it.formatoOriginal = newFmt;
+          fmtTag.textContent = newFmt;
+          closeFmtPopover();
+          if (cObj.fmtTag) cObj.fmtTag.textContent = newFmt;
+          saveDraft();
+          toast('Guardando tipo de contenido (' + newFmt + ')…');
+          saveAgencyFormatoChange(it, newFmt);
+        });
+        fmtPopover.appendChild(opt);
+      });
+    }
+
+    var fmtPopoverOpen = false;
+    function openFmtPopover(){
+      buildPopover();
+      fmtPopover.classList.add('open');
+      fmtPopoverOpen = true;
+      setTimeout(function(){ document.addEventListener('click', closeFmtOnOutside); }, 0);
+    }
+    function closeFmtPopover(){
+      fmtPopover.classList.remove('open');
+      fmtPopoverOpen = false;
+      document.removeEventListener('click', closeFmtOnOutside);
+    }
+    function closeFmtOnOutside(e){
+      if (!fmtWrap.contains(e.target)) closeFmtPopover();
+    }
+
+    fmtWrap.appendChild(fmtTag);
+    fmtWrap.appendChild(fmtPopover);
+    tags.appendChild(fmtWrap);
+
+    // fw/fs oculto: sólo se mantiene para compatibilidad interna, nunca visible
     var fw = el('label', 'fmt-wrap');
     var fs = el('select', 'fmt-sel');
     fs.setAttribute('aria-label', 'Tipo de contenido');
     FORMATOS.forEach(function(x){
-      var o = el('option', null, x);
-      o.value = x;
+      var o = el('option', null, x); o.value = x;
       if (x === it.formato) o.setAttribute('selected', '');
       fs.appendChild(o);
     });
@@ -2157,22 +2200,13 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
     tags.appendChild(fw);
 
     if (agencyUser) {
-      fmtTag.style.display = 'none';
-      fw.style.display = 'inline-flex';
-    } else {
-      fmtTag.style.display = 'inline-block';
-      fw.style.display = 'none';
+      fmtTag.classList.add('agency-editable');
+      fmtTag.addEventListener('click', function(e){
+        e.stopPropagation();
+        if (fmtPopoverOpen) { closeFmtPopover(); } else { openFmtPopover(); }
+      });
     }
 
-    fs.addEventListener('change', function(){
-      var newFmt = fs.value;
-      it.formato = newFmt;
-      it.formatoOriginal = newFmt;
-      fmtTag.textContent = newFmt;
-      saveDraft();
-      toast('Guardando tipo de contenido (' + newFmt + ')…');
-      saveAgencyFormatoChange(it, newFmt);
-    });
     if (it.pilar) tags.appendChild(el('span', 'tag', it.pilar));
     if (it.fechaPublicacion) tags.appendChild(el('span', 'tag date', '📅 ' + it.fechaPublicacion));
     tw.appendChild(tags);
@@ -2716,23 +2750,25 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
             it.titulo = fsItem.titulo;
             if (cObj.h2Title) cObj.h2Title.textContent = fsItem.titulo;
           }
-          if (fsItem.guion) {
+          if (fsItem.guion != null) {
             it.guion = fsItem.guion;
             if (cObj.guionParagraph) cObj.guionParagraph.textContent = fsItem.guion;
           }
-          if (fsItem.copy) {
+          if (fsItem.copy != null) {
             it.copy = fsItem.copy;
             if (cObj.copyParagraph) cObj.copyParagraph.textContent = fsItem.copy;
           }
           if (fsItem.version) {
             it.version = parseInt(fsItem.version, 10);
           }
-
-          if (it.comentario) {
-            it.comentarios = parseComentarios(it.comentario, it.revisadoPor || revPor || 'Cliente');
-          } else {
-            it.comentarios = [];
+          if (fsItem.fechaCorreccion) {
+            it.fechaCorreccion = fsItem.fechaCorreccion;
           }
+
+          // Filtrar notas de corrección internas del comentario
+          var rawComment = it.comentario || '';
+          var filteredComments = parseComentarios(rawComment, it.revisadoPor || revPor || 'Cliente');
+          it.comentarios = filteredComments;
 
           if (cObj.renderThread) cObj.renderThread();
           if (cObj.paint) cObj.paint();
@@ -3359,11 +3395,9 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
     var nextVersion = (parseInt(it.version, 10) || 1) + 1;
     it.guion = newGuion;
     it.copy = newCopy;
-    if (cObj && cObj.fs) {
-      it.formato = cObj.fs.value;
-      it.formatoOriginal = cObj.fs.value;
-      if (cObj.paintFmt) cObj.paintFmt();
-    }
+      it.formato = cObj.fs ? cObj.fs.value : it.formato;
+      it.formatoOriginal = it.formato;
+      if (cObj.fmtTag) cObj.fmtTag.textContent = it.formato;
     it.version = nextVersion;
     it.estado = 'corregido';
     it.fechaCorreccion = new Date().toISOString();
@@ -3418,6 +3452,7 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
         if (item.guion != null) fMap.guion = { stringValue: String(item.guion) };
         if (item.copy != null) fMap.copy = { stringValue: String(item.copy) };
         if (item.version != null) fMap.version = { integerValue: String(item.version) };
+        if (item.fechaCorreccion) fMap.fechaCorreccion = { stringValue: String(item.fechaCorreccion) };
         return {
           mapValue: { fields: fMap }
         };
@@ -3507,8 +3542,17 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
       if (active) {
         card.classList.add('card-agency-edit-mode');
         agencyBar.style.display = 'flex';
-        if (fmtTag) fmtTag.style.display = 'none';
-        if (fw) fw.style.display = 'inline-flex';
+        if (fmtTag) {
+          fmtTag.classList.add('agency-editable');
+          // Registrar el click solo una vez
+          if (!fmtTag._agencyClickBound) {
+            fmtTag._agencyClickBound = true;
+            fmtTag.addEventListener('click', function(e){
+              e.stopPropagation();
+              if (fmtPopoverOpen) { closeFmtPopover(); } else { openFmtPopover(); }
+            });
+          }
+        }
         if (cObj.guionParagraph) {
           cObj.guionParagraph.setAttribute('contenteditable', 'true');
           cObj.guionParagraph.setAttribute('spellcheck', 'true');
@@ -3521,10 +3565,9 @@ Haz de Bambú el lugar de tu próxima celebración.</p></div></div><div class="r
         card.classList.remove('card-agency-edit-mode');
         agencyBar.style.display = 'none';
         if (fmtTag) {
-          fmtTag.style.display = 'inline-block';
-          fmtTag.textContent = it.formato || 'Post';
+          fmtTag.classList.remove('agency-editable');
+          closeFmtPopover();
         }
-        if (fw) fw.style.display = 'none';
         if (cObj.guionParagraph) {
           cObj.guionParagraph.removeAttribute('contenteditable');
           cObj.guionParagraph.removeAttribute('spellcheck');

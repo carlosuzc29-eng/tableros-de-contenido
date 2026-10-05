@@ -2108,16 +2108,40 @@
           });
         }
         db = firebase.firestore();
+        if (db && typeof db.enablePersistence === 'function') {
+          db.enablePersistence({ synchronizeTabs: true }).catch((err) => {
+            console.warn('Persistencia Firestore:', err && err.code ? err.code : err);
+          });
+        }
         // Colección 'produccion': la que permiten las reglas y la que lee el banco de trabajo
         prodDocRef = db.collection('produccion').doc(DATA.id);
 
         const liveEl = document.getElementById('live-indicator');
         if (liveEl) liveEl.style.display = 'inline-flex';
 
+        let isFirstSync = true;
         prodDocRef.onSnapshot((doc) => {
+          if (!doc) return;
           if (doc.exists) {
             setFirestoreStatus(true);
-            applyRemoteUpdate(doc.data());
+            const remote = doc.data();
+            if (isFirstSync) {
+              isFirstSync = false;
+              // Si Firestore está en estado inicial (todo por hacer) pero el usuario
+              // ya tenía avance en su navegador (grabando o listo), subimos el avance local a Firestore
+              const local = buildTarjetas(false);
+              const remoteHasNoProgress = (!remote.grabando && !remote.listo) || (remote.todo === (remote.orden || []).length);
+              const localHasProgress = (local.counts.grabando > 0 || local.counts.listo > 0);
+              if (localHasProgress && remoteHasNoProgress) {
+                syncToFirestore(null, true);
+                return;
+              }
+            }
+            if (doc.metadata && doc.metadata.hasPendingWrites) {
+              // Modificación local en tránsito, evitar parpadeos
+              return;
+            }
+            applyRemoteUpdate(remote);
           } else {
             seedFirestoreInitial();
           }
@@ -2144,6 +2168,20 @@
         if (label) label.textContent = 'Local';
       }
     }
+
+    window.addEventListener('online', () => {
+      setFirestoreStatus(true);
+      if (prodDocRef) {
+        const local = buildTarjetas(false);
+        if (local.counts.grabando || local.counts.listo) {
+          syncToFirestore(null, true);
+        }
+      }
+    });
+
+    window.addEventListener('offline', () => {
+      setFirestoreStatus(false);
+    });
 
     function buildTarjetas(forceTodo) {
       const orden = [];
@@ -2222,6 +2260,14 @@
                 changed = true;
               }
             });
+          }
+          if (rCard.descripcion && local.descripcion !== rCard.descripcion) {
+            local.descripcion = rCard.descripcion;
+            changed = true;
+          }
+          if (rCard.titulo && local.titulo !== rCard.titulo) {
+            local.titulo = rCard.titulo;
+            changed = true;
           }
         } else {
           const cc = cleanCard(rCard);
@@ -2844,6 +2890,16 @@
             if (card) {
               card.estado = targetStatus;
               if (targetStatus === 'listo') card.subtareas.forEach(s => s.done = true);
+              // Reordenar state.contenidos según el orden visual en las columnas
+              const domCardEls = Array.from(document.querySelectorAll('.kanban-column .card'));
+              const domIds = domCardEls.map(el => el.dataset.id).filter(Boolean);
+              if (domIds.length) {
+                const map = new Map(state.contenidos.map(c => [c.id, c]));
+                const newOrdered = [];
+                domIds.forEach(id => { if (map.has(id)) newOrdered.push(map.get(id)); });
+                state.contenidos.forEach(c => { if (!domIds.includes(c.id)) newOrdered.push(c); });
+                state.contenidos = newOrdered;
+              }
               updateUI();
               syncToFirestore(cardId, false);
             }

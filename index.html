@@ -6423,8 +6423,22 @@ body{
     var sFilter = curFilterState;
     var sOrder = curSortOrder;
 
+    // Detectar tableros absorbidos o unificados en un tablero definitivo
+    var absorbedBoardIds = {};
+    allTableros.forEach(function(t){
+      if (t.tablerosOrigenIds && Array.isArray(t.tablerosOrigenIds)) {
+        t.tablerosOrigenIds.forEach(function(origId){
+          if (origId && origId !== t.id) absorbedBoardIds[origId] = true;
+        });
+      }
+    });
+
     // Filtrar tableros
     var filtered = allTableros.filter(function(t){
+      // Excluir tableros de pruebas locales o absorbidos por fusión
+      if (absorbedBoardIds[t.id]) return false;
+      if (t.url && t.url.indexOf('localhost') !== -1) return false;
+
       // 1. Buscador por cliente
       var cName = String(t.cliente || '').toLowerCase();
       if (q && cName.indexOf(q) === -1) return false;
@@ -9559,17 +9573,22 @@ body{
 
     var countOk = finalizedItems.length;
 
-    // Buscar una URL pública representativa (de alguno de los tableros candidatos) para permitir abrirlo
-    var representativeUrl = '';
-    for (var i = 0; i < currentMergeCandidateBoards.length; i++) {
-      if (currentMergeCandidateBoards[i].url) {
-        representativeUrl = currentMergeCandidateBoards[i].url;
-        break;
-      }
-    }
+    // Determinar el tablero principal que conservará el enlace público vigente
+    var primaryBoard = currentMergeCandidateBoards.find(function(b){
+      return b.url && b.url.indexOf('localhost') === -1 && b.tipo !== 'unificado_definitivo';
+    }) || currentMergeCandidateBoards.find(function(b){
+      return b.url && b.url.indexOf('localhost') === -1;
+    }) || currentMergeCandidateBoards[0];
+
+    var targetBoardId = (primaryBoard && primaryBoard.id) ? primaryBoard.id : unifiedBoardId;
+    var targetBoardUrl = (primaryBoard && primaryBoard.url) ? primaryBoard.url : '';
+
+    // Identificar todos los demás tableros candidatos que serán fusionados y eliminados
+    var candidateIds = currentMergeCandidateBoards.map(function(b){ return b.id; });
+    var idsToDelete = candidateIds.filter(function(id){ return id && id !== targetBoardId; });
 
     var unifiedBoardDoc = {
-      id: unifiedBoardId,
+      id: targetBoardId,
       cliente: cliente,
       mes: mes,
       anio: anio,
@@ -9579,26 +9598,36 @@ body{
       pendientes: 0,
       estado: 'Aprobado',
       tipo: 'unificado_definitivo',
-      url: representativeUrl,
+      url: targetBoardUrl,
       revisadoPor: 'Cliente & Agencia (Unificado)',
       ultimaRevision: new Date().toISOString(),
       actualizado: new Date().toISOString(),
-      registrado: new Date().toISOString(),
+      registrado: (primaryBoard && primaryBoard.registrado) || new Date().toISOString(),
       contenidos: finalizedItems,
-      tablerosOrigenIds: Object.keys(currentMergeSelectedBoardIds).filter(function(k){ return currentMergeSelectedBoardIds[k]; })
+      tablerosOrigenIds: candidateIds
     };
 
     if (btnExecuteMerge) {
       btnExecuteMerge.disabled = true;
-      btnExecuteMerge.textContent = 'Guardando tablero unificado…';
+      btnExecuteMerge.textContent = 'Unificando tableros…';
     }
 
-    toast('Creando Tablero Definitivo con ' + countOk + ' piezas aprobadas…');
+    toast('Unificando tableros: guardando ' + countOk + ' piezas aprobadas en un solo tablero…');
 
-    db.collection('tableros').doc(unifiedBoardId).set(unifiedBoardDoc)
+    // 1. Guardar el tablero definitivo único
+    db.collection('tableros').doc(targetBoardId).set(unifiedBoardDoc)
     .then(function(){
-      // Guardar en cache local inmediato
-      boardCache[unifiedBoardId] = {
+      // 2. Eliminar de Firestore todos los tableros secundarios/origen fusionados
+      var deletePromises = idsToDelete.map(function(delId){
+        return db.collection('tableros').doc(delId).delete().catch(function(err){
+          console.warn('Error eliminando tablero origen unificado (' + delId + '):', err);
+        });
+      });
+      return Promise.all(deletePromises);
+    })
+    .then(function(){
+      // 3. Actualizar memoria local de inmediato
+      boardCache[targetBoardId] = {
         cliente: cliente,
         mes: mes,
         anio: anio,
@@ -9612,11 +9641,15 @@ body{
         }
       };
 
-      // Si aún no está en allTableros (por latencia de listener), insertarlo
-      var exists = allTableros.some(function(x){ return x.id === unifiedBoardId; });
-      if (!exists) {
-        allTableros.unshift(unifiedBoardDoc);
-      }
+      idsToDelete.forEach(function(delId){
+        delete boardCache[delId];
+      });
+
+      // Filtrar allTableros para que quede exactamente uno
+      allTableros = allTableros.filter(function(x){
+        return idsToDelete.indexOf(x.id) === -1 && x.id !== targetBoardId;
+      });
+      allTableros.unshift(unifiedBoardDoc);
 
       if (btnExecuteMerge) {
         btnExecuteMerge.disabled = false;
@@ -9624,23 +9657,23 @@ body{
       }
 
       closeMergeBoardsModal();
-      toast('🏆 ¡Tablero Definitivo creado con éxito con ' + countOk + ' piezas aprobadas!');
+      toast('🏆 ¡Tableros unificados con éxito! Queda solo 1 tablero definitivo con ' + countOk + ' piezas.');
 
       applyFiltersAndRender();
       if (typeof updateGlobalMetrics === 'function') updateGlobalMetrics(allTableros);
 
-      // Abrir inmediatamente el nuevo tablero unificado en su pestaña 'Contenidos listos'
+      // Abrir inmediatamente el tablero unificado en su pestaña 'Contenidos listos'
       setTimeout(function(){
-        openBoardWorkspace(unifiedBoardId, 'listos');
+        openBoardWorkspace(targetBoardId, 'listos');
       }, 350);
     })
     .catch(function(err){
-      console.error('Error al guardar tablero unificado en Firestore:', err);
+      console.error('Error al unificar tableros en Firestore:', err);
       if (btnExecuteMerge) {
         btnExecuteMerge.disabled = false;
         btnExecuteMerge.textContent = '✨ Unir y Crear Tablero Definitivo Aprobado';
       }
-      toast('Error al crear el tablero unificado en Firestore');
+      toast('Error al unificar tableros en Firestore');
     });
   }
 

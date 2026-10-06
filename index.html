@@ -3414,25 +3414,44 @@ body{
   padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  transition: all 0.2s ease;
+  gap: 12px;
+  transition: all 0.2s cubic-bezier(.2,.8,.2,1);
   position: relative;
 }
+.ws-item-card.clickable-piece-card {
+  cursor: pointer;
+}
 .ws-item-card:hover {
-  background: rgba(255, 255, 255, 0.055);
-  border-color: rgba(255, 255, 255, 0.16);
-  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+.ws-item-card.clickable-piece-card:active {
+  transform: translateY(0);
 }
 .ws-item-card.is-cambios {
   border-left: 4px solid var(--naranja);
   background: rgba(230, 74, 0, 0.05);
 }
+.ws-item-card.is-cambios:hover {
+  border-color: rgba(230, 74, 0, 0.35);
+  border-left-color: var(--naranja);
+}
 .ws-item-card.is-corregido {
   border-left: 4px solid #38BDF8;
   background: rgba(2, 132, 199, 0.06);
 }
+.ws-item-card.is-corregido:hover {
+  border-color: rgba(56, 189, 248, 0.35);
+  border-left-color: #38BDF8;
+}
 .ws-item-card.is-aprobado {
   border-left: 4px solid var(--verde);
+}
+.ws-item-card.is-aprobado:hover {
+  border-color: rgba(92, 184, 62, 0.35);
+  border-left-color: var(--verde);
 }
 .ws-card-header {
   display: flex;
@@ -3444,6 +3463,7 @@ body{
   display: flex;
   align-items: baseline;
   gap: 8px;
+  flex: 1;
 }
 .ws-card-num {
   font-size: 11px;
@@ -3452,13 +3472,36 @@ body{
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.1);
   color: #fff;
+  flex-shrink: 0;
 }
 .ws-card-title {
   margin: 0;
   font-size: 15px;
   font-weight: 700;
   color: #fff;
-  line-height: 1.3;
+  line-height: 1.35;
+}
+.btn-ws-open-floating {
+  background: rgba(56, 189, 248, 0.12);
+  color: #7DD3FC;
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  border-radius: 6px;
+  padding: 4px 9px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.btn-ws-open-floating:hover {
+  background: rgba(56, 189, 248, 0.22);
+  color: #BAE6FD;
+  border-color: rgba(56, 189, 248, 0.5);
+  transform: scale(1.03);
 }
 .ws-card-meta {
   display: flex;
@@ -3484,7 +3527,7 @@ body{
   background: rgba(230, 74, 0, 0.1);
   border: 1px solid rgba(230, 74, 0, 0.28);
   border-radius: 8px;
-  padding: 8px 12px;
+  padding: 9px 12px;
   font-size: 12px;
   line-height: 1.45;
   color: #FFD2C0;
@@ -3494,6 +3537,96 @@ body{
   background: rgba(2, 132, 199, 0.1);
   border-color: rgba(56, 189, 248, 0.3);
   color: #BAE6FD;
+}
+
+/* Bloques de contenido completo en la tarjeta */
+.ws-card-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 9px 12px;
+}
+.ws-card-guion-section {
+  border-left: 3px solid rgba(134, 239, 172, 0.45);
+}
+.ws-card-copy-section {
+  border-left: 3px solid rgba(56, 189, 248, 0.45);
+}
+.ws-card-sec-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.ws-card-sec-label {
+  font-size: 10.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.65);
+}
+.btn-ws-toggle-expand {
+  background: transparent;
+  border: none;
+  color: #38BDF8;
+  font-size: 10.5px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.btn-ws-toggle-expand:hover {
+  text-decoration: underline;
+  color: #7DD3FC;
+}
+.ws-card-text-block {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.ws-card-text-block.collapsed {
+  max-height: 74px;
+  overflow: hidden;
+  position: relative;
+  mask-image: linear-gradient(180deg, #000 60%, transparent);
+  -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent);
+}
+.ws-card-hashtags {
+  color: #86EFAC;
+  font-weight: 600;
+  font-size: 11.5px;
+}
+.ws-card-refs-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 2px 0;
+}
+.ws-card-ref-link {
+  color: #38BDF8;
+  text-decoration: none;
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.ws-card-ref-link:hover {
+  background: rgba(56, 189, 248, 0.22);
+  text-decoration: underline;
 }
 
 .ws-card-foot {
@@ -3781,6 +3914,120 @@ body{
   filter: brightness(1.12);
   transform: translateY(-1px);
   box-shadow: 0 6px 18px rgba(2, 132, 199, 0.55);
+}
+
+/* Banners contextuales de estado en la ventana flotante */
+.piece-status-banner {
+  border-radius: 12px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+.piece-status-banner.banner-aprobado {
+  background: linear-gradient(135deg, rgba(92, 184, 62, 0.16) 0%, rgba(20, 83, 45, 0.22) 100%);
+  border: 1.5px solid rgba(92, 184, 62, 0.45);
+}
+.piece-status-banner.banner-revision {
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.16) 0%, rgba(3, 105, 161, 0.22) 100%);
+  border: 1.5px solid rgba(56, 189, 248, 0.4);
+}
+.piece-status-banner.banner-cambios {
+  background: linear-gradient(135deg, rgba(230, 74, 0, 0.16) 0%, rgba(154, 52, 18, 0.22) 100%);
+  border: 1.5px solid rgba(230, 74, 0, 0.45);
+}
+.piece-status-banner.banner-correccion {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.16) 0%, rgba(180, 83, 9, 0.22) 100%);
+  border: 1.5px solid rgba(245, 158, 11, 0.45);
+}
+.piece-status-banner.banner-corregido {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.16) 0%, rgba(14, 116, 144, 0.22) 100%);
+  border: 1.5px solid rgba(56, 189, 248, 0.45);
+}
+.psb-icon {
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.banner-aprobado .psb-icon { background: rgba(92, 184, 62, 0.25); color: #86EFAC; }
+.banner-revision .psb-icon { background: rgba(56, 189, 248, 0.25); color: #7DD3FC; }
+.banner-cambios .psb-icon { background: rgba(230, 74, 0, 0.25); color: #FFA07A; }
+.banner-correccion .psb-icon { background: rgba(245, 158, 11, 0.25); color: #FCD34D; }
+.banner-corregido .psb-icon { background: rgba(56, 189, 248, 0.25); color: #38BDF8; }
+.psb-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #fff;
+}
+.psb-sub {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.72);
+  margin-top: 2px;
+}
+.btn-fork-approved {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: #fff;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.btn-fork-approved:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: #fff;
+  transform: translateY(-1px);
+}
+
+/* Controles de navegación de pieza en la cabecera */
+.piece-nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-piece-nav {
+  padding: 5px 11px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+}
+.btn-piece-nav:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.piece-nav-indicator {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 700;
+  min-width: 65px;
+  text-align: center;
+}
+
+#modalPieceEditor .modal-textarea {
+  min-height: 120px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  font-family: inherit;
+  resize: vertical;
 }
 
 /* Modal Selector para Copiar Enlace de Revisión de Corregidos */
@@ -4917,8 +5164,20 @@ body{
   <div class="piece-editor-card">
     <div class="piece-editor-head">
       <div>
-        <span class="modal-eyebrow" id="pieceEditorEyebrow">ESPACIO DE TRABAJO Y CORRECCIÓN · NEXO</span>
+        <span class="modal-eyebrow" id="pieceEditorEyebrow">VENTANA FLOTANTE DE CONTENIDO · NEXO</span>
         <h3 id="pieceEditorTitle" style="margin:0;font-size:18px;color:#fff;">Contenido #00</h3>
+      </div>
+      <!-- Controles de navegación entre piezas -->
+      <div class="piece-nav-controls">
+        <button type="button" class="btn-modal-sec btn-piece-nav" id="btnPieceNavPrev" title="Ver contenido anterior (◀)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          <span>Anterior</span>
+        </button>
+        <span class="piece-nav-indicator" id="pieceNavIndicator">1 de 1</span>
+        <button type="button" class="btn-modal-sec btn-piece-nav" id="btnPieceNavNext" title="Ver contenido siguiente (▶)">
+          <span>Siguiente</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
       </div>
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
         <span id="pieceEditorAutoSaveStatus" class="save-status-badge saved">✓ Guardado</span>
@@ -4929,9 +5188,12 @@ body{
     </div>
 
     <div class="piece-editor-body">
-      <!-- Área Principal (Izquierda): Contenido editable -->
+      <!-- Área Principal (Izquierda): Contenido completo -->
       <div class="piece-main-pane">
-        <div class="pane-section-title" style="color:var(--verde);">✎ Contenido Editable (Modifica directamente aquí)</div>
+        <!-- Banner contextual de estado (Aprobado, En revisión, Con cambios, etc.) -->
+        <div id="pieceEditorStatusBanner"></div>
+
+        <div class="pane-section-title" id="pieceEditorSectionTitle" style="color:var(--verde);">📄 Ficha de Contenido</div>
 
         <div class="form-row-2">
           <div class="form-group">
@@ -4961,13 +5223,13 @@ body{
         </div>
 
         <div class="form-group">
-          <label for="pieceInputGuion">Guion / Instrucciones visuales (Task Description)</label>
-          <textarea id="pieceInputGuion" class="modal-textarea" rows="4" placeholder="Acción en cámara, texto en pantalla, audio…"></textarea>
+          <label for="pieceInputGuion">Guion / Instrucciones visuales completas (Task Description)</label>
+          <textarea id="pieceInputGuion" class="modal-textarea" rows="6" placeholder="Acción en cámara, texto en pantalla, audio…"></textarea>
         </div>
 
         <div class="form-group">
           <label for="pieceInputCopy">Copy (Texto oficial para la publicación)</label>
-          <textarea id="pieceInputCopy" class="modal-textarea" rows="4" placeholder="Texto que acompaña al post…"></textarea>
+          <textarea id="pieceInputCopy" class="modal-textarea" rows="5" placeholder="Texto que acompaña al post…"></textarea>
         </div>
 
         <div class="form-row-2">
@@ -4976,8 +5238,9 @@ body{
             <input type="text" id="pieceInputHashtags" class="modal-input" placeholder="#marca #campaña">
           </div>
           <div class="form-group">
-            <label for="pieceInputReferencias">Enlaces de archivos / Referencias sustituidas (URLs)</label>
+            <label for="pieceInputReferencias">Enlaces de archivos / Referencias (URLs)</label>
             <textarea id="pieceInputReferencias" class="modal-textarea" rows="2" placeholder="https://drive.google.com/... o referencias"></textarea>
+            <div id="pieceEditorRefLinks" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;"></div>
           </div>
         </div>
       </div>
@@ -5010,11 +5273,13 @@ body{
 
     <!-- Acciones del Editor de Pieza -->
     <div class="piece-editor-foot">
-      <div style="display:flex;align-items:center;gap:10px;">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
         <button class="btn-modal-sec" id="btnPieceEditorCancel">Cerrar</button>
-        <button class="btn-modal-sec" id="btnPieceCopyContent" title="Copiar texto de esta versión al portapapeles">📋 Copiar contenido</button>
+        <button class="btn-modal-sec" id="btnPieceCopyGuion" title="Copiar únicamente el guion al portapapeles">📋 Copiar Guion</button>
+        <button class="btn-modal-sec" id="btnPieceCopyCopy" title="Copiar únicamente el copy y hashtags">📋 Copiar Copy</button>
+        <button class="btn-modal-sec" id="btnPieceCopyContent" title="Copiar todo el contenido estructurado">📋 Copiar Todo</button>
       </div>
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;" id="pieceEditorActionGroup">
         <button class="btn-save-draft" id="btnPieceSaveDraft" title="Guarda el borrador sin cambiar la pieza a corregida ni exponerla al cliente">
           💾 Guardar borrador
         </button>
@@ -7884,6 +8149,14 @@ body{
   var btnPieceFinalize = document.getElementById('btnPieceFinalize');
   var btnPieceFinalizeAndSend = document.getElementById('btnPieceFinalizeAndSend');
   var btnPieceCopyContent = document.getElementById('btnPieceCopyContent');
+  var btnPieceCopyGuion = document.getElementById('btnPieceCopyGuion');
+  var btnPieceCopyCopy = document.getElementById('btnPieceCopyCopy');
+  var pieceEditorActionGroup = document.getElementById('pieceEditorActionGroup');
+  var btnPieceNavPrev = document.getElementById('btnPieceNavPrev');
+  var btnPieceNavNext = document.getElementById('btnPieceNavNext');
+  var pieceNavIndicator = document.getElementById('pieceNavIndicator');
+  var pieceEditorStatusBanner = document.getElementById('pieceEditorStatusBanner');
+  var pieceEditorRefLinks = document.getElementById('pieceEditorRefLinks');
   var pieceEditorTitle = document.getElementById('pieceEditorTitle');
   var pieceEditorAutoSaveStatus = document.getElementById('pieceEditorAutoSaveStatus');
   var pieceEditorStateBadge = document.getElementById('pieceEditorStateBadge');
@@ -8163,7 +8436,54 @@ body{
         '</div>';
       }
 
-      var guionSnip = it.guion ? ('<div style="font-size:12px;color:rgba(255,255,255,0.7);max-height:44px;overflow:hidden;text-overflow:ellipsis;line-height:1.4;">' + escapeHtml(it.guion) + '</div>') : '';
+      // 1. Bloque de Guion estructurado (sin recorte forzado a 44px)
+      var guionHtml = '';
+      if (it.guion && it.guion.trim()) {
+        var gText = it.guion.trim();
+        var isLongG = gText.length > 200;
+        guionHtml = '<div class="ws-card-section ws-card-guion-section">' +
+          '<div class="ws-card-sec-head">' +
+            '<span class="ws-card-sec-label">🎬 ' + escapeHtml(it.guionLabel || 'Guion / Visual') + '</span>' +
+            (isLongG ? '<button type="button" class="btn-ws-toggle-expand" data-target="ws-g-' + it.n + '">Ver completo ▼</button>' : '') +
+          '</div>' +
+          '<div class="ws-card-text-block ' + (isLongG ? 'collapsed' : '') + '" id="ws-g-' + it.n + '">' +
+            escapeHtml(gText) +
+          '</div>' +
+        '</div>';
+      }
+
+      // 2. Bloque de Copy oficial del post (visible directamente en la tarjeta)
+      var copyHtml = '';
+      if ((it.copy && it.copy.trim()) || (it.hashtags && it.hashtags.trim())) {
+        var cText = (it.copy || '').trim();
+        var isLongC = cText.length > 180;
+        copyHtml = '<div class="ws-card-section ws-card-copy-section">' +
+          '<div class="ws-card-sec-head">' +
+            '<span class="ws-card-sec-label">✍️ Copy / Publicación</span>' +
+            (isLongC ? '<button type="button" class="btn-ws-toggle-expand" data-target="ws-c-' + it.n + '">Ver completo ▼</button>' : '') +
+          '</div>' +
+          '<div class="ws-card-text-block ' + (isLongC ? 'collapsed' : '') + '" id="ws-c-' + it.n + '">' +
+            (cText ? escapeHtml(cText) : '') +
+            (it.hashtags && it.hashtags.trim() ? ('\n\n<span class="ws-card-hashtags">' + escapeHtml(it.hashtags.trim()) + '</span>') : '') +
+          '</div>' +
+        '</div>';
+      }
+
+      // 3. Bloque de Referencias / Enlaces
+      var refsHtml = '';
+      if (it.referencias && it.referencias.length) {
+        var validRefs = it.referencias.filter(function(r){ return r && (r.url || r.label); });
+        if (validRefs.length) {
+          refsHtml = '<div class="ws-card-refs-row">' +
+            '<span style="font-weight:700;color:rgba(255,255,255,0.7);">🔗 Enlaces:</span> ' +
+            validRefs.map(function(r, rIdx){
+              var u = r.url || '#';
+              var lbl = r.label || ('Referencia ' + (rIdx + 1));
+              return '<a href="' + escapeAttr(u) + '" target="_blank" rel="noopener" class="ws-card-ref-link">' + escapeHtml(lbl) + ' ↗</a>';
+            }).join(' ') +
+          '</div>';
+        }
+      }
 
       // Última actividad
       var lastActStr = '';
@@ -8185,56 +8505,60 @@ body{
       var primaryActionBtn = '';
       if (isCambios) {
         primaryActionBtn = '<button class="btn-modal-pri btn-ws-start-correction" data-n="' + it.n + '" style="background:#FFA07A;color:#0f172a;font-weight:700;padding:6px 12px;font-size:12px;" title="Comenzar a trabajar en los ajustes">' +
-          '<span>Comenzar corrección</span>' +
+          '<span>✎ Comenzar corrección</span>' +
         '</button>';
       } else if (isEnCorr) {
         primaryActionBtn = '<button class="btn-modal-pri btn-ws-continue-correction" data-n="' + it.n + '" style="background:#F59E0B;color:#0f172a;font-weight:700;padding:6px 12px;font-size:12px;" title="Continuar editando el borrador de corrección">' +
-          '<span>Continuar corrigiendo</span>' +
+          '<span>✎ Continuar corrigiendo</span>' +
         '</button>';
       } else if (isCorregido) {
         primaryActionBtn = '<button class="btn-modal-pri btn-ws-send-revision" data-n="' + it.n + '" style="background:#0284C7;color:#fff;font-weight:700;padding:6px 12px;font-size:12px;" title="Enviar esta nueva versión al cliente para su revisión">' +
-          '<span>Enviar a revisión</span>' +
+          '<span>🚀 Enviar a revisión</span>' +
         '</button>';
       } else if (isEnRevision) {
-        primaryActionBtn = '<button class="btn-modal-sec btn-ws-open-piece" data-n="' + it.n + '" style="padding:6px 12px;font-size:12px;" title="Ver la versión enviada al cliente">' +
-          '<span>Ver versión enviada</span>' +
+        primaryActionBtn = '<button class="btn-modal-sec btn-ws-open-piece" data-n="' + it.n + '" style="padding:6px 12px;font-size:12px;" title="Ver la versión enviada al cliente en ventana flotante">' +
+          '<span>⤢ Ver versión enviada</span>' +
         '</button>';
       } else if (isAprob) {
-        primaryActionBtn = '<button class="btn-modal-sec btn-ws-open-piece" data-n="' + it.n + '" style="padding:6px 12px;font-size:12px;border-color:rgba(134,239,172,0.4);color:#86EFAC;" title="Ver los detalles de la aprobación">' +
-          '<span>Ver aprobación</span>' +
+        primaryActionBtn = '<button class="btn-modal-sec btn-ws-open-piece" data-n="' + it.n + '" style="padding:6px 12px;font-size:12px;border-color:rgba(134,239,172,0.4);color:#86EFAC;" title="Ver los detalles de la aprobación en ventana flotante">' +
+          '<span>⤢ Ver aprobación</span>' +
         '</button>';
       } else if (isBorrador) {
         primaryActionBtn = '<button class="btn-modal-pri btn-ws-send-revision" data-n="' + it.n + '" style="background:#0284C7;color:#fff;font-weight:700;padding:6px 12px;font-size:12px;" title="Enviar este borrador a revisión del cliente">' +
-          '<span>Enviar a revisión</span>' +
+          '<span>🚀 Enviar a revisión</span>' +
         '</button>';
       }
 
-      html += '<div class="ws-item-card ' + cardCls + '">' +
+      html += '<div class="ws-item-card clickable-piece-card ' + cardCls + '" data-n="' + it.n + '" title="Haz clic para abrir este contenido en ventana flotante">' +
         '<div class="ws-card-header">' +
           '<div class="ws-card-title-row">' +
             '<span class="ws-card-num">#' + num + '</span>' +
             '<h3 class="ws-card-title">' + escapeHtml(it.titulo || 'Sin título') + '</h3>' +
           '</div>' +
           '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">' +
+            '<button type="button" class="btn-ws-open-floating btn-ws-open-piece" data-n="' + it.n + '" title="Abrir contenido completo en ventana flotante">⤢ Ventana flotante</button>' +
             '<span class="ws-pill version">' + vNum + '</span>' +
             stBadge +
           '</div>' +
         '</div>' +
         '<div class="ws-card-meta">' +
           (it.formato ? '<span class="ws-pill">' + escapeHtml(it.formato) + '</span>' : '') +
+          (it.pilar ? '<span class="ws-pill">' + escapeHtml(it.pilar) + '</span>' : '') +
           ctxBadge +
           obsBadge +
           (it.fechaPublicacion ? '<span class="ws-pill">📅 ' + escapeHtml(it.fechaPublicacion) + '</span>' : '') +
         '</div>' +
         fbPreview +
-        guionSnip +
+        guionHtml +
+        copyHtml +
+        refsHtml +
         '<div class="ws-card-foot">' +
           '<div style="font-size:11px;color:rgba(255,255,255,0.6);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px;" title="' + escapeHtml(lastActStr) + '">' +
             escapeHtml(lastActStr) +
           '</div>' +
           '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">' +
             '<button class="btn-modal-sec btn-ws-copy-content" data-n="' + it.n + '" style="padding:5px 9px;font-size:11.5px;" title="Copiar contenido de esta versión al portapapeles">📋 Copiar</button>' +
-            (isCorregido ? '<button class="btn-modal-sec btn-ws-open-piece" data-n="' + it.n + '" style="padding:5px 9px;font-size:11.5px;" title="Ver y editar contenido">Editar</button>' : '') +
+            (isCorregido ? '<button class="btn-modal-sec btn-ws-open-piece" data-n="' + it.n + '" style="padding:5px 9px;font-size:11.5px;" title="Ver y editar contenido en ventana flotante">⤢ Editar</button>' : '') +
             primaryActionBtn +
           '</div>' +
         '</div>' +
@@ -8282,13 +8606,16 @@ body{
       var isAprob = it.estado === 'aprobado';
       var stBadge = isAprob ? '<span class="badge badge-ok">✓ Aprobado</span>' : '<span class="badge badge-wait">• Pendiente (' + escapeHtml(it.estado || 'en_revision') + ')</span>';
 
-      html += '<div class="ws-item-card ' + (isAprob ? 'is-aprobado' : '') + '">' +
+      html += '<div class="ws-item-card clickable-piece-card ' + (isAprob ? 'is-aprobado' : '') + '" data-n="' + it.n + '" title="Haz clic para abrir este contenido en ventana flotante">' +
         '<div class="ws-card-header">' +
           '<div class="ws-card-title-row">' +
             '<span class="ws-card-num">#' + num + '</span>' +
             '<h3 class="ws-card-title">' + escapeHtml(it.titulo || 'Sin título') + '</h3>' +
           '</div>' +
-          stBadge +
+          '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">' +
+            '<button type="button" class="btn-ws-open-floating btn-ws-open-piece" data-n="' + it.n + '" title="Abrir contenido completo en ventana flotante">⤢ Ventana flotante</button>' +
+            stBadge +
+          '</div>' +
         '</div>' +
         '<div class="ws-card-meta">' +
           (it.formato ? '<span class="ws-pill">' + escapeHtml(it.formato) + '</span>' : '') +
@@ -8296,13 +8623,13 @@ body{
           (it.fechaPublicacion ? '<span class="ws-pill">📅 ' + escapeHtml(it.fechaPublicacion) + '</span>' : '') +
           '<span class="ws-pill version">' + (it.version ? ('v' + it.version) : 'v1') + '</span>' +
         '</div>' +
-        (it.guion ? ('<div style="font-size:12px;color:rgba(255,255,255,0.8);line-height:1.45;background:rgba(0,0,0,0.2);padding:8px 10px;border-radius:6px;"><b>Guion:</b> ' + escapeHtml(it.guion) + '</div>') : '') +
-        (it.copy ? ('<div style="font-size:12px;color:rgba(255,255,255,0.8);line-height:1.45;background:rgba(0,0,0,0.2);padding:8px 10px;border-radius:6px;"><b>Copy:</b> ' + escapeHtml(it.copy) + '</div>') : '') +
+        (it.guion ? ('<div class="ws-card-section ws-card-guion-section"><div class="ws-card-sec-label">🎬 Guion</div><div class="ws-card-text-block">' + escapeHtml(it.guion) + '</div></div>') : '') +
+        (it.copy ? ('<div class="ws-card-section ws-card-copy-section"><div class="ws-card-sec-label">✍️ Copy</div><div class="ws-card-text-block">' + escapeHtml(it.copy) + (it.hashtags ? ('\n\n<span class="ws-card-hashtags">' + escapeHtml(it.hashtags) + '</span>') : '') + '</div></div>') : '') +
         '<div class="ws-card-foot">' +
           '<span style="font-size:11.5px;color:var(--ink-2);">' + ((it.aprobacion && it.aprobacion.fecha) ? ('Aprobado: ' + formatFecha(it.aprobacion.fecha)) : (it.fechaAprobacion ? ('Aprobado: ' + formatFecha(it.fechaAprobacion)) : (it.revisadoPor || ''))) + '</span>' +
           '<div style="display:flex;align-items:center;gap:6px;">' +
             '<button class="btn-modal-sec btn-ws-copy-content" data-n="' + it.n + '" style="padding:4px 9px;font-size:11.5px;">📋 Copiar</button>' +
-            '<button class="btn-modal-sec btn-ws-open-piece" data-n="' + it.n + '" style="padding:4px 10px;font-size:11.5px;">Inspeccionar</button>' +
+            '<button class="btn-modal-sec btn-ws-open-piece" data-n="' + it.n + '" style="padding:4px 10px;font-size:11.5px;">⤢ Ventana flotante</button>' +
           '</div>' +
         '</div>' +
       '</div>';
@@ -8315,6 +8642,30 @@ body{
 
   function bindWorkspaceBodyEvents(t, bData){
     if (!wsBodyContent) return;
+
+    // Clic en toda la tarjeta para abrir como ventana flotante
+    var cardList = wsBodyContent.querySelectorAll('.clickable-piece-card');
+    cardList.forEach(function(card){
+      card.onclick = function(e){
+        if (e.target.closest('button, a, input, select, textarea, .btn-ws-toggle-expand')) return;
+        var n = parseInt(card.getAttribute('data-n'), 10);
+        if (n) openPieceEditor(t.id, n);
+      };
+    });
+
+    // Botones de expandir / colapsar textos largos en la tarjeta
+    var expandBtns = wsBodyContent.querySelectorAll('.btn-ws-toggle-expand');
+    expandBtns.forEach(function(eb){
+      eb.onclick = function(e){
+        e.stopPropagation();
+        var targetId = eb.getAttribute('data-target');
+        var targetEl = document.getElementById(targetId);
+        if (targetEl) {
+          var isCollapsed = targetEl.classList.toggle('collapsed');
+          eb.textContent = isCollapsed ? 'Ver completo ▼' : 'Ver menos ▲';
+        }
+      };
+    });
 
     // Abrir editor de pieza
     var pieceBtns = wsBodyContent.querySelectorAll('.btn-ws-open-piece');
@@ -8561,6 +8912,9 @@ body{
   // ==========================================================================
   // VENTANA DE TRABAJO AMPLIA DE CORRECCIÓN (SPLIT-VIEW)
   // ==========================================================================
+  // ==========================================================================
+  // VENTANA FLOTANTE Y EDITOR DE PIEZA (SPLIT-VIEW)
+  // ==========================================================================
   function openPieceEditor(tId, itemN){
     var t = allTableros.find(function(x){ return x.id === tId; });
     if (!t) return;
@@ -8568,33 +8922,6 @@ body{
     var items = getMergedItems(t, bData);
     var it = items.find(function(x){ return x.n === itemN; }) || items[itemN - 1];
     if (!it) return;
-
-    // Regla de versionado estricto: Si se modifica un contenido que ya estaba aprobado,
-    // se inicia un nuevo borrador de la siguiente versión (vX+1) sin sobrescribir la vX aprobada.
-    if (it.estado === 'aprobado' && !it.borrador) {
-      var curApprovedV = parseInt(it.version, 10) || 1;
-      var nextV = curApprovedV + 1;
-      var okFork = confirm(
-        'Esta pieza se encuentra formalmente APROBADA en su versión v' + curApprovedV + '.\n\n' +
-        'Al editarla, se creará un nuevo borrador para la versión v' + nextV + ', conservando el registro de la v' + curApprovedV + ' aprobada en el historial.\n\n' +
-        '¿Deseas iniciar la corrección de la versión v' + nextV + '?'
-      );
-      if (!okFork) return;
-
-      it.borrador = {
-        titulo: it.titulo || '',
-        formato: it.formato || 'Reel',
-        pilar: it.pilar || '',
-        fechaPublicacion: it.fechaPublicacion || '',
-        guion: it.guion || '',
-        copy: it.copy || '',
-        hashtags: it.hashtags || '',
-        referencias: Array.isArray(it.referencias) ? JSON.parse(JSON.stringify(it.referencias)) : []
-      };
-      it.version = nextV;
-      it.estado = 'en_correccion';
-      delete it.aprobacion; // La nueva versión requerirá nueva aprobación
-    }
 
     editingBoardId = tId;
     editingItemN = itemN;
@@ -8604,13 +8931,32 @@ body{
     var num = (itemN < 10 ? '0' : '') + itemN;
     if (pieceEditorTitle) pieceEditorTitle.textContent = '#' + num + ' · ' + (it.titulo || 'Contenido');
 
-    var vCur = it.version || 1;
+    var vCur = parseInt(it.version, 10) || 1;
     if (pieceEditorVersionBadge) pieceEditorVersionBadge.textContent = 'v' + vCur;
 
+    var curSt = it.estado || 'en_revision';
     if (pieceEditorStateBadge) {
-      pieceEditorStateBadge.className = 'badge ' + (it.estado === 'aprobado' ? 'badge-ok' : (it.estado === 'cambios' ? 'badge-fix' : (it.estado === 'corregido' ? 'badge-corregido' : (it.estado === 'en_correccion' ? 'badge-fix' : 'badge-wait'))));
-      pieceEditorStateBadge.textContent = it.estado || 'en_revision';
+      pieceEditorStateBadge.className = 'badge ' + (curSt === 'aprobado' ? 'badge-ok' : (curSt === 'cambios' ? 'badge-fix' : (curSt === 'corregido' ? 'badge-corregido' : (curSt === 'en_correccion' ? 'badge-fix' : 'badge-wait'))));
+      pieceEditorStateBadge.textContent = curSt;
     }
+
+    // Configurar controles de navegación entre piezas en la cabecera
+    var curIdx = items.findIndex(function(x){ return x.n === itemN; });
+    if (curIdx === -1) curIdx = itemN - 1;
+    if (btnPieceNavPrev) {
+      btnPieceNavPrev.disabled = (curIdx <= 0);
+      btnPieceNavPrev.onclick = function(){ navigatePieceEditor(tId, items, curIdx - 1); };
+    }
+    if (btnPieceNavNext) {
+      btnPieceNavNext.disabled = (curIdx >= items.length - 1);
+      btnPieceNavNext.onclick = function(){ navigatePieceEditor(tId, items, curIdx + 1); };
+    }
+    if (pieceNavIndicator) {
+      pieceNavIndicator.textContent = (curIdx + 1) + ' de ' + items.length;
+    }
+
+    // Renderizar banner contextual según el estado
+    renderPieceStatusBanner(t, it, vCur);
 
     // Indicador inicial de auto-guardado
     updatePieceAutoSaveStatus('saved');
@@ -8638,6 +8984,17 @@ body{
       var refsText = (currentData.referencias && Array.isArray(currentData.referencias)) ?
         currentData.referencias.map(function(r){ return r.url || r.label || ''; }).filter(Boolean).join('\n') : '';
       pieceInputReferencias.value = refsText;
+      renderPieceRefLinks(refsText);
+    }
+
+    // Ajustar visibilidad de botones del pie según modo
+    if (pieceEditorActionGroup) {
+      var isApprovedWithoutDraft = (curSt === 'aprobado' && !it.borrador);
+      if (isApprovedWithoutDraft) {
+        pieceEditorActionGroup.style.display = 'none';
+      } else {
+        pieceEditorActionGroup.style.display = 'flex';
+      }
     }
 
     // Renderizar lista interactiva de observaciones del cliente con checkboxes para marcar como atendidas
@@ -8652,11 +9009,173 @@ body{
     // Conectar auto-guardado debounced al tipear en cualquiera de los campos editables
     bindPieceEditorAutoSave();
 
+    // Acciones de copiado rápido
+    bindPieceEditorCopyButtons(it);
+
     if (modalPieceEditor) {
       modalPieceEditor.style.display = 'flex';
       modalPieceEditor.setAttribute('aria-hidden', 'false');
-      if (pieceInputTitulo) pieceInputTitulo.focus();
     }
+  }
+
+  function renderPieceStatusBanner(t, it, vCur){
+    if (!pieceEditorStatusBanner) return;
+    var curSt = it.estado || 'en_revision';
+
+    if (curSt === 'aprobado') {
+      var approver = (it.aprobacion && it.aprobacion.usuario) ? it.aprobacion.usuario : (it.revisadoPor || 'Cliente');
+      var appDate = (it.aprobacion && it.aprobacion.fecha) ? formatFecha(it.aprobacion.fecha) : (it.fechaAprobacion ? formatFecha(it.fechaAprobacion) : '');
+      pieceEditorStatusBanner.innerHTML = '<div class="piece-status-banner banner-aprobado">' +
+        '<div style="display:flex;align-items:center;gap:12px;">' +
+          '<span class="psb-icon">✓</span>' +
+          '<div>' +
+            '<div class="psb-title">Contenido formalmente Aprobado (Versión v' + vCur + ')</div>' +
+            '<div class="psb-sub">Aprobado por: <b>' + escapeHtml(approver) + '</b>' + (appDate ? ' el ' + appDate : '') + ' · Listo para producción y publicación</div>' +
+          '</div>' +
+        '</div>' +
+        '<button type="button" class="btn-fork-approved" id="btnForkApprovedPiece" title="Iniciar una nueva versión de corrección">' +
+          '<span>✎ Modificar contenido (crear v' + (vCur + 1) + ')</span>' +
+        '</button>' +
+      '</div>';
+      var btnFork = document.getElementById('btnForkApprovedPiece');
+      if (btnFork) {
+        btnFork.onclick = function(){
+          forkApprovedPiece(t, it);
+        };
+      }
+    } else if (curSt === 'en_revision' || curSt === 'pendiente') {
+      var envioStr = it.fechaEnvio ? ('Enviado el ' + formatFecha(it.fechaEnvio)) : 'Enviado para revisión';
+      pieceEditorStatusBanner.innerHTML = '<div class="piece-status-banner banner-revision">' +
+        '<div style="display:flex;align-items:center;gap:12px;">' +
+          '<span class="psb-icon">👁️</span>' +
+          '<div>' +
+            '<div class="psb-title">Versión v' + vCur + ' en revisión del cliente</div>' +
+            '<div class="psb-sub">' + escapeHtml(envioStr) + ' · En espera de aprobación u observaciones</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    } else if (curSt === 'cambios') {
+      pieceEditorStatusBanner.innerHTML = '<div class="piece-status-banner banner-cambios">' +
+        '<div style="display:flex;align-items:center;gap:12px;">' +
+          '<span class="psb-icon">💬</span>' +
+          '<div>' +
+            '<div class="psb-title">Cambios solicitados por el cliente (v' + vCur + ')</div>' +
+            '<div class="psb-sub">Revisa las observaciones en el lateral derecho y ajusta el guion o copy</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    } else if (curSt === 'en_correccion') {
+      pieceEditorStatusBanner.innerHTML = '<div class="piece-status-banner banner-correccion">' +
+        '<div style="display:flex;align-items:center;gap:12px;">' +
+          '<span class="psb-icon">⚙</span>' +
+          '<div>' +
+            '<div class="psb-title">En proceso de corrección (Borrador v' + vCur + ')</div>' +
+            '<div class="psb-sub">Los cambios se guardan de forma continua. Al terminar, marca como corregido.</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    } else if (curSt === 'corregido') {
+      pieceEditorStatusBanner.innerHTML = '<div class="piece-status-banner banner-corregido">' +
+        '<div style="display:flex;align-items:center;gap:12px;">' +
+          '<span class="psb-icon">🔄</span>' +
+          '<div>' +
+            '<div class="psb-title">Contenido corregido (Versión v' + vCur + ')</div>' +
+            '<div class="psb-sub">Ajustes listos para enviar a revisión del cliente</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    } else {
+      pieceEditorStatusBanner.innerHTML = '';
+    }
+  }
+
+  function renderPieceRefLinks(rawText){
+    if (!pieceEditorRefLinks) return;
+    if (!rawText) { pieceEditorRefLinks.innerHTML = ''; return; }
+    var urls = rawText.match(/https?:\/\/[^\s,]+/g) || [];
+    if (!urls.length) { pieceEditorRefLinks.innerHTML = ''; return; }
+    var html = '<span style="font-size:11px;color:rgba(255,255,255,0.65);font-weight:700;">Enlaces detectados:</span> ';
+    urls.forEach(function(u, idx){
+      html += '<a href="' + escapeAttr(u) + '" target="_blank" rel="noopener" class="ws-card-ref-link" style="font-size:11.5px;padding:3px 8px;">🔗 Enlace ' + (idx + 1) + ' ↗</a> ';
+    });
+    pieceEditorRefLinks.innerHTML = html;
+  }
+
+  function bindPieceEditorCopyButtons(it){
+    if (btnPieceCopyGuion) {
+      btnPieceCopyGuion.onclick = function(){
+        var text = pieceInputGuion ? pieceInputGuion.value : (it.guion || '');
+        copyText(text, '✓ Guion copiado al portapapeles');
+      };
+    }
+    if (btnPieceCopyCopy) {
+      btnPieceCopyCopy.onclick = function(){
+        var cp = pieceInputCopy ? pieceInputCopy.value : (it.copy || '');
+        var ht = pieceInputHashtags ? pieceInputHashtags.value : (it.hashtags || '');
+        var full = cp + (ht ? ('\n\n' + ht) : '');
+        copyText(full, '✓ Copy copiado al portapapeles');
+      };
+    }
+  }
+
+  function navigatePieceEditor(tId, items, targetIdx){
+    if (targetIdx < 0 || targetIdx >= items.length) return;
+    var targetN = items[targetIdx].n;
+    if (hasUnsavedPieceChanges()) {
+      executeSavePieceDraft(true, function(){
+        openPieceEditor(tId, targetN);
+      });
+    } else {
+      openPieceEditor(tId, targetN);
+    }
+  }
+
+  function forkApprovedPiece(t, it){
+    var curApprovedV = parseInt(it.version, 10) || 1;
+    var nextV = curApprovedV + 1;
+    var okFork = confirm(
+      'Esta pieza se encuentra formalmente APROBADA en su versión v' + curApprovedV + '.\n\n' +
+      'Al modificarla, se iniciará un nuevo borrador para la versión v' + nextV + ', conservando la versión v' + curApprovedV + ' aprobada en el historial.\n\n' +
+      '¿Deseas iniciar la corrección de la versión v' + nextV + '?'
+    );
+    if (!okFork) return;
+
+    it.borrador = {
+      titulo: it.titulo || '',
+      formato: it.formato || 'Reel',
+      pilar: it.pilar || '',
+      fechaPublicacion: it.fechaPublicacion || '',
+      guion: it.guion || '',
+      copy: it.copy || '',
+      hashtags: it.hashtags || '',
+      referencias: Array.isArray(it.referencias) ? JSON.parse(JSON.stringify(it.referencias)) : []
+    };
+    it.version = nextV;
+    it.estado = 'en_correccion';
+    delete it.aprobacion;
+
+    var nowIso = new Date().toISOString();
+    it.historial = it.historial || [];
+    it.historial.push({
+      version: nextV,
+      accion: 'Iniciada nueva versión v' + nextV + ' para ajustes tras aprobación de v' + curApprovedV,
+      usuario: 'Equipo Nexo',
+      fecha: nowIso
+    });
+
+    db.collection('tableros').doc(t.id).set({
+      contenidos: t.contenidos,
+      actualizado: nowIso
+    }, { merge: true })
+    .then(function(){
+      toast('✓ Iniciada versión v' + nextV + ' para corrección');
+      openPieceEditor(t.id, it.n);
+      renderBoardWorkspace();
+    })
+    .catch(function(err){
+      console.error('Error iniciando versión v' + nextV + ':', err);
+      openPieceEditor(t.id, it.n);
+    });
   }
 
   function updatePieceAutoSaveStatus(state){
@@ -9765,6 +10284,16 @@ body{
         closeExpandedFeedback();
       } else if (modalEditContent && modalEditContent.style.display === 'flex') {
         closeEditModal();
+      }
+    } else if (modalPieceEditor && modalPieceEditor.style.display === 'flex') {
+      var tag = document.activeElement ? document.activeElement.tagName : '';
+      var isInputActive = (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT');
+      if (!isInputActive) {
+        if (e.key === 'ArrowLeft' && btnPieceNavPrev && !btnPieceNavPrev.disabled) {
+          btnPieceNavPrev.click();
+        } else if (e.key === 'ArrowRight' && btnPieceNavNext && !btnPieceNavNext.disabled) {
+          btnPieceNavNext.click();
+        }
       }
     }
   });

@@ -725,6 +725,31 @@ footer .logo svg{height:76px;margin:0 auto 12px}
 .btn-agency-save:hover{
   background:var(--verde-dk);
 }
+.card-agency-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.btn-agency-approve{
+  background:linear-gradient(135deg, #10B981, #059669);
+  color:#fff;
+  border:0;
+  padding:9px 18px;
+  border-radius:10px;
+  font-size:13.5px;
+  font-weight:700;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  box-shadow:0 3px 10px rgba(16,185,129,.35);
+  transition:all .2s;
+}
+.btn-agency-approve:hover{
+  background:linear-gradient(135deg, #059669, #047857);
+  box-shadow:0 4px 14px rgba(16,185,129,.45);
+}
 .btn-agency-cancel{
   background:transparent;
   border:1px solid #CBD5E1;
@@ -2589,13 +2614,16 @@ __DATA__
         card.classList.remove('warn');
         paint(); refresh(); updateApartadoCorregidos(); applyFilter(); saveDraft();
         toast('✎ Cambios solicitados para versión v' + (it.version || 1));
+        if (agencyUser && typeof saveAgencyDecisionChange === 'function') {
+          saveAgencyDecisionChange(it, 'cambios');
+        }
         return;
       }
 
       if (ta.value.trim()) addCommentFromInput();
 
       if (s === 'aprobado') {
-        var revWho = getReviewerName() || 'Cliente';
+        var revWho = getReviewerName() || (agencyUser ? ('Agencia (' + (agencyUser === 'carlosuzc29@gmail.com' ? 'Carlos' : 'Andrea') + ')') : 'Cliente');
         var nowIso = new Date().toISOString();
         it.aprobacion = {
           version: parseInt(it.version, 10) || 1,
@@ -2603,16 +2631,23 @@ __DATA__
           fecha: nowIso
         };
         it.revisadoPor = revWho;
+        it.fechaAprobacion = nowIso;
         it.estado = 'aprobado';
         card.classList.remove('warn');
         paint(); refresh(); updateApartadoCorregidos(); applyFilter(); saveDraft();
         toast('✓ Versión v' + (it.version || 1) + ' aprobada');
+        if (agencyUser && typeof saveAgencyDecisionChange === 'function') {
+          saveAgencyDecisionChange(it, 'aprobado');
+        }
         return;
       }
 
       it.estado = s;
       card.classList.remove('warn');
       paint(); refresh(); updateApartadoCorregidos(); applyFilter(); saveDraft();
+      if (agencyUser && typeof saveAgencyDecisionChange === 'function') {
+        saveAgencyDecisionChange(it, s);
+      }
     }
 
     ap.onclick = function(){ set('aprobado'); };
@@ -2626,6 +2661,7 @@ __DATA__
       card: card,
       nav: a,
       it: it,
+      setDecision: set,
       commitComment: addCommentFromInput,
       renderThread: renderThread,
       paint: paint,
@@ -3800,6 +3836,103 @@ __DATA__
     }
   }
 
+  // Sincronizar decisión de aprobación/cambios directamente en Firestore (Modo Agencia)
+  function saveAgencyDecisionChange(it, decision, btn){
+    if (btn) btn.disabled = true;
+
+    var cObj = cards.find(function(c){ return c.it === it; });
+    if (cObj) {
+      if (cObj.paint) cObj.paint();
+      if (cObj.updateAgencyBarText) cObj.updateAgencyBarText();
+    }
+    refresh();
+    updateApartadoCorregidos();
+    saveDraft();
+
+    if (!FB || !FB.projectId || !DATA.id) {
+      if (btn) btn.disabled = false;
+      toast('✓ Estado (' + (decision === 'aprobado' ? 'Aprobado' : decision) + ') guardado localmente');
+      return;
+    }
+
+    var totalGlobalOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
+    var totalGlobalFix = items.filter(function(x){ return x.estado === 'cambios' || x.estado === 'en_correccion'; }).length;
+    var totalGlobalCorr = items.filter(function(x){ return x.estado === 'corregido'; }).length;
+    var totalGlobalPend = items.filter(function(x){ return x.estado === 'pendiente' || x.estado === 'en_revision' || !x.estado; }).length;
+    var estadoGeneral = (totalGlobalFix > 0) ? 'Con cambios' :
+                        (totalGlobalCorr > 0 ? 'En revisión' :
+                        (totalGlobalOk === items.length ? 'Aprobado' : (totalGlobalOk > 0 ? 'Parcial' : 'Sin revisar')));
+
+    var firestoreContenidos = items.map(function(item, i){
+      var cList = (item.comentarios && item.comentarios.length) ? item.comentarios : (item.comentario ? [{ autor: item.revisadoPor || 'Cliente', texto: item.comentario, fecha: '' }] : []);
+      var fullComment = formatComentariosString(cList) || item.comentario || '';
+      var lastAuthor = (item.estado === 'corregido') ? '' : ((cList.length && cList[cList.length - 1].autor) ? cList[cList.length - 1].autor : (item.revisadoPor || 'Cliente'));
+      var fMap = {
+        n: { integerValue: String(i + 1) },
+        id: { stringValue: String(item.id || ('c' + (i + 1))) },
+        titulo: { stringValue: String(item.titulo || '') },
+        formato: { stringValue: String(item.formato || '') },
+        formatoOriginal: { stringValue: String(item.formatoOriginal || '') },
+        estado: { stringValue: String(item.estado || 'en_revision') },
+        comentario: { stringValue: String(fullComment) },
+        revisadoPor: { stringValue: String(lastAuthor) }
+      };
+      if (item.guion != null) fMap.guion = { stringValue: String(item.guion) };
+      if (item.copy != null) fMap.copy = { stringValue: String(item.copy) };
+      if (item.version != null) fMap.version = { integerValue: String(item.version) };
+      if (item.fechaCorreccion) fMap.fechaCorreccion = { stringValue: String(item.fechaCorreccion) };
+      if (item.fechaEnvio) fMap.fechaEnvio = { stringValue: String(item.fechaEnvio) };
+      if (item.aprobacion && item.estado === 'aprobado') {
+        fMap.aprobacion = {
+          mapValue: {
+            fields: {
+              version: { integerValue: String(item.aprobacion.version || item.version || 1) },
+              usuario: { stringValue: String(item.aprobacion.usuario || (agencyUser ? ('Agencia (' + agencyUser + ')') : 'Cliente')) },
+              fecha: { stringValue: String(item.aprobacion.fecha || new Date().toISOString()) }
+            }
+          }
+        };
+      }
+      return {
+        mapValue: { fields: fMap }
+      };
+    });
+
+    var fsUrl = 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(FB.projectId) +
+      '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
+      '?updateMask.fieldPaths=contenidos&updateMask.fieldPaths=estado&updateMask.fieldPaths=aprobados&updateMask.fieldPaths=cambios&updateMask.fieldPaths=pendientes&key=' + encodeURIComponent(FB.apiKey);
+
+    fetch(fsUrl, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fields: {
+          estado: { stringValue: estadoGeneral },
+          aprobados: { integerValue: String(totalGlobalOk) },
+          cambios: { integerValue: String(totalGlobalFix) },
+          pendientes: { integerValue: String(totalGlobalPend) },
+          contenidos: { arrayValue: { values: firestoreContenidos } }
+        }
+      })
+    })
+    .then(function(r){
+      if (!r.ok) {
+        return r.json().then(function(j){ throw new Error((j.error && j.error.message) || ('HTTP ' + r.status)); });
+      }
+      return r.json();
+    })
+    .then(function(){
+      if (btn) btn.disabled = false;
+      var pieceNum = items.indexOf(it) + 1;
+      toast('✓ Contenido #' + (pieceNum < 10 ? '0' : '') + pieceNum + ' marcado como ' + (decision === 'aprobado' ? 'Aprobado' : decision) + ' y sincronizado');
+    })
+    .catch(function(err){
+      console.error('Error sincronizando estado en Firestore:', err);
+      if (btn) btn.disabled = false;
+      toast('✓ Estado guardado localmente (error al sincronizar nube)');
+    });
+  }
+
   // Insertar controles de edición de agencia directamente en cada tarjeta (contenteditable inline)
   cards.forEach(function(cObj){
     var it = cObj.it;
@@ -3816,17 +3949,33 @@ __DATA__
       cObj.copyParagraph.parentNode.insertBefore(cHint, cObj.copyParagraph);
     }
 
-    // Barra inferior de acciones de agencia con botón Guardar
+    // Barra inferior de acciones de agencia con botones Guardar y Aprobar
     var agencyBar = el('div', 'card-agency-bar');
     agencyBar.style.display = 'none';
 
     var vNum = parseInt(it.version, 10) || 1;
-    var barInfo = el('span', 'agency-bar-info', '✎ Modo corrección agencia · v' + vNum + ' actual');
+    var barInfo = el('span', 'agency-bar-info');
+    function updateAgencyBarText(){
+      var nv = parseInt(it.version, 10) || 1;
+      if (it.estado === 'aprobado') {
+        barInfo.textContent = '✓ Aprobado por agencia · v' + nv;
+      } else if (it.estado === 'corregido') {
+        barInfo.textContent = '🔄 Versión corregida (v' + nv + ')';
+      } else {
+        barInfo.textContent = '✎ Modo corrección agencia · v' + nv + ' actual';
+      }
+      if (cObj.vTag) cObj.vTag.textContent = 'v' + nv;
+    }
+    updateAgencyBarText();
+    cObj.updateAgencyBarText = updateAgencyBarText;
     agencyBar.appendChild(barInfo);
+
+    var agencyBtns = el('div', 'card-agency-actions');
 
     var btnSave = el('button', 'btn-agency-save');
     btnSave.type = 'button';
     btnSave.textContent = '💾 Guardar cambios';
+    btnSave.title = 'Guarda el guion y copy corregidos en Firestore';
     btnSave.onclick = function(){
       var newTitle = cObj.h2Title ? cObj.h2Title.textContent.trim() : (it.titulo || '');
       var newGuion = cObj.guionParagraph ? cObj.guionParagraph.textContent.trim() : (it.guion || '');
@@ -3834,18 +3983,38 @@ __DATA__
       it.titulo = newTitle;
       saveCardCorrection(it, cObj, newGuion, newCopy, null, btnSave);
       setTimeout(function(){
-        var nv = parseInt(it.version, 10) || 1;
-        barInfo.textContent = '✎ Modo corrección agencia · v' + nv + ' actual';
-        if (cObj.vTag) cObj.vTag.textContent = 'v' + nv;
+        updateAgencyBarText();
       }, 300);
     };
-    agencyBar.appendChild(btnSave);
+    agencyBtns.appendChild(btnSave);
+
+    var btnApprove = el('button', 'btn-agency-approve');
+    btnApprove.type = 'button';
+    btnApprove.textContent = '✓ Aprobar versión';
+    btnApprove.title = 'Aprobar esta versión y sincronizarla directamente en Firestore';
+    btnApprove.onclick = function(){
+      var newTitle = cObj.h2Title ? cObj.h2Title.textContent.trim() : (it.titulo || '');
+      var newGuion = cObj.guionParagraph ? cObj.guionParagraph.textContent.trim() : (it.guion || '');
+      var newCopy = cObj.copyParagraph ? cObj.copyParagraph.textContent.trim() : (it.copy || '');
+      it.titulo = newTitle;
+      if (newGuion) it.guion = newGuion;
+      if (newCopy) it.copy = newCopy;
+      if (cObj.setDecision) {
+        cObj.setDecision('aprobado');
+      } else {
+        saveAgencyDecisionChange(it, 'aprobado', btnApprove);
+      }
+    };
+    agencyBtns.appendChild(btnApprove);
+
+    agencyBar.appendChild(agencyBtns);
     card.appendChild(agencyBar);
 
     cObj.updateAgencyActions = function(active){
       if (active) {
         card.classList.add('card-agency-edit-mode');
         agencyBar.style.display = 'flex';
+        updateAgencyBarText();
         if (cObj.guionParagraph) cObj.guionParagraph.style.display = 'block';
         if (cObj.copyContainer) cObj.copyContainer.style.display = 'block';
         if (cObj.fmtTag) {

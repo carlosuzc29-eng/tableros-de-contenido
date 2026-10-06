@@ -8,16 +8,98 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
 <style>
-:root{
-  --azul:#1F3549;--azul-2:#2B4661;--azul-3:#3D5A77;--azul-soft:#E6EBF0;
-  --verde:#5CB83E;--verde-dk:#3F8A27;--verde-soft:#EAF6E4;
-  --naranja:#E64A00;--naranja-soft:#FCEBE2;
-  --gris:#979797;--bg:#EEF1F4;--paper:#FFFFFF;--ink:#1F3549;--ink-2:#5B6B7A;--line:#E1E6EB;
-  --ease:cubic-bezier(.2,.8,.2,1);
+/* NEXO TOKENS v2 — mantener idéntico en los 3 archivos */
+:root {
+  /* Marca principal */
+  --azul: #1F3549;
+  --verde: #5CB83E;
+  --naranja: #E64A00;
+  --violeta: #7C3AED;
+
+  /* Superficies oscuras */
+  --bg-dark-1: #0D1722;
+  --bg-dark-2: #132230;
+  --bg-dark-3: #1F3549;
+
+  /* Superficies claras */
+  --bg-light-1: #EEF1F4;
+  --bg-light-2: #FFFFFF;
+
+  /* Superficies y fondos semánticos compartidos */
+  --bg: #EEF1F4;
+  --paper: #FFFFFF;
+  --ink: #1F3549;
+  --ink-2: #5B6B7A;
+  --line: #E1E6EB;
+  --gris: #979797;
+  --azul-2: #2B4661;
+  --azul-3: #3D5A77;
+  --azul-deep: #132230;
+  --azul-surf: rgba(31, 53, 73, 0.70);
+  --azul-border: rgba(255, 255, 255, 0.12);
+  --verde-dk: #3F8A27;
+
+  /* Aliases para producción */
+  --nexo-blue: #1F3549;
+  --nexo-blue-dark: #121F2B;
+  --nexo-green: #5CB83E;
+  --nexo-orange: #E64A00;
+  --nexo-cyan: #38BDF8;
+
+  /* Variantes -soft (al 15%) */
+  --azul-soft: rgba(31, 53, 73, 0.15);
+  --verde-soft: rgba(92, 184, 62, 0.15);
+  --naranja-soft: rgba(230, 74, 0, 0.15);
+  --violeta-soft: rgba(124, 58, 237, 0.15);
+  --nexo-green-soft: rgba(92, 184, 62, 0.15);
+  --nexo-orange-soft: rgba(230, 74, 0, 0.15);
+  --nexo-cyan-soft: rgba(56, 189, 248, 0.15);
+
+  /* Variantes -glow */
+  --verde-glow: 0 0 16px rgba(92, 184, 62, 0.40);
+  --naranja-glow: 0 0 16px rgba(230, 74, 0, 0.40);
+  --azul-glow: 0 0 16px rgba(31, 53, 73, 0.40);
+  --violeta-glow: 0 0 16px rgba(124, 58, 237, 0.40);
+  --nexo-green-glow: 0 0 16px rgba(92, 184, 62, 0.40);
+  --nexo-orange-glow: 0 0 16px rgba(230, 74, 0, 0.40);
+
+  /* Tipografía */
+  --font-head: 'Jost', system-ui, -apple-system, sans-serif;
+  --font-body: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+
+  /* Radios */
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+
+  /* Sombras en 3 niveles */
+  --shadow-1: 0 2px 8px rgba(0, 0, 0, 0.16);
+  --shadow-2: 0 8px 24px rgba(0, 0, 0, 0.22);
+  --shadow-3: 0 20px 48px -12px rgba(0, 0, 0, 0.32);
+
+  /* Borde de luz superior para superficies de vidrio (1px rgba(255,255,255,.08–.4)) */
+  --glass-border-top: inset 0 1px 0 0 rgba(255, 255, 255, 0.25);
+  --glass-border-subtle: inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+
+  /* Movimiento */
+  --ease: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --dur-press: 140ms;
+  --dur-fast: 180ms;
+  --dur-base: 240ms;
+  --dur-panel: 320ms;
+  --trans: 180ms cubic-bezier(0.23, 1, 0.32, 1);
+  --trans-fast: 160ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:linear-gradient(#fff 0 360px,var(--bg) 360px);font-family:'Futura','Futura Md BT','Jost','Century Gothic',sans-serif;color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:clip;max-width:100%}
+body{background:linear-gradient(#fff 0 360px,var(--bg) 360px);font-family:var(--font-body);letter-spacing:0;color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:clip;max-width:100%}
+button, .btn, .chip, .item{transition:transform var(--dur-press) var(--ease-out)}
+button:active, .btn:active, .chip:active, .item:active{transform:scale(.97)}
 button{font:inherit;cursor:pointer}
 .shell{max-width:1180px;margin:0 auto;position:relative;z-index:1}
 
@@ -43,7 +125,12 @@ button{font:inherit;cursor:pointer}
 .sub{color:#B9C6D2;font-size:17px;max-width:540px;margin-top:22px}
 .reviewed{display:none;margin-top:18px;font-size:14px;background:rgba(92,184,62,.16);border:1px solid rgba(92,184,62,.45);color:#DDF3D4;padding:9px 14px;border-radius:12px;width:fit-content;max-width:100%}
 .hero-grid>div{min-width:0}
-.reviewed.show{display:block}
+.reviewed.show{display:block;transition:opacity 250ms var(--ease),transform 250ms var(--ease)}
+@starting-style{.reviewed.show{opacity:0;transform:translateY(-4px)}}
+@media (prefers-reduced-motion: reduce){
+  .reviewed.show{transition:opacity 250ms var(--ease);transform:none}
+  @starting-style{.reviewed.show{opacity:0;transform:none}}
+}
 .ring{position:relative;width:188px;height:188px;flex:none}
 .ring svg{transform:rotate(-90deg);width:100%;height:100%}
 .ring circle{transition:stroke-dasharray .6s var(--ease),stroke-dashoffset .6s var(--ease)}
@@ -153,6 +240,12 @@ button{font:inherit;cursor:pointer}
 /* THREAD DE COMENTARIOS */
 .cm-thread{display:grid;gap:10px;margin-bottom:14px}
 .cm-bubble{background:#fff;border-radius:16px;padding:12px 16px;box-shadow:0 1px 4px rgba(31,53,73,.06);border:1px solid rgba(31,53,73,.08);display:flex;gap:12px;align-items:flex-start}
+.cm-bubble.cm-new{transition:opacity 200ms var(--ease),transform 200ms var(--ease)}
+@starting-style{.cm-bubble.cm-new{opacity:0;transform:translateY(6px)}}
+@media (prefers-reduced-motion: reduce){
+  .cm-bubble.cm-new{transition:opacity 200ms var(--ease);transform:none}
+  @starting-style{.cm-bubble.cm-new{opacity:0;transform:none}}
+}
 .cm-av{width:32px;height:32px;border-radius:50%;background:var(--azul);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
 .cm-right{flex:1;min-width:0}
 .cm-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px}
@@ -204,10 +297,10 @@ button{font:inherit;cursor:pointer}
 .apartado-corregidos-title{font-size:16px;font-weight:800;color:#7c3aed;margin:0 0 4px 0;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
 .apartado-corregidos-desc{font-size:12.5px;color:var(--gris);margin:0;line-height:1.45}
 .apartado-corregidos-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.apartado-btn-copy{background:#7c3aed;color:#fff;border:none;padding:10px 18px;border-radius:99px;font-size:12.5px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 4px 14px rgba(124,58,237,0.3);display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.apartado-btn-copy{background:#7c3aed;color:#fff;border:none;padding:10px 18px;border-radius:99px;font-size:12.5px;font-weight:700;cursor:pointer;transition:background-color 200ms var(--ease),transform 160ms var(--ease),box-shadow 200ms var(--ease);box-shadow:0 4px 14px rgba(124,58,237,0.3);display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
 .apartado-btn-copy:hover{background:#6d28d9;transform:translateY(-1px);box-shadow:0 6px 18px rgba(124,58,237,0.4)}
 .apartado-btn-copy.copied{background:#16a34a!important;box-shadow:0 4px 14px rgba(22,163,74,0.35)}
-.apartado-btn-wa{background:#25d366;color:#fff;border:none;padding:10px 15px;border-radius:99px;font-size:12.5px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 4px 12px rgba(37,211,102,0.25);display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.apartado-btn-wa{background:#25d366;color:#fff;border:none;padding:10px 15px;border-radius:99px;font-size:12.5px;font-weight:700;cursor:pointer;transition:background-color 200ms var(--ease),transform 160ms var(--ease),box-shadow 200ms var(--ease);box-shadow:0 4px 12px rgba(37,211,102,0.25);display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
 .apartado-btn-wa:hover{background:#1eb855;transform:translateY(-1px)}
 .apartado-corregidos-btn{background:rgba(124,58,237,0.12);color:#6d28d9;border:1.5px solid rgba(124,58,237,0.28);padding:9px 16px;border-radius:99px;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap}
 .apartado-corregidos-btn:hover{background:rgba(124,58,237,0.22);transform:translateY(-1px)}
@@ -244,18 +337,33 @@ button{font:inherit;cursor:pointer}
 .has-send .dl-mini{display:inline-flex}
 
 /* MODAL + TOAST */
-.modal{position:fixed;inset:0;background:rgba(31,53,73,.45);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
-.modal.show{display:flex}
-.box{background:#fff;border-radius:26px;max-width:440px;width:100%;padding:30px;box-shadow:0 40px 80px -20px rgba(31,53,73,.5);animation:pop .3s var(--ease)}
+.modal{position:fixed;inset:0;background:rgba(31,53,73,.45);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:flex;opacity:0;visibility:hidden;pointer-events:none;transition:opacity 150ms var(--ease),visibility 0s linear 150ms;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal.show{opacity:1;visibility:visible;pointer-events:auto;transition:opacity 200ms var(--ease),visibility 0s}
+.box{background:#fff;border-radius:26px;max-width:440px;width:100%;padding:30px;box-shadow:0 40px 80px -20px rgba(31,53,73,.5);opacity:0;transform:scale(.97);transition:transform 150ms var(--ease),opacity 150ms var(--ease)}
+.modal.show .box{opacity:1;transform:none;transition-duration:250ms}
+@media (prefers-reduced-motion: reduce){
+  .box{transform:none;transition:opacity 150ms var(--ease)}
+  .modal.show .box{transform:none;transition-duration:250ms}
+}
 @keyframes pop{from{transform:scale(.94);opacity:0}}
 .box .ico{width:50px;height:50px;border-radius:15px;display:grid;place-items:center;font-size:22px;font-weight:700;margin-bottom:14px}
 .box .ico.ok{background:var(--verde-soft);color:var(--verde-dk)}
 .box .ico.warn{background:var(--naranja-soft);color:var(--naranja)}
+.box .ico.celebrate{animation:icoIn 400ms cubic-bezier(.34,1.56,.64,1) 120ms both}
+@keyframes icoIn{from{opacity:0;transform:scale(.6)}}
+@media (prefers-reduced-motion: reduce){
+  .box .ico.celebrate{animation:icoInReduced 200ms var(--ease) both}
+}
+@keyframes icoInReduced{from{opacity:0}}
 .box h3{font-size:20px;font-weight:700;letter-spacing:-.01em;line-height:1.25}
 .box p{color:var(--ink-2);margin-top:8px;font-size:14.5px}
 .box ul{margin:12px 0 0 18px;color:var(--ink-2);font-size:13.5px}
 .box .row{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}
-.box .row button{flex:1;border:0;border-radius:12px;padding:12px 18px;min-height:46px;font-weight:700;font-size:14px;transition:all .2s var(--ease);display:inline-flex;align-items:center;justify-content:center}
+.box .row button{flex:1;border:0;border-radius:12px;padding:12px 18px;min-height:46px;font-weight:700;font-size:14px;transition:background-color 200ms var(--ease),transform 160ms var(--ease),box-shadow 200ms var(--ease);display:inline-flex;align-items:center;justify-content:center}
+.box .row button:active,.apartado-btn-copy:active,.apartado-btn-wa:active{transform:scale(.97)}
+@media (prefers-reduced-motion: reduce){
+  .box .row button:active,.apartado-btn-copy:active,.apartado-btn-wa:active{transform:none}
+}
 .b-sec{background:var(--bg);color:var(--ink)}
 .b-sec:hover{background:var(--azul-soft)}
 .b-pri{background:var(--verde);color:#fff;box-shadow:0 4px 12px rgba(92,184,62,.35)}
@@ -537,6 +645,38 @@ footer .logo svg{height:76px;margin:0 auto 12px}
   background:rgba(92,184,62,.09);
   box-shadow:0 0 0 5px rgba(92,184,62,.13);
 }
+.card-agency-edit-mode .c-top h2[contenteditable="true"]{
+  outline: 2px dashed rgba(92,184,62,.6);
+  outline-offset: 4px;
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: text;
+  background: rgba(92,184,62,.04);
+  transition: outline-color .2s, background .2s;
+}
+.card-agency-edit-mode .c-top h2[contenteditable="true"]:focus{
+  outline: 2.5px solid var(--verde);
+  background: rgba(92,184,62,.09);
+  box-shadow: 0 0 0 4px rgba(92,184,62,.13);
+}
+.tag.version{
+  background: rgba(56,189,248,0.15);
+  color: #38bdf8;
+  font-weight: 700;
+  border: 1px solid rgba(56,189,248,0.3);
+}
+.tag.ctx-first{
+  background: rgba(92,184,62,0.12);
+  color: #5cb83e;
+  border: 1px solid rgba(92,184,62,0.25);
+  font-weight: 600;
+}
+.tag.ctx-correction{
+  background: rgba(245,158,11,0.15);
+  color: #f59e0b;
+  border: 1px solid rgba(245,158,11,0.3);
+  font-weight: 600;
+}
 .card-agency-bar{
   display:flex;
   align-items:center;
@@ -676,7 +816,7 @@ footer .logo svg{height:76px;margin:0 auto 12px}
 </style>
 </head>
 <body class="has-send">
-<canvas class="page-network-canvas" aria-hidden="true" width="756" height="469"></canvas>
+<canvas class="page-network-canvas" aria-hidden="true" style="pointer-events: none;" width="756" height="469"></canvas>
 
 <div class="topbar"><div class="shell">
   <div class="logo" data-logo=""><svg role="img" aria-label="NEXO Agencia Creativa" xmlns="http://www.w3.org/2000/svg" viewBox="758 532 862 1350"><g transform="translate(0,2364) scale(1,-1)"><path fill="#1F3549" d="M763 1617 l0 -210 47 0 46 0 0 129 0 129 3 -4 c3 -4 29 -32 31 -34 1 -1 5 -6 10 -11 4 -4 15 -16 23 -25 9 -10 17 -20 20 -22 2 -2 11 -12 19 -21 9 -10 16 -18 16 -19 1 0 5 -5 10 -10 17 -18 28 -32 29 -33 2 -1 15 -15 33 -35 9 -10 16 -18 16 -19 5 -4 18 -19 20 -22 l3 -3 47 0 46 0 0 210 0 209 -46 0 -46 0 0 -129 c0 -106 0 -128 -1 -127 -1 1 -4 5 -8 8 -6 7 -21 24 -24 27 -2 2 -6 7 -44 49 -15 15 -28 31 -31 33 -2 2 -5 5 -6 7 -1 1 -5 6 -10 11 -5 5 -9 10 -10 11 -1 1 -5 6 -10 11 -37 41 -53 58 -60 66 -5 5 -10 11 -11 12 -1 1 -6 6 -10 11 l-9 10 -47 0 -46 0 0 -209z M1238 1825 c-1 0 -1 -21 -1 -46 l0 -46 182 0 182 0 0 47 0 46 -181 0 c-100 0 -182 0 -182 -1z M1237 1615 l0 -46 182 0 182 0 0 46 0 46 -182 0 -182 0 0 -46z M1237 1454 l0 -47 182 0 182 0 0 47 0 46 -182 0 -182 0 0 -46z M764 1351 c0 -1 31 -48 69 -105 38 -57 69 -104 69 -104 -1 -1 -32 -48 -70 -105 l-69 -104 70 0 71 0 34 52 c19 28 35 51 35 51 0 0 16 -23 35 -52 l34 -51 70 0 c60 0 70 0 70 1 -1 1 -32 48 -69 104 -37 56 -68 103 -69 104 0 0 31 47 69 104 38 57 69 104 69 105 0 1 -22 1 -65 1 l-64 0 -40 -59 c-22 -33 -40 -60 -40 -60 0 0 -18 27 -40 60 l-39 59 -66 0 c-52 0 -65 0 -64 -1z M1372 1351 c-96 -9 -175 -84 -188 -180 -21 -147 116 -269 261 -231 109 28 177 142 149 252 -25 101 -119 168 -222 159z m38 -91 c102 -17 136 -150 53 -212 -79 -59 -190 -4 -190 95 0 72 65 128 137 117z"></path><path fill="#5CB83E" d="M803 774 c-18 -40 -32 -73 -33 -74 0 -2 0 -2 10 -2 l9 1 10 21 9 22 27 0 28 0 9 -22 9 -22 10 0 c6 0 9 0 9 1 0 2 -64 148 -65 148 0 0 -15 -33 -32 -73z m43 9 l11 -25 -22 0 c-20 0 -21 0 -21 2 3 6 21 47 21 47 0 0 5 -11 11 -24z M1145 773 l0 -75 8 0 9 0 0 53 1 53 51 -56 c28 -30 51 -55 51 -55 1 0 1 34 1 75 l0 74 -8 0 -9 0 0 -54 0 -53 -52 56 c-28 31 -51 56 -52 56 0 0 0 -34 0 -74z M1480 773 c-18 -40 -32 -74 -32 -74 0 -1 4 -1 10 -1 l9 1 9 21 10 22 27 0 28 0 9 -22 9 -22 10 0 c8 0 9 0 9 2 -1 3 -64 147 -65 147 0 0 -15 -33 -33 -74z m44 10 c5 -13 10 -24 10 -24 0 -1 -9 -1 -21 -1 -12 0 -21 0 -21 1 0 1 20 48 21 48 0 0 5 -11 11 -24z M952 844 c-36 -6 -58 -35 -58 -75 0 -36 18 -61 49 -71 12 -4 38 -4 50 0 27 10 43 32 45 64 l0 11 -30 0 -30 0 0 -8 0 -8 21 0 20 0 -1 -4 c-5 -34 -42 -52 -75 -36 -38 18 -41 80 -4 104 15 10 39 10 55 1 5 -2 15 -12 18 -17 l2 -2 7 5 c4 3 7 7 7 8 0 3 -16 17 -24 21 -14 7 -35 10 -52 7z M1338 843 c-25 -6 -45 -25 -53 -48 -3 -12 -4 -32 -1 -44 12 -50 70 -72 115 -44 l6 3 0 12 0 12 -7 -6 c-24 -23 -58 -22 -81 0 -12 13 -16 24 -16 42 0 51 59 77 96 43 4 -3 7 -6 7 -6 1 0 1 5 1 11 l0 12 -6 3 c-18 11 -41 15 -61 10z M1051 770 l0 -72 38 0 39 1 0 8 0 8 -29 0 -30 0 0 27 0 27 30 0 29 0 0 8 0 8 -29 0 -30 0 0 20 0 20 30 0 29 0 0 9 0 8 -38 0 -39 0 0 -72z M1422 770 l0 -72 9 0 9 0 0 72 0 72 -9 0 -9 0 0 -72z M825 688 c-33 -5 -57 -31 -61 -65 -6 -61 47 -101 104 -78 l6 2 0 22 c0 11 0 21 -1 21 0 0 -3 -3 -7 -6 -29 -25 -68 -2 -62 36 3 21 16 33 36 33 12 0 16 -2 28 -12 l6 -5 0 22 0 22 -7 2 c-13 6 -29 8 -42 6z M1128 687 c-21 -7 -32 -25 -32 -52 0 -25 8 -42 25 -50 6 -3 7 -3 18 -3 16 0 22 2 30 11 l6 6 0 -7 0 -7 17 0 16 0 0 50 0 50 -16 0 -17 0 0 -7 0 -7 -3 3 c-4 5 -8 8 -13 11 -6 3 -25 4 -31 2z m37 -30 c14 -7 15 -34 2 -42 -13 -9 -30 -4 -34 11 -7 23 12 41 32 31z M883 614 l0 -72 19 0 19 0 0 27 0 26 16 -26 15 -27 23 0 c12 0 22 0 22 0 0 1 -9 14 -19 29 -21 30 -20 29 -17 29 7 0 20 10 25 20 3 7 3 7 3 20 0 18 -4 28 -16 37 -11 7 -14 7 -54 8 l-36 0 0 -71z m60 37 c7 -4 10 -15 6 -23 -3 -7 -8 -9 -19 -10 l-9 0 0 18 0 18 9 0 c7 0 10 -1 13 -3z M1000 614 l0 -72 44 0 44 0 0 17 0 16 -25 0 -25 0 0 12 0 11 24 0 23 0 0 16 0 15 -23 0 -24 0 0 12 0 12 25 0 25 0 0 16 0 16 -44 0 -44 0 0 -71z M1220 631 l0 -55 -23 0 -23 0 0 -17 1 -16 58 -1 59 0 0 17 0 17 -16 0 -16 0 0 55 0 54 -20 0 -20 0 0 -54z M1302 614 l0 -72 20 0 20 0 0 72 0 71 -20 0 -20 0 0 -71z M1349 685 c0 0 13 -32 30 -71 l30 -71 15 -1 16 0 29 70 c16 38 29 70 30 71 0 2 -1 2 -21 2 l-21 0 -16 -42 c-9 -22 -17 -41 -17 -41 0 0 -8 19 -16 42 l-16 41 -22 0 c-11 0 -21 0 -21 0z M1510 684 c-1 -1 -14 -33 -30 -71 -16 -38 -29 -70 -29 -70 0 -1 9 -1 21 -1 l21 0 2 5 c1 3 8 21 16 41 7 19 14 35 14 36 0 2 6 -11 17 -40 l16 -42 22 0 21 0 -4 9 c-2 5 -16 37 -30 72 l-26 62 -15 0 c-12 0 -16 0 -16 -1z"></path></g></svg></div>
@@ -736,7 +876,7 @@ footer .logo svg{height:76px;margin:0 auto 12px}
       <div class="eyebrow">Revisión y aprobación</div>
       <h1>Tus contenidos<br><span class="out">del mes</span></h1>
       <p class="sub" id="intro">Revisa cada pieza con calma. Apruébala o cuéntanos qué ajustar, y al terminar descarga el tablero para enviárnoslo.</p>
-      <div class="reviewed" id="reviewed"></div>
+      <div class="reviewed" id="reviewed">✓ Revisado por Eduardo el 28 de septiembre de 2026 a las 10:45 p. m.</div>
     </div>
     <div class="ring">
       <svg viewBox="0 0 188 188">
@@ -788,7 +928,7 @@ footer .logo svg{height:76px;margin:0 auto 12px}
         </div>
         <div class="apartado-corregidos-list" id="apartadoCorregidosPills"><a class="pill-corregido" href="#c5"><span style="color:#7c3aed;font-weight:800;">#05</span> <span>El comentario anónimo</span> <span class="pill-v">v2</span></a></div>
       </section>
-      <div id="list"><article class="card in" id="c1" data-state="aprobado" data-piece-num="1"><div class="c-top"><div class="big">01</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label></div><h2>Trina en Jack BBQ</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>Escena 1:Eduardo entra a cuadro sosteniendo una caja vacía.
+      <div id="list"><article class="card in" id="c1" data-state="aprobado" data-piece-num="1"><div class="c-top"><div class="big">01</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label><span class="tag version">v1</span><span class="tag ctx-first">✨ Primera revisión</span></div><h2>Trina en Jack BBQ</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">Escena 1:Eduardo entra a cuadro sosteniendo una caja vacía.
 “We’re bringing creamy flavor to Jack BBQ.”
 Texto en pantalla:
 TRINA IS HEADING TO JACK BBQ
@@ -805,7 +945,7 @@ Intentar grabar de diferentes angulos y que se vean que hay varias personas guar
 Escena 3: Eduardo intenta cerrar la maleta o caja, pero alguien añade otra botella de TRINA. Intenta cerrarla nuevamente y otra mano coloca una botella más.
 Eduardo mira a cámara y dice:
 We might need a bigger suitcase (or box) dependiendo de lo que usen para la toma
-Find us at Jack BBQ and discover your TRINA.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c2" data-state="aprobado" data-piece-num="2"><div class="c-top"><div class="big">02</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label></div><h2>Dinámica con los parrilleros</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>Durante Jack BBQ se les presentarán las tres variedades de TRINA a diferentes parrilleros o asistentes. Cada participante deberá probarlas, escoger su favorita y decir claramente el nombre de la variedad elegida. En edición, cada respuesta se convertirá en un voto hasta revelar cuál fue la favorita del evento.
+Find us at Jack BBQ and discover your TRINA.</p></div><div class="copy-wrap" style="display: none;"><span class="lbl">Copy</span><div class="post"><div class="post-h"><div class="av">T</div><div><b>trinahotsauce</b><small>Vista previa del copy</small></div></div><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el copy</div><p class="p-copy"></p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v1 aprobada por Eduardo el 28-sept. 10:45 p. m.</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c2" data-state="aprobado" data-piece-num="2"><div class="c-top"><div class="big">02</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label><span class="tag version">v1</span><span class="tag ctx-first">✨ Primera revisión</span></div><h2>Dinámica con los parrilleros</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">Durante Jack BBQ se les presentarán las tres variedades de TRINA a diferentes parrilleros o asistentes. Cada participante deberá probarlas, escoger su favorita y decir claramente el nombre de la variedad elegida. En edición, cada respuesta se convertirá en un voto hasta revelar cuál fue la favorita del evento.
 Inicio: Eduardo a camara
 Which TRINA belongs at a serious BBQ?
 Let the pitmasters decide.
@@ -823,7 +963,7 @@ Indicaciones de grabación
 - No aceptar respuestas como “this one” ni únicamente señalar la botella.
 - Grabar entre seis y diez participantes.
 - Solicitar autorización para grabar y publicar cada reacción.
-Grabar tomas adicionales del fuego, parrillas, carnes, botellas, salsa y ambiente del evento.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c3" data-state="aprobado" data-piece-num="3"><div class="c-top"><div class="big">03</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Carrusel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel" selected="">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label></div><h2>El sabor es el protagonista</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>SLIDE 1
+Grabar tomas adicionales del fuego, parrillas, carnes, botellas, salsa y ambiente del evento.</p></div><div class="copy-wrap" style="display: none;"><span class="lbl">Copy</span><div class="post"><div class="post-h"><div class="av">T</div><div><b>trinahotsauce</b><small>Vista previa del copy</small></div></div><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el copy</div><p class="p-copy"></p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v1 aprobada por Eduardo el 28-sept. 10:45 p. m.</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c3" data-state="aprobado" data-piece-num="3"><div class="c-top"><div class="big">03</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Carrusel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel" selected="">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label><span class="tag version">v1</span><span class="tag ctx-first">✨ Primera revisión</span></div><h2>El sabor es el protagonista</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">SLIDE 1
 YOUR FOOD SHOULDN’T DISAPPEAR UNDER THE HEAT.
 
 SLIDE 2
@@ -838,7 +978,7 @@ Made to complement every bite.
 Mostrar las tres variedades:
 ANDINA · ORIGINAL · FUEGO
 Cierre:
-TASTE YOUR FOOD. THEN TASTE THE HEAT.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: grid;"><div class="cm-bubble"><div class="cm-av">E</div><div class="cm-right"><div class="cm-top"><b class="cm-author">Eduardo</b><button class="cm-del" type="button" title="Eliminar este comentario">×</button></div><p class="cm-txt">Intentemos no afincarnos mucho a la IA en los carruseles para mantener la frescura y sabor tropical de Trina. Mientras mas podamos balancear mejor.</p></div></div></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c4" data-state="aprobado" data-piece-num="4"><div class="c-top"><div class="big">04</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label></div><h2>Prueba a ciegas</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>Hook de Eduardo a cámara:
+TASTE YOUR FOOD. THEN TASTE THE HEAT.</p></div><div class="copy-wrap" style="display: none;"><span class="lbl">Copy</span><div class="post"><div class="post-h"><div class="av">T</div><div><b>trinahotsauce</b><small>Vista previa del copy</small></div></div><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el copy</div><p class="p-copy"></p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: grid;"><div class="cm-bubble"><div class="cm-av">E</div><div class="cm-right"><div class="cm-top"><b class="cm-author">Eduardo</b><button class="cm-del" type="button" title="Eliminar este comentario">×</button></div><p class="cm-txt">Intentemos no afincarnos mucho a la IA en los carruseles para mantener la frescura y sabor tropical de Trina. Mientras mas podamos balancear mejor.</p></div></div></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v1 aprobada por Eduardo el 28-sept. 10:45 p. m.</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c4" data-state="aprobado" data-piece-num="4"><div class="c-top"><div class="big">04</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label><span class="tag version">v1</span><span class="tag ctx-first">✨ Primera revisión</span></div><h2>Prueba a ciegas</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">Hook de Eduardo a cámara:
 Everyone on the TRINA team thinks they know our sauces. Today, we’re putting that to the test.
 Dinámica:
 Cada participante prueba tres bocados con los ojos cerrados. Debe decir claramente el nombre de la salsa después de cada prueba:
@@ -850,7 +990,7 @@ Pero hay una trampa: una de las salsas aparece dos veces. La combinación puede 
 - Persona 2: Original – Andina – Original
 - Persona 3: Fuego – Original – Fuego
 Después de las respuestas, Eduardo dice
-And that’s how well the TRINA team knows our sauces. How many would you get right?</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c5" data-state="corregido" data-piece-num="5"><div class="c-top"><div class="big">05</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label></div><h2>El comentario anónimo</h2></div><span class="badge">Pendiente</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>Escena 1: Eduardo entra rápidamente a cuadro sosteniendo el teléfono hacia la cámara.
+And that’s how well the TRINA team knows our sauces. How many would you get right?</p></div><div class="copy-wrap" style="display: none;"><span class="lbl">Copy</span><div class="post"><div class="post-h"><div class="av">T</div><div><b>trinahotsauce</b><small>Vista previa del copy</small></div></div><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el copy</div><p class="p-copy"></p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v1 aprobada por Eduardo el 28-sept. 10:45 p. m.</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c5" data-state="corregido" data-piece-num="5"><div class="c-top"><div class="big">05</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label><span class="tag version">v2</span><span class="tag ctx-correction">🔄 Revisión de correcciones</span><span class="tag date">🚀 30-sept. 12:47 p. m.</span></div><h2>El comentario anónimo</h2></div><span class="badge">En revisión (v2)</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">Escena 1: Eduardo entra rápidamente a cuadro sosteniendo el teléfono hacia la cámara.
 Diálogo:
 Someone said TRINA is a hot sauce for novices.
 
@@ -886,7 +1026,7 @@ You wanted hot-hot sauce. Let’s see if you can handle Fuego.
 
 Luego mira el cartel y termina:
 Anonymous, the challenge is on.
-Debe decirlo con seguridad y una ligera sonrisa, manteniendo el tono de reto amistoso.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: grid;"><div class="cm-bubble"><div class="cm-av">E</div><div class="cm-right"><div class="cm-top"><b class="cm-author">Eduardo</b><button class="cm-del" type="button" title="Eliminar este comentario">×</button></div><p class="cm-txt">Me encanta! La unica observación es en la escena 7. Este comprador compró online desde Nueva York, así que quizás hay que ajustar un poco lo que se dice. En ves de if you see us, algo más como contactanos si ves este video y te enviaremos una botella de Fuego o algo asi?</p></div></div></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status">• Pendiente de evaluación (obligatorio)</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v2 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c6" data-state="aprobado" data-piece-num="6"><div class="c-top"><div class="big">06</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Post</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post" selected="">Post</option></select></label></div><h2>Halloween</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>La botella de Fuego aparece disfrazada de fantasma con una pequeña sábana blanca. Sin embargo, el disfraz no logra ocultarla completamente: se ve la etiqueta roja por debajo y salen pequeñas llamas alrededor.
+Debe decirlo con seguridad y una ligera sonrisa, manteniendo el tono de reto amistoso.</p></div><div class="copy-wrap" style="display: none;"><span class="lbl">Copy</span><div class="post"><div class="post-h"><div class="av">T</div><div><b>trinahotsauce</b><small>Vista previa del copy</small></div></div><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el copy</div><p class="p-copy"></p></div></div></div><div class="review"><div class="correction-summary-box" style="margin-bottom: 12px; background: rgba(2, 132, 199, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 8px; padding: 10px 12px;"><div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#38BDF8;margin-bottom:4px;"><span>🔄 Versión corregida (v2)</span><span style="font-weight:400;color:rgba(255,255,255,0.5);font-size:11px;">· 30-sept. 12:47 p. m.</span></div><div style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.4;">Ajustes realizados por el equipo según las observaciones de la versión anterior.</div></div><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: grid;"><div class="cm-bubble"><div class="cm-av">E</div><div class="cm-right"><div class="cm-top"><b class="cm-author">Eduardo</b><button class="cm-del" type="button" title="Eliminar este comentario">×</button></div><p class="cm-txt">Me encanta! La unica observación es en la escena 7. Este comprador compró online desde Nueva York, así que quizás hay que ajustar un poco lo que se dice. En ves de if you see us, algo más como contactanos si ves este video y te enviaremos una botella de Fuego o algo asi?</p></div></div></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve" type="button" aria-pressed="false"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">🔄 Ajustes terminados (v2) · Pendiente de envío</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v2 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c6" data-state="aprobado" data-piece-num="6"><div class="c-top"><div class="big">06</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Post</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post" selected="">Post</option></select></label><span class="tag version">v1</span><span class="tag ctx-first">✨ Primera revisión</span></div><h2>Halloween</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">La botella de Fuego aparece disfrazada de fantasma con una pequeña sábana blanca. Sin embargo, el disfraz no logra ocultarla completamente: se ve la etiqueta roja por debajo y salen pequeñas llamas alrededor.
 A su lado pueden aparecer Andina y Original mirándola, como si supieran perfectamente quién está debajo del disfraz.
 Texto principal del lado donde estan Original y Andina
 NICE TRY, FUEGO.
@@ -896,24 +1036,24 @@ Detalle inferior:
 TRICK OR TRINA?
 We choose the second one
 En el lado de Fuego se ve un elemento como de que esta hablando y dice “I am Trina Original”
-El humor está en que Fuego intenta hacerse pasar por una salsa inofensiva, pero su intensidad la delata.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c7" data-state="aprobado" data-piece-num="7"><div class="c-top"><div class="big">07</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Post</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post" selected="">Post</option></select></label></div><h2>Día del Taco</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>Texto principal:
+El humor está en que Fuego intenta hacerse pasar por una salsa inofensiva, pero su intensidad la delata.</p></div><div class="copy-wrap" style="display: none;"><span class="lbl">Copy</span><div class="post"><div class="post-h"><div class="av">T</div><div><b>trinahotsauce</b><small>Vista previa del copy</small></div></div><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el copy</div><p class="p-copy"></p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v1 aprobada por Eduardo el 28-sept. 10:45 p. m.</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c7" data-state="aprobado" data-piece-num="7"><div class="c-top"><div class="big">07</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Post</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post" selected="">Post</option></select></label><span class="tag version">v1</span><span class="tag ctx-first">✨ Primera revisión</span></div><h2>Día del Taco</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">Texto principal:
 OCTOBER 6 · NATIONAL TACO DAY
 GIVE YOUR TACOS THE TRINA TREATMENT.
 Texto secundario:
 Andina, Original or Fuego…
 Which one are you putting on your tacos?
 ESPACIO PARA ENCUESTA
-Visual: Taco en primer plano recibiendo TRINA, con las tres botellas visibles al fondo.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c8" data-state="aprobado" data-piece-num="8"><div class="c-top"><div class="big">08</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Post</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post" selected="">Post</option></select></label></div><h2>Jack BBQ</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>Creamy flavor is heading to one of bbq’s biggest stages.
+Visual: Taco en primer plano recibiendo TRINA, con las tres botellas visibles al fondo.</p></div><div class="copy-wrap" style="display: none;"><span class="lbl">Copy</span><div class="post"><div class="post-h"><div class="av">T</div><div><b>trinahotsauce</b><small>Vista previa del copy</small></div></div><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el copy</div><p class="p-copy"></p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v1 aprobada por Eduardo el 28-sept. 10:45 p. m.</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c8" data-state="aprobado" data-piece-num="8"><div class="c-top"><div class="big">08</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Post</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post" selected="">Post</option></select></label><span class="tag version">v1</span><span class="tag ctx-first">✨ Primera revisión</span></div><h2>Jack BBQ</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">Creamy flavor is heading to one of bbq’s biggest stages.
 THE JACK
 Parte inferior:
 October 10
 lynchburg, tennessee
-FIND US THERE</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c9" data-state="aprobado" data-piece-num="9"><div class="c-top"><div class="big">09</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Post</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post" selected="">Post</option></select></label></div><h2>Trina con helado</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p>SOMEONE PUT TRINA ON ICE CREAM…
+FIND US THERE</p></div><div class="copy-wrap" style="display: none;"><span class="lbl">Copy</span><div class="post"><div class="post-h"><div class="av">T</div><div><b>trinahotsauce</b><small>Vista previa del copy</small></div></div><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el copy</div><p class="p-copy"></p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v1 aprobada por Eduardo el 28-sept. 10:45 p. m.</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article><article class="card in" id="c9" data-state="aprobado" data-piece-num="9"><div class="c-top"><div class="big">09</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Post</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post" selected="">Post</option></select></label><span class="tag version">v1</span><span class="tag ctx-first">✨ Primera revisión</span></div><h2>Trina con helado</h2></div><span class="badge">Aprobado</span></div><div class="c-body single"><div class="guion"><span class="lbl">Guion / descripción</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">SOMEONE PUT TRINA ON ICE CREAM…
 Texto SECUNDARIO
 WHAT’S THE WEIRDEST FOOD YOU’D PUT TRINA ON?
 Sticker de preguntas:
 TRINA + ______
-La intención es utilizar el comentario como punto de partida para que la comunidad comparta sus combinaciones más inesperadas.</p></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Pedir cambios</button></div><div class="dec-status ok">✓ Marcado como Aprobado</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article></div>
+La intención es utilizar el comentario como punto de partida para que la comunidad comparta sus combinaciones más inesperadas.</p></div><div class="copy-wrap" style="display: none;"><span class="lbl">Copy</span><div class="post"><div class="post-h"><div class="av">T</div><div><b>trinahotsauce</b><small>Vista previa del copy</small></div></div><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el copy</div><p class="p-copy"></p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v1 aprobada por Eduardo el 28-sept. 10:45 p. m.</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✎ Modo corrección agencia · v1 actual</span><button class="btn-agency-save" type="button">💾 Guardar cambios</button></div></article></div>
       <div class="empty" id="empty" style="display: none;">No hay contenidos en este filtro.</div>
       <footer><div class="logo" data-logo=""><svg role="img" aria-label="NEXO Agencia Creativa" xmlns="http://www.w3.org/2000/svg" viewBox="758 532 862 1350"><g transform="translate(0,2364) scale(1,-1)"><path fill="#1F3549" d="M763 1617 l0 -210 47 0 46 0 0 129 0 129 3 -4 c3 -4 29 -32 31 -34 1 -1 5 -6 10 -11 4 -4 15 -16 23 -25 9 -10 17 -20 20 -22 2 -2 11 -12 19 -21 9 -10 16 -18 16 -19 1 0 5 -5 10 -10 17 -18 28 -32 29 -33 2 -1 15 -15 33 -35 9 -10 16 -18 16 -19 5 -4 18 -19 20 -22 l3 -3 47 0 46 0 0 210 0 209 -46 0 -46 0 0 -129 c0 -106 0 -128 -1 -127 -1 1 -4 5 -8 8 -6 7 -21 24 -24 27 -2 2 -6 7 -44 49 -15 15 -28 31 -31 33 -2 2 -5 5 -6 7 -1 1 -5 6 -10 11 -5 5 -9 10 -10 11 -1 1 -5 6 -10 11 -37 41 -53 58 -60 66 -5 5 -10 11 -11 12 -1 1 -6 6 -10 11 l-9 10 -47 0 -46 0 0 -209z M1238 1825 c-1 0 -1 -21 -1 -46 l0 -46 182 0 182 0 0 47 0 46 -181 0 c-100 0 -182 0 -182 -1z M1237 1615 l0 -46 182 0 182 0 0 46 0 46 -182 0 -182 0 0 -46z M1237 1454 l0 -47 182 0 182 0 0 47 0 46 -182 0 -182 0 0 -46z M764 1351 c0 -1 31 -48 69 -105 38 -57 69 -104 69 -104 -1 -1 -32 -48 -70 -105 l-69 -104 70 0 71 0 34 52 c19 28 35 51 35 51 0 0 16 -23 35 -52 l34 -51 70 0 c60 0 70 0 70 1 -1 1 -32 48 -69 104 -37 56 -68 103 -69 104 0 0 31 47 69 104 38 57 69 104 69 105 0 1 -22 1 -65 1 l-64 0 -40 -59 c-22 -33 -40 -60 -40 -60 0 0 -18 27 -40 60 l-39 59 -66 0 c-52 0 -65 0 -64 -1z M1372 1351 c-96 -9 -175 -84 -188 -180 -21 -147 116 -269 261 -231 109 28 177 142 149 252 -25 101 -119 168 -222 159z m38 -91 c102 -17 136 -150 53 -212 -79 -59 -190 -4 -190 95 0 72 65 128 137 117z"></path><path fill="#5CB83E" d="M803 774 c-18 -40 -32 -73 -33 -74 0 -2 0 -2 10 -2 l9 1 10 21 9 22 27 0 28 0 9 -22 9 -22 10 0 c6 0 9 0 9 1 0 2 -64 148 -65 148 0 0 -15 -33 -32 -73z m43 9 l11 -25 -22 0 c-20 0 -21 0 -21 2 3 6 21 47 21 47 0 0 5 -11 11 -24z M1145 773 l0 -75 8 0 9 0 0 53 1 53 51 -56 c28 -30 51 -55 51 -55 1 0 1 34 1 75 l0 74 -8 0 -9 0 0 -54 0 -53 -52 56 c-28 31 -51 56 -52 56 0 0 0 -34 0 -74z M1480 773 c-18 -40 -32 -74 -32 -74 0 -1 4 -1 10 -1 l9 1 9 21 10 22 27 0 28 0 9 -22 9 -22 10 0 c8 0 9 0 9 2 -1 3 -64 147 -65 147 0 0 -15 -33 -33 -74z m44 10 c5 -13 10 -24 10 -24 0 -1 -9 -1 -21 -1 -12 0 -21 0 -21 1 0 1 20 48 21 48 0 0 5 -11 11 -24z M952 844 c-36 -6 -58 -35 -58 -75 0 -36 18 -61 49 -71 12 -4 38 -4 50 0 27 10 43 32 45 64 l0 11 -30 0 -30 0 0 -8 0 -8 21 0 20 0 -1 -4 c-5 -34 -42 -52 -75 -36 -38 18 -41 80 -4 104 15 10 39 10 55 1 5 -2 15 -12 18 -17 l2 -2 7 5 c4 3 7 7 7 8 0 3 -16 17 -24 21 -14 7 -35 10 -52 7z M1338 843 c-25 -6 -45 -25 -53 -48 -3 -12 -4 -32 -1 -44 12 -50 70 -72 115 -44 l6 3 0 12 0 12 -7 -6 c-24 -23 -58 -22 -81 0 -12 13 -16 24 -16 42 0 51 59 77 96 43 4 -3 7 -6 7 -6 1 0 1 5 1 11 l0 12 -6 3 c-18 11 -41 15 -61 10z M1051 770 l0 -72 38 0 39 1 0 8 0 8 -29 0 -30 0 0 27 0 27 30 0 29 0 0 8 0 8 -29 0 -30 0 0 20 0 20 30 0 29 0 0 9 0 8 -38 0 -39 0 0 -72z M1422 770 l0 -72 9 0 9 0 0 72 0 72 -9 0 -9 0 0 -72z M825 688 c-33 -5 -57 -31 -61 -65 -6 -61 47 -101 104 -78 l6 2 0 22 c0 11 0 21 -1 21 0 0 -3 -3 -7 -6 -29 -25 -68 -2 -62 36 3 21 16 33 36 33 12 0 16 -2 28 -12 l6 -5 0 22 0 22 -7 2 c-13 6 -29 8 -42 6z M1128 687 c-21 -7 -32 -25 -32 -52 0 -25 8 -42 25 -50 6 -3 7 -3 18 -3 16 0 22 2 30 11 l6 6 0 -7 0 -7 17 0 16 0 0 50 0 50 -16 0 -17 0 0 -7 0 -7 -3 3 c-4 5 -8 8 -13 11 -6 3 -25 4 -31 2z m37 -30 c14 -7 15 -34 2 -42 -13 -9 -30 -4 -34 11 -7 23 12 41 32 31z M883 614 l0 -72 19 0 19 0 0 27 0 26 16 -26 15 -27 23 0 c12 0 22 0 22 0 0 1 -9 14 -19 29 -21 30 -20 29 -17 29 7 0 20 10 25 20 3 7 3 7 3 20 0 18 -4 28 -16 37 -11 7 -14 7 -54 8 l-36 0 0 -71z m60 37 c7 -4 10 -15 6 -23 -3 -7 -8 -9 -19 -10 l-9 0 0 18 0 18 9 0 c7 0 10 -1 13 -3z M1000 614 l0 -72 44 0 44 0 0 17 0 16 -25 0 -25 0 0 12 0 11 24 0 23 0 0 16 0 15 -23 0 -24 0 0 12 0 12 25 0 25 0 0 16 0 16 -44 0 -44 0 0 -71z M1220 631 l0 -55 -23 0 -23 0 0 -17 1 -16 58 -1 59 0 0 17 0 17 -16 0 -16 0 0 55 0 54 -20 0 -20 0 0 -54z M1302 614 l0 -72 20 0 20 0 0 72 0 71 -20 0 -20 0 0 -71z M1349 685 c0 0 13 -32 30 -71 l30 -71 15 -1 16 0 29 70 c16 38 29 70 30 71 0 2 -1 2 -21 2 l-21 0 -16 -42 c-9 -22 -17 -41 -17 -41 0 0 -8 19 -16 42 l-16 41 -22 0 c-11 0 -21 0 -21 0z M1510 684 c-1 -1 -14 -33 -30 -71 -16 -38 -29 -70 -29 -70 0 -1 9 -1 21 -1 l21 0 2 5 c1 3 8 21 16 41 7 19 14 35 14 36 0 2 6 -11 17 -40 l16 -42 22 0 21 0 -4 9 c-2 5 -16 37 -30 72 l-26 62 -15 0 c-12 0 -16 0 -16 -1z"></path></g></svg></div>Mérida, Venezuela</footer>
     </main>
@@ -960,93 +1100,104 @@ La intención es utilizar el comentario como punto de partida para que la comuni
 <template id="nexo-iso"><svg xmlns="http://www.w3.org/2000/svg" viewBox="540 610 1300 1160"><g transform="translate(0,2364) scale(1,-1)"><path fill="#5CB83E" d="M1266 1638 c-67 -59 -123 -108 -123 -108 0 -1 129 -214 131 -216 1 -1 2 4 18 65 l17 64 116 0 115 0 0 -3 c-1 -1 -43 -157 -94 -347 -51 -189 -93 -344 -93 -345 0 0 51 0 114 0 l113 1 14 51 c8 28 51 188 96 355 109 402 124 459 124 460 0 1 -62 1 -229 1 -218 0 -229 0 -229 2 1 2 34 127 34 128 0 1 -17 -13 -124 -108z M759 1528 c-147 -548 -209 -778 -209 -779 0 -1 73 -1 229 -1 125 0 228 0 228 0 0 0 -8 -30 -17 -65 -9 -35 -17 -65 -16 -65 0 0 1 1 3 2 1 2 56 50 122 107 66 58 120 106 120 106 1 1 -18 34 -63 108 -75 123 -67 110 -67 109 -1 0 -9 -29 -18 -65 l-17 -64 -115 0 -115 0 0 3 c1 2 184 687 186 690 0 2 -6 2 -114 2 l-114 0 -23 -88z"></path></g></svg></template>
 
 <script id="fondo-red-script">
+/* NEXO-FONDO v2 — motor de red unificado */
 /**
- * NEXO · Fondo Dinámico Global de Red de Conexiones a Gran Escala (Canvas 2D)
- * 
- * Red decorativa interactiva global (viewport-fixed) con presencia visual amplia y protagónica:
- * - Estructuras de gran envergadura (60% de la composición): conexiones que abarcan entre el 25% y 45% del ancho de pantalla.
- * - Conexiones medianas (30%): articulan y enlazan las distintas zonas visuales.
- * - Conexiones pequeñas (10%): detalles secundarios y satélites.
- * - Pocos nodos estratégicos con límite de 2 conexiones por punto para evitar mallas saturadas.
- * - Movimiento lento, sereno y orgánico, diferenciado según la escala.
- * - Transición cromática suave (hero oscuro con nodos claros vs cuerpo claro con tono pizarra) y acento verde Nexo (#5CB83E).
- * - Pulsos luminosos que recorren las conexiones extensas.
+ * NEXO · Fondo Dinámico Global de Red de Conexiones a Gran Escala (Canvas 2D v2)
+ *
+ * Características v2:
+ * - 28 nodos en escritorio / 14 en celular.
+ * - 26 conexiones activas en escritorio / 10 en celular. Máximo 3 por punto.
+ * - Grosor de líneas: grandes 2.4, medianas 1.8, pequeñas 1.2.
+ * - baseLineAlpha: 0.30 (tope oscuro 0.45, tope claro 0.28). Clearance elíptico en tarjetas/hero.
+ * - Estética futurista sin shadowBlur:
+ *   · Halo de 6px (alpha 0.08) + núcleo de 1.6px en enlaces de acento.
+ *   · Gradientes lineales con desvanecimiento en extremos (0, 0.15, 0.85, 1).
+ *   · Nodos pre-renderizados en sprites offscreen con drawImage.
+ *   · 2 capas de profundidad con parallax en scroll (lejana: 60% tamaño/alpha/vel, parallax 4%; cercana: 100%, parallax 8%).
+ *   · Cometas de pulso: hasta 4 simultáneos, cola de 48px a 140px/s.
+ *   · Conexiones temporales al cursor en escritorio (hasta 2 nodos a <220px, fade 200ms).
+ * - Rendimiento estricto:
+ *   · Presupuesto <2ms/frame en escritorio.
+ *   · Celular limitado a 30fps y DPR 1.5 (escritorio DPR 2).
+ *   · Caché de heroBottom en listeners pasivos (cero getBoundingClientRect por cuadro).
+ *   · Pausa en pestaña oculta e IntersectionObserver.
+ *   · ctx.setTransform(dpr, 0, 0, dpr, 0, 0) para evitar escala acumulada.
+ *   · prefers-reduced-motion: cuadro único estático.
  */
 
 (function(global){
   'use strict';
 
   var DEFAULT_CONFIG = {
-    // Cantidad de nodos optimizada para dar espacio a estructuras amplias
-    pointCountDesktop: 17,
-    pointCountMobile: 8,
+    pointCountDesktop: 28,
+    pointCountMobile: 14,
 
-    // Proporciones objetivo de conexiones
     ratioLarge: 0.60,
     ratioMedium: 0.30,
     ratioSmall: 0.10,
 
-    // Conexiones totales activas simultáneas en pantalla
-    targetConnectionsDesktop: 12,
-    targetConnectionsMobile: 5,
-    maxConnectionsPerPoint: 2,
+    targetConnectionsDesktop: 26,
+    targetConnectionsMobile: 10,
+    maxConnectionsPerPoint: 3,
 
-    // Velocidades según escala (píxeles por segundo) - movimiento lento y cinematográfico
     speedLarge: 6.5,
     speedMedium: 9.5,
     speedSmall: 13.5,
     speedVariance: 3.0,
 
-    // Tamaños de nodos por escala
-    radiusLargeDesktop: 2.6,
-    radiusMediumDesktop: 1.8,
-    radiusSmallDesktop: 1.2,
+    // Radios de nodos
+    radiusLargeDesktop: 3.8,
+    radiusMediumDesktop: 2.6,
+    radiusSmallDesktop: 1.8,
+    radiusLargeMobile: 3.0,
+    radiusMediumMobile: 2.0,
+    radiusSmallMobile: 1.4,
 
-    radiusLargeMobile: 2.2,
-    radiusMediumMobile: 1.5,
-    radiusSmallMobile: 1.0,
+    // Grosor de líneas
+    lineWidthLarge: 2.4,
+    lineWidthMedium: 1.8,
+    lineWidthSmall: 1.2,
 
-    // Grosor de líneas por escala
-    lineWidthLarge: 1.0,
-    lineWidthMedium: 0.85,
-    lineWidthSmall: 0.70,
+    // Transparencias base y topes
+    baseLineAlpha: 0.30,
+    alphaCapDark: 0.45,
+    alphaCapLight: 0.28,
+    baseDotAlpha: 0.70,
 
-    // Paleta en zona oscura (Hero --azul: #1F3549)
+    // Paleta de colores Nexo
     dotDefaultDark: 'rgba(230, 240, 250, ',
     lineDefaultDark: 'rgba(210, 230, 248, ',
-
-    // Paleta en zona clara (Cuerpo --bg: #EEF1F4)
     dotDefaultLight: 'rgba(31, 53, 73, ',
     lineDefaultLight: 'rgba(31, 53, 73, ',
-
-    // Acento de marca Nexo (--verde: #5CB83E)
     dotAccent: 'rgba(92, 184, 62, ',
     lineAccent: 'rgba(92, 184, 62, ',
-    pulseColor: 'rgba(92, 184, 62, 0.95)',
 
     accentRatio: 0.25,
-    baseLineAlpha: 0.18,
-    baseDotAlpha: 0.65,
 
-    // Señales luminosas (pulsos)
+    // Pulsos cometa
     pulseEnabled: true,
-    pulseMaxConcurrent: 2,
-    pulseIntervalMin: 2.5,
-    pulseIntervalMax: 5.5,
-    pulseSpeed: 110, // px/s a lo largo de conexiones grandes
+    pulseMaxConcurrent: 4,
+    pulseIntervalMin: 1.6,
+    pulseIntervalMax: 3.8,
+    pulseSpeed: 140, // px/s
+    pulseTailLength: 48, // px
 
-    // Interacción con cursor (escritorio)
-    mouseRadius: 150,
-    mousePushStrength: 18,
-    mouseGlowFactor: 1.35
+    // Cursor escritorio
+    cursorRadius: 220,
+    cursorMaxNodes: 2,
+    cursorFadeTime: 0.20 // 200ms
   };
 
   function createNetworkBackground(targetContainer, options){
     var container = targetContainer || document.body;
     var config = Object.assign({}, DEFAULT_CONFIG, options || {});
 
-    // Crear o reutilizar canvas fijo para evitar duplicados en re-render
-    var canvas = document.querySelector('.page-network-canvas') || container.querySelector('.page-network-canvas');
+    // Reutilizar o crear canvas
+    var canvas = document.querySelector('.page-network-canvas') ||
+                 document.getElementById('nexo-bg-canvas') ||
+                 document.getElementById('netCanvas') ||
+                 (container && container.querySelector ? container.querySelector('canvas.page-network-canvas') : null);
+
     if (!canvas) {
       canvas = document.createElement('canvas');
       canvas.className = 'page-network-canvas';
@@ -1057,13 +1208,16 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       canvas.style.width = '100vw';
       canvas.style.height = '100vh';
       canvas.style.pointerEvents = 'none';
-      canvas.style.zIndex = '1';
+      canvas.style.zIndex = '0';
 
-      if (document.body.firstChild) {
+      if (document.body && document.body.firstChild) {
         document.body.insertBefore(canvas, document.body.firstChild);
-      } else {
+      } else if (document.body) {
         document.body.appendChild(canvas);
       }
+    } else {
+      canvas.setAttribute('aria-hidden', 'true');
+      canvas.style.pointerEvents = 'none';
     }
 
     var ctx = canvas.getContext('2d', { alpha: true });
@@ -1075,14 +1229,23 @@ La intención es utilizar el comentario como punto de partida para que la comuni
     var points = [];
     var activeConnectionsMap = new Map();
     var pulses = [];
-    var nextPulseTime = performance.now() + 1500;
+    var nextPulseTime = performance.now() + 1200;
     var animationFrameId = null;
     var lastTime = performance.now();
+    var lastMobileRenderTime = 0;
     var isRunning = false;
     var isVisible = true;
+    var isIntersecting = true;
     var pointIdCounter = 0;
+    var currentScrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+    var cachedHeroBottom = 0;
 
     var mouse = { x: -9999, y: -9999, active: false };
+    var cursorLinks = [
+      { pointId: null, alpha: 0, targetAlpha: 0, dist: 0 },
+      { pointId: null, alpha: 0, targetAlpha: 0, dist: 0 }
+    ];
+
     var isTouchDevice = false;
     try {
       isTouchDevice = window.matchMedia('(pointer: coarse)').matches || ('ontouchstart' in window);
@@ -1102,7 +1265,47 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       return isMobile() ? config.targetConnectionsMobile : config.targetConnectionsDesktop;
     }
 
-    // Rangos de escala basados en el ancho visible de la ventana
+    // --- SPRITES PRE-RENDERIZADOS OFFSCREEN (cero shadowBlur) ---
+    var sprites = {};
+    function initSprites(){
+      var size = 64;
+      function buildSprite(coreColor, haloColor){
+        var c = document.createElement('canvas');
+        c.width = size;
+        c.height = size;
+        var sctx = c.getContext('2d');
+        var grad = sctx.createRadialGradient(32, 32, 0, 32, 32, 30);
+        grad.addColorStop(0, coreColor);
+        grad.addColorStop(0.24, coreColor);
+        grad.addColorStop(0.55, haloColor);
+        grad.addColorStop(1, 'rgba(0,0,0,0)');
+        sctx.fillStyle = grad;
+        sctx.beginPath();
+        sctx.arc(32, 32, 30, 0, Math.PI * 2);
+        sctx.fill();
+        return c;
+      }
+
+      sprites.darkDefault = buildSprite('rgba(230, 240, 250, 0.95)', 'rgba(210, 230, 248, 0.25)');
+      sprites.lightDefault = buildSprite('rgba(31, 53, 73, 0.90)', 'rgba(31, 53, 73, 0.20)');
+      sprites.accent = buildSprite('rgba(92, 184, 62, 0.98)', 'rgba(92, 184, 62, 0.35)');
+      sprites.cometHead = buildSprite('rgba(255, 255, 255, 1)', 'rgba(92, 184, 62, 0.6)');
+    }
+    initSprites();
+
+    // Actualización en caché de límite inferior del hero (sin lecturas por cuadro)
+    function updateHeroBottomCache(){
+      var hero = document.querySelector('.hero') ||
+                 document.querySelector('.kanban-header') ||
+                 document.querySelector('.pub-hero') ||
+                 document.querySelector('.ws-hero');
+      if (hero) {
+        cachedHeroBottom = hero.getBoundingClientRect().bottom;
+      } else {
+        cachedHeroBottom = 0;
+      }
+    }
+
     function getDistanceBrackets(){
       var w = width || 1024;
       if (isMobile()) {
@@ -1116,26 +1319,23 @@ La intención es utilizar el comentario como punto de partida para que la comuni
         };
       }
       return {
-        // Conexiones grandes: 25% a 45% del ancho de pantalla (ej. 360px a 650px en 1440px)
         minLarge: w * 0.24,
         maxLarge: w * 0.46,
-        // Conexiones medianas: 13% a 24% del ancho
         minMedium: w * 0.13,
         maxMedium: w * 0.24,
-        // Conexiones pequeñas: 5% a 13% del ancho
         minSmall: w * 0.05,
         maxSmall: w * 0.13
       };
     }
 
-    // Clearance elíptico en el hero para que los textos principales respiren
+    // Clearance elíptico en tarjetas y hero para no comprometer legibilidad
     function calculateClearance(px, py, heroBottom){
       if (heroBottom <= 20) return 1.0;
       var heroHeight = Math.min(height, heroBottom);
       var focalX = width * 0.32;
       var focalY = heroHeight * 0.48;
-      var rx = width * 0.26;
-      var ry = heroHeight * 0.36;
+      var rx = width * 0.28;
+      var ry = heroHeight * 0.38;
       if (rx <= 0 || ry <= 0) return 1.0;
       var dx = (px - focalX) / rx;
       var dy = (py - focalY) / ry;
@@ -1149,7 +1349,6 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       pulses = [];
       var count = getPointCount();
 
-      // Proporción de nodos estructurales (~60% macro, ~30% medio, ~10% satélite)
       for (var i = 0; i < count; i++) {
         var tier = 'large';
         var randTier = i / count;
@@ -1159,8 +1358,10 @@ La intención es utilizar el comentario como punto de partida para que la comuni
           tier = 'small';
         }
 
-        // Permitir que algunos puntos nazcan en o salgan hacia los bordes externos (-8% a 108%)
-        // para dar continuidad visual más allá del marco de la ventana
+        // Profundidad en 2 capas: 0 = Lejana (60% escala/alpha/vel), 1 = Cercana (100%)
+        var layer = (i % 2 === 0) ? 0 : 1;
+        var layerScale = (layer === 0) ? 0.60 : 1.0;
+
         var bleedX = width * 0.08;
         var bleedY = height * 0.08;
         var x = -bleedX + Math.random() * (width + bleedX * 2);
@@ -1168,22 +1369,25 @@ La intención es utilizar el comentario como punto de partida para que la comuni
 
         var isAccent = (Math.random() < config.accentRatio);
         var baseSpd = (tier === 'large') ? config.speedLarge : ((tier === 'medium') ? config.speedMedium : config.speedSmall);
-        var speed = baseSpd + (Math.random() - 0.5) * config.speedVariance;
+        var speed = (baseSpd + (Math.random() - 0.5) * config.speedVariance) * layerScale;
         var angle = Math.random() * Math.PI * 2;
 
-        var rad = isMobile()
+        var baseRad = isMobile()
           ? (tier === 'large' ? config.radiusLargeMobile : (tier === 'medium' ? config.radiusMediumMobile : config.radiusSmallMobile))
           : (tier === 'large' ? config.radiusLargeDesktop : (tier === 'medium' ? config.radiusMediumDesktop : config.radiusSmallDesktop));
+
+        var rad = baseRad * layerScale;
 
         points.push({
           id: ++pointIdCounter,
           tier: tier,
+          layer: layer,
           x: x,
           y: y,
           vx: Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed,
           angle: angle,
-          va: (Math.random() - 0.5) * 0.18, // Curvatura angular lenta y orgánica
+          va: (Math.random() - 0.5) * 0.18,
           speed: speed,
           radius: rad,
           isAccent: isAccent,
@@ -1204,10 +1408,9 @@ La intención es utilizar el comentario como punto de partida para que la comuni
     function resize(){
       var w = window.innerWidth || document.documentElement.clientWidth || 1024;
       var h = window.innerHeight || document.documentElement.clientHeight || 768;
-
       if (w <= 0 || h <= 0) return;
 
-      // En dispositivos móviles, evitar recalcular canvas en cambios menores de altura causados por el colapso de la barra de navegación al hacer scroll
+      // iOS: ignorar cambios menores a 150px por colapso de barra URL
       if (isTouchDevice && lastW === w && Math.abs(h - lastH) < 150) {
         return;
       }
@@ -1216,18 +1419,24 @@ La intención es utilizar el comentario como punto de partida para que la comuni
 
       width = w;
       height = h;
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+      // Presupuesto: DPR 1.5 en celular, DPR 2 en escritorio
+      var isMob = isMobile();
+      dpr = isMob ? Math.min(window.devicePixelRatio || 1, 1.5) : Math.min(window.devicePixelRatio || 1, 2);
 
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.scale(dpr, dpr);
+
+      // Usar setTransform en lugar de scale acumulado
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      currentScrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+      updateHeroBottomCache();
 
       var expectedCount = getPointCount();
       if (!points.length || Math.abs(points.length - expectedCount) > 2) {
         initPoints();
       } else {
-        // Adaptar posiciones al nuevo ancho manteniendo proporciones
         points.forEach(function(p){
           if (p.x > width * 1.1) p.x = width * Math.random();
           if (p.y > height * 1.1) p.y = height * Math.random();
@@ -1235,7 +1444,7 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       }
 
       if (reducedMotionQuery.matches) {
-        drawFrame(0);
+        drawFrame(0, true);
       }
     }
 
@@ -1243,8 +1452,9 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       if (!config.pulseEnabled || !activeList.length) return;
       if (pulses.length >= config.pulseMaxConcurrent) return;
 
-      // Preferir conexiones grandes o medianas para los pulsos
-      var candidates = activeList.filter(function(c){ return c.alpha > 0.4 && (c.tier === 'large' || c.tier === 'medium'); });
+      var candidates = activeList.filter(function(c){
+        return c.alpha > 0.4 && (c.tier === 'large' || c.tier === 'medium');
+      });
       if (!candidates.length) candidates = activeList;
 
       var conn = candidates[Math.floor(Math.random() * candidates.length)];
@@ -1253,9 +1463,8 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       var dx = (conn.b.x + conn.b.offsetX) - (conn.a.x + conn.a.offsetX);
       var dy = (conn.b.y + conn.b.offsetY) - (conn.a.y + conn.a.offsetY);
       var dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 40) return;
+      if (dist < 50) return;
 
-      // Elegir aleatoriamente sentido de avance
       var p1 = Math.random() < 0.5 ? conn.a : conn.b;
       var p2 = (p1 === conn.a) ? conn.b : conn.a;
 
@@ -1264,8 +1473,8 @@ La intención es utilizar el comentario como punto de partida para que la comuni
         p2: p2,
         progress: 0,
         speed: config.pulseSpeed / dist,
-        alpha: 1.0,
-        tier: conn.tier
+        tier: conn.tier,
+        dist: dist
       });
     }
 
@@ -1274,7 +1483,6 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       var bleedX = width * 0.09;
       var bleedY = height * 0.09;
 
-      // 1. Desplazamiento orgánico y suave de nodos
       for (var i = 0; i < count; i++) {
         var p = points[i];
 
@@ -1285,25 +1493,24 @@ La intención es utilizar el comentario como punto de partida para que la comuni
         p.x += p.vx * dt;
         p.y += p.vy * dt;
 
-        // Envolver suavemente con margen exterior para permitir que salgan y vuelvan
         if (p.x < -bleedX) p.x = width + bleedX;
         else if (p.x > width + bleedX) p.x = -bleedX;
 
         if (p.y < -bleedY) p.y = height + bleedY;
         else if (p.y > height + bleedY) p.y = -bleedY;
 
-        // Repulsión e interacción con cursor en escritorio
+        // Repulsión con ratón en escritorio
         if (!isTouchDevice && mouse.active) {
           var mdx = (p.x + p.offsetX) - mouse.x;
           var mdy = (p.y + p.offsetY) - mouse.y;
           var mDist = Math.sqrt(mdx * mdx + mdy * mdy);
 
-          if (mDist < config.mouseRadius && mDist > 0) {
-            var factor = (1 - (mDist / config.mouseRadius));
-            var push = factor * factor * config.mousePushStrength;
+          if (mDist < config.cursorRadius && mDist > 0) {
+            var factor = (1 - (mDist / config.cursorRadius));
+            var push = factor * factor * 20;
             p.targetOffsetX = (mdx / mDist) * push;
             p.targetOffsetY = (mdy / mDist) * push;
-            p.targetGlow = 1.0 + factor * (config.mouseGlowFactor - 1.0);
+            p.targetGlow = 1.0 + factor * 0.45;
           } else {
             p.targetOffsetX = 0;
             p.targetOffsetY = 0;
@@ -1315,10 +1522,41 @@ La intención es utilizar el comentario como punto de partida para que la comuni
           p.targetGlow = 1.0;
         }
 
-        // Suavizado elástico (lerp)
-        p.offsetX += (p.targetOffsetX - p.offsetX) * 0.10;
-        p.offsetY += (p.targetOffsetY - p.offsetY) * 0.10;
-        p.glow += (p.targetGlow - p.glow) * 0.10;
+        p.offsetX += (p.targetOffsetX - p.offsetX) * 0.12;
+        p.offsetY += (p.targetOffsetY - p.offsetY) * 0.12;
+        p.glow += (p.targetGlow - p.glow) * 0.12;
+      }
+
+      // Actualizar enlaces temporales del cursor (hasta 2 nodos más cercanos)
+      if (!isTouchDevice && mouse.active) {
+        var nearNodes = [];
+        for (var n = 0; n < count; n++) {
+          var pt = points[n];
+          var cdx = (pt.x + pt.offsetX) - mouse.x;
+          var cdy = (pt.y + pt.offsetY) - mouse.y;
+          var cDist = Math.sqrt(cdx * cdx + cdy * cdy);
+          if (cDist < config.cursorRadius) {
+            nearNodes.push({ point: pt, dist: cDist });
+          }
+        }
+        nearNodes.sort(function(a, b){ return a.dist - b.dist; });
+
+        for (var cIdx = 0; cIdx < 2; cIdx++) {
+          var link = cursorLinks[cIdx];
+          if (nearNodes[cIdx]) {
+            link.pointId = nearNodes[cIdx].point.id;
+            link.dist = nearNodes[cIdx].dist;
+            link.targetAlpha = (1 - (nearNodes[cIdx].dist / config.cursorRadius)) * 0.55;
+          } else {
+            link.targetAlpha = 0;
+          }
+          link.alpha += (link.targetAlpha - link.alpha) * Math.min(1, dt / config.cursorFadeTime);
+        }
+      } else {
+        for (var j = 0; j < 2; j++) {
+          cursorLinks[j].targetAlpha = 0;
+          cursorLinks[j].alpha += (0 - cursorLinks[j].alpha) * Math.min(1, dt / config.cursorFadeTime);
+        }
       }
     }
 
@@ -1327,24 +1565,20 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       var brackets = getDistanceBrackets();
       var targetTotal = getTargetConnections();
 
-      // Cuotas según las proporciones solicitadas:
-      // Grandes: ~60% | Medianas: ~30% | Pequeñas: ~10%
       var maxLarge = Math.max(1, Math.round(targetTotal * config.ratioLarge));
       var maxMedium = Math.max(1, Math.round(targetTotal * config.ratioMedium));
       var maxSmall = Math.max(1, Math.round(targetTotal * config.ratioSmall));
 
-      // Resetear contador de conexiones por punto
       for (var pIdx = 0; pIdx < count; pIdx++) {
         points[pIdx].connectionCount = 0;
       }
 
-      // Marcar conexiones existentes
       activeConnectionsMap.forEach(function(conn){
         conn.desired = false;
       });
 
-      // 1. Evaluar conexiones existentes para mantener estabilidad y evitar parpadeos
-      activeConnectionsMap.forEach(function(conn, key){
+      // 1. Evaluar conexiones existentes
+      activeConnectionsMap.forEach(function(conn){
         var ax = conn.a.x + conn.a.offsetX;
         var ay = conn.a.y + conn.a.offsetY;
         var bx = conn.b.x + conn.b.offsetX;
@@ -1355,7 +1589,6 @@ La intención es utilizar el comentario como punto de partida para que la comuni
 
         conn.dist = dist;
 
-        // Comprobar si todavía está en el rango permitido (con un 12% de holgura de histéresis)
         var inRange = false;
         var minBound, maxBound;
 
@@ -1374,14 +1607,15 @@ La intención es utilizar el comentario como punto de partida para que la comuni
           inRange = true;
         }
 
-        if (inRange && conn.a.connectionCount < config.maxConnectionsPerPoint && conn.b.connectionCount < config.maxConnectionsPerPoint) {
+        if (inRange &&
+            conn.a.connectionCount < config.maxConnectionsPerPoint &&
+            conn.b.connectionCount < config.maxConnectionsPerPoint) {
           conn.desired = true;
           conn.a.connectionCount++;
           conn.b.connectionCount++;
         }
       });
 
-      // Contar activas por categoría
       var currentLarge = 0, currentMedium = 0, currentSmall = 0;
       activeConnectionsMap.forEach(function(conn){
         if (conn.desired) {
@@ -1391,7 +1625,7 @@ La intención es utilizar el comentario como punto de partida para que la comuni
         }
       });
 
-      // 2. Si faltan conexiones para cumplir las cuotas, buscar nuevos pares candidatos
+      // 2. Buscar nuevos pares candidatos (priorizando enlaces dentro de la misma capa de profundidad)
       var candidatePairs = [];
       for (var i = 0; i < count; i++) {
         var pA = points[i];
@@ -1430,20 +1664,20 @@ La intención es utilizar el comentario como punto de partida para que la comuni
               b: pB,
               dist: d,
               tier: tier,
-              normDist: normDist
+              normDist: normDist,
+              sameLayer: (pA.layer === pB.layer)
             });
           }
         }
       }
 
-      // Ordenar candidatos por proximidad al centro óptimo de su escala
       candidatePairs.sort(function(c1, c2){
-        var score1 = Math.abs(c1.normDist - 0.5);
-        var score2 = Math.abs(c2.normDist - 0.5);
-        return score1 - score2;
+        if (c1.sameLayer !== c2.sameLayer) {
+          return c1.sameLayer ? -1 : 1;
+        }
+        return Math.abs(c1.normDist - 0.5) - Math.abs(c2.normDist - 0.5);
       });
 
-      // Seleccionar nuevos enlaces respetando límites
       for (var cIdx = 0; cIdx < candidatePairs.length; cIdx++) {
         var cand = candidatePairs[cIdx];
         if (cand.a.connectionCount >= config.maxConnectionsPerPoint || cand.b.connectionCount >= config.maxConnectionsPerPoint) continue;
@@ -1482,29 +1716,26 @@ La intención es utilizar el comentario como punto de partida para que la comuni
         }
       }
 
-      // 3. Interpolación suave de opacidad (fade-in / fade-out sin saltos bruscos)
+      // 3. Suavizado de opacidad
       var activeList = [];
       var keysToDelete = [];
 
       activeConnectionsMap.forEach(function(conn, key){
         var targetAlpha = 0.0;
         if (conn.desired) {
-          // Curva campana suave según la distancia dentro de su bracket
-          var brackets = getDistanceBrackets();
+          var bracketsLocal = getDistanceBrackets();
           var minD, maxD;
-          if (conn.tier === 'large') { minD = brackets.minLarge; maxD = brackets.maxLarge; }
-          else if (conn.tier === 'medium') { minD = brackets.minMedium; maxD = brackets.maxMedium; }
-          else { minD = brackets.minSmall; maxD = brackets.maxSmall; }
+          if (conn.tier === 'large') { minD = bracketsLocal.minLarge; maxD = bracketsLocal.maxLarge; }
+          else if (conn.tier === 'medium') { minD = bracketsLocal.minMedium; maxD = bracketsLocal.maxMedium; }
+          else { minD = bracketsLocal.minSmall; maxD = bracketsLocal.maxSmall; }
 
           var span = maxD - minD;
           var frac = span > 0 ? ((conn.dist - minD) / span) : 0.5;
           frac = Math.max(0, Math.min(1, frac));
-          // Atenuación suave en los extremos
           var taper = Math.sin(frac * Math.PI);
           targetAlpha = 0.35 + 0.65 * taper;
         }
 
-        // Lerp de opacidad
         conn.alpha += (targetAlpha - conn.alpha) * Math.min(1, dt * 2.8);
 
         if (conn.alpha > 0.01) {
@@ -1518,7 +1749,7 @@ La intención es utilizar el comentario como punto de partida para que la comuni
         activeConnectionsMap.delete(keysToDelete[dIdx]);
       }
 
-      // 4. Gestión de pulsos luminosos de señal
+      // 4. Gestión de pulsos cometa
       var now = performance.now();
       if (now >= nextPulseTime) {
         spawnPulse(activeList);
@@ -1536,27 +1767,41 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       return activeList;
     }
 
-    function drawFrame(dt){
+    function drawFrame(dt, isStatic){
+      var tStart = performance.now();
       ctx.clearRect(0, 0, width, height);
 
-      // Detectar límite inferior del hero respecto al viewport para transición perfecta
-      var heroEl = document.querySelector('.hero');
-      var heroBottom = heroEl ? heroEl.getBoundingClientRect().bottom : 0;
-
-      updatePhysics(dt);
+      if (!isStatic) {
+        updatePhysics(dt);
+      }
       var activeConnections = evaluateConnections(dt);
       var count = points.length;
+      var heroBottom = cachedHeroBottom;
+      var scrollY = isStatic ? 0 : currentScrollY;
 
-      // 1. Dibujar conexiones de red (Líneas amplias y protagonistas)
+      // Detectar si toda la superficie es oscura (ej. Banco de trabajo o Producción dark)
+      var isDarkPage = (document.documentElement.getAttribute('data-theme') === 'dark') ||
+                       (document.body && document.body.classList.contains('dark-theme')) ||
+                       (!document.querySelector('.hero') && !document.querySelector('.kanban-area[data-theme="light"]'));
+
+      // Helper de parallax por capa
+      function getParallaxY(layer){
+        return isStatic ? 0 : (layer === 0 ? scrollY * 0.04 : scrollY * 0.08);
+      }
+
+      // 1. DIBUJAR CONEXIONES (con gradientes desvanecidos en extremos y doble trazo en acento)
       for (var i = 0; i < activeConnections.length; i++) {
         var conn = activeConnections[i];
         var p1 = conn.a;
         var p2 = conn.b;
 
+        var py1 = getParallaxY(p1.layer);
+        var py2 = getParallaxY(p2.layer);
+
         var x1 = p1.x + p1.offsetX;
-        var y1 = p1.y + p1.offsetY;
+        var y1 = p1.y + p1.offsetY - py1;
         var x2 = p2.x + p2.offsetX;
-        var y2 = p2.y + p2.offsetY;
+        var y2 = p2.y + p2.offsetY - py2;
 
         var c1 = calculateClearance(x1, y1, heroBottom);
         var c2 = calculateClearance(x2, y2, heroBottom);
@@ -1564,116 +1809,204 @@ La intención es utilizar el comentario como punto de partida para que la comuni
 
         var glow = (p1.glow + p2.glow) * 0.5;
         var hasAccent = p1.isAccent || p2.isAccent;
+        var layerFactor = (p1.layer === 0 && p2.layer === 0) ? 0.60 : 1.0;
 
-        // Ancho de línea diferenciado por escala
         var lWidth = (conn.tier === 'large')
           ? config.lineWidthLarge
           : ((conn.tier === 'medium') ? config.lineWidthMedium : config.lineWidthSmall);
+        lWidth = lWidth * layerFactor;
 
-        var effAlpha = config.baseLineAlpha * conn.alpha * clearance * glow;
+        var effAlpha = config.baseLineAlpha * conn.alpha * clearance * glow * (p1.layer === 0 ? 0.65 : 1.0);
         if (effAlpha <= 0.01) continue;
+
+        var isDarkZone = isDarkPage || (y1 < heroBottom && y2 < heroBottom);
+        var cap = isDarkZone ? config.alphaCapDark : config.alphaCapLight;
+        var finalAlpha = Math.min(cap, effAlpha);
+
+        // Gradiente con desvanecimiento en extremos (0, 0.15, 0.85, 1)
+        var grad = ctx.createLinearGradient(x1, y1, x2, y2);
+        var colorBase = hasAccent
+          ? config.lineAccent
+          : (isDarkZone ? config.lineDefaultDark : config.lineDefaultLight);
+
+        grad.addColorStop(0, colorBase + '0)');
+        grad.addColorStop(0.15, colorBase + finalAlpha + ')');
+        grad.addColorStop(0.85, colorBase + finalAlpha + ')');
+        grad.addColorStop(1, colorBase + '0)');
 
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
-        ctx.lineWidth = lWidth;
-
-        // Tratamiento cromático refinado
-        var isCrossing = (y1 < heroBottom && y2 >= heroBottom) || (y2 < heroBottom && y1 >= heroBottom);
 
         if (hasAccent) {
-          // Acento verde Nexo (#5CB83E)
-          ctx.strokeStyle = config.lineAccent + Math.min(0.55, effAlpha * 1.5) + ')';
-        } else if (isCrossing) {
-          // Gradiente lineal suave al atravesar el límite del hero
-          var grad = ctx.createLinearGradient(x1, y1, x2, y2);
-          var alphaDark = Math.min(0.35, effAlpha * 1.25);
-          var alphaLight = Math.min(0.24, effAlpha * 0.95);
+          // Trazo 1: Halo de 6px con alpha 0.08
+          ctx.lineWidth = 6.0 * layerFactor;
+          ctx.strokeStyle = config.lineAccent + (0.08 * clearance) + ')';
+          ctx.stroke();
 
-          if (y1 < heroBottom) {
-            grad.addColorStop(0, config.lineDefaultDark + alphaDark + ')');
-            grad.addColorStop(1, config.lineDefaultLight + alphaLight + ')');
-          } else {
-            grad.addColorStop(0, config.lineDefaultLight + alphaLight + ')');
-            grad.addColorStop(1, config.lineDefaultDark + alphaDark + ')');
-          }
+          // Trazo 2: Núcleo de 1.6px
+          ctx.beginPath();
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x2, y2);
+          ctx.lineWidth = 1.6 * layerFactor;
           ctx.strokeStyle = grad;
-        } else if (y1 < heroBottom) {
-          // Zona oscura del Hero
-          ctx.strokeStyle = config.lineDefaultDark + Math.min(0.32, effAlpha * 1.2) + ')';
+          ctx.stroke();
         } else {
-          // Zona clara del resto de la página
-          ctx.strokeStyle = config.lineDefaultLight + Math.min(0.22, effAlpha * 0.9) + ')';
+          ctx.lineWidth = lWidth;
+          ctx.strokeStyle = grad;
+          ctx.stroke();
         }
-
-        ctx.stroke();
       }
 
-      // 2. Dibujar pulsos luminosos recorriendo las conexiones amplias
-      for (var pIdx = 0; pIdx < pulses.length; pIdx++) {
-        var pl = pulses[pIdx];
-        var xA = pl.p1.x + pl.p1.offsetX;
-        var yA = pl.p1.y + pl.p1.offsetY;
-        var xB = pl.p2.x + pl.p2.offsetX;
-        var yB = pl.p2.y + pl.p2.offsetY;
+      // 2. DIBUJAR PULSOS COMETA (cola degradada de 48px a 140px/s)
+      if (!isStatic) {
+        for (var pIdx = 0; pIdx < pulses.length; pIdx++) {
+          var pl = pulses[pIdx];
+          var pyA = getParallaxY(pl.p1.layer);
+          var pyB = getParallaxY(pl.p2.layer);
 
-        var curX = xA + (xB - xA) * pl.progress;
-        var curY = yA + (yB - yA) * pl.progress;
+          var xA = pl.p1.x + pl.p1.offsetX;
+          var yA = pl.p1.y + pl.p1.offsetY - pyA;
+          var xB = pl.p2.x + pl.p2.offsetX;
+          var yB = pl.p2.y + pl.p2.offsetY - pyB;
 
-        var pulseAlpha = Math.sin(pl.progress * Math.PI);
-        if (pulseAlpha <= 0.05) continue;
+          var totalDx = xB - xA;
+          var totalDy = yB - yA;
+          var totalDist = pl.dist || Math.sqrt(totalDx * totalDx + totalDy * totalDy);
+          if (totalDist <= 10) continue;
 
-        ctx.save();
-        // Halo difuso esmeralda
-        ctx.beginPath();
-        ctx.arc(curX, curY, 5.5, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(92, 184, 62, ' + (pulseAlpha * 0.40) + ')';
-        ctx.fill();
+          var dirX = totalDx / totalDist;
+          var dirY = totalDy / totalDist;
 
-        // Núcleo brillante blanco
-        ctx.beginPath();
-        ctx.arc(curX, curY, 2.2, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(255, 255, 255, ' + (pulseAlpha * 0.95) + ')';
-        ctx.fill();
-        ctx.restore();
+          var headDist = totalDist * pl.progress;
+          var tailDist = Math.max(0, headDist - config.pulseTailLength);
+
+          var headX = xA + dirX * headDist;
+          var headY = yA + dirY * headDist;
+          var tailX = xA + dirX * tailDist;
+          var tailY = yA + dirY * tailDist;
+
+          var pulseAlpha = Math.sin(pl.progress * Math.PI);
+          if (pulseAlpha <= 0.02) continue;
+
+          // Cola del cometa
+          var cometGrad = ctx.createLinearGradient(tailX, tailY, headX, headY);
+          cometGrad.addColorStop(0, 'rgba(92, 184, 62, 0)');
+          cometGrad.addColorStop(0.65, 'rgba(92, 184, 62, ' + (pulseAlpha * 0.40) + ')');
+          cometGrad.addColorStop(1, 'rgba(255, 255, 255, ' + (pulseAlpha * 0.95) + ')');
+
+          ctx.beginPath();
+          ctx.moveTo(tailX, tailY);
+          ctx.lineTo(headX, headY);
+          ctx.lineWidth = 2.4;
+          ctx.strokeStyle = cometGrad;
+          ctx.stroke();
+
+          // Cabeza brillante del cometa (usando sprite offscreen)
+          var headSize = 22 * pulseAlpha;
+          ctx.globalAlpha = pulseAlpha;
+          ctx.drawImage(sprites.cometHead, headX - headSize / 2, headY - headSize / 2, headSize, headSize);
+          ctx.globalAlpha = 1.0;
+        }
       }
 
-      // 3. Dibujar nodos proporcionados
+      // 3. CONEXIONES TEMPORALES AL CURSOR EN ESCRITORIO (<220px, fade 200ms)
+      if (!isTouchDevice && !isStatic) {
+        for (var cL = 0; cL < 2; cL++) {
+          var clink = cursorLinks[cL];
+          if (clink.alpha > 0.01 && clink.pointId) {
+            var targetNode = null;
+            for (var pn = 0; pn < count; pn++) {
+              if (points[pn].id === clink.pointId) {
+                targetNode = points[pn];
+                break;
+              }
+            }
+            if (targetNode) {
+              var cpy = getParallaxY(targetNode.layer);
+              var tX = targetNode.x + targetNode.offsetX;
+              var tY = targetNode.y + targetNode.offsetY - cpy;
+
+              var cGrad = ctx.createLinearGradient(mouse.x, mouse.y, tX, tY);
+              cGrad.addColorStop(0, 'rgba(92, 184, 62, 0)');
+              cGrad.addColorStop(0.25, 'rgba(92, 184, 62, ' + clink.alpha + ')');
+              cGrad.addColorStop(0.85, 'rgba(92, 184, 62, ' + (clink.alpha * 0.7) + ')');
+              cGrad.addColorStop(1, 'rgba(92, 184, 62, 0)');
+
+              ctx.beginPath();
+              ctx.moveTo(mouse.x, mouse.y);
+              ctx.lineTo(tX, tY);
+              ctx.lineWidth = 1.4;
+              ctx.strokeStyle = cGrad;
+              ctx.stroke();
+            }
+          }
+        }
+      }
+
+      // 4. DIBUJAR NODOS CON SPRITES PRE-RENDERIZADOS (drawImage ultra-rápido)
       for (var n = 0; n < count; n++) {
         var pt = points[n];
+        var ppy = getParallaxY(pt.layer);
         var px = pt.x + pt.offsetX;
-        var py = pt.y + pt.offsetY;
+        var py = pt.y + pt.offsetY - ppy;
 
-        var inHeroZone = (py < heroBottom);
+        var inDark = isDarkPage || (py < heroBottom);
         var cl = calculateClearance(px, py, heroBottom);
-        var baseAlpha = config.baseDotAlpha * cl * pt.glow;
+        var layerAlpha = (pt.layer === 0) ? 0.50 : 1.0;
+        var baseAlpha = config.baseDotAlpha * cl * pt.glow * layerAlpha;
 
-        ctx.beginPath();
-        ctx.arc(px, py, pt.radius, 0, Math.PI * 2);
+        var spriteImg = pt.isAccent
+          ? sprites.accent
+          : (inDark ? sprites.darkDefault : sprites.lightDefault);
 
-        if (pt.isAccent) {
-          ctx.fillStyle = config.dotAccent + Math.min(0.95, baseAlpha * 1.3) + ')';
-        } else if (inHeroZone) {
-          ctx.fillStyle = config.dotDefaultDark + Math.min(0.85, baseAlpha * 1.1) + ')';
-        } else {
-          ctx.fillStyle = config.dotDefaultLight + Math.min(0.48, baseAlpha * 0.8) + ')';
+        // Diámetro del sprite escalado según el radio del nodo
+        var drawSize = pt.radius * 5.6;
+
+        ctx.globalAlpha = Math.min(1.0, Math.max(0, baseAlpha));
+        ctx.drawImage(spriteImg, px - drawSize / 2, py - drawSize / 2, drawSize, drawSize);
+      }
+      ctx.globalAlpha = 1.0;
+
+      var tEnd = performance.now();
+      if (!isStatic) {
+        if (!window.__nexoPerfHistory) window.__nexoPerfHistory = [];
+        if (window.__nexoPerfHistory.length < 90) {
+          window.__nexoPerfHistory.push(tEnd - tStart);
+          if (window.__nexoPerfHistory.length === 90) {
+            var samples = window.__nexoPerfHistory.slice(15);
+            var sum = 0;
+            for (var si = 0; si < samples.length; si++) sum += samples[si];
+            window.__nexoPerf = {
+              avgMs: (sum / samples.length).toFixed(2),
+              samples: samples.length,
+              dpr: dpr,
+              isMobile: isMobile()
+            };
+          }
         }
-
-        ctx.fill();
       }
     }
 
     function loop(currentTime){
       if (!isRunning) return;
 
+      // Throttling a 30fps en celular para preservar batería y fluidez de scroll
+      if (isMobile()) {
+        if (currentTime - lastMobileRenderTime < 32) {
+          animationFrameId = requestAnimationFrame(loop);
+          return;
+        }
+        lastMobileRenderTime = currentTime;
+      }
+
       var dt = (currentTime - lastTime) / 1000;
       lastTime = currentTime;
 
-      // Limitar dt para evitar saltos bruscos
       if (dt > 0.1) dt = 0.1;
       if (dt <= 0) dt = 0.016;
 
-      drawFrame(dt);
+      drawFrame(dt, false);
       animationFrameId = requestAnimationFrame(loop);
     }
 
@@ -1681,7 +2014,7 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       if (isRunning) return;
       if (reducedMotionQuery.matches) {
         resize();
-        drawFrame(0);
+        drawFrame(0, true);
         return;
       }
       isRunning = true;
@@ -1697,7 +2030,6 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       }
     }
 
-    // Eventos de ratón para escritorio
     function onMouseMove(e){
       mouse.x = e.clientX;
       mouse.y = e.clientY;
@@ -1715,23 +2047,44 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       window.addEventListener('mouseleave', onMouseLeave, { passive: true });
     }
 
-    // Pausa al ocultar la pestaña para máximo rendimiento
+    // Pausa pasiva al ocultar pestaña
     function onVisibilityChange(){
       if (document.hidden) {
         isVisible = false;
         stop();
       } else {
         isVisible = true;
-        start();
+        if (isIntersecting) start();
       }
     }
     document.addEventListener('visibilitychange', onVisibilityChange);
 
-    // Preferencias de accesibilidad de movimiento reducido
+    // IntersectionObserver para pausar si el canvas no se visualiza
+    if ('IntersectionObserver' in window && canvas) {
+      var observer = new IntersectionObserver(function(entries){
+        if (entries && entries[0]) {
+          isIntersecting = entries[0].isIntersecting;
+          if (isIntersecting && !document.hidden && !reducedMotionQuery.matches) {
+            start();
+          } else {
+            stop();
+          }
+        }
+      }, { threshold: 0 });
+      observer.observe(canvas);
+    }
+
+    // Scroll pasivo para parallax y actualización de hero
+    window.addEventListener('scroll', function(){
+      currentScrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+      updateHeroBottomCache();
+    }, { passive: true });
+
+    // Accesibilidad: prefers-reduced-motion
     function onMotionChange(e){
       if (e.matches) {
         stop();
-        drawFrame(0);
+        drawFrame(0, true);
       } else {
         start();
       }
@@ -1762,8 +2115,12 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       },
       resize: resize,
       start: start,
-      stop: stop
+      stop: stop,
+      drawFrame: drawFrame
     };
+    global.NexoNetworkBackground.activeInstance = instance;
+    if (typeof window !== 'undefined') window.__nexoBgInstance = instance;
+    return instance;
   }
 
   global.NexoNetworkBackground = {
@@ -1772,6 +2129,7 @@ La intención es utilizar el comentario como punto de partida para que la comuni
   };
 
 })(typeof globalThis !== 'undefined' ? globalThis : (typeof window !== 'undefined' ? window : this));
+
 </script>
 
 <script id="board-data" type="application/json">
@@ -1793,7 +2151,9 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       "hashtags": "",
       "referencias": [],
       "estado": "aprobado",
-      "comentario": ""
+      "comentario": "",
+      "version": 1,
+      "revisadoPor": "Eduardo"
     },
     {
       "id": "c2",
@@ -1806,7 +2166,9 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       "hashtags": "",
       "referencias": [],
       "estado": "aprobado",
-      "comentario": ""
+      "comentario": "",
+      "version": 1,
+      "revisadoPor": "Eduardo"
     },
     {
       "id": "c3",
@@ -1819,7 +2181,9 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       "hashtags": "",
       "referencias": [],
       "estado": "aprobado",
-      "comentario": ""
+      "comentario": "[Eduardo]: Intentemos no afincarnos mucho a la IA en los carruseles para mantener la frescura y sabor tropical de Trina. Mientras mas podamos balancear mejor.",
+      "version": 1,
+      "revisadoPor": "Eduardo"
     },
     {
       "id": "c4",
@@ -1832,7 +2196,9 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       "hashtags": "",
       "referencias": [],
       "estado": "aprobado",
-      "comentario": ""
+      "comentario": "",
+      "version": 1,
+      "revisadoPor": "Eduardo"
     },
     {
       "id": "c5",
@@ -1845,10 +2211,10 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       "hashtags": "",
       "referencias": [],
       "estado": "corregido",
-      "comentario": "",
+      "comentario": "[Eduardo]: Me encanta! La unica observación es en la escena 7. Este comprador compró online desde Nueva York, así que quizás hay que ajustar un poco lo que se dice. En ves de if you see us, algo más como contactanos si ves este video y te enviaremos una botella de Fuego o algo asi?",
       "version": 2,
       "fechaCorreccion": "2026-09-30T16:47:24.702Z",
-      "revisadoPor": ""
+      "revisadoPor": "Eduardo"
     },
     {
       "id": "c6",
@@ -1861,11 +2227,13 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       "hashtags": "",
       "referencias": [],
       "estado": "aprobado",
-      "comentario": ""
+      "comentario": "",
+      "version": 1,
+      "revisadoPor": "Eduardo"
     },
     {
       "id": "c7",
-      "formato": "Post",
+      "formato": "Story",
       "pilar": "",
       "fechaPublicacion": "",
       "titulo": "Día del Taco",
@@ -1874,11 +2242,14 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       "hashtags": "",
       "referencias": [],
       "estado": "aprobado",
-      "comentario": ""
+      "comentario": "",
+      "version": 1,
+      "formatoOriginal": "Story",
+      "revisadoPor": "Eduardo"
     },
     {
       "id": "c8",
-      "formato": "Post",
+      "formato": "Story",
       "pilar": "",
       "fechaPublicacion": "",
       "titulo": "Jack BBQ",
@@ -1887,11 +2258,14 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       "hashtags": "",
       "referencias": [],
       "estado": "aprobado",
-      "comentario": ""
+      "comentario": "",
+      "version": 1,
+      "formatoOriginal": "Story",
+      "revisadoPor": "Eduardo"
     },
     {
       "id": "c9",
-      "formato": "Post",
+      "formato": "Story",
       "pilar": "",
       "fechaPublicacion": "",
       "titulo": "Trina con helado",
@@ -1900,29 +2274,41 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       "hashtags": "",
       "referencias": [],
       "estado": "aprobado",
-      "comentario": ""
+      "comentario": "",
+      "version": 1,
+      "formatoOriginal": "Story",
+      "revisadoPor": "Eduardo"
     }
   ],
   "id": "trina-hot-sauce-2026-octubre-f6376eec",
   "url": "https://carlosuzc29-eng.github.io/tableros-de-contenido/trina-hot-sauce-octubre-2026-a39c.html",
   "revision": {
-    "revisadoPor": "",
-    "fecha": ""
+    "revisadoPor": "Eduardo",
+    "fecha": "2026-09-29T02:45:07.800Z"
   },
   "firebase": {
     "apiKey": "AIzaSyAsH9TxW0ld2aNQejJw6xxZW7fpZiw212Q",
     "projectId": "nexo-tableros-app"
   },
-  "resetAt": 1791210275541,
+  "resetAt": 1791307384362,
   "token": "f6376eec"
 }
 </script>
 <script>
 (function(){
+  document.addEventListener('touchstart', function(){}, {passive:true});
   document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/, 'js');
   var DATA = JSON.parse(document.getElementById('board-data').textContent);
   var items = DATA.contenidos || [];
-  var LBL = {pendiente:'Pendiente', aprobado:'Aprobado', cambios:'Con cambios', corregido:'✨ Corregido'};
+  var LBL = {
+    borrador: 'Borrador',
+    en_revision: 'En revisión',
+    pendiente: 'En revisión',
+    cambios: 'Cambios solicitados',
+    en_correccion: 'En corrección',
+    corregido: 'Corregido',
+    aprobado: 'Aprobado'
+  };
   var KEY = 'nexo-revision-' + (DATA.id || (DATA.cliente + '-' + DATA.mes + '-' + DATA.anio));
   var C = 2 * Math.PI * 82;
   var $ = function(id){ return document.getElementById(id); };
@@ -2010,11 +2396,11 @@ La intención es utilizar el comentario como punto de partida para que la comuni
     var whoEl = $('who');
     var w = whoEl ? whoEl.value.trim() : '';
     if (w) return w;
-    var hasCorr = items.some(function(x){ return x.estado === 'corregido'; });
-    if (isReviewShipment || hasCorr) return '';
     try {
-      var stored = localStorage.getItem('nexo_reviewer_name') || '';
-      if (stored) return stored;
+      var sess = sessionStorage.getItem('nexo_reviewer_name_' + (DATA.id || 'board'));
+      if (sess && sess.trim()) return sess.trim();
+      var stored = localStorage.getItem('nexo_reviewer_name');
+      if (stored && stored.trim()) return stored.trim();
     } catch(e){}
     return DATA.revision.revisadoPor || '';
   }
@@ -2025,14 +2411,21 @@ La intención es utilizar el comentario como punto de partida para que la comuni
     var whoEl = $('who');
     if (whoEl) whoEl.value = trimmed;
     try {
-      if (trimmed) localStorage.setItem('nexo_reviewer_name', trimmed);
-      else localStorage.removeItem('nexo_reviewer_name');
+      if (trimmed) {
+        sessionStorage.setItem('nexo_reviewer_name_' + (DATA.id || 'board'), trimmed);
+        localStorage.setItem('nexo_reviewer_name', trimmed);
+      }
     } catch(e){}
   }
 
   items.forEach(function(it, i){
     if (!it.id) it.id = 'c' + (i + 1);
-    if (['pendiente','aprobado','cambios','corregido'].indexOf(it.estado) < 0) it.estado = 'pendiente';
+    if (!it.version) it.version = 1;
+    it.version = parseInt(it.version, 10) || 1;
+    if (['borrador', 'en_revision', 'pendiente', 'cambios', 'en_correccion', 'corregido', 'aprobado'].indexOf(it.estado) < 0) {
+      it.estado = 'en_revision';
+    }
+    if (it.estado === 'pendiente') it.estado = 'en_revision';
     it.formato = normalizeFormato(it.formato || it.formatoOriginal);
     it.formatoOriginal = it.formato;
     if (typeof it.comentario !== 'string') it.comentario = '';
@@ -2108,6 +2501,11 @@ La intención es utilizar el comentario como punto de partida para que la comuni
   function el(tag, cls, txt){ var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
   function pad(n){ return (n < 10 ? '0' : '') + n; }
   function safeUrl(u){ return /^https?:\/\//i.test(u || '') ? u : null; }
+  function escapeHtml(s){
+    return String(s || '').replace(/[&<>'"]/g, function(t){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t];
+    });
+  }
 
   function copyTextToClipboard(text, cb){
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -2161,21 +2559,15 @@ La intención es utilizar el comentario como punto de partida para que la comuni
   document.title = 'Revisión de contenidos · ' + (DATA.cliente || '') + ' · ' + periodo;
   $('intro').textContent = DATA.intro || 'Revisa cada pieza con calma. Apruébala o cuéntanos qué ajustar, y al terminar descarga el tablero para enviárnoslo.';
 
-  // Si hay correcciones o estamos en modo agencia o revisión de corregidos, el nombre del revisor queda en blanco
-  var initHasCorregidos = items.some(function(x){ return x.estado === 'corregido'; });
-  if (isReviewShipment || initHasCorregidos || agencyUser) {
-    DATA.revision.revisadoPor = '';
-    DATA.revision.fecha = '';
-    if ($('who')) $('who').value = '';
-    if ($('reviewed')) $('reviewed').classList.remove('show');
-    try { localStorage.removeItem('nexo_reviewer_name'); } catch(e){}
-  } else {
-    $('who').value = DATA.revision.revisadoPor || '';
-    if (DATA.revision.fecha) {
-      var d = new Date(DATA.revision.fecha);
-      $('reviewed').textContent = '✓ Revisado por ' + (DATA.revision.revisadoPor || 'el cliente') + ' el ' + d.toLocaleDateString('es-VE', {day:'2-digit', month:'long', year:'numeric'}) + ' a las ' + d.toLocaleTimeString('es-VE', {hour:'2-digit', minute:'2-digit'});
-      $('reviewed').classList.add('show');
-    }
+  // Inicializar nombre del revisor reutilizando la sesión del cliente
+  var currentStoredReviewer = getReviewerName();
+  if ($('who')) {
+    $('who').value = currentStoredReviewer || DATA.revision.revisadoPor || '';
+  }
+  if (DATA.revision.fecha && !agencyUser) {
+    var d = new Date(DATA.revision.fecha);
+    $('reviewed').textContent = '✓ Revisado por ' + (DATA.revision.revisadoPor || currentStoredReviewer || 'el cliente') + ' el ' + d.toLocaleDateString('es-VE', {day:'2-digit', month:'long', year:'numeric'}) + ' a las ' + d.toLocaleTimeString('es-VE', {hour:'2-digit', minute:'2-digit'});
+    $('reviewed').classList.add('show');
   }
   if (DATA.url) { $('openLink').href = DATA.url; $('openLink').classList.add('show'); }
 
@@ -2213,7 +2605,6 @@ La intención es utilizar el comentario como punto de partida para que la comuni
           it.formatoOriginal = newFmt;
           fmtTag.textContent = newFmt;
           closeFmtPopover();
-          if (cObj.fmtTag) cObj.fmtTag.textContent = newFmt;
           saveDraft();
           toast('Guardando tipo de contenido (' + newFmt + ')…');
           saveAgencyFormatoChange(it, newFmt);
@@ -2265,24 +2656,33 @@ La intención es utilizar el comentario como punto de partida para que la comuni
 
     if (it.pilar) tags.appendChild(el('span', 'tag', it.pilar));
     if (it.fechaPublicacion) tags.appendChild(el('span', 'tag date', '📅 ' + it.fechaPublicacion));
+
+    // Versión concreta y contexto de revisión
+    var vNum = parseInt(it.version, 10) || 1;
+    var vTag = el('span', 'tag version', 'v' + vNum);
+    tags.appendChild(vTag);
+    var isCorrectionReview = vNum > 1;
+    var ctxTag = el('span', 'tag ' + (isCorrectionReview ? 'ctx-correction' : 'ctx-first'), isCorrectionReview ? '🔄 Revisión de correcciones' : '✨ Primera revisión');
+    tags.appendChild(ctxTag);
+    if (it.fechaCorreccion || it.fechaEnvio) {
+      tags.appendChild(el('span', 'tag date', '🚀 ' + formatRelTime(it.fechaCorreccion || it.fechaEnvio)));
+    }
+
     tw.appendChild(tags);
     var h2Title = el('h2', null, it.titulo || 'Contenido ' + num);
     tw.appendChild(h2Title);
     top.appendChild(tw);
-    var badge = el('span', 'badge', LBL[it.estado]); top.appendChild(badge);
+    var badge = el('span', 'badge', LBL[it.estado] || it.estado); top.appendChild(badge);
     card.appendChild(top);
-
-
 
     var hasCopy = (it.copy || it.hashtags);
     var body = el('div', 'c-body' + (hasCopy ? '' : ' single'));
     var g = el('div', 'guion');
-    var pGuion = null;
-    if (it.guion) {
-      g.appendChild(el('span', 'lbl', it.guionLabel || 'Guion / descripción'));
-      pGuion = el('p', null, it.guion);
-      g.appendChild(pGuion);
-    }
+    g.appendChild(el('span', 'lbl', it.guionLabel || 'Guion / descripción'));
+    var pGuion = el('p', 'p-guion', it.guion || '');
+    if (!it.guion) pGuion.style.display = agencyUser ? 'block' : 'none';
+    g.appendChild(pGuion);
+
     var refs = (it.referencias || []).filter(function(r){ return safeUrl(r.url); });
     if (refs.length) {
       var rw = el('div', 'refs');
@@ -2290,20 +2690,36 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       g.appendChild(rw);
     }
     body.appendChild(g);
-    var pCopy = null;
-    if (hasCopy) {
-      var cw = el('div'); cw.appendChild(el('span', 'lbl', 'Copy'));
-      var post = el('div', 'post'); var ph = el('div', 'post-h');
-      ph.appendChild(el('div', 'av', (handle || 'N').charAt(0).toUpperCase()));
-      var pn = el('div'); pn.appendChild(el('b', null, handle || 'tu cuenta')); pn.appendChild(el('small', null, 'Vista previa del copy'));
-      ph.appendChild(pn); post.appendChild(ph);
-      pCopy = el('p', null, it.copy || '');
-      if (it.hashtags) pCopy.appendChild(el('span', 'hash', it.hashtags));
-      post.appendChild(pCopy); cw.appendChild(post); body.appendChild(cw);
-    }
+
+    var cw = el('div', 'copy-wrap');
+    cw.appendChild(el('span', 'lbl', 'Copy'));
+    var post = el('div', 'post'); var ph = el('div', 'post-h');
+    ph.appendChild(el('div', 'av', (handle || 'N').charAt(0).toUpperCase()));
+    var pn = el('div'); pn.appendChild(el('b', null, handle || 'tu cuenta')); pn.appendChild(el('small', null, 'Vista previa del copy'));
+    ph.appendChild(pn); post.appendChild(ph);
+    var pCopy = el('p', 'p-copy', it.copy || '');
+    if (it.hashtags) pCopy.appendChild(el('span', 'hash', it.hashtags));
+    if (!hasCopy) cw.style.display = agencyUser ? 'block' : 'none';
+    post.appendChild(pCopy); cw.appendChild(post); body.appendChild(cw);
     card.appendChild(body);
 
     var rv = el('div', 'review');
+
+    // Resumen de versión corregida
+    if ((parseInt(it.version, 10) || 1) > 1) {
+      var corrBox = el('div', 'correction-summary-box');
+      corrBox.style.cssText = 'margin-bottom:12px;background:rgba(2,132,199,0.08);border:1px solid rgba(56,189,248,0.25);border-radius:8px;padding:10px 12px;';
+      var lastH = Array.isArray(it.historial) && it.historial.length ? it.historial[it.historial.length - 1] : null;
+      var hAction = (lastH && lastH.accion) ? lastH.accion : 'Ajustes realizados por el equipo según las observaciones de la versión anterior.';
+      corrBox.innerHTML = '<div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#38BDF8;margin-bottom:4px;">' +
+        '<span>🔄 Versión corregida (v' + it.version + ')</span>' +
+        (it.fechaCorreccion ? '<span style="font-weight:400;color:rgba(255,255,255,0.5);font-size:11px;">· ' + formatRelTime(it.fechaCorreccion) + '</span>' : '') +
+      '</div>' +
+      '<div style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.4;">' +
+        escapeHtml(hAction) +
+      '</div>';
+      rv.appendChild(corrBox);
+    }
 
     // 1. BLOQUE DE COMENTARIOS (ARRIBA)
     var cmBox = el('div', 'comment-box');
@@ -2315,13 +2731,14 @@ La intención es utilizar el comentario como punto de partida para que la comuni
     var cmThread = el('div', 'cm-thread');
     cmBox.appendChild(cmThread);
 
-    function renderThread(){
+    function renderThread(newComment){
       cmThread.innerHTML = '';
       var visibleComms = (it.comentarios || []).filter(function(cm){
         return !isCorrectionNote(cm);
       });
       visibleComms.forEach(function(cm){
-        var bubble = el('div', 'cm-bubble');
+        var isNew = (newComment && cm === newComment);
+        var bubble = el('div', 'cm-bubble' + (isNew ? ' cm-new' : ''));
         var initial = (cm.autor || 'C').trim().charAt(0).toUpperCase();
         bubble.appendChild(el('div', 'cm-av', initial || 'C'));
         var r = el('div', 'cm-right');
@@ -2363,12 +2780,13 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       if (!txt) return false;
       var auth = getReviewerName() || '';
       it.comentarios = it.comentarios || [];
-      it.comentarios.push({ autor: auth, texto: txt, fecha: new Date().toISOString() });
+      var newCm = { autor: auth, texto: txt, fecha: new Date().toISOString() };
+      it.comentarios.push(newCm);
       it.comentario = formatComentariosString(it.comentarios);
       if (auth) it.revisadoPor = auth;
       ta.value = '';
       card.classList.remove('warn');
-      renderThread();
+      renderThread(newCm);
       saveDraft();
       toast('✓ Comentario registrado');
       return true;
@@ -2388,8 +2806,8 @@ La intención es utilizar el comentario como punto de partida para que la comuni
     decSec.appendChild(decHead);
 
     var seg = el('div', 'seg');
-    var ap = el('button', 'approve'); ap.type = 'button'; ap.innerHTML = '<span class="ic">✓</span>Aprobar';
-    var ch = el('button', 'change'); ch.type = 'button'; ch.innerHTML = '<span class="ic">✎</span>Pedir cambios';
+    var ap = el('button', 'approve'); ap.type = 'button'; ap.innerHTML = '<span class="ic">✓</span>Aprobar esta versión';
+    var ch = el('button', 'change'); ch.type = 'button'; ch.innerHTML = '<span class="ic">✎</span>Solicitar cambios';
     seg.appendChild(ap); seg.appendChild(ch);
     decSec.appendChild(seg);
 
@@ -2408,15 +2826,30 @@ La intención es utilizar el comentario como punto de partida para que la comuni
 
     function paint(){
       card.dataset.state = it.estado; a.dataset.state = it.estado;
-      badge.textContent = (it.estado === 'corregido' && !agencyUser) ? 'Pendiente' : (LBL[it.estado] || it.estado);
-      ap.classList.toggle('on', it.estado === 'aprobado'); ch.classList.toggle('on', it.estado === 'cambios');
-      ap.setAttribute('aria-pressed', it.estado === 'aprobado'); ch.setAttribute('aria-pressed', it.estado === 'cambios');
-      if (it.estado === 'aprobado') {
+      var curSt = it.estado;
+      if (curSt === 'pendiente') curSt = 'en_revision';
+      var stLabel = LBL[curSt] || curSt;
+      if (curSt === 'en_revision') {
+        stLabel = (it.version > 1) ? 'En revisión (v' + it.version + ')' : 'En revisión (v1)';
+      }
+      badge.textContent = (curSt === 'corregido' && !agencyUser) ? 'En revisión (v' + (it.version || 1) + ')' : stLabel;
+      ap.classList.toggle('on', curSt === 'aprobado'); ch.classList.toggle('on', curSt === 'cambios');
+      ap.setAttribute('aria-pressed', curSt === 'aprobado'); ch.setAttribute('aria-pressed', curSt === 'cambios');
+
+      if (curSt === 'aprobado') {
         decStatus.className = 'dec-status ok';
-        decStatus.textContent = '✓ Marcado como Aprobado';
-      } else if (it.estado === 'cambios') {
+        var revWho = (it.aprobacion && it.aprobacion.usuario) || it.revisadoPor || getReviewerName() || 'Cliente';
+        var revWhen = (it.aprobacion && it.aprobacion.fecha) || DATA.revision.fecha || '';
+        decStatus.textContent = '✓ Versión v' + (it.version || 1) + ' aprobada' + (revWho ? ' por ' + revWho : '') + (revWhen ? ' el ' + formatRelTime(revWhen) : '');
+      } else if (curSt === 'cambios') {
         decStatus.className = 'dec-status fix';
-        decStatus.textContent = '✎ Marcado para Solicitar cambios (indica qué ajustar arriba)';
+        decStatus.textContent = '✎ Marcado para Solicitar cambios (observaciones registradas)';
+      } else if (curSt === 'en_correccion') {
+        decStatus.className = 'dec-status fix';
+        decStatus.textContent = '⚙ En corrección por el equipo';
+      } else if (curSt === 'corregido') {
+        decStatus.className = 'dec-status ok';
+        decStatus.textContent = '🔄 Ajustes terminados (v' + (it.version || 1) + ') · Pendiente de envío';
       } else {
         decStatus.className = 'dec-status';
         decStatus.textContent = '• Pendiente de evaluación (obligatorio)';
@@ -2424,20 +2857,45 @@ La intención es utilizar el comentario como punto de partida para que la comuni
     }
 
     function set(s){
-      // Si el usuario escribió un texto en el textarea y no tocó "Agregar comentario", se guarda automáticamente
-      if (ta.value.trim()) addCommentFromInput();
-
-      it.estado = it.estado === s ? (it.version > 1 ? 'corregido' : 'pendiente') : s;
-      card.classList.remove('warn');
-      paint(); refresh(); updateApartadoCorregidos(); applyFilter(); saveDraft();
-
-      if (it.estado === 'cambios') {
-        var hasComments = (it.comentarios && it.comentarios.length > 0);
+      if (s === 'cambios') {
+        if (ta.value.trim()) addCommentFromInput();
+        var hasComments = (it.comentarios && it.comentarios.length > 0 && it.comentarios.some(function(x){ return x.texto && x.texto.trim(); }));
         if (!hasComments) {
           ta.placeholder = 'Cuéntanos qué te gustaría ajustar (requerido para pedir cambios)…';
           ta.focus({preventScroll:true});
+          toast('Por favor escribe qué cambios solicitas antes de enviar');
+          card.classList.add('warn');
+          return;
         }
+        delete it.aprobacion;
+        it.estado = 'cambios';
+        card.classList.remove('warn');
+        paint(); refresh(); updateApartadoCorregidos(); applyFilter(); saveDraft();
+        toast('✎ Cambios solicitados para versión v' + (it.version || 1));
+        return;
       }
+
+      if (ta.value.trim()) addCommentFromInput();
+
+      if (s === 'aprobado') {
+        var revWho = getReviewerName() || 'Cliente';
+        var nowIso = new Date().toISOString();
+        it.aprobacion = {
+          version: parseInt(it.version, 10) || 1,
+          usuario: revWho,
+          fecha: nowIso
+        };
+        it.revisadoPor = revWho;
+        it.estado = 'aprobado';
+        card.classList.remove('warn');
+        paint(); refresh(); updateApartadoCorregidos(); applyFilter(); saveDraft();
+        toast('✓ Versión v' + (it.version || 1) + ' aprobada');
+        return;
+      }
+
+      it.estado = s;
+      card.classList.remove('warn');
+      paint(); refresh(); updateApartadoCorregidos(); applyFilter(); saveDraft();
     }
 
     ap.onclick = function(){ set('aprobado'); };
@@ -2455,12 +2913,17 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       renderThread: renderThread,
       paint: paint,
       fmtTag: fmtTag,
+      openFmtPopover: openFmtPopover,
+      closeFmtPopover: closeFmtPopover,
       fw: fw,
       fs: fs,
       h2Title: h2Title,
       tagsEl: tags,
+      vTag: vTag,
+      ctxTag: ctxTag,
       guionParagraph: pGuion,
-      copyParagraph: pCopy
+      copyParagraph: pCopy,
+      copyContainer: cw
     });
   });
 
@@ -2678,7 +3141,7 @@ La intención es utilizar el comentario como punto de partida para que la comuni
   function toast(msg){ var t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(tt); tt = setTimeout(function(){ t.classList.remove('show'); }, 3200); }
   function modal(opts){
     var b = $('box'); b.innerHTML = '';
-    b.appendChild(el('div', 'ico ' + (opts.kind || 'ok'), opts.icon || '✓'));
+    b.appendChild(el('div', 'ico ' + (opts.kind || 'ok') + (opts.celebrate ? ' celebrate' : ''), opts.icon || '✓'));
     b.appendChild(el('h3', null, opts.title));
     if (opts.text) b.appendChild(el('p', null, opts.text));
     if (opts.list && opts.list.length) { var ul = el('ul'); opts.list.forEach(function(x){ ul.appendChild(el('li', null, x)); }); b.appendChild(ul); }
@@ -2788,8 +3251,20 @@ La intención es utilizar el comentario como punto de partida para que la comuni
         });
 
         if (fsItem) {
-          if (fsItem.estado && ['aprobado', 'cambios', 'pendiente', 'corregido'].indexOf(fsItem.estado) >= 0) {
-            it.estado = fsItem.estado;
+          if (fsItem.estado && ['borrador', 'en_revision', 'pendiente', 'cambios', 'en_correccion', 'corregido', 'aprobado'].indexOf(fsItem.estado) >= 0) {
+            it.estado = (fsItem.estado === 'pendiente') ? 'en_revision' : fsItem.estado;
+          }
+          if (fsItem.version) {
+            it.version = parseInt(fsItem.version, 10);
+            if (cObj.vTag) cObj.vTag.textContent = 'v' + it.version;
+            if (cObj.ctxTag) {
+              var isCorr = it.version > 1;
+              cObj.ctxTag.className = 'tag ' + (isCorr ? 'ctx-correction' : 'ctx-first');
+              cObj.ctxTag.textContent = isCorr ? '🔄 Revisión de correcciones' : '✨ Primera revisión';
+            }
+          }
+          if (fsItem.aprobacion) {
+            it.aprobacion = fsItem.aprobacion;
           }
           if (fsItem.comentario != null) {
             it.comentario = fsItem.comentario;
@@ -2813,9 +3288,6 @@ La intención es utilizar el comentario como punto de partida para que la comuni
           if (fsItem.copy != null) {
             it.copy = fsItem.copy;
             if (cObj.copyParagraph) cObj.copyParagraph.textContent = fsItem.copy;
-          }
-          if (fsItem.version) {
-            it.version = parseInt(fsItem.version, 10);
           }
           if (fsItem.fechaCorreccion) {
             it.fechaCorreccion = fsItem.fechaCorreccion;
@@ -2938,6 +3410,7 @@ La intención es utilizar el comentario como punto de partida para que la comuni
         icon:'✓',
         title:'¡Revisión enviada!',
         text:'Nexo ya recibió tus respuestas: ' + k.aprobado + ' aprobados y ' + k.cambios + ' con cambios.' + (isReviewShipment ? ' (Envío de revisión procesado).' : '') + ' Si cambias algo, puedes volver a enviarla.',
+        celebrate: true,
         buttons:[{label:'Descargar una copia', fn:doDownload}, {label:'Listo', primary:true}]
       });
     }
@@ -2971,6 +3444,19 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       if (it.guion != null) fMap.guion = { stringValue: String(it.guion) };
       if (it.copy != null) fMap.copy = { stringValue: String(it.copy) };
       if (it.version != null) fMap.version = { integerValue: String(it.version) };
+      if (it.fechaCorreccion) fMap.fechaCorreccion = { stringValue: String(it.fechaCorreccion) };
+      if (it.fechaEnvio) fMap.fechaEnvio = { stringValue: String(it.fechaEnvio) };
+      if (it.aprobacion && it.estado === 'aprobado') {
+        fMap.aprobacion = {
+          mapValue: {
+            fields: {
+              version: { integerValue: String(it.aprobacion.version || it.version || 1) },
+              usuario: { stringValue: String(it.aprobacion.usuario || revName) },
+              fecha: { stringValue: String(it.aprobacion.fecha || DATA.revision.fecha) }
+            }
+          }
+        };
+      }
       return {
         mapValue: {
           fields: fMap
@@ -3462,31 +3948,48 @@ La intención es utilizar el comentario como punto de partida para que la comuni
   function saveCardCorrection(it, cObj, newGuion, newCopy, editorBox, btnSave){
     if (btnSave) { btnSave.disabled = true; btnSave.textContent = 'Guardando…'; }
 
-    var nextVersion = (parseInt(it.version, 10) || 1) + 1;
+    var curV = parseInt(it.version, 10) || 1;
+    var nextVersion = (it.estado === 'cambios' || it.estado === 'en_correccion' || it.estado === 'aprobado') ? (curV + 1) : curV;
     it.guion = newGuion;
     it.copy = newCopy;
-      it.formato = cObj.fs ? cObj.fs.value : it.formato;
-      it.formatoOriginal = it.formato;
-      if (cObj.fmtTag) cObj.fmtTag.textContent = it.formato;
+    it.formato = cObj.fs ? cObj.fs.value : it.formato;
+    it.formatoOriginal = it.formato;
+    if (cObj.fmtTag) cObj.fmtTag.textContent = it.formato;
     it.version = nextVersion;
     it.estado = 'corregido';
     it.fechaCorreccion = new Date().toISOString();
+    delete it.aprobacion; // Nueva versión requiere nueva aprobación del cliente
+
+    it.historial = it.historial || [];
+    it.historial.push({
+      version: nextVersion,
+      accion: 'Corrección guardada (v' + nextVersion + ')',
+      usuario: agencyUser ? ('Agencia (' + agencyUser + ')') : 'Equipo Nexo',
+      fecha: it.fechaCorreccion
+    });
 
     it.revisadoPor = '';
     it.comentario = formatComentariosString(it.comentarios);
 
-    // Al guardar correcciones, el nombre del revisor queda en blanco para que el cliente lo ingrese al aprobar
-    if ($('who')) $('who').value = '';
-    DATA.revision.revisadoPor = '';
-    try { localStorage.removeItem('nexo_reviewer_name'); } catch(e){}
     if ($('reviewed')) $('reviewed').classList.remove('show');
 
     // Actualizar visualización en vivo de la tarjeta
+    if (cObj.h2Title && it.titulo) {
+      cObj.h2Title.textContent = it.titulo;
+    }
     if (cObj.guionParagraph) {
       cObj.guionParagraph.textContent = newGuion;
     }
     if (cObj.copyParagraph) {
       cObj.copyParagraph.textContent = newCopy;
+    }
+    if (cObj.vTag) {
+      cObj.vTag.textContent = 'v' + nextVersion;
+    }
+    if (cObj.ctxTag) {
+      var isCorr = nextVersion > 1;
+      cObj.ctxTag.className = 'tag ' + (isCorr ? 'ctx-correction' : 'ctx-first');
+      cObj.ctxTag.textContent = isCorr ? '🔄 Revisión de correcciones' : '✨ Primera revisión';
     }
 
     if (cObj.renderThread) cObj.renderThread();
@@ -3498,9 +4001,9 @@ La intención es utilizar el comentario como punto de partida para que la comuni
     // Actualizar en Firestore si está conectado
     if (FB && FB.projectId && DATA.id) {
       var totalGlobalOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
-      var totalGlobalFix = items.filter(function(x){ return x.estado === 'cambios'; }).length;
+      var totalGlobalFix = items.filter(function(x){ return x.estado === 'cambios' || x.estado === 'en_correccion'; }).length;
       var totalGlobalCorr = items.filter(function(x){ return x.estado === 'corregido'; }).length;
-      var totalGlobalPend = items.filter(function(x){ return x.estado === 'pendiente' || !x.estado; }).length;
+      var totalGlobalPend = items.filter(function(x){ return x.estado === 'pendiente' || x.estado === 'en_revision' || !x.estado; }).length;
       var estadoGeneral = (totalGlobalFix > 0) ? 'Con cambios' :
                           (totalGlobalCorr > 0 ? 'En revisión' :
                           (totalGlobalOk === items.length ? 'Aprobado' : (totalGlobalOk > 0 ? 'Parcial' : 'Sin revisar')));
@@ -3515,7 +4018,7 @@ La intención es utilizar el comentario como punto de partida para que la comuni
           titulo: { stringValue: String(item.titulo || '') },
           formato: { stringValue: String(item.formato || '') },
           formatoOriginal: { stringValue: String(item.formatoOriginal || '') },
-          estado: { stringValue: String(item.estado || 'pendiente') },
+          estado: { stringValue: String(item.estado || 'en_revision') },
           comentario: { stringValue: String(fullComment) },
           revisadoPor: { stringValue: String(lastAuthor) }
         };
@@ -3523,6 +4026,18 @@ La intención es utilizar el comentario como punto de partida para que la comuni
         if (item.copy != null) fMap.copy = { stringValue: String(item.copy) };
         if (item.version != null) fMap.version = { integerValue: String(item.version) };
         if (item.fechaCorreccion) fMap.fechaCorreccion = { stringValue: String(item.fechaCorreccion) };
+        if (item.fechaEnvio) fMap.fechaEnvio = { stringValue: String(item.fechaEnvio) };
+        if (item.aprobacion && item.estado === 'aprobado') {
+          fMap.aprobacion = {
+            mapValue: {
+              fields: {
+                version: { integerValue: String(item.aprobacion.version || item.version || 1) },
+                usuario: { stringValue: String(item.aprobacion.usuario || '') },
+                fecha: { stringValue: String(item.aprobacion.fecha || '') }
+              }
+            }
+          };
+        }
         return {
           mapValue: { fields: fMap }
         };
@@ -3596,13 +4111,15 @@ La intención es utilizar el comentario como punto de partida para que la comuni
     btnSave.type = 'button';
     btnSave.textContent = '💾 Guardar cambios';
     btnSave.onclick = function(){
+      var newTitle = cObj.h2Title ? cObj.h2Title.textContent.trim() : (it.titulo || '');
       var newGuion = cObj.guionParagraph ? cObj.guionParagraph.textContent.trim() : (it.guion || '');
       var newCopy = cObj.copyParagraph ? cObj.copyParagraph.textContent.trim() : (it.copy || '');
+      it.titulo = newTitle;
       saveCardCorrection(it, cObj, newGuion, newCopy, null, btnSave);
-      // Actualizar info de versión tras guardar
       setTimeout(function(){
         var nv = parseInt(it.version, 10) || 1;
         barInfo.textContent = '✎ Modo corrección agencia · v' + nv + ' actual';
+        if (cObj.vTag) cObj.vTag.textContent = 'v' + nv;
       }, 300);
     };
     agencyBar.appendChild(btnSave);
@@ -3612,16 +4129,22 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       if (active) {
         card.classList.add('card-agency-edit-mode');
         agencyBar.style.display = 'flex';
-        if (fmtTag) {
-          fmtTag.classList.add('agency-editable');
-          // Registrar el click solo una vez
-          if (!fmtTag._agencyClickBound) {
-            fmtTag._agencyClickBound = true;
-            fmtTag.addEventListener('click', function(e){
+        if (cObj.guionParagraph) cObj.guionParagraph.style.display = 'block';
+        if (cObj.copyContainer) cObj.copyContainer.style.display = 'block';
+        if (cObj.fmtTag) {
+          cObj.fmtTag.classList.add('agency-editable');
+          if (!cObj.fmtTag._agencyClickBound) {
+            cObj.fmtTag._agencyClickBound = true;
+            cObj.fmtTag.addEventListener('click', function(e){
               e.stopPropagation();
-              if (fmtPopoverOpen) { closeFmtPopover(); } else { openFmtPopover(); }
+              if (cObj.openFmtPopover) cObj.openFmtPopover();
             });
           }
+        }
+        if (cObj.h2Title) {
+          cObj.h2Title.setAttribute('contenteditable', 'true');
+          cObj.h2Title.setAttribute('spellcheck', 'true');
+          cObj.h2Title.setAttribute('title', 'Haz clic para editar el título');
         }
         if (cObj.guionParagraph) {
           cObj.guionParagraph.setAttribute('contenteditable', 'true');
@@ -3634,9 +4157,13 @@ La intención es utilizar el comentario como punto de partida para que la comuni
       } else {
         card.classList.remove('card-agency-edit-mode');
         agencyBar.style.display = 'none';
-        if (fmtTag) {
-          fmtTag.classList.remove('agency-editable');
-          closeFmtPopover();
+        if (cObj.fmtTag) {
+          cObj.fmtTag.classList.remove('agency-editable');
+          if (cObj.closeFmtPopover) cObj.closeFmtPopover();
+        }
+        if (cObj.h2Title) {
+          cObj.h2Title.removeAttribute('contenteditable');
+          cObj.h2Title.removeAttribute('spellcheck');
         }
         if (cObj.guionParagraph) {
           cObj.guionParagraph.removeAttribute('contenteditable');

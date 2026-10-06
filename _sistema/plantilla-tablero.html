@@ -2218,6 +2218,11 @@ __DATA__
   function el(tag, cls, txt){ var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
   function pad(n){ return (n < 10 ? '0' : '') + n; }
   function safeUrl(u){ return /^https?:\/\//i.test(u || '') ? u : null; }
+  function escapeHtml(s){
+    return String(s || '').replace(/[&<>'"]/g, function(t){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t];
+    });
+  }
 
   function copyTextToClipboard(text, cb){
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -2317,7 +2322,6 @@ __DATA__
           it.formatoOriginal = newFmt;
           fmtTag.textContent = newFmt;
           closeFmtPopover();
-          if (cObj.fmtTag) cObj.fmtTag.textContent = newFmt;
           saveDraft();
           toast('Guardando tipo de contenido (' + newFmt + ')…');
           saveAgencyFormatoChange(it, newFmt);

@@ -202,6 +202,10 @@
       transform: scale(.97);
     }
 
+    html {
+      overflow-x: clip;
+    }
+
     body {
       background: var(--bg-gradient);
       font-family: var(--font-sans);
@@ -209,6 +213,7 @@
       height: 100vh;
       height: 100dvh;
       overflow: hidden;
+      overflow-x: clip;
       display: flex;
       flex-direction: column;
       position: fixed;
@@ -241,11 +246,23 @@
       border-bottom: 1px solid var(--border-color);
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
-      gap: 16px;
+      padding: 0;
+      width: 100%;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
       transition: background 0.3s ease, border-color 0.3s ease;
+    }
+
+    .topbar-inner {
+      width: 100%;
+      max-width: 1560px;
+      margin-inline: auto;
+      padding-inline: 32px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-sizing: border-box;
     }
 
     .topbar-left {
@@ -645,15 +662,19 @@
       position: relative;
       z-index: 10;
       flex: 1 1 0%;
-      padding: 16px 20px 20px 20px;
+      width: 100%;
+      max-width: 1560px;
+      margin-inline: auto;
+      padding: 24px 32px 28px;
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       grid-template-rows: minmax(0, 1fr);
-      gap: 16px;
+      gap: 24px;
       overflow: hidden;
       min-height: 0;
       height: calc(100vh - 62px);
       max-height: calc(100vh - 62px);
+      box-sizing: border-box;
     }
 
     /* COLUMNA ESTILO MESA DE CONTROL */
@@ -1646,27 +1667,147 @@
       transform: translateY(-1px);
     }
 
-    /* ── DENSIDAD CÓMODA ───────────────────────────────────────────────── */
+    /* ── PANTALLAS ULTRA-ANCHAS (1920px o más) ────────────────────────── */
+    @media (min-width: 1920px) {
+      .kanban-area,
+      .topbar-inner {
+        max-width: 1760px;
+      }
+    }
+
+    /* ── PANTALLAS MEDIANAS (769px a 1100px) ───────────────────────────── */
+    @media (min-width: 769px) and (max-width: 1100px) {
+      .kanban-area {
+        padding-inline: 20px;
+        gap: 16px;
+      }
+      .topbar-inner {
+        padding-inline: 20px;
+        gap: 16px;
+      }
+    }
+
+    /* ── DENSIDAD CÓMODA (GRANDE POR DEFECTO) ───────────────────────────── */
     body.density-comfortable .card {
-      padding: 16px 18px;
-      border-radius: 13px;
+      padding: 18px 20px;
+      border-radius: 14px;
     }
     body.density-comfortable .card-title {
-      font-size: 15px;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.3;
       margin-bottom: 7px;
+    }
+    body.density-comfortable .card-desc-preview {
+      font-size: 14.5px;
+      line-height: 1.55;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 11px;
+    }
+    body.density-comfortable .card-seq-num,
+    body.density-comfortable .card-type-badge {
+      font-size: 12px;
+      padding: 3px 9px;
+      border-radius: 6px;
+    }
+    body.density-comfortable .k-col-title {
+      font-size: 15px;
+    }
+    body.density-comfortable .k-col-count-badge {
+      font-size: 13px;
     }
     body.density-comfortable .k-col-cards {
       gap: 14px;
     }
 
-    /* ── ADAPTACIÓN MÓVIL (PANTALLA RODAJES 390px / 360px) ── */
+    /* ── ENTRADA AL ABRIR EL TABLERO (UNA SOLA VEZ AL CARGAR) ───────────── */
+    @keyframes kColEnter {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes kCardEnter {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .is-entering .k-col {
+      animation: kColEnter 320ms cubic-bezier(0.23, 1, 0.32, 1) backwards;
+    }
+    .is-entering #section-todo {
+      animation-delay: 0ms;
+    }
+    .is-entering #section-grabando {
+      animation-delay: 60ms;
+    }
+    .is-entering #section-listo {
+      animation-delay: 120ms;
+    }
+
+    /* Primeras 6 tarjetas de cada columna: 220ms, con 30ms entre tarjetas */
+    .is-entering .k-col-cards .card:nth-child(1) {
+      animation: kCardEnter 220ms cubic-bezier(0.23, 1, 0.32, 1) backwards;
+      animation-delay: 60ms;
+    }
+    .is-entering .k-col-cards .card:nth-child(2) {
+      animation: kCardEnter 220ms cubic-bezier(0.23, 1, 0.32, 1) backwards;
+      animation-delay: 90ms;
+    }
+    .is-entering .k-col-cards .card:nth-child(3) {
+      animation: kCardEnter 220ms cubic-bezier(0.23, 1, 0.32, 1) backwards;
+      animation-delay: 120ms;
+    }
+    .is-entering .k-col-cards .card:nth-child(4) {
+      animation: kCardEnter 220ms cubic-bezier(0.23, 1, 0.32, 1) backwards;
+      animation-delay: 150ms;
+    }
+    .is-entering .k-col-cards .card:nth-child(5) {
+      animation: kCardEnter 220ms cubic-bezier(0.23, 1, 0.32, 1) backwards;
+      animation-delay: 180ms;
+    }
+    .is-entering .k-col-cards .card:nth-child(6) {
+      animation: kCardEnter 220ms cubic-bezier(0.23, 1, 0.32, 1) backwards;
+      animation-delay: 210ms;
+    }
+
+    /* ── ADAPTACIÓN MÓVIL (PANTALLA RODAJES 390px / 360px) ──────────────── */
     @media (max-width: 768px) {
+      html, body {
+        overflow-x: clip;
+        width: 100%;
+        max-width: 100vw;
+        box-sizing: border-box;
+      }
       .topbar {
         height: 56px;
         min-height: 56px;
         max-height: 56px;
+        padding: 0;
+        gap: 0;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .topbar-inner {
         padding: 0 12px;
         gap: 8px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
       }
       .topbar-left {
         gap: 8px;
@@ -1693,12 +1834,12 @@
       }
       .client-title {
         font-size: 14px;
-        max-width: none;
+        max-width: 42vw;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
         min-width: 0;
-        flex-shrink: 1;
+        flex-shrink: 0;
       }
       .prod-pill {
         display: none;
@@ -1708,8 +1849,29 @@
       }
       .client-date {
         font-size: 11px;
-        flex-shrink: 0;
+        flex-shrink: 1;
+        min-width: 0;
         white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .live-status {
+        padding: 6px;
+        gap: 0;
+        justify-content: center;
+      }
+      .live-status .live-label-text,
+      .live-status #live-indicator-label,
+      .visually-hidden-mobile {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
       }
       .topbar-center {
         display: none;
@@ -1726,14 +1888,21 @@
       }
       .btn-mobile-search-toggle {
         display: flex;
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+        border-radius: 10px;
+        align-items: center;
+        justify-content: center;
       }
       .btn-icon-top {
-        width: 36px;
-        height: 36px;
-        min-width: 36px;
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
       }
       .btn-primary-top {
-        height: 36px;
+        height: 38px;
         padding: 0 10px;
         font-size: 12px;
       }
@@ -1744,17 +1913,41 @@
       /* Buscador móvil desplegable */
       .mobile-search-bar.show {
         display: flex;
+        width: 100%;
+        max-width: 100vw;
+        box-sizing: border-box;
       }
 
-      /* Pestañas de columna visibles en móvil */
+      /* Pestañas de columna visibles en móvil: las 3 caben sin cortarse, scroll horizontal con scroll-snap si es necesario */
       .mobile-col-tabs {
         display: flex;
+        width: 100%;
+        max-width: 100vw;
+        box-sizing: border-box;
+        padding: 8px 12px;
+        gap: 6px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .mobile-col-tabs::-webkit-scrollbar {
+        display: none;
       }
       .m-tab-btn {
+        flex: 1 1 0;
+        min-width: 0;
         min-height: 44px;
+        height: 44px;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 0 4px;
+        scroll-snap-align: start;
+        box-sizing: border-box;
+        white-space: nowrap;
       }
 
-      /* Kanban en móvil: 1 columna a la vez */
+      /* Kanban en móvil: 1 columna a la vez, centrada con padding 12px a los lados */
       .kanban-area {
         display: flex;
         flex: 1 1 0%;
@@ -1770,17 +1963,45 @@
       .k-col {
         display: none;
         width: 100%;
+        max-width: 100%;
+        min-width: 0;
         height: 100%;
         min-height: 0;
         max-height: 100%;
         overflow: hidden;
-        padding: 10px;
+        box-sizing: border-box;
       }
       .k-col.mobile-active {
         display: flex;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        padding: 12px;
+        margin-inline: auto;
+        box-sizing: border-box;
       }
       .k-col-head {
         display: none;
+      }
+
+      /* Las tarjetas ocupan todo el ancho y usan título en 16px en móvil */
+      .card {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+      body.density-comfortable .card-title,
+      .card-title {
+        font-size: 16px;
+        min-width: 0;
+        overflow-wrap: break-word;
+        word-break: break-word;
+      }
+      .card-desc-preview {
+        min-width: 0;
+        overflow-wrap: break-word;
+        word-break: break-word;
       }
 
       /* Panel lateral se convierte en pantalla completa */
@@ -1831,88 +2052,113 @@
       }
     }
 
+    @media (max-width: 400px) {
+      .client-date,
+      .header-sep {
+        display: none !important;
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
       }
+      @keyframes kColEnter {
+        from { opacity: 0; transform: none; }
+        to { opacity: 1; transform: none; }
+      }
+      @keyframes kCardEnter {
+        from { opacity: 0; transform: none; }
+        to { opacity: 1; transform: none; }
+      }
+      .is-entering .k-col {
+        animation: kColEnter 150ms linear backwards !important;
+        animation-delay: 0ms !important;
+      }
+      .is-entering .k-col-cards .card:nth-child(-n+6) {
+        animation: kCardEnter 150ms linear backwards !important;
+        animation-delay: 0ms !important;
+      }
     }
   </style>
 </head>
-<body class="density-compact">
+<body class="density-comfortable is-entering">
 
   <!-- FONDO ANIMADO DE CONEXIONES NEXO -->
   <canvas id="nexo-bg-canvas"></canvas>
 
   <!-- ENCABEZADO ULTRA-MODERNO -->
   <header class="topbar">
-    <div class="topbar-left">
-      <div class="nexo-logo-badge" title="NEXO Agencia Creativa">
-        <svg viewBox="540 610 1300 1160" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <g transform="translate(0,2364) scale(1,-1)">
-            <path fill="#5CB83E" d="M1266 1638 c-67 -59 -123 -108 -123 -108 0 -1 129 -214 131 -216 1 -1 2 4 18 65 l17 64 116 0 115 0 0 -3 c-1 -1 -43 -157 -94 -347 -51 -189 -93 -344 -93 -345 0 0 51 0 114 0 l113 1 14 51 c8 28 51 188 96 355 109 402 124 459 124 460 0 1 -62 1 -229 1 -218 0 -229 0 -229 2 1 2 34 127 34 128 0 1 -17 -13 -124 -108z M759 1528 c-147 -548 -209 -778 -209 -779 0 -1 73 -1 229 -1 125 0 228 0 228 0 0 0 -8 -30 -17 -65 -9 -35 -17 -65 -16 -65 0 0 1 1 3 2 1 2 56 50 122 107 66 58 120 106 120 106 1 1 -18 34 -63 108 -75 123 -67 110 -67 109 -1 0 -9 -29 -18 -65 l-17 -64 -115 0 -115 0 0 3 c1 2 184 687 186 690 0 2 -6 2 -114 2 l-114 0 -23 -88z"/>
-          </g>
-        </svg>
-      </div>
-      <div class="topbar-titles">
-        <h1 id="hdr-client" class="client-title">Tablero NEXO</h1>
-        <span class="prod-pill">PRODUCCIÓN</span>
-        <span class="header-sep">·</span>
-        <span id="hdr-date" class="client-date">Sin Fecha</span>
-      </div>
-    </div>
-
-    <!-- Buscador compacto Linear-style en escritorio -->
-    <div class="topbar-center">
-      <div class="compact-search">
-        <i data-lucide="search"></i>
-        <input type="text" id="search-input" placeholder="Buscar tarjetas..." autocomplete="off">
-        <kbd class="search-kbd" onclick="document.getElementById('search-input').focus()">⌘K</kbd>
-        <button id="search-clear" class="btn-search-clear" onclick="clearSearch()" title="Limpiar"><i data-lucide="x"></i></button>
-      </div>
-    </div>
-
-    <div class="topbar-right">
-      <!-- Selector de densidad Compacta / Cómoda -->
-      <div class="density-toggle" title="Densidad visual del tablero">
-        <button class="density-btn active" id="btn-density-compact" onclick="setDensity('compact')">Compacta</button>
-        <button class="density-btn" id="btn-density-comfortable" onclick="setDensity('comfortable')">Cómoda</button>
-      </div>
-
-      <!-- Selector de tema Oscuro / Claro -->
-      <button class="btn-icon-top" id="btn-theme-toggle" onclick="toggleTheme()" title="Cambiar tema (Oscuro / Claro)">
-        <i data-lucide="sun" id="theme-toggle-icon"></i>
-      </button>
-
-      <!-- Progreso global discreto -->
-      <div class="header-progress-box" title="Progreso de producción">
-        <div class="hp-info"><span id="hp-count">0 de 0</span> listos</div>
-        <div class="hp-bar-track">
-          <div class="hp-bar-fill" id="hp-fill" style="width: 0%"></div>
+    <div class="topbar-inner">
+      <div class="topbar-left">
+        <div class="nexo-logo-badge" title="NEXO Agencia Creativa">
+          <svg viewBox="540 610 1300 1160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(0,2364) scale(1,-1)">
+              <path fill="#5CB83E" d="M1266 1638 c-67 -59 -123 -108 -123 -108 0 -1 129 -214 131 -216 1 -1 2 4 18 65 l17 64 116 0 115 0 0 -3 c-1 -1 -43 -157 -94 -347 -51 -189 -93 -344 -93 -345 0 0 51 0 114 0 l113 1 14 51 c8 28 51 188 96 355 109 402 124 459 124 460 0 1 -62 1 -229 1 -218 0 -229 0 -229 2 1 2 34 127 34 128 0 1 -17 -13 -124 -108z M759 1528 c-147 -548 -209 -778 -209 -779 0 -1 73 -1 229 -1 125 0 228 0 228 0 0 0 -8 -30 -17 -65 -9 -35 -17 -65 -16 -65 0 0 1 1 3 2 1 2 56 50 122 107 66 58 120 106 120 106 1 1 -18 34 -63 108 -75 123 -67 110 -67 109 -1 0 -9 -29 -18 -65 l-17 -64 -115 0 -115 0 0 3 c1 2 184 687 186 690 0 2 -6 2 -114 2 l-114 0 -23 -88z"/>
+            </g>
+          </svg>
+        </div>
+        <div class="topbar-titles">
+          <h1 id="hdr-client" class="client-title">Tablero NEXO</h1>
+          <span class="prod-pill">PRODUCCIÓN</span>
+          <span class="header-sep">·</span>
+          <span id="hdr-date" class="client-date">Sin Fecha</span>
         </div>
       </div>
 
-      <!-- Estado en vivo Firestore -->
-      <div id="live-indicator" class="live-status" style="display:none;" title="Sincronización en la nube">
-        <span class="live-dot"></span>
-        <span id="live-indicator-label">En vivo</span>
+      <!-- Buscador compacto Linear-style en escritorio -->
+      <div class="topbar-center">
+        <div class="compact-search">
+          <i data-lucide="search"></i>
+          <input type="text" id="search-input" placeholder="Buscar tarjetas..." autocomplete="off">
+          <kbd class="search-kbd" onclick="document.getElementById('search-input').focus()">⌘K</kbd>
+          <button id="search-clear" class="btn-search-clear" onclick="clearSearch()" title="Limpiar"><i data-lucide="x"></i></button>
+        </div>
       </div>
 
-      <!-- Botón buscar móvil -->
-      <button class="btn-icon-top btn-mobile-search-toggle" onclick="toggleMobileSearch()" title="Buscar">
-        <i data-lucide="search"></i>
-      </button>
+      <div class="topbar-right">
+        <!-- Selector de densidad Compacta / Cómoda -->
+        <div class="density-toggle" title="Densidad visual del tablero">
+          <button class="density-btn" id="btn-density-compact" onclick="setDensity('compact')">Compacta</button>
+          <button class="density-btn active" id="btn-density-comfortable" onclick="setDensity('comfortable')">Cómoda</button>
+        </div>
 
-      <!-- Botón Exportar -->
-      <button class="btn-icon-top" onclick="exportData()" title="Exportar datos (JSON)">
-        <i data-lucide="download"></i>
-      </button>
+        <!-- Selector de tema Oscuro / Claro -->
+        <button class="btn-icon-top" id="btn-theme-toggle" onclick="toggleTheme()" title="Cambiar tema (Oscuro / Claro)">
+          <i data-lucide="sun" id="theme-toggle-icon"></i>
+        </button>
 
-      <!-- Botón Crear Tarjeta -->
-      <button class="btn-primary-top" onclick="openModal()">
-        <i data-lucide="plus"></i> <span>Nueva tarjeta</span>
-      </button>
+        <!-- Progreso global discreto -->
+        <div class="header-progress-box" title="Progreso de producción">
+          <div class="hp-info"><span id="hp-count">0 de 0</span> listos</div>
+          <div class="hp-bar-track">
+            <div class="hp-bar-fill" id="hp-fill" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <!-- Estado en vivo Firestore -->
+        <div id="live-indicator" class="live-status" style="display:none;" title="Sincronización en la nube" aria-label="En vivo">
+          <span class="live-dot"></span>
+          <span id="live-indicator-label" class="live-label-text visually-hidden-mobile">En vivo</span>
+        </div>
+
+        <!-- Botón buscar móvil -->
+        <button class="btn-icon-top btn-mobile-search-toggle" onclick="toggleMobileSearch()" title="Buscar">
+          <i data-lucide="search"></i>
+        </button>
+
+        <!-- Botón Exportar -->
+        <button class="btn-icon-top" onclick="exportData()" title="Exportar datos (JSON)">
+          <i data-lucide="download"></i>
+        </button>
+
+        <!-- Botón Crear Tarjeta -->
+        <button class="btn-primary-top" onclick="openModal()">
+          <i data-lucide="plus"></i> <span>Nueva tarjeta</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -2358,9 +2604,11 @@
       if (!live) return;
       if (online) {
         live.classList.add('online');
+        live.setAttribute('aria-label', 'En vivo');
         if (label) label.textContent = 'En vivo';
       } else {
         live.classList.remove('online');
+        live.setAttribute('aria-label', 'Local');
         if (label) label.textContent = 'Local';
       }
     }
@@ -3199,7 +3447,7 @@
         if (btnComfortable) btnComfortable.classList.remove('active');
         if (btnCompact) btnCompact.classList.add('active');
       }
-      localStorage.setItem('nexo-tablero-density', density);
+      localStorage.setItem('nexo-tablero-density-v2', density);
     }
 
     // ── EXPORTACIÓN JSON ────────────────────────────────────────────────────
@@ -4336,7 +4584,7 @@
       const savedTheme = localStorage.getItem('nexo-tablero-theme') || 'dark';
       setTheme(savedTheme);
 
-      const savedDensity = localStorage.getItem('nexo-tablero-density') || 'compact';
+      const savedDensity = localStorage.getItem('nexo-tablero-density-v2') || 'comfortable';
       setDensity(savedDensity);
 
       const local = localStorage.getItem(LS_KEY);
@@ -4383,6 +4631,11 @@
       setupSearch();
       initFirebase();
       initNexoBackground();
+
+      // Retirar clase de animación de entrada tras finalizar (una sola vez al cargar)
+      setTimeout(function() {
+        document.body.classList.remove('is-entering');
+      }, 550);
 
       // Deep linking con hash: #card-c1 abre el drawer
       if (window.location.hash) {

@@ -1834,12 +1834,12 @@
       }
       .client-title {
         font-size: 14px;
-        max-width: none;
+        max-width: 42vw;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
         min-width: 0;
-        flex-shrink: 1;
+        flex-shrink: 0;
       }
       .prod-pill {
         display: none;
@@ -1849,8 +1849,29 @@
       }
       .client-date {
         font-size: 11px;
-        flex-shrink: 0;
+        flex-shrink: 1;
+        min-width: 0;
         white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .live-status {
+        padding: 6px;
+        gap: 0;
+        justify-content: center;
+      }
+      .live-status .live-label-text,
+      .live-status #live-indicator-label,
+      .visually-hidden-mobile {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
       }
       .topbar-center {
         display: none;
@@ -2031,6 +2052,13 @@
       }
     }
 
+    @media (max-width: 400px) {
+      .client-date,
+      .header-sep {
+        display: none !important;
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
@@ -2111,9 +2139,9 @@
         </div>
 
         <!-- Estado en vivo Firestore -->
-        <div id="live-indicator" class="live-status" style="display:none;" title="Sincronización en la nube">
+        <div id="live-indicator" class="live-status" style="display:none;" title="Sincronización en la nube" aria-label="En vivo">
           <span class="live-dot"></span>
-          <span id="live-indicator-label">En vivo</span>
+          <span id="live-indicator-label" class="live-label-text visually-hidden-mobile">En vivo</span>
         </div>
 
         <!-- Botón buscar móvil -->
@@ -2475,9 +2503,11 @@
       if (!live) return;
       if (online) {
         live.classList.add('online');
+        live.setAttribute('aria-label', 'En vivo');
         if (label) label.textContent = 'En vivo';
       } else {
         live.classList.remove('online');
+        live.setAttribute('aria-label', 'Local');
         if (label) label.textContent = 'Local';
       }
     }

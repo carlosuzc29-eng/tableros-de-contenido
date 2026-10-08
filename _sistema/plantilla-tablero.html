@@ -507,32 +507,31 @@ footer .logo svg{height:76px;margin:0 auto 12px}
   border-radius:8px;
   margin-top:8px;
 }
-/* AGENCIA DIRECT CORRECTIONS BUTTON & STYLES */
+/* AGENCIA DIRECT CORRECTIONS FOOTER LINK & STYLES */
 .btn-agency-access{
-  display:inline-flex;
-  align-items:center;
-  gap:7px;
-  background:rgba(31,53,73,.06);
-  border:1px solid rgba(31,53,73,.15);
-  color:var(--ink-2);
-  padding:6px 14px;
-  border-radius:99px;
+  display:inline-block;
+  background:none;
+  border:none;
+  color:var(--gris);
   font-size:12px;
-  font-weight:600;
   cursor:pointer;
-  transition:all .2s var(--ease);
+  padding:4px 8px;
   text-decoration:none;
+  letter-spacing:normal;
+  text-transform:none;
+  opacity:.7;
+  transition:opacity .2s;
+  font-family:inherit;
 }
 .btn-agency-access:hover{
-  background:rgba(31,53,73,.12);
-  color:var(--ink);
-  transform:translateY(-1px);
+  opacity:1;
+  text-decoration:underline;
+  color:var(--gris);
 }
 .btn-agency-access.active{
-  background:var(--azul);
-  color:#fff;
-  border-color:var(--azul);
-  box-shadow:0 4px 12px rgba(31,53,73,.25);
+  color:var(--azul);
+  opacity:1;
+  font-weight:600;
 }
 .agency-active-bar{
   background:linear-gradient(90deg,#1F3549,#2B4661);
@@ -846,10 +845,7 @@ footer .logo svg{height:76px;margin:0 auto 12px}
 
 <div class="topbar"><div class="shell">
   <div class="logo" data-logo></div>
-  <div style="display:flex;align-items:center;gap:16px;">
-    <button type="button" class="btn-agency-access" id="btnAgencyAccess">🔒 Correcciones de agencia</button>
-    <div class="meta">Parrilla de contenidos<b id="metaTitle"></b></div>
-  </div>
+  <div class="meta">Parrilla de contenidos<b id="metaTitle"></b></div>
 </div></div>
 
 <div class="shell" id="agencyActiveBarWrap" style="display:none;padding:0 16px;">
@@ -956,7 +952,13 @@ footer .logo svg{height:76px;margin:0 auto 12px}
       </section>
       <div id="list"></div>
       <div class="empty" id="empty">No hay contenidos en este filtro.</div>
-      <footer><div class="logo" data-logo></div>Mérida, Venezuela</footer>
+      <footer>
+        <div class="logo" data-logo></div>
+        <div>Mérida, Venezuela</div>
+        <div style="margin-top:10px;">
+          <button type="button" class="btn-agency-access" id="btnAgencyAccess">Acceso equipo Nexo</button>
+        </div>
+      </footer>
     </main>
   </div>
 </div>
@@ -2057,16 +2059,122 @@ __DATA__
   [].forEach.call(document.querySelectorAll('[data-logo]'), function(d){ d.innerHTML = $('nexo-logo').innerHTML; });
   try { $('fav').href = 'data:image/svg+xml,' + encodeURIComponent($('nexo-iso').innerHTML.trim()); } catch (e) {}
 
+  // Configuración de Firebase
+  var FB = DATA.firebase || {
+    apiKey: "AIzaSyAsH9TxW0ld2aNQejJw6xxZW7fpZiw212Q",
+    projectId: "nexo-tableros-app"
+  };
+
   // Autenticación de Agencia (Carlos y Andrea)
   var AGENCY_ALLOWED = ['carlosuzc29@gmail.com', 'andrevmuedit@gmail.com'];
-  var AGENCY_PASS = 'Cambios19';
+  var AGENCY_SESSION_KEY = 'nexo_agency_session';
+  var agencySession = null;
   var agencyUser = null;
+
+  // Limpiar claves legadas inseguras
   try {
-    var storedAgency = localStorage.getItem('nexo_agency_logged_user') || sessionStorage.getItem('nexo_agency_logged_user');
-    if (storedAgency && AGENCY_ALLOWED.indexOf(storedAgency) !== -1) {
-      agencyUser = storedAgency;
-    }
+    localStorage.removeItem('nexo_agency_logged_user');
+    sessionStorage.removeItem('nexo_agency_logged_user');
+    localStorage.removeItem('nexo_reviewer_name');
   } catch(e) {}
+
+  function clearAgencySession(){
+    agencySession = null;
+    agencyUser = null;
+    try {
+      sessionStorage.removeItem(AGENCY_SESSION_KEY);
+      localStorage.removeItem('nexo_agency_logged_user');
+      sessionStorage.removeItem('nexo_agency_logged_user');
+    } catch(e) {}
+  }
+
+  function saveAgencySession(sess){
+    agencySession = sess;
+    agencyUser = sess ? sess.email : null;
+    try {
+      if (sess) {
+        sessionStorage.setItem(AGENCY_SESSION_KEY, JSON.stringify(sess));
+      } else {
+        sessionStorage.removeItem(AGENCY_SESSION_KEY);
+      }
+    } catch(e) {}
+  }
+
+  function refreshAgencyToken(refreshToken){
+    var url = 'https://securetoken.googleapis.com/v1/token?key=' + encodeURIComponent(FB.apiKey);
+    var body = 'grant_type=refresh_token&refresh_token=' + encodeURIComponent(refreshToken);
+    return fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body
+    })
+    .then(function(res){
+      if (!res.ok) {
+        throw new Error('Refresh failed HTTP ' + res.status);
+      }
+      return res.json();
+    })
+    .then(function(data){
+      var newIdToken = data.id_token || data.idToken;
+      var newRefreshToken = data.refresh_token || data.refreshToken || refreshToken;
+      var expiresInSec = parseInt(data.expires_in || data.expiresIn || '3600', 10);
+      if (!newIdToken) throw new Error('No idToken in refresh response');
+      var updatedSession = {
+        idToken: newIdToken,
+        refreshToken: newRefreshToken,
+        email: (agencySession && agencySession.email) || (agencyUser || ''),
+        expiresAt: Date.now() + (expiresInSec * 1000)
+      };
+      saveAgencySession(updatedSession);
+      return updatedSession;
+    })
+    .catch(function(err){
+      clearAgencySession();
+      if (typeof updateAgencyUI === 'function') updateAgencyUI();
+      throw err;
+    });
+  }
+
+  function getValidAgencyToken(){
+    if (!agencySession || !agencySession.idToken) return Promise.resolve(null);
+    if (agencySession.expiresAt && Date.now() < (agencySession.expiresAt - 60000)) {
+      return Promise.resolve(agencySession.idToken);
+    }
+    if (agencySession.refreshToken) {
+      return refreshAgencyToken(agencySession.refreshToken).then(function(sess){
+        return sess.idToken;
+      }).catch(function(){
+        return null;
+      });
+    }
+    clearAgencySession();
+    if (typeof updateAgencyUI === 'function') updateAgencyUI();
+    return Promise.resolve(null);
+  }
+
+  // Carga inicial de sesión
+  try {
+    var rawAgencySess = sessionStorage.getItem(AGENCY_SESSION_KEY);
+    if (rawAgencySess) {
+      var parsedAgencySess = JSON.parse(rawAgencySess);
+      if (parsedAgencySess && parsedAgencySess.idToken && parsedAgencySess.email && AGENCY_ALLOWED.indexOf(parsedAgencySess.email) !== -1) {
+        if (parsedAgencySess.expiresAt && Date.now() < parsedAgencySess.expiresAt) {
+          agencySession = parsedAgencySess;
+          agencyUser = parsedAgencySess.email;
+        } else if (parsedAgencySess.refreshToken) {
+          refreshAgencyToken(parsedAgencySess.refreshToken).then(function(){
+            if (typeof updateAgencyUI === 'function') updateAgencyUI();
+          }).catch(function(){});
+        } else {
+          clearAgencySession();
+        }
+      } else {
+        clearAgencySession();
+      }
+    }
+  } catch(e) {
+    clearAgencySession();
+  }
 
   // Formatos exclusivos de trabajo: únicamente estos 4 formatos
   var FORMATOS = ['Reel', 'Carrusel', 'Carrusel con video', 'Post'];
@@ -2137,25 +2245,26 @@ __DATA__
     }
     var whoEl = $('who');
     var w = whoEl ? whoEl.value.trim() : '';
-    if (w) return w;
+    if (w && w.indexOf('Agencia (') !== 0) return w;
     try {
-      var sess = sessionStorage.getItem('nexo_reviewer_name_' + (DATA.id || 'board'));
-      if (sess && sess.trim()) return sess.trim();
-      var stored = localStorage.getItem('nexo_reviewer_name');
-      if (stored && stored.trim()) return stored.trim();
+      var boardKey = 'nexo_reviewer_name_' + (DATA.id || 'board');
+      var stored = localStorage.getItem(boardKey) || sessionStorage.getItem(boardKey);
+      if (stored && stored.trim() && stored.trim().indexOf('Agencia (') !== 0) return stored.trim();
     } catch(e){}
-    return DATA.revision.revisadoPor || '';
+    return '';
   }
 
   function setReviewerName(name){
     var trimmed = (name || '').trim();
+    if (trimmed.indexOf('Agencia (') === 0) return;
     DATA.revision.revisadoPor = trimmed;
     var whoEl = $('who');
     if (whoEl) whoEl.value = trimmed;
     try {
       if (trimmed) {
-        sessionStorage.setItem('nexo_reviewer_name_' + (DATA.id || 'board'), trimmed);
-        localStorage.setItem('nexo_reviewer_name', trimmed);
+        var boardKey = 'nexo_reviewer_name_' + (DATA.id || 'board');
+        localStorage.setItem(boardKey, trimmed);
+        sessionStorage.setItem(boardKey, trimmed);
       }
     } catch(e){}
   }
@@ -2211,8 +2320,10 @@ __DATA__
           }
         });
         if (saved.who && !isReviewShipment && !hasCorr && !agencyUser) {
-          DATA.revision.revisadoPor = saved.who;
-          setReviewerName(saved.who);
+          if (saved.who.indexOf('Agencia (') !== 0) {
+            DATA.revision.revisadoPor = saved.who;
+            setReviewerName(saved.who);
+          }
         }
         setTimeout(function(){ toast('Recuperamos tu revisión en curso'); }, 600);
       }
@@ -2221,6 +2332,7 @@ __DATA__
   function saveDraft(){
     try {
       var whoVal = getReviewerName();
+      if (whoVal && whoVal.indexOf('Agencia (') === 0) whoVal = '';
       var o = {who: whoVal, items: {}, resetAt: DATA.resetAt || 0};
       items.forEach(function(it){
         o.items[it.id] = {
@@ -2236,7 +2348,9 @@ __DATA__
         };
       });
       localStorage.setItem(KEY, JSON.stringify(o));
-      if (whoVal) localStorage.setItem('nexo_reviewer_name', whoVal);
+      if (whoVal && whoVal.indexOf('Agencia (') !== 0) {
+        localStorage.setItem('nexo_reviewer_name_' + (DATA.id || 'board'), whoVal);
+      }
     } catch (e) {}
   }
 
@@ -2299,12 +2413,16 @@ __DATA__
   var periodo = [DATA.mes, DATA.anio].filter(Boolean).join(' ');
   var mt = $('metaTitle'); mt.textContent = (DATA.cliente || '') + ' · '; var ii = el('i', null, periodo); mt.appendChild(ii);
   document.title = 'Revisión de contenidos · ' + (DATA.cliente || '') + ' · ' + periodo;
-  $('intro').textContent = DATA.intro || 'Revisa cada pieza con calma. Apruébala o cuéntanos qué ajustar, y al terminar descarga el tablero para enviárnoslo.';
+  $('intro').textContent = DATA.intro || 'Revisa cada pieza con calma. Apruébala o cuéntanos qué ajustar, y al terminar, envíanos tu revisión con el botón de abajo.';
 
   // Inicializar nombre del revisor reutilizando la sesión del cliente
   var currentStoredReviewer = getReviewerName();
   if ($('who')) {
-    $('who').value = currentStoredReviewer || DATA.revision.revisadoPor || '';
+    if (!agencyUser && currentStoredReviewer && currentStoredReviewer.indexOf('Agencia (') !== 0) {
+      $('who').value = currentStoredReviewer;
+    } else {
+      $('who').value = '';
+    }
   }
   if (DATA.revision.fecha && !agencyUser) {
     var d = new Date(DATA.revision.fecha);
@@ -2935,10 +3053,6 @@ __DATA__
   }
   window.__nexoSnapshot = buildHTML;
 
-  var FB = DATA.firebase || {
-    apiKey: "AIzaSyAsH9TxW0ld2aNQejJw6xxZW7fpZiw212Q",
-    projectId: "nexo-tableros-app"
-  };
   var SEND = !!(FB && FB.projectId);
   if (SEND) { document.body.classList.add('has-send'); $('dl').textContent = 'Enviar revisión ✓'; }
 
@@ -2980,7 +3094,6 @@ __DATA__
     } else {
       if (revPor) {
         DATA.revision.revisadoPor = revPor;
-        setReviewerName(revPor);
       }
       if (revFecha) {
         DATA.revision.fecha = revFecha;
@@ -3238,10 +3351,14 @@ __DATA__
       }
     });
 
-    fetch(fsUrl, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: fsBody
+    getValidAgencyToken().then(function(token){
+      var headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+      return fetch(fsUrl, {
+        method: 'PATCH',
+        headers: headers,
+        body: fsBody
+      });
     })
     .then(function(r){
       if (!r.ok) {
@@ -3412,7 +3529,7 @@ __DATA__
 
     if (accessBtn) {
       accessBtn.classList.toggle('active', isAgency);
-      accessBtn.textContent = isAgency ? '✓ Modo Agencia' : '🔒 Correcciones de agencia';
+      accessBtn.textContent = isAgency ? '✓ Modo Agencia activo' : 'Acceso equipo Nexo';
     }
     if (activeBar) {
       activeBar.style.display = isAgency ? 'block' : 'none';
@@ -3476,24 +3593,72 @@ __DATA__
     var email = (emailSel ? emailSel.value : '').toLowerCase().trim();
     var pass = (passInp ? passInp.value : '').trim();
 
-    if (AGENCY_ALLOWED.indexOf(email) === -1) {
-      if (errEl) { errEl.textContent = 'Usuario no autorizado para realizar correcciones'; errEl.classList.add('show'); }
-      return;
-    }
-    if (pass !== AGENCY_PASS) {
-      if (errEl) { errEl.textContent = 'Contraseña incorrecta'; errEl.classList.add('show'); }
-      if (passInp) { passInp.focus(); passInp.select(); }
+    if (!email || !pass) {
+      if (errEl) { errEl.textContent = 'Correo o contraseña incorrectos'; errEl.classList.add('show'); }
       return;
     }
 
-    agencyUser = email;
-    try {
-      localStorage.setItem('nexo_agency_logged_user', email);
-      sessionStorage.setItem('nexo_agency_logged_user', email);
-    } catch(e){}
-    closeAgencyLogin();
-    updateAgencyUI();
-    toast('✓ Acceso de agencia verificado: ¡Modo corrección activo!');
+    if (btnLoginSubmit) {
+      btnLoginSubmit.disabled = true;
+      btnLoginSubmit.textContent = 'Verificando…';
+    }
+    if (errEl) errEl.classList.remove('show');
+
+    var authUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + encodeURIComponent(FB.apiKey);
+    fetch(authUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email,
+        password: pass,
+        returnSecureToken: true
+      })
+    })
+    .then(function(res){
+      if (!res.ok) {
+        throw new Error('Auth failed HTTP ' + res.status);
+      }
+      return res.json();
+    })
+    .then(function(data){
+      if (btnLoginSubmit) {
+        btnLoginSubmit.disabled = false;
+        btnLoginSubmit.textContent = 'Ingresar al modo editor';
+      }
+      var returnedEmail = (data.email || '').toLowerCase().trim();
+      if (!returnedEmail || AGENCY_ALLOWED.indexOf(returnedEmail) === -1) {
+        if (errEl) {
+          errEl.textContent = 'Usuario no autorizado para realizar correcciones';
+          errEl.classList.add('show');
+        }
+        return;
+      }
+      var expiresInSec = parseInt(data.expiresIn || '3600', 10);
+      var sess = {
+        idToken: data.idToken,
+        refreshToken: data.refreshToken,
+        email: returnedEmail,
+        expiresAt: Date.now() + (expiresInSec * 1000)
+      };
+      saveAgencySession(sess);
+      closeAgencyLogin();
+      updateAgencyUI();
+      toast('✓ Acceso de agencia verificado: ¡Modo corrección activo!');
+    })
+    .catch(function(){
+      if (btnLoginSubmit) {
+        btnLoginSubmit.disabled = false;
+        btnLoginSubmit.textContent = 'Ingresar al modo editor';
+      }
+      if (errEl) {
+        errEl.textContent = 'Correo o contraseña incorrectos';
+        errEl.classList.add('show');
+      }
+      if (passInp) {
+        passInp.focus();
+        passInp.select();
+      }
+    });
   }
 
   if (btnLoginSubmit) btnLoginSubmit.onclick = handleAgencyLogin;
@@ -3630,11 +3795,7 @@ __DATA__
 
   if (btnAgencyLogout) {
     btnAgencyLogout.onclick = function(){
-      agencyUser = null;
-      try {
-        localStorage.removeItem('nexo_agency_logged_user');
-        sessionStorage.removeItem('nexo_agency_logged_user');
-      } catch(e){}
+      clearAgencySession();
       updateAgencyUI();
       toast('Sesión de agencia cerrada');
     };
@@ -3673,14 +3834,18 @@ __DATA__
       '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
       '?updateMask.fieldPaths=contenidos&key=' + encodeURIComponent(FB.apiKey);
 
-    fetch(fsUrl, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        fields: {
-          contenidos: { arrayValue: { values: firestoreContenidos } }
-        }
-      })
+    getValidAgencyToken().then(function(token){
+      var headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+      return fetch(fsUrl, {
+        method: 'PATCH',
+        headers: headers,
+        body: JSON.stringify({
+          fields: {
+            contenidos: { arrayValue: { values: firestoreContenidos } }
+          }
+        })
+      });
     })
     .then(function(r){
       if (!r.ok) {
@@ -3800,20 +3965,24 @@ __DATA__
         '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
         '?updateMask.fieldPaths=contenidos&updateMask.fieldPaths=estado&updateMask.fieldPaths=aprobados&updateMask.fieldPaths=cambios&updateMask.fieldPaths=pendientes&updateMask.fieldPaths=revisadoPor&updateMask.fieldPaths=ultimaRevision&key=' + encodeURIComponent(FB.apiKey);
 
-      fetch(fsUrl, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fields: {
-            estado: { stringValue: estadoGeneral },
-            aprobados: { integerValue: String(totalGlobalOk) },
-            cambios: { integerValue: String(totalGlobalFix) },
-            pendientes: { integerValue: String(totalGlobalPend) },
-            revisadoPor: { stringValue: '' },
-            ultimaRevision: { stringValue: '' },
-            contenidos: { arrayValue: { values: firestoreContenidos } }
-          }
-        })
+      getValidAgencyToken().then(function(token){
+        var headers = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = 'Bearer ' + token;
+        return fetch(fsUrl, {
+          method: 'PATCH',
+          headers: headers,
+          body: JSON.stringify({
+            fields: {
+              estado: { stringValue: estadoGeneral },
+              aprobados: { integerValue: String(totalGlobalOk) },
+              cambios: { integerValue: String(totalGlobalFix) },
+              pendientes: { integerValue: String(totalGlobalPend) },
+              revisadoPor: { stringValue: '' },
+              ultimaRevision: { stringValue: '' },
+              contenidos: { arrayValue: { values: firestoreContenidos } }
+            }
+          })
+        });
       })
       .then(function(r){
         if (!r.ok) {
@@ -3902,18 +4071,22 @@ __DATA__
       '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
       '?updateMask.fieldPaths=contenidos&updateMask.fieldPaths=estado&updateMask.fieldPaths=aprobados&updateMask.fieldPaths=cambios&updateMask.fieldPaths=pendientes&key=' + encodeURIComponent(FB.apiKey);
 
-    fetch(fsUrl, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        fields: {
-          estado: { stringValue: estadoGeneral },
-          aprobados: { integerValue: String(totalGlobalOk) },
-          cambios: { integerValue: String(totalGlobalFix) },
-          pendientes: { integerValue: String(totalGlobalPend) },
-          contenidos: { arrayValue: { values: firestoreContenidos } }
-        }
-      })
+    getValidAgencyToken().then(function(token){
+      var headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+      return fetch(fsUrl, {
+        method: 'PATCH',
+        headers: headers,
+        body: JSON.stringify({
+          fields: {
+            estado: { stringValue: estadoGeneral },
+            aprobados: { integerValue: String(totalGlobalOk) },
+            cambios: { integerValue: String(totalGlobalFix) },
+            pendientes: { integerValue: String(totalGlobalPend) },
+            contenidos: { arrayValue: { values: firestoreContenidos } }
+          }
+        })
+      });
     })
     .then(function(r){
       if (!r.ok) {

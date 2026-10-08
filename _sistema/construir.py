@@ -17,7 +17,7 @@ Qué hace:
   6. Con --publicar: hace git add + commit + push.
 No usa IA: no gasta créditos.
 """
-import json, os, re, sys, secrets, subprocess, time, unicodedata, urllib.request, tempfile, shutil
+import json, os, re, sys, secrets, subprocess, time, unicodedata, urllib.request, urllib.error, tempfile, shutil
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(AQUI)
@@ -223,16 +223,20 @@ def registrar_en_firestore(cfg, data, total_contenidos):
         doc_url = f"https://firestore.googleapis.com/v1/projects/{fb['projectId']}/databases/(default)/documents/tableros/{doc_id}"
 
         # Verificar si el documento ya existe
-        doc_existe = False
+        doc_respondio_404 = False
         doc_fields = {}
         try:
             get_req = urllib.request.Request(f"{doc_url}?key={fb['apiKey']}")
             with urllib.request.urlopen(get_req, timeout=15) as g_res:
                 doc_obj = json.loads(g_res.read().decode())
                 doc_fields = doc_obj.get('fields', {})
-                doc_existe = True
-        except Exception:
-            pass
+        except urllib.error.HTTPError as e:
+            if e.code == 404:
+                doc_respondio_404 = True
+            else:
+                sys.exit(f"❌ Error al consultar Firestore (HTTP {e.code}: {e.reason}): abortando para no sobrescribir datos.")
+        except Exception as e:
+            sys.exit(f"❌ Error de red o tiempo de espera al consultar Firestore ({type(e).__name__}: {e}): abortando para no sobrescribir datos.")
 
         now_iso = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
         tiene_revision_previa = bool(
@@ -243,7 +247,7 @@ def registrar_en_firestore(cfg, data, total_contenidos):
             len(doc_fields.get('contenidos', {}).get('arrayValue', {}).get('values', [])) > 0
         )
 
-        es_reinicio = ('--reiniciar' in sys.argv) or (not doc_existe and not data.get('revision', {}).get('fecha'))
+        es_reinicio = ('--reiniciar' in sys.argv) or (doc_respondio_404 and not data.get('revision', {}).get('fecha'))
 
         fields = {
             'id': {'stringValue': data['id']},
@@ -279,9 +283,11 @@ def registrar_en_firestore(cfg, data, total_contenidos):
         if r.status in (200, 201):
             print(f'✓ Registrado en Cloud Firestore ({data["id"]})')
         else:
-            print('  Se registrará solo al abrirlo por primera vez')
-    except Exception:
-        print('  Se registrará solo al abrirlo por primera vez')
+            sys.exit(f'❌ Error al registrar en Cloud Firestore (HTTP {r.status})')
+    except SystemExit:
+        raise
+    except Exception as e:
+        sys.exit(f'❌ Error al registrar en Cloud Firestore ({type(e).__name__}: {e})')
 
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith('--')]

@@ -560,7 +560,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
   margin-bottom:30px;
 }
 @media(max-width:768px){
-  .hub-categories-grid{grid-template-columns:1fr}
+  .hub-categories-grid{grid-template-columns:minmax(0,1fr)}
 }
 .hub-cat-card{
   background:rgba(31,53,73,.65);
@@ -2098,7 +2098,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
 .clients-grid{
   display:grid;
   gap:24px;
-  grid-template-columns:1fr;
+  grid-template-columns:minmax(0,1fr);
 }
 @media(min-width:768px){
   .clients-grid{grid-template-columns:repeat(2,1fr)}
@@ -3483,7 +3483,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
   gap: 14px;
 }
 @media (max-width: 640px) {
-  .ws-grid-items { grid-template-columns: 1fr; }
+  .ws-grid-items { grid-template-columns: minmax(0, 1fr); }
 }
 
 .ws-item-card {
@@ -4357,6 +4357,8 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
     max-width: 100vw !important;
     height: 100vh !important;
     max-height: 100vh !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
     border-radius: 0 !important;
     border: 0 !important;
   }
@@ -4369,6 +4371,25 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
   .piece-editor-foot {
     padding: 12px 16px;
   }
+}
+
+/* Ajustes de márgenes en celulares */
+.client-section, .ws-item-card, .hub-cat-card { min-width: 0; }
+@media (max-width: 480px) {
+  .hub-cat-card { padding: 24px 18px 22px; }
+  .hub-cat-top { flex-wrap: wrap; gap: 8px; }
+  .hub-cat-badge, .hub-tag { white-space: nowrap; }
+  .hub-cat-metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hub-metric-pill:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .tablet-brand-pill { min-width: 0; }
+  .tablet-brand-pill span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tablet-live-pill, .tablet-mini-kpi .kpi-num { white-space: nowrap; }
+  .tablet-mini-kpi .kpi-num { font-size: 10.5px; }
+  .tablet-legend { display: none; }
+  .ws-card-header { flex-direction: column; align-items: stretch; }
+  .ws-card-foot { flex-wrap: wrap; }
+  .ws-card-foot > div:first-child { flex: 1 1 100%; max-width: none !important; }
+  .ws-card-foot > div:last-child { width: 100%; justify-content: flex-end; }
 }
 </style>
 </head>

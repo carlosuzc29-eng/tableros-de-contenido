@@ -1,0 +1,164 @@
+/**
+ * NEXO AGENCIA CREATIVA · REGLAS Y UTILIDADES DE MOVIMIENTO
+ * Movimiento con intención: 3D real, física de resortes, presupuestos según frecuencia.
+ * Cumple estrictamente la Sección 5 del manual de diseño Nexo.
+ */
+
+/* ── 1. REGLAS GLOBALES DE INTERACCIÓN ── */
+button,
+.btn,
+.chip,
+.item,
+.pill,
+.interactive {
+  transition: transform var(--dur-press) var(--ease-out),
+              background-color var(--dur-fast) var(--ease-out),
+              border-color var(--dur-fast) var(--ease-out),
+              color var(--dur-fast) var(--ease-out),
+              opacity var(--dur-fast) var(--ease-out);
+}
+
+button:active,
+.btn:active,
+.chip:active,
+.item:active,
+.pill:active,
+.interactive:active {
+  transform: scale(0.97);
+}
+
+/* ── 2. CONTENEDORES Y PERSPECTIVA 3D ── */
+.perspective-stage {
+  perspective: 1200px;
+  perspective-origin: 50% 35%;
+  transform-style: preserve-3d;
+}
+
+.perspective-deep {
+  perspective: 1600px;
+  perspective-origin: 50% 50%;
+  transform-style: preserve-3d;
+}
+
+/* ── 3. UTILIDAD .lift3d (Grosor y elevación física) ── */
+.lift3d {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform var(--dur-base) var(--ease-out),
+              box-shadow var(--dur-base) var(--ease-out);
+  box-shadow: var(--shadow-contact), var(--shadow-ambient);
+}
+
+/* Capa posterior para simular grosor físico de 6px */
+.lift3d::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgba(7, 11, 16, 0.65);
+  transform: translateZ(-6px);
+  pointer-events: none;
+  opacity: 0.9;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .lift3d:hover {
+    transform: translateZ(24px) rotateX(1deg);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.40), 0 32px 64px -20px rgba(0, 0, 0, 0.75);
+  }
+}
+
+/* ── 4. UTILIDAD .tilt (Inclinación con resorte) ── */
+.tilt {
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: transform 300ms var(--ease-out);
+}
+
+.tilt-inner {
+  transform-style: preserve-3d;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+/* ── 5. UTILIDAD .reveal (Entrada tridimensional al scroll) ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px) rotateX(6deg);
+  transform-origin: 50% 100%;
+  transition: opacity var(--dur-panel) var(--ease-out),
+              transform var(--dur-panel) var(--ease-out);
+  will-change: opacity, transform;
+}
+
+.reveal.in {
+  opacity: 1;
+  transform: translateY(0) rotateX(0deg);
+}
+
+/* Scroll-driven animations nativas cuando estén soportadas */
+@supports ((animation-timeline: view()) and (animation-range: entry)) {
+  .reveal-scroll {
+    animation: nexoRevealScroll linear both;
+    animation-timeline: view(block);
+    animation-range: entry 10% cover 30%;
+  }
+
+  @keyframes nexoRevealScroll {
+    from {
+      opacity: 0;
+      transform: translateY(24px) rotateX(6deg);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) rotateX(0deg);
+    }
+  }
+}
+
+/* ── 6. ESCALONAMIENTO (.stagger) ── */
+.stagger > *:nth-child(1) { transition-delay: 40ms; animation-delay: 40ms; }
+.stagger > *:nth-child(2) { transition-delay: 80ms; animation-delay: 80ms; }
+.stagger > *:nth-child(3) { transition-delay: 120ms; animation-delay: 120ms; }
+.stagger > *:nth-child(4) { transition-delay: 160ms; animation-delay: 160ms; }
+.stagger > *:nth-child(5) { transition-delay: 200ms; animation-delay: 200ms; }
+.stagger > *:nth-child(6) { transition-delay: 240ms; animation-delay: 240ms; }
+.stagger > *:nth-child(7) { transition-delay: 280ms; animation-delay: 280ms; }
+.stagger > *:nth-child(8) { transition-delay: 320ms; animation-delay: 320ms; }
+
+/* ── 7. ACCESIBILIDAD Y SCREEN READERS (.sr-only) ── */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* ── 8. MOVIMIENTO REDUCIDO (prefers-reduced-motion) ── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 180ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .lift3d,
+  .tilt,
+  .tilt-inner,
+  .reveal {
+    transform: none !important;
+    transition: opacity 180ms ease-out !important;
+  }
+
+  .reveal:not(.in) {
+    opacity: 1 !important;
+  }
+}

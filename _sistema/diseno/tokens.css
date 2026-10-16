@@ -1,0 +1,132 @@
+/**
+ * NEXO AGENCIA CREATIVA · TOKENS DE DISEÑO v3
+ * Fuente única de tokens de diseño para todas las interfaces de Nexo.
+ * Dirección: "Mesa de luz Nexo" (Linear/Raycast density + Apple 3D depth).
+ */
+:root {
+  /* ── 1. MARCA INSTITUCIONAL (Manual de Marca) ── */
+  --azul: #1F3549;             /* PANTONE 2189 C — Estructural primario */
+  --verde: #5CB83E;            /* PANTONE 2271 C — Acento primario */
+  --naranja: #E64A00;          /* PANTONE 021 C — Alertas, urgencia, cambios (máx 20% área) */
+  --gris: #979797;             /* Cool Gray 7 C — Texto secundario y estados neutros */
+  --azul-tint: #4A7A9E;        /* Tinte de apoyo — aproximación pendiente de validar con diseño */
+  --verde-dk: #3F8A27;         /* Verde oscuro exclusivo para texto sobre fondo claro (AA) */
+
+  /* ── 2. ESCENARIO OSCURO (Mesa de luz) ── */
+  --stage-0: #070B10;          /* Fondo base absoluto / canvas */
+  --stage-1: #0C131B;          /* Tarjetas y superficies base */
+  --stage-2: #121C27;          /* Superficies elevadas y hovers */
+  --stage-3: #1F3549;          /* Encabezados y acentos estructurales */
+  --on-stage: #F2F4F6;         /* Texto principal sobre escenario */
+  --on-stage-2: #A8B3BE;       /* Texto secundario sobre escenario */
+  --stage-line: rgba(255, 255, 255, 0.08); /* Bordes de luz estructurales (1px) */
+  --stage-line-bright: rgba(255, 255, 255, 0.16); /* Bordes activos o hover */
+
+  /* ── 3. PAPEL CLARO (Zonas de lectura larga: guiones, copies) ── */
+  --paper-0: #F3F4F2;          /* Papel base neutro */
+  --paper-1: #FFFFFF;          /* Hoja de papel pura */
+  --ink: #13202D;              /* Tinta principal sobre papel */
+  --ink-2: #56636F;            /* Tinta secundaria sobre papel */
+  --paper-line: rgba(19, 32, 45, 0.10); /* Separadores sobre papel */
+
+  /* ── 4. ESTADOS SEMÁNTICOS (Unificados en todas las superficies) ── */
+  --st-pendiente: var(--gris);
+  --st-curso: var(--azul-tint);
+  --st-corregido: var(--azul-tint);
+  --st-aprobado: var(--verde);
+  --st-cambios: var(--naranja);
+  --st-listo: var(--verde);
+
+  /* ── 5. FORMA Y PROFUNDIDAD FÍSICA ── */
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 24px;
+  --r-pill: 999px;
+  --edge-light: inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  --edge-light-strong: inset 0 1px 0 rgba(255, 255, 255, 0.20);
+  --shadow-contact: 0 1px 2px rgba(0, 0, 0, 0.30);
+  --shadow-ambient: 0 24px 48px -24px rgba(0, 0, 0, 0.55);
+  --shadow-lift: 0 1px 2px rgba(0,0,0,.35), 0 20px 40px -16px rgba(0,0,0,.65);
+
+  /* ── 6. TIPOGRAFÍA (Futura / Jost, sin decoraciones de IA) ── */
+  --font: 'Futura', 'Jost', 'Century Gothic', sans-serif;
+  --font-code: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* ── 7. MOVIMIENTO CON INTENCIÓN (Sección 5 del manual) ── */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);      /* Entradas y respuestas táctiles */
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);  /* Movimiento posicional en pantalla */
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);   /* Drawers, sheets y páneles laterales */
+  --spring: linear(0, 0.009, 0.035 2.1%, 0.141, 0.281 6.7%, 0.723 12.9%, 0.938 16.7%, 1.017, 1.077, 1.121, 1.149 24.3%, 1.159, 1.163, 1.161, 1.154 29.9%, 1.129 32.8%, 1.051 39.6%, 1.017 43.1%, 0.991, 0.977 51%, 0.974 53.8%, 0.975 57.1%, 0.997 69.8%, 1.003 76.9%, 1);
+  --dur-press: 140ms;
+  --dur-fast: 180ms;
+  --dur-base: 240ms;
+  --dur-panel: 320ms;
+
+  /* ── 8. ALIASES DE COMPATIBILIDAD v2 (Garantiza transición sin roturas) ── */
+  --bg: var(--paper-0);
+  --paper: var(--paper-1);
+  --line: var(--paper-line);
+  --azul-2: var(--stage-2);
+  --azul-3: var(--stage-3);
+  --azul-deep: var(--stage-1);
+  --azul-surf: rgba(18, 28, 39, 0.75);
+  --azul-border: var(--stage-line);
+  --bg-dark-1: var(--stage-0);
+  --bg-dark-2: var(--stage-1);
+  --bg-dark-3: var(--stage-2);
+  --bg-light-1: var(--paper-0);
+  --bg-light-2: var(--paper-1);
+
+  --nexo-blue: var(--azul);
+  --nexo-blue-dark: var(--stage-1);
+  --nexo-green: var(--verde);
+  --nexo-orange: var(--naranja);
+  --nexo-cyan: var(--azul-tint);
+  --violeta: var(--azul-tint);
+
+  --azul-soft: rgba(74, 122, 158, 0.15);
+  --verde-soft: rgba(92, 184, 62, 0.15);
+  --naranja-soft: rgba(230, 74, 0, 0.15);
+  --violeta-soft: rgba(74, 122, 158, 0.15);
+  --nexo-green-soft: rgba(92, 184, 62, 0.15);
+  --nexo-orange-soft: rgba(230, 74, 0, 0.15);
+  --nexo-cyan-soft: rgba(74, 122, 158, 0.15);
+
+  --verde-glow: 0 0 16px rgba(92, 184, 62, 0.35);
+  --naranja-glow: 0 0 16px rgba(230, 74, 0, 0.35);
+  --azul-glow: 0 0 16px rgba(74, 122, 158, 0.35);
+  --violeta-glow: 0 0 16px rgba(74, 122, 158, 0.35);
+  --nexo-green-glow: 0 0 16px rgba(92, 184, 62, 0.35);
+  --nexo-orange-glow: 0 0 16px rgba(230, 74, 0, 0.35);
+
+  --font-head: var(--font);
+  --font-body: var(--font);
+  --font-mono: var(--font-code);
+
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+  --radius-xl: var(--r-lg);
+
+  --shadow-1: var(--shadow-contact);
+  --shadow-2: 0 8px 24px rgba(0, 0, 0, 0.22);
+  --shadow-3: var(--shadow-ambient);
+
+  --glass-border-top: var(--edge-light);
+  --glass-border-subtle: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+  --ease: var(--ease-out);
+  --trans: var(--dur-fast) var(--ease-out);
+  --trans-fast: 140ms var(--ease-out);
+
+  /* Superficies para plantilla de producción y tema dark */
+  --bg-base: var(--stage-0);
+  --surface: var(--stage-1);
+  --surface-elevated: var(--stage-2);
+  --surface-card: var(--stage-1);
+  --surface-card-hover: var(--stage-2);
+  --surface-col: rgba(12, 19, 27, 0.85);
+  --border-color: var(--stage-line);
+  --border-subtle: rgba(255, 255, 255, 0.04);
+  --border-hover: rgba(92, 184, 62, 0.40);
+}

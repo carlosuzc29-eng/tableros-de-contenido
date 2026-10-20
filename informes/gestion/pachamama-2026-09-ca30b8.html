@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="nexo-informe" content="gestion">
+<meta name="nexo-cliente" content="Pachamama">
+<meta name="nexo-periodo" content="2026-09">
+<title>Informe de gestión y rendimiento · Pachamama · Septiembre 2026</title>
+<style>
+:root{
+  --bg-0:#06090c;--bg-1:#0c1116;--bg-2:#141b22;
+  --ink:#f4f6f7;--ink-dim:#a8adb3;--ink-faint:#979797;
+  --azul:#1F3549;--azul-tint:#4A7A9E;--verde:#5CB83E;--naranja:#E64A00;
+  --border:rgba(255,255,255,0.08);--glass-bg:rgba(20,27,34,0.5);--glass-border:rgba(255,255,255,0.10);
+  --glass-blur:blur(26px) saturate(140%);
+  --font:'Futura','Futura Md BT','Century Gothic','Poppins',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg-0);color:var(--ink);font-family:var(--font);font-weight:500;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(900px 600px at 85% -10%,rgba(31,53,73,.55),transparent 60%),radial-gradient(700px 500px at -10% 40%,rgba(31,53,73,.35),transparent 60%)}
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--verde);z-index:50}
+.wrap{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:0 24px}
+section{padding:64px 0;border-top:1px solid var(--border)}
+h1,h2,h3,h4{font-weight:700;letter-spacing:-.01em;line-height:1.15}
+h2{font-size:clamp(1.5rem,3.2vw,2.1rem);margin-bottom:8px}
+.sec-num{display:inline-block;font-size:.78rem;font-weight:700;letter-spacing:.14em;color:var(--azul-tint);text-transform:uppercase;margin-bottom:10px}
+.lead{color:var(--ink-dim);max-width:720px;margin-bottom:28px}
+.meta{font-size:.74rem;color:var(--ink-faint);margin-top:18px}
+.glass{background:var(--glass-bg);border:1px solid var(--glass-border);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border-radius:16px}
+.up{color:var(--verde)} .down{color:var(--naranja)}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* HERO */
+.hero{padding:56px 0 64px;border-top:0}
+.logo{display:inline-flex;flex-direction:column;padding:16px 0;margin-bottom:40px}
+.logo b{font-size:2rem;letter-spacing:.28em;font-weight:700;color:var(--ink);line-height:1}
+.logo span{font-size:.62rem;letter-spacing:.42em;color:var(--verde);margin-top:6px;font-weight:700}
+.tag{display:inline-block;border:1px solid var(--azul-tint);color:var(--azul-tint);border-radius:999px;padding:6px 14px;font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin-bottom:22px}
+.hero h1{font-size:clamp(2.4rem,7vw,4.4rem);margin-bottom:6px}
+.hero .periodo{font-size:clamp(1.05rem,2.4vw,1.35rem);color:var(--ink-dim);margin-bottom:28px}
+.hero-stat{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px 28px;padding:24px 28px;margin-top:8px}
+.hero-stat .big{font-size:clamp(2.8rem,8vw,4.6rem);font-weight:700;color:var(--verde);line-height:1}
+.hero-stat .lbl{color:var(--ink-dim);max-width:420px}
+.rango{margin-top:18px;font-size:.82rem;color:var(--ink-faint);max-width:760px}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.stat{padding:22px}
+.stat .k{font-size:.78rem;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+.stat .v{font-size:2.1rem;font-weight:700;margin:6px 0 4px;line-height:1.1}
+.stat .s{font-size:.82rem;color:var(--ink-faint)}
+.stat.hl{border-color:rgba(92,184,62,.35)}
+.stat.hl .v{color:var(--verde)}
+
+/* Growth bar */
+.growth{padding:26px;margin-top:18px}
+.gbar{display:flex;height:34px;border-radius:8px;overflow:hidden;margin:16px 0 12px;background:var(--bg-2)}
+.gbar div{height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:10px 22px;font-size:.85rem;color:var(--ink-dim)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:7px;vertical-align:middle}
+.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:22px}
+.tl{padding:16px;border-left:3px solid var(--azul-tint);background:rgba(31,53,73,.25);border-radius:0 10px 10px 0}
+.tl.peak{border-left-color:var(--verde)}
+.tl .d{font-size:.75rem;color:var(--ink-faint);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.tl .n{font-size:1.4rem;font-weight:700;margin:4px 0}
+.tl p{font-size:.85rem;color:var(--ink-dim)}
+
+/* Tables */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:14px;border:1px solid var(--glass-border)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:640px}
+th,td{padding:12px 14px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap}
+th:first-child,td:first-child{text-align:left;white-space:normal}
+thead th{background:var(--azul);font-weight:700;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);cursor:pointer;user-select:none}
+thead th[data-sort]::after{content:" ↕";color:var(--azul-tint)}
+tbody tr:hover{background:rgba(255,255,255,.03)}
+td .fmt{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.06em;padding:2px 8px;border-radius:99px;border:1px solid var(--azul-tint);color:var(--azul-tint);margin-left:6px}
+td .fmt.reel{border-color:var(--verde);color:var(--verde)}
+.hl-row td{background:rgba(92,184,62,.07)}
+.bar-cell{min-width:120px}
+.mini{height:6px;background:var(--bg-2);border-radius:4px;overflow:hidden;margin-top:6px}
+.mini span{display:block;height:100%;background:var(--verde)}
+.sd{font-style:italic;color:var(--ink-faint)}
+
+/* Gestión */
+.split{display:grid;grid-template-columns:1.1fr 1fr;gap:16px}
+.ring{display:flex;align-items:center;gap:22px;padding:24px}
+.ring svg{flex:0 0 auto}
+.ring .t{font-size:.9rem;color:var(--ink-dim)}
+.ring .t b{display:block;font-size:1.2rem;color:var(--ink);margin-bottom:4px}
+.fmt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.fmt-grid .stat .v{font-size:1.8rem}
+.note{font-size:.86rem;color:var(--ink-dim);padding:16px 18px;border-left:3px solid var(--azul-tint);background:rgba(31,53,73,.2);border-radius:0 10px 10px 0;margin-top:16px}
+
+/* Top/Flop */
+.tf{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.tf h3{font-size:1.05rem;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.tf h3 i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.card{padding:18px 20px;margin-bottom:12px}
+.card .top{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
+.card .name{font-weight:700}
+.card .date{font-size:.78rem;color:var(--ink-faint)}
+.card .nums{display:flex;flex-wrap:wrap;gap:6px 16px;margin:8px 0;font-size:.85rem;color:var(--ink-dim)}
+.card .nums b{color:var(--ink)}
+.card p{font-size:.88rem;color:var(--ink-dim)}
+.card.flop{border-left:3px solid rgba(230,74,0,.55)}
+.card.top-c{border-left:3px solid var(--verde)}
+
+/* Patterns / insights */
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.pat{padding:22px}
+.pat .n{font-size:1.9rem;font-weight:700;color:var(--verde);line-height:1;margin-bottom:10px}
+.pat h4{font-size:1rem;margin-bottom:8px}
+.pat p{font-size:.88rem;color:var(--ink-dim)}
+.ins{padding:22px 24px;margin-bottom:12px;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start}
+.ins .n{font-size:2rem;font-weight:700;color:var(--verde);line-height:1;min-width:110px}
+.ins p{color:var(--ink-dim)} .ins p b{color:var(--ink)}
+
+/* Plan */
+.act{display:grid;grid-template-columns:130px 1fr;gap:18px;padding:20px 22px;margin-bottom:12px;align-items:start}
+.urg{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.1em;padding:6px 12px;border-radius:999px;text-align:center}
+.urg.hoy{background:var(--naranja);color:#fff}
+.urg.sem{background:rgba(230,74,0,.28);color:#ffb08a;border:1px solid rgba(230,74,0,.6)}
+.urg.mes{background:transparent;color:#e98a5c;border:1px solid rgba(230,74,0,.35)}
+.act h4{font-size:1.02rem;margin-bottom:6px}
+.act p{font-size:.88rem;color:var(--ink-dim)}
+.act .imp{margin-top:8px;font-size:.84rem;color:var(--ink)}
+.act .imp b{color:var(--verde)}
+
+.close{padding:56px 0 72px}
+.close p{font-size:1.15rem;max-width:760px}
+footer{padding:28px 0 40px;color:var(--ink-faint);font-size:.78rem;border-top:1px solid var(--border)}
+footer .logo-s{font-weight:700;letter-spacing:.28em;color:var(--ink-dim);font-size:.9rem;margin-bottom:6px}
+
+@media (max-width:860px){
+  .split,.tf,.grid3{grid-template-columns:1fr}
+  .timeline{grid-template-columns:1fr 1fr}
+}
+@media (max-width:560px){
+  .wrap{padding:0 16px}
+  section{padding:48px 0}
+  .timeline{grid-template-columns:1fr}
+  .fmt-grid{grid-template-columns:1fr 1fr 1fr;gap:8px}
+  .fmt-grid .stat{padding:14px}
+  .fmt-grid .stat .v{font-size:1.4rem}
+  .act{grid-template-columns:1fr;gap:10px}
+  .ins{grid-template-columns:1fr;gap:8px}
+  .ring{flex-direction:column;align-items:flex-start}
+  .hero-stat{padding:20px}
+}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div class="wrap">
+
+<!-- 1. HERO -->
+<header class="hero">
+  <div class="logo" aria-label="Nexo Agencia Creativa"><b>NEXO</b><span>AGENCIA CREATIVA</span></div>
+  <div><span class="tag">Informe de gestión y rendimiento</span></div>
+  <h1>Pachamama</h1>
+  <div class="periodo">Septiembre 2026 · Instagram @pachamama.merida · desde el arranque de la cuenta (21 de septiembre) hasta el 19 de octubre</div>
+  <div class="hero-stat glass">
+    <div class="big"><span class="count" data-to="1006">1006</span></div>
+    <div class="lbl">seguidores en Instagram al 20 de octubre de 2026, partiendo de 0 al inicio de la gestión.</div>
+  </div>
+  <p class="rango">Rango leído: Instagram solo ofrece periodos fijos (últimos 7, 14, 30 y 90 días). Este informe usa la vista de «últimos 90 días» al 20/10/2026, que cubre toda la vida de la cuenta, ya que la primera publicación es del 21/09/2026. No corresponde al mes calendario exacto: incluye también las publicaciones de octubre, porque forman parte de la misma gestión.</p>
+</header>
+
+<!-- 2. GESTIÓN -->
+<section class="reveal">
+  <span class="sec-num">01 · Gestión</span>
+  <h2>Lo que se publicó</h2>
+  <p class="lead">Todo el contenido publicado en Instagram entre el 21 de septiembre y el 19 de octubre, comparado con el calendario de contenidos de Nexo.</p>
+
+  <div class="split">
+    <div class="glass ring">
+      <svg width="120" height="120" viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="60" r="50" fill="none" stroke="#141b22" stroke-width="12"/>
+        <circle cx="60" cy="60" r="50" fill="none" stroke="#5CB83E" stroke-width="12" stroke-linecap="round"
+          stroke-dasharray="314.16" stroke-dashoffset="25.13" transform="rotate(-90 60 60)"/>
+        <text x="60" y="68" text-anchor="middle" fill="#f4f6f7" font-size="26" font-weight="700" font-family="Futura,Century Gothic,Poppins,sans-serif">92%</text>
+      </svg>
+      <div class="t"><b>12 de 13 piezas de feed publicadas</b>Cumplimiento del calendario de feed = publicaciones realizadas ÷ publicaciones planificadas con fecha entre el 21/09 y el 17/10 × 100. La única pendiente es el reel «Cómo llegar a Pachamama», que está por grabar.</div>
+    </div>
+    <div class="glass stat hl">
+      <div class="k">Total de piezas publicadas</div>
+      <div class="v"><span class="count" data-to="65">65</span></div>
+      <div class="s">12 publicaciones de feed + 53 historias en 29 días. Es un promedio de 2,2 piezas diarias.</div>
+    </div>
+  </div>
+
+  <div class="fmt-grid">
+    <div class="glass stat"><div class="k">Reels</div><div class="v">5</div><div class="s">feed</div></div>
+    <div class="glass stat"><div class="k">Fotos y carruseles</div><div class="v">7</div><div class="s">feed</div></div>
+    <div class="glass stat"><div class="k">Historias</div><div class="v">53</div><div class="s">7.568 visualizaciones</div></div>
+  </div>
+  <div class="note">En el calendario había 10 historias planificadas con fecha. Se publicaron 53 porque se agregaron historias de horario, menú, reservas, ubicación y promociones (por ejemplo, el balde de cervezas y la dinámica de karaoke para grupos).</div>
+  <p class="meta">Fuente: calendario de contenidos de Nexo en ClickUp (lista PRODUCCIÓN, campo «Fecha de publicación») y perfil de Instagram @pachamama.merida (12 publicaciones). Leído el 20/10/2026.</p>
+</section>
+
+<!-- 3. RENDIMIENTO -->
+<section class="reveal">
+  <span class="sec-num">02 · Rendimiento</span>
+  <h2>De 0 a 1.006 seguidores</h2>
+  <p class="lead">Es una cuenta nueva, así que no hay un periodo anterior con el cual comparar. Estas cifras son la línea base de Pachamama en Instagram.</p>
+
+  <div class="stats">
+    <div class="glass stat hl"><div class="k">Seguidores</div><div class="v"><span class="count" data-to="1006">1006</span></div><div class="s">desde 0 · +1.006 netos</div></div>
+    <div class="glass stat"><div class="k">Visualizaciones</div><div class="v"><span class="count" data-to="88796">88796</span></div><div class="s">91,9 % de no seguidores</div></div>
+    <div class="glass stat"><div class="k">Cuentas alcanzadas</div><div class="v"><span class="count" data-to="56379">56379</span></div><div class="s">espectadores únicos</div></div>
+    <div class="glass stat"><div class="k">Interacciones</div><div class="v"><span class="count" data-to="7767">7767</span></div><div class="s">3.847 cuentas interactuaron</div></div>
+    <div class="glass stat"><div class="k">Visitas al perfil</div><div class="v"><span class="count" data-to="1473">1473</span></div><div class="s">+93 toques en el enlace de WhatsApp</div></div>
+  </div>
+
+  <div class="glass growth">
+    <h3 style="font-size:1.05rem">¿De dónde salieron los 1.006 seguidores?</h3>
+    <div class="gbar" role="img" aria-label="928 seguidores del reel UGC, 23 de otras publicaciones, 55 de otras fuentes">
+      <div style="width:92.2%;background:var(--verde)"></div>
+      <div style="width:2.3%;background:var(--azul-tint)"></div>
+      <div style="width:5.5%;background:var(--azul)"></div>
+    </div>
+    <div class="legend">
+      <span><i style="background:var(--verde)"></i>928 · reel UGC del 7 de octubre (92 %)</span>
+      <span><i style="background:var(--azul-tint)"></i>23 · las otras 11 publicaciones</span>
+      <span><i style="background:var(--azul)"></i>55 · historias, búsqueda y visitas directas al perfil</span>
+    </div>
+    <div class="timeline">
+      <div class="tl"><div class="d">21 sep</div><div class="n">0</div><p>Primera publicación. La cuenta arranca desde cero.</p></div>
+      <div class="tl"><div class="d">21 sep – 6 oct</div><div class="n">+20</div><p>Seguidores que dejaron las 6 primeras publicaciones de feed.</p></div>
+      <div class="tl peak"><div class="d">7 oct</div><div class="n">+928</div><p>Sale el reel UGC «Hay lugares que uno descubre…». Llega a 55.514 cuentas.</p></div>
+      <div class="tl"><div class="d">20 oct</div><div class="n">1.006</div><p>Total actual de seguidores.</p></div>
+    </div>
+  </div>
+  <p class="meta">Leído del panel profesional de Instagram (Estadísticas de la cuenta, «últimos 90 días») y de las estadísticas de cada publicación — 20/10/2026. Los seguidores por publicación son los que Instagram atribuye a cada pieza. Los 55 restantes son la diferencia con el total.</p>
+</section>
+
+<!-- 4. COMPARATIVA -->
+<section class="reveal">
+  <span class="sec-num">03 · Comparativa</span>
+  <h2>Antes, durante y después del reel viral</h2>
+  <p class="lead">Como no hay un mes anterior, comparamos tres tramos de la vida de la cuenta. La última columna compara la última semana con el ritmo semanal del arranque.</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Instagram</th><th>Arranque<br>21 sep – 5 oct</th><th>Semana del reel<br>6 – 12 oct</th><th>Última semana<br>13 – 19 oct</th><th>Total</th><th>Última semana vs. promedio semanal del arranque</th></tr></thead>
+      <tbody>
+        <tr><td>Visualizaciones</td><td>4.895</td><td>75.204</td><td>8.697</td><td>88.796</td><td class="up">▲ 255 %</td></tr>
+        <tr><td>Interacciones</td><td>182</td><td>7.118</td><td>467</td><td>7.767</td><td class="up">▲ 413 %</td></tr>
+        <tr><td>Visitas al perfil</td><td>73</td><td>1.249</td><td>151</td><td>1.473</td><td class="up">▲ 314 %</td></tr>
+        <tr><td>Toques en el enlace (WhatsApp)</td><td>4</td><td>73</td><td>16</td><td>93</td><td class="up">▲ 700 %</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="tbl-wrap" style="margin-top:14px">
+    <table>
+      <thead><tr><th>Facebook · Pachamama Mérida Venezuela</th><th>22 sep – 19 oct</th><th>Comentario</th></tr></thead>
+      <tbody>
+        <tr><td>Visualizaciones</td><td>4</td><td class="down" style="white-space:normal;text-align:left">La página no tuvo publicaciones en el periodo</td></tr>
+        <tr><td>Seguidores nuevos</td><td>0</td><td style="white-space:normal;text-align:left;color:var(--ink-dim)">Sin actividad</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="meta">Instagram: tramos calculados restando las vistas fijas de «últimos 90, 14 y 7 días» al 20/10/2026. Cada tramo cuenta lo que pasó dentro de esas fechas. Facebook: Meta Business Suite → Estadísticas, «últimos 28 días» (22/09 – 19/10/2026), leído el 20/10/2026. TikTok: no aplica (sin cuenta gestionada).</p>
+</section>
+
+<!-- 5. TOP / FLOP + TABLA -->
+<section class="reveal">
+  <span class="sec-num">04 · Contenido</span>
+  <h2>Las 12 publicaciones, una por una</h2>
+  <p class="lead">Datos de cada publicación según sus estadísticas en Instagram. Puedes ordenar la tabla tocando los encabezados.</p>
+  <div class="tbl-wrap">
+    <table id="posts">
+      <thead><tr><th data-sort="text">Publicación</th><th data-sort="date">Fecha</th><th data-sort="num">Visualizaciones</th><th data-sort="num">Interacciones</th><th data-sort="num">Compartidos</th><th data-sort="num">Guardados</th><th data-sort="num">Seguidores</th></tr></thead>
+      <tbody>
+        <tr><td>Mérida tiene un lugar para los sabores del Perú <span class="fmt">CARRUSEL</span></td><td data-v="20260921">21/09</td><td data-v="1428">1.428</td><td data-v="35">35</td><td data-v="11">11</td><td data-v="1">1</td><td data-v="5">5</td></tr>
+        <tr><td>Perú se sirve en la mesa <span class="fmt">PUBLICACIÓN</span></td><td data-v="20260922">22/09</td><td data-v="1220">1.220</td><td data-v="25">25</td><td data-v="8">8</td><td data-v="1">1</td><td data-v="1">1</td></tr>
+        <tr><td>¿Vienes en grupo? <span class="fmt">CARRUSEL</span></td><td data-v="20260923">23/09</td><td data-v="1567">1.567</td><td data-v="27">27</td><td data-v="14">14</td><td data-v="4">4</td><td data-v="1">1</td></tr>
+        <tr><td>Ronda Marina <span class="fmt reel">REEL</span></td><td data-v="20260925">25/09</td><td data-v="1807">1.807</td><td data-v="107">107</td><td data-v="32">32</td><td data-v="8">8</td><td data-v="9">9</td></tr>
+        <tr><td>¿Ya probaste las hamburguesas? <span class="fmt">PUBLICACIÓN</span></td><td data-v="20260927">27/09</td><td data-v="875">875</td><td data-v="10">10</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="0">0</td></tr>
+        <tr><td>Hay sabores que te llevan a otro lugar <span class="fmt reel">REEL</span></td><td data-v="20261001">01/10</td><td data-v="1384">1.384</td><td data-v="53">53</td><td data-v="15">15</td><td data-v="0">0</td><td data-v="4">4</td></tr>
+        <tr class="hl-row"><td>Hay lugares que uno descubre… (UGC) <span class="fmt reel">REEL</span></td><td data-v="20261007">07/10</td><td data-v="67461">67.461</td><td data-v="5071">5.071</td><td data-v="2091">2.091</td><td data-v="367">367</td><td data-v="928">928</td></tr>
+        <tr><td>Pide para probar <span class="fmt">PUBLICACIÓN</span></td><td data-v="20261009">09/10</td><td data-v="1004">1.004</td><td data-v="18">18</td><td data-v="3">3</td><td data-v="0">0</td><td data-v="1">1</td></tr>
+        <tr><td>La historia de la causa <span class="fmt reel">REEL</span></td><td data-v="20261010">10/10</td><td data-v="761">761</td><td data-v="23">23</td><td data-v="7">7</td><td data-v="1">1</td><td data-v="0">0</td></tr>
+        <tr><td>Chicha morada: siglos de historia <span class="fmt">PUBLICACIÓN</span></td><td data-v="20261014">14/10</td><td data-v="387">387</td><td data-v="9">9</td><td data-v="1">1</td><td data-v="0">0</td><td data-v="0">0</td></tr>
+        <tr><td>Trío Marino <span class="fmt reel">REEL</span></td><td data-v="20261016">16/10</td><td data-v="531">531</td><td data-v="8">8</td><td data-v="1">1</td><td data-v="1">1</td><td data-v="2">2</td></tr>
+        <tr><td>¿Conoces Pachamama? <span class="fmt">PUBLICACIÓN</span></td><td data-v="20261017">17/10</td><td data-v="452">452</td><td data-v="6">6</td><td data-v="1">1</td><td data-v="0">0</td><td data-v="0">0</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="meta">Leído de «Ver estadísticas» de cada publicación en Instagram web — 20/10/2026. Son cifras acumuladas desde la fecha de publicación de cada pieza.</p>
+
+  <div class="tf" style="margin-top:28px">
+    <div>
+      <h3><i style="background:var(--verde)"></i>Lo que mejor funcionó</h3>
+      <div class="glass card top-c">
+        <div class="top"><span class="name">Reel UGC «Hay lugares que uno descubre…»</span><span class="date">7 oct · reel</span></div>
+        <div class="nums"><span><b>67.461</b> visualizaciones</span><span><b>2.091</b> compartidos</span><span><b>367</b> guardados</span><span><b>928</b> seguidores</span></div>
+        <p>Una persona real cuenta cómo descubrió el restaurante y prueba los platos en cámara. El 98,9 % de quienes lo vieron no seguía la cuenta, y se compartió 2.091 veces. Esa es la razón de su alcance.</p>
+      </div>
+      <div class="glass card top-c">
+        <div class="top"><span class="name">Reel «Ronda Marina»</span><span class="date">25 sep · reel</span></div>
+        <div class="nums"><span><b>1.807</b> visualizaciones</span><span><b>107</b> interacciones</span><span><b>22</b> comentarios</span><span><b>9</b> seguidores</span></div>
+        <p>Es el segundo mejor contenido. Muestra un plato abundante para compartir y fue el único, aparte del UGC, que generó conversación en comentarios.</p>
+      </div>
+      <div class="glass card top-c">
+        <div class="top"><span class="name">Carrusel «¿Vienes en grupo?»</span><span class="date">23 sep · carrusel</span></div>
+        <div class="nums"><span><b>1.567</b> visualizaciones</span><span><b>14</b> compartidos</span><span><b>4</b> guardados</span></div>
+        <p>Es la publicación estática con más alcance y más guardados. Funciona porque la gente se la envía a su grupo para organizar el plan.</p>
+      </div>
+    </div>
+    <div>
+      <h3><i style="background:var(--naranja)"></i>Lo que menos funcionó</h3>
+      <div class="glass card flop">
+        <div class="top"><span class="name">«Chicha morada: siglos de historia»</span><span class="date">14 oct · publicación</span></div>
+        <div class="nums"><span><b>387</b> visualizaciones</span><span><b>9</b> interacciones</span><span><b>0</b> seguidores</span></div>
+        <p>Es el contenido con menos alcance. Es una pieza informativa hecha con imagen generada, sin plato real ni personas, y no invita a visitar el restaurante.</p>
+      </div>
+      <div class="glass card flop">
+        <div class="top"><span class="name">«¿Conoces Pachamama?»</span><span class="date">17 oct · publicación</span></div>
+        <div class="nums"><span><b>452</b> visualizaciones</span><span><b>6</b> interacciones</span><span><b>0</b> seguidores</span></div>
+        <p>Es una presentación general de la marca y repite un mensaje que el reel UGC ya había contado mejor. Además, tiene poco tiempo publicada.</p>
+      </div>
+      <div class="glass card flop">
+        <div class="top"><span class="name">Reel «Trío Marino»</span><span class="date">16 oct · reel</span></div>
+        <div class="nums"><span><b>531</b> visualizaciones</span><span><b>8</b> interacciones</span><span><b>1</b> compartido</span></div>
+        <p>Es el reel con menos rendimiento. Muestra producto sin persona ni historia y tuvo la mitad de las visualizaciones del promedio de los otros reels.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. PATRONES -->
+<section class="reveal">
+  <span class="sec-num">05 · Patrones</span>
+  <h2>Lo que se repite en lo que funciona</h2>
+  <div class="grid3" style="margin-top:20px">
+    <div class="glass pat"><div class="n">2,6×</div><h4>El reel le gana a la imagen fija</h4><p>Aun sin contar el UGC, los reels promedian 48 interacciones y las publicaciones estáticas, 19. Los reels concentran el 86,2 % de las visualizaciones y el 95,8 % de las interacciones de la cuenta.</p></div>
+    <div class="glass pat"><div class="n">65×</div><h4>Una persona en cámara multiplica el alcance</h4><p>El reel con una persona real que descubre y prueba los platos tuvo 65 veces las visualizaciones promedio del resto (67.461 frente a 1.038). La pieza informativa con imagen generada y la presentación general de marca quedaron por debajo de 500.</p></div>
+    <div class="glass pat"><div class="n">869</div><h4>Las historias útiles son las más vistas</h4><p>Las historias con más visualizaciones son informativas: «Cocina peruana · consulta el menú» (869), «¿Tienes un plato especial en mente?» (609), «¿Dónde estamos?» (537) y «Reservas» (351). En promedio, las 53 historias tienen 143 visualizaciones.</p></div>
+  </div>
+  <div class="grid3" style="margin-top:14px">
+    <div class="glass pat"><div class="n">«en grupo»</div><h4>Compartir la mesa conecta</h4><p>«Ronda Marina» y «¿Vienes en grupo?» son las dos mejores piezas después del UGC. El mensaje de plato para compartir hace que la gente etiquete y comparta.</p></div>
+    <div class="glass pat"><div class="n">32–49 %</div><h4>El perfil funciona como vitrina</h4><p>Entre el 32 % y el 49 % de las visualizaciones de las primeras publicaciones vienen de personas que entraron al perfil. Por eso el feed tiene que funcionar como un menú visual.</p></div>
+    <div class="glass pat"><div class="n">12–15 h</div><h4>Horario de más actividad</h4><p>Según el panel de Instagram, la actividad de los seguidores llega a su punto más alto en la franja de 12 h a 15 h (112 y 116) y baja mucho a partir de las 21 h (28).</p></div>
+  </div>
+</section>
+
+<!-- 7. INSIGHTS -->
+<section class="reveal">
+  <span class="sec-num">06 · Lecturas</span>
+  <h2>Lo que dicen los números</h2>
+  <div style="margin-top:20px">
+    <div class="glass ins"><div class="n">76 %</div><p>Un solo reel generó <b>el 76 % de todas las visualizaciones</b> de la cuenta (67.461 de 88.796) y <b>el 92 % de los seguidores</b> (928 de 1.006). El crecimiento existe, pero depende de una sola pieza. El reto del próximo mes es repetir ese formato.</p></div>
+    <div class="glass ins"><div class="n">3,5×</div><p>Después del pico, la cuenta no volvió al punto de partida. En la última semana tuvo <b>8.697 visualizaciones</b>, 3,5 veces el ritmo semanal del arranque (≈ 2.450). Las visitas al perfil pasaron de unas 37 a <b>151 por semana</b>.</p></div>
+    <div class="glass ins"><div class="n">22×</div><p>El reel UGC se compartió <b>2.091 veces</b>, 22 veces más que las otras 11 publicaciones juntas (93). Lo que más mueve a Pachamama en Instagram es que la gente reenvíe el contenido a otras personas.</p></div>
+  </div>
+</section>
+
+<!-- 8. PLAN -->
+<section class="reveal">
+  <span class="sec-num">07 · Próximo mes</span>
+  <h2>Plan de acción</h2>
+  <p class="lead">Seis acciones concretas, ordenadas por urgencia.</p>
+  <div class="glass act"><div><span class="urg hoy">HOY</span></div><div><h4>Fijar el reel UGC como primera publicación del perfil</h4><p>Es la pieza que más seguidores ganó, y 1.473 personas ya visitaron el perfil. Lo primero que vean tiene que ser ese reel.</p><div class="imp">Impacto esperado: <b>pasar de 93 a más de 150 toques en el enlace de WhatsApp</b> el próximo mes.</div></div></div>
+  <div class="glass act"><div><span class="urg sem">ESTA SEMANA</span></div><div><h4>Grabar y publicar «Cómo llegar a Pachamama»</h4><p>Es la única pieza de feed pendiente del calendario. Además, en los comentarios la gente pregunta dónde queda el restaurante («en Ejido»).</p><div class="imp">Impacto esperado: <b>100 % de cumplimiento del feed</b> y una historia destacada de ubicación que siempre esté disponible.</div></div></div>
+  <div class="glass act"><div><span class="urg sem">ESTA SEMANA</span></div><div><h4>Producir 2 reels nuevos en formato UGC</h4><p>Con una persona real que llega, pide y prueba los platos, siguiendo la misma estructura del reel del 7 de octubre. Temas sugeridos: plan en grupo con la Ronda Marina y la cerveza en balde.</p><div class="imp">Impacto esperado: <b>10.000 visualizaciones o más por reel</b>, frente a las 1.038 de promedio sin el UGC.</div></div></div>
+  <div class="glass act"><div><span class="urg mes">ESTE MES</span></div><div><h4>Impulsar el reel UGC con publicidad local (Mérida y Ejido)</h4><p>Ya está comprobado que funciona de forma natural. Con presupuesto, llega a más personas de la zona que todavía no conocen el restaurante.</p><div class="imp">Impacto esperado: <b>llegar a 1.500 seguidores al cierre de noviembre</b> (+500).</div></div></div>
+  <div class="glass act"><div><span class="urg mes">ESTE MES</span></div><div><h4>Pasar el peso del feed a los reels</h4><p>Mínimo 3 reels por cada 2 imágenes fijas. Dejamos las piezas informativas con imágenes generadas para las historias, donde lo útil sí funciona.</p><div class="imp">Impacto esperado: <b>duplicar el promedio de interacciones por publicación</b> (de 29 a 60 o más, sin contar el UGC).</div></div></div>
+  <div class="glass act"><div><span class="urg mes">ESTE MES</span></div><div><h4>Activar la página de Facebook</h4><p>Vincular Instagram con la página «Pachamama Mérida Venezuela» para que cada publicación salga también en Facebook.</p><div class="imp">Impacto esperado: <b>pasar de 4 visualizaciones en 28 días</b> a tener una línea base medible para el próximo informe.</div></div></div>
+</section>
+
+<!-- 9. CIERRE -->
+<section class="close reveal">
+  <span class="sec-num">Cierre</span>
+  <p>En 29 días se publicaron 65 piezas y la cuenta pasó de 0 a 1.006 seguidores y 88.796 visualizaciones. Casi todo ese crecimiento salió de un reel UGC, y el próximo paso es repetir ese formato.</p>
+</section>
+
+</div>
+<footer>
+  <div class="wrap">
+    <div class="logo-s">NEXO</div>
+    Informe de gestión y rendimiento · Pachamama · Datos leídos el 20/10/2026 del panel profesional de Instagram, Meta Business Suite y el calendario de contenidos de Nexo.
+  </div>
+</footer>
+
+<script>
+(function(){
+  function onReady(fn){ if(document.readyState!=='loading'){fn();} else {document.addEventListener('DOMContentLoaded',fn);} }
+  function fmt(n){ return Math.round(n).toLocaleString('es-VE'); }
+  function progress(){
+    try{
+      var bar=document.getElementById('progress');
+      window.addEventListener('scroll',function(){
+        try{
+          var h=document.documentElement.scrollHeight-window.innerHeight;
+          bar.style.width=(h>0?(window.scrollY/h*100):0)+'%';
+        }catch(e){}
+      },{passive:true});
+    }catch(e){}
+  }
+  function counters(){
+    try{
+      var els=document.querySelectorAll('.count');
+      els.forEach(function(el){
+        var to=parseFloat(el.getAttribute('data-to'))||0;
+        el.textContent=fmt(to);
+        var run=function(){
+          var t0=null,dur=1300;
+          function step(ts){ if(!t0)t0=ts; var p=Math.min((ts-t0)/dur,1); el.textContent=fmt(to*(1-Math.pow(1-p,3))); if(p<1)requestAnimationFrame(step); }
+          requestAnimationFrame(step);
+        };
+        if('IntersectionObserver' in window){
+          var io=new IntersectionObserver(function(en){ en.forEach(function(x){ if(x.isIntersecting){ run(); io.disconnect(); } }); });
+          io.observe(el);
+        }
+      });
+    }catch(e){}
+  }
+  function reveals(){
+    try{
+      var els=document.querySelectorAll('.reveal');
+      if(!('IntersectionObserver' in window)){ els.forEach(function(e){e.classList.add('in');}); return; }
+      var io=new IntersectionObserver(function(en){ en.forEach(function(x){ if(x.isIntersecting){ x.target.classList.add('in'); io.unobserve(x.target);} }); },{threshold:0.08});
+      els.forEach(function(e){io.observe(e);});
+    }catch(e){}
+    setTimeout(function(){ try{ document.querySelectorAll('.reveal').forEach(function(e){e.classList.add('in');}); }catch(e){} },1500);
+  }
+  function sortable(){
+    try{
+      var t=document.getElementById('posts'); if(!t) return;
+      var ths=t.querySelectorAll('th[data-sort]');
+      ths.forEach(function(th,i){
+        var asc=false;
+        th.addEventListener('click',function(){
+          try{
+            var tb=t.tBodies[0], rows=[].slice.call(tb.rows), type=th.getAttribute('data-sort');
+            asc=!asc;
+            rows.sort(function(a,b){
+              var A=a.cells[i],B=b.cells[i],x,y;
+              if(type==='text'){ x=A.textContent.trim(); y=B.textContent.trim(); return asc?x.localeCompare(y,'es'):y.localeCompare(x,'es'); }
+              x=parseFloat(A.getAttribute('data-v'))||0; y=parseFloat(B.getAttribute('data-v'))||0;
+              return asc?x-y:y-x;
+            });
+            rows.forEach(function(r){tb.appendChild(r);});
+          }catch(e){}
+        });
+      });
+    }catch(e){}
+  }
+  onReady(function(){ progress(); counters(); reveals(); sortable(); });
+})();
+</script>
+<script>
+(function(){
+  try {
+    if (!document.querySelector('link[rel*="icon"]')) {
+      var fav = document.createElement('link');
+      fav.rel = 'icon';
+      fav.type = 'image/svg+xml';
+      fav.href = 'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%22540%20610%201300%201160%22%3E%3Cg%20transform%3D%22translate(0%2C2364)%20scale(1%2C-1)%22%3E%3Cpath%20fill%3D%22%235CB83E%22%20d%3D%22M1266%201638%20c-67%20-59%20-123%20-108%20-123%20-108%200%20-1%20129%20-214%20131%20-216%201%20-1%202%204%2018%2065%20l17%2064%20116%200%20115%200%200%20-3%20c-1%20-1%20-43%20-157%20-94%20-347%20-51%20-189%20-93%20-344%20-93%20-345%200%200%2051%200%20114%200%20l113%201%2014%2051%20c8%2028%2051%20188%2096%20355%20109%20402%20124%20459%20124%20460%200%201%20-62%201%20-229%201%20-218%200%20-229%200%20-229%202%201%202%2034%20127%2034%20128%200%201%20-17%20-13%20-124%20-108z%20M759%201528%20c-147%20-548%20-209%20-778%20-209%20-779%200%20-1%2073%20-1%20229%20-1%20125%200%20228%200%20228%200%200%200%20-8%20-30%20-17%20-65%20-9%20-35%20-17%20-65%20-16%20-65%200%200%201%201%203%202%201%202%2056%2050%20122%20107%2066%2058%20120%20106%20120%20106%201%201%20-18%2034%20-63%20108%20-75%20123%20-67%20110%20-67%20109%20-1%200%20-9%20-29%20-18%20-65%20l-17%20-64%20-115%200%20-115%200%200%203%20c1%202%20184%20687%20186%20690%200%202%20-6%202%20-114%202%20l-114%200%20-23%20-88z%22%3E%3C%2Fpath%3E%3C%2Fg%3E%3C%2Fsvg%3E';
+      document.head.appendChild(fav);
+    }
+  } catch(e) {}
+  try {
+    var metaTipo = document.querySelector('meta[name="nexo-informe"]');
+    var metaCliente = document.querySelector('meta[name="nexo-cliente"]');
+    var metaPeriodo = document.querySelector('meta[name="nexo-periodo"]');
+
+    var tipo = metaTipo ? (metaTipo.getAttribute('content') || '').trim().toLowerCase() : '';
+    var cliente = metaCliente ? (metaCliente.getAttribute('content') || '').trim() : '';
+    var periodo = metaPeriodo ? (metaPeriodo.getAttribute('content') || '').trim() : '';
+
+    if (!tipo) {
+      var p = window.location.pathname.toLowerCase();
+      if (p.indexOf('meta-ads') !== -1) tipo = 'meta-ads';
+      else if (p.indexOf('gestion') !== -1) tipo = 'gestion';
+      else tipo = 'gestion';
+    }
+
+    var filename = window.location.pathname.split('/').pop() || '';
+    var docId = filename.replace(/\.html$/i, '');
+    if (!docId) return;
+
+    var apiKey = "AIzaSyAsH9TxW0ld2aNQejJw6xxZW7fpZiw212Q";
+    var projectId = "nexo-tableros-app";
+    var baseDocUrl = "https://firestore.googleapis.com/v1/projects/" + encodeURIComponent(projectId) +
+      "/databases/(default)/documents/informes/" + encodeURIComponent(docId);
+
+    fetch(baseDocUrl + "?key=" + encodeURIComponent(apiKey))
+      .then(function(res){
+        if (res.status === 404) {
+          var nowIso = new Date().toISOString();
+          var pageUrl = window.location.href.split('?')[0].split('#')[0];
+          var payload = {
+            fields: {
+              id: { stringValue: docId },
+              tipo: { stringValue: tipo },
+              cliente: { stringValue: cliente },
+              periodo: { stringValue: periodo },
+              url: { stringValue: pageUrl },
+              registrado: { stringValue: nowIso }
+            }
+          };
+
+          var createUrl = "https://firestore.googleapis.com/v1/projects/" + encodeURIComponent(projectId) +
+            "/databases/(default)/documents/informes?documentId=" + encodeURIComponent(docId) +
+            "&key=" + encodeURIComponent(apiKey);
+
+          return fetch(createUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+        }
+      })
+      .catch(function(){
+        // Silencioso: el cliente nunca debe ver errores
+      });
+  } catch(e) {
+    // Silencioso
+  }
+})();
+</script>
+</body>
+</html>

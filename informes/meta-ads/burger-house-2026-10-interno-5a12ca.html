@@ -1287,8 +1287,8 @@ h4{
     <span class="badge badge-meta">Informe de Meta Ads · Interno</span>
     <span class="header-brand-sub" style="font-size:11px;letter-spacing:.14em">Para el equipo de Nexo · Burger House</span>
   </div>
-  <h1>El reel del almuerzo funcionó.<br>Ahora toca <em>confirmar las ventas.</em></h1>
-  <p class="lead">Este es el informe completo de la campaña <strong>VENTAS POR PAGINA WEB - Copia</strong> para quien la maneja. Con <strong>$56,80</strong> llevamos <strong>1.100 visitas</strong> a la web y Meta registró <strong>250 compras</strong>, pero esas compras no cuadran con el embudo y hay que revisarlas antes de escalar. Aquí está todo: números, dónde se fue la plata, qué falló y qué movemos en Ads Manager.</p>
+  <h1>La campaña vendió $511 en su primera semana.<br>Después, <em>el píxel se descalibró.</em></h1>
+  <p class="lead">Este es el informe completo de la campaña <strong>VENTAS POR PAGINA WEB - Copia</strong> para quien la maneja. Con <strong>$56,80</strong> llevamos <strong>1.100 visitas</strong> a la web y el píxel registró <strong>250 compras por $639</strong>. De eso, <strong>$511 en 51 compras</strong> son del 1 al 7 de octubre, con montos que cuadran con la carta. Desde el 8 de octubre el píxel siguió contando compras pero con montos imposibles, y hay que arreglarlo antes de escalar. Aquí está todo: números, dónde se fue la plata, qué falló y qué movemos en Ads Manager.</p>
   <div class="hero-meta">
     <div><div class="k">Rango leído</div><div class="v">01 oct – 21 oct 2026</div></div>
     <div><div class="k">Entrega real</div><div class="v">01 oct – 20 oct 2026</div></div>
@@ -1303,21 +1303,54 @@ h4{
   <h2>Lo que dejó la campaña <em>en 20 días.</em></h2>
   <div class="stats-row mt24">
     <div class="stat"><div class="stat-number" data-target="56.80" data-dec="2" data-pre="$">$56,80</div><div class="stat-label">Inversión</div><div class="stat-delta delta-neutral">Campaña nueva · sin mes previo</div></div>
-    <div class="stat"><div class="stat-number" data-target="250">250</div><div class="stat-label">Compras (píxel)</div><div class="stat-delta delta-warn">Por validar con pedidos</div></div>
-    <div class="stat"><div class="stat-number" data-target="0.23" data-dec="2" data-pre="$">$0,23</div><div class="stat-label">Costo por compra</div><div class="stat-delta delta-neutral">Según el píxel</div></div>
+    <div class="stat"><div class="stat-number" data-target="639" data-dec="2" data-pre="$">$639,00</div><div class="stat-label">Ventas registradas</div><div class="stat-delta delta-warn">250 compras · ver detalle</div></div>
+    <div class="stat"><div class="stat-number" data-target="511" data-dec="2" data-pre="$">$511,00</div><div class="stat-label">Ventas 1–7 oct</div><div class="stat-delta delta-up">51 compras · ROAS 26,10</div></div>
     <div class="stat"><div class="stat-number" data-target="1100">1.100</div><div class="stat-label">Visitas a la web</div><div class="stat-delta delta-neutral">$0,05 por visita</div></div>
     <div class="stat"><div class="stat-number" data-target="38643">38.643</div><div class="stat-label">Personas alcanzadas</div><div class="stat-delta delta-neutral">125.806 impresiones</div></div>
   </div>
   <p class="note">La campaña arrancó el 1 de octubre, así que no hay mes anterior con el que compararla. Por eso más abajo comparamos anuncio contra anuncio.</p>
   <div class="glass alert">
-    <div class="t">Ojo con estas compras</div>
-    <p>El píxel cuenta <strong>250 compras</strong> pero solo <strong>87 pagos iniciados</strong>: casi 3 compras por cada pago, y eso en un flujo normal no puede pasar. Además, el valor total que llega a Meta es de unos <strong>$639</strong> (ROAS 11,25), o sea un ticket promedio de <strong>$2,56</strong>, cuando la hamburguesa más barata cuesta <strong>$6,49</strong>. Lo más probable es que el evento <em>Purchase</em> se dispare antes del pago real (o en otro botón) y que el valor no sea el del pedido. Hasta revisarlo, tomemos el $0,23 por compra y el ROAS como cifras infladas.</p>
+    <div class="t">El píxel cambió el 8 de octubre</div>
+    <p>Del <strong>1 al 7 de octubre</strong> el píxel registró <strong>51 compras por $511</strong>: ticket promedio de <strong>$10,02</strong>, que cuadra con la carta (Clásica $6,49, combo $8,49). Del <strong>8 al 20</strong> registró <strong>199 compras por solo $128</strong>: ticket de <strong>$0,64</strong>, imposible para Burger House. El mismo día las compras se cuadruplicaron y el valor se desplomó, así que algo cambió en la web: el evento <em>Purchase</em> se dispara en otro paso o manda un <em>value</em> equivocado. Pagos iniciados tampoco sirve para comparar: solo se registró algunos días (87 en total). Conclusión: <strong>la venta medida con confianza es $511</strong>; lo del 8 al 20 hay que confirmarlo con los pedidos reales.</p>
   </div>
+</section>
+
+<!-- 1b VENTAS -->
+<section id="ventas" data-sec="Ventas" class="reveal">
+  <div class="eyebrow c-green">02 · Ventas</div>
+  <h2>Cuánto vendió <em>la campaña.</em></h2>
+  <p class="lead">Estas son las ventas que el píxel de la web le reportó a Meta, separadas en el antes y el después del 8 de octubre, que es cuando cambió la medición.</p>
+  <div class="glass comp-table mt24" data-sortable>
+    <table>
+      <thead><tr><th data-type="text">Período</th><th data-type="num">Inversión</th><th data-type="num">Compras</th><th data-type="num">Ventas</th><th data-type="num">Ticket promedio</th><th data-type="num">ROAS</th><th data-type="num">Costo por compra</th><th data-type="text">Lectura</th></tr></thead>
+      <tbody>
+        <tr><td>01 – 07 oct</td><td data-v="19.58">$19,58</td><td data-v="51">51</td><td data-v="511">$511,00</td><td data-v="10.02">$10,02</td><td data-v="26.10">26,10</td><td data-v="0.38">$0,38</td><td>Montos coherentes con la carta</td></tr>
+        <tr><td>08 – 20 oct</td><td data-v="37.22">$37,22</td><td data-v="199">199</td><td data-v="128">$128,00</td><td data-v="0.64">$0,64</td><td data-v="3.44">3,44</td><td data-v="0.19">$0,19</td><td>Montos imposibles: el evento cambió</td></tr>
+        <tr><td><strong>Total 01 – 20 oct</strong></td><td data-v="56.80">$56,80</td><td data-v="250">250</td><td data-v="639">$639,00</td><td data-v="2.56">$2,56</td><td data-v="11.25">11,25</td><td data-v="0.23">$0,23</td><td>Lo que muestra Ads Manager</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="glass comp-table mt24" data-sortable>
+    <table>
+      <thead><tr><th data-type="text">Anuncio</th><th data-type="num">Inversión</th><th data-type="num">Compras</th><th data-type="num">Ventas</th><th data-type="num">Ticket promedio</th><th data-type="num">ROAS</th></tr></thead>
+      <tbody>
+        <tr><td>REEL ALMUERZO</td><td data-v="55.55">$55,55</td><td data-v="245">245</td><td data-v="608">$608,00</td><td data-v="2.48">$2,48</td><td data-v="10.95">10,95</td></tr>
+        <tr><td>REEL CRISPY BOWL</td><td data-v="1.25">$1,25</td><td data-v="5">5</td><td data-v="31">$31,00</td><td data-v="6.20">$6,20</td><td data-v="24.80">24,80</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="glass comp-table mt24" data-sortable>
+    <table>
+      <thead><tr><th data-type="text">Día</th><th data-type="num">Compras</th><th data-type="num">Ventas</th><th data-type="num">Ticket</th></tr></thead>
+      <tbody><tr><td>01 oct · <span class="pill-st">PÍXEL OK</span></td><td data-v="4">4</td><td data-v="45">$45,00</td><td data-v="11.25">$11,25</td></tr><tr><td>02 oct · <span class="pill-st">PÍXEL OK</span></td><td data-v="12">12</td><td data-v="105">$105,00</td><td data-v="8.75">$8,75</td></tr><tr><td>03 oct · <span class="pill-st">PÍXEL OK</span></td><td data-v="9">9</td><td data-v="105">$105,00</td><td data-v="11.67">$11,67</td></tr><tr><td>04 oct · <span class="pill-st">PÍXEL OK</span></td><td data-v="11">11</td><td data-v="120">$120,00</td><td data-v="10.91">$10,91</td></tr><tr><td>05 oct · <span class="pill-st">PÍXEL OK</span></td><td data-v="7">7</td><td data-v="60">$60,00</td><td data-v="8.57">$8,57</td></tr><tr><td>06 oct · <span class="pill-st">PÍXEL OK</span></td><td data-v="6">6</td><td data-v="60">$60,00</td><td data-v="10.00">$10,00</td></tr><tr><td>07 oct · <span class="pill-st">PÍXEL OK</span></td><td data-v="2">2</td><td data-v="16">$16,00</td><td data-v="8.00">$8,00</td></tr><tr><td>08 oct</td><td data-v="16">16</td><td data-v="9">$9,00</td><td data-v="0.56">$0,56</td></tr><tr><td>09 oct</td><td data-v="15">15</td><td data-v="11">$11,00</td><td data-v="0.73">$0,73</td></tr><tr><td>10 oct</td><td data-v="18">18</td><td data-v="11">$11,00</td><td data-v="0.61">$0,61</td></tr><tr><td>11 oct</td><td data-v="18">18</td><td data-v="12">$12,00</td><td data-v="0.67">$0,67</td></tr><tr><td>12 oct</td><td data-v="16">16</td><td data-v="10">$10,00</td><td data-v="0.62">$0,62</td></tr><tr><td>13 oct</td><td data-v="18">18</td><td data-v="12">$12,00</td><td data-v="0.67">$0,67</td></tr><tr><td>14 oct</td><td data-v="11">11</td><td data-v="8">$8,00</td><td data-v="0.73">$0,73</td></tr><tr><td>15 oct</td><td data-v="11">11</td><td data-v="8">$8,00</td><td data-v="0.73">$0,73</td></tr><tr><td>16 oct</td><td data-v="31">31</td><td data-v="17">$17,00</td><td data-v="0.55">$0,55</td></tr><tr><td>17 oct</td><td data-v="15">15</td><td data-v="10">$10,00</td><td data-v="0.67">$0,67</td></tr><tr><td>18 oct</td><td data-v="21">21</td><td data-v="14">$14,00</td><td data-v="0.67">$0,67</td></tr><tr><td>19 oct</td><td data-v="6">6</td><td data-v="4">$4,00</td><td data-v="0.67">$0,67</td></tr><tr><td>20 oct</td><td data-v="3">3</td><td data-v="2">$2,00</td><td data-v="0.67">$0,67</td></tr></tbody>
+    </table>
+  </div>
+  <p class="note">Ventas = valor de compras web del píxel (dataset BURGER HOUSE WEB) leído con el conector de Meta Ads. Inversión por período leída por separado (01–07 y 08–21 oct). El ticket del 1 al 7 de octubre ronda los $10 todos los días; desde el 8 cae a menos de $1.</p>
 </section>
 
 <!-- 2b FICHA TÉCNICA -->
 <section id="ficha" data-sec="Ficha técnica" class="reveal">
-  <div class="eyebrow c-green">02 · Ficha técnica</div>
+  <div class="eyebrow c-green">03 · Ficha técnica</div>
   <h2>Todas las métricas <em>en un solo lugar.</em></h2>
   <div class="glass comp-table mt24" data-sortable>
     <table>
@@ -1338,9 +1371,9 @@ h4{
         <tr><td>Costo por visita</td><td data-v="0.05">$0,05</td><td>Inversión ÷ visitas</td></tr>
         <tr><td>Agregados al carrito</td><td data-v="470">470</td><td>42,7% de las visitas</td></tr>
         <tr><td>Pagos iniciados</td><td data-v="87">87</td><td>18,5% de los carritos</td></tr>
-        <tr><td>Compras (píxel)</td><td data-v="250">250</td><td>Más que los pagos iniciados: revisar evento</td></tr>
-        <tr><td>Valor de compras</td><td data-v="639">≈ $639</td><td>Calculado como inversión × ROAS</td></tr>
-        <tr><td>ROAS</td><td data-v="11.25">11,25</td><td>No confiable hasta corregir el valor del evento</td></tr>
+        <tr><td>Compras (píxel)</td><td data-v="250">250</td><td>51 confiables (1–7 oct) + 199 dudosas (8–20 oct)</td></tr>
+        <tr><td>Ventas (valor de compras)</td><td data-v="639">$639,00</td><td>$511 del 1–7 oct + $128 del 8–20 oct</td></tr><tr><td>Ticket promedio</td><td data-v="2.56">$2,56</td><td>$10,02 del 1–7 oct; $0,64 del 8–20 oct</td></tr>
+        <tr><td>ROAS</td><td data-v="11.25">11,25</td><td>26,10 en la semana confiable (1–7 oct)</td></tr>
       </tbody>
     </table>
   </div>
@@ -1349,7 +1382,7 @@ h4{
 
 <!-- 3 COMPARATIVA -->
 <section id="comparativa" data-sec="Comparativa" class="reveal">
-  <div class="eyebrow c-violet">03 · Anuncio contra anuncio</div>
+  <div class="eyebrow c-violet">04 · Anuncio contra anuncio</div>
   <h2>Dos reels, <em>pero Meta apostó por uno.</em></h2>
   <p class="lead">Meta le dio el 97,8% de la plata al reel del almuerzo casi desde el primer día. El Crispy Bowl apenas salió y después se pausó, así que no sabemos todavía si funciona.</p>
   <div class="glass comp-table mt24" data-sortable>
@@ -1368,16 +1401,16 @@ h4{
 
 <!-- 4 FUNNEL -->
 <section id="embudo" data-sec="Embudo" class="reveal">
-  <div class="eyebrow c-amber">04 · Embudo de compra</div>
-  <h2>La web vende bien hasta el carrito. <em>El final no cuadra.</em></h2>
-  <p class="lead">Casi la mitad de quienes entran agregan algo al carrito (42,7%), así que la oferta y la página funcionan. El problema está al final: hay más compras que pagos iniciados, y eso es del píxel, no de la gente.</p>
+  <div class="eyebrow c-amber">05 · Embudo de compra</div>
+  <h2>La web vende bien hasta el carrito. <em>El final no se puede leer.</em></h2>
+  <p class="lead">Casi la mitad de quienes entran agregan algo al carrito (42,7%), así que la oferta y la página funcionan. El final del embudo no sirve para leer ventas: pagos iniciados solo se registró algunos días y, desde el 8 de octubre, las compras vienen infladas. Las ventas reales están en la sección de ventas.</p>
   <div class="funnel-grid mt24" id="funnels"></div>
   <noscript><p class="note">Campaña: 125.806 impresiones → 1.476 clics de enlace → 1.100 visitas → 470 carritos → 87 pagos iniciados → 250 compras registradas.</p></noscript>
 </section>
 
 <!-- 5 EXPLORACIÓN -->
 <section id="ubicaciones" data-sec="Ubicaciones" class="reveal">
-  <div class="eyebrow c-cyan">05 · Dónde se mostró</div>
+  <div class="eyebrow c-cyan">06 · Dónde se mostró</div>
   <h2>Instagram hizo el trabajo. <em>Audience Network solo infló clics.</em></h2>
   <div class="glass filter-bar" id="fb">
     <span class="filter-label">Anuncio</span>
@@ -1400,7 +1433,7 @@ h4{
 
 <!-- 6 SERIE -->
 <section id="pulso" data-sec="Pulso diario" class="reveal">
-  <div class="eyebrow c-violet">06 · Día a día</div>
+  <div class="eyebrow c-violet">07 · Día a día</div>
   <h2>Veinte días de entrega <em>y un viernes fuerte.</em></h2>
   <div class="glass chart-wrapper">
     <div class="chart-title">Clics de enlace y compras por día</div>
@@ -1412,7 +1445,7 @@ h4{
 
 <!-- 7 TABLA COMPLETA -->
 <section id="tabla" data-sec="Detalle" class="reveal">
-  <div class="eyebrow c-amber">07 · Detalle por anuncio y plataforma</div>
+  <div class="eyebrow c-amber">08 · Detalle por anuncio y plataforma</div>
   <h2>El material <em>completo.</em></h2>
   <div class="glass comp-table mt24" data-sortable>
     <table>
@@ -1437,7 +1470,7 @@ h4{
 
 <!-- 8 ACORDEÓN -->
 <section id="zoom" data-sec="Zoom por anuncio" class="reveal">
-  <div class="eyebrow c-cyan">08 · Cada reel por dentro</div>
+  <div class="eyebrow c-cyan">09 · Cada reel por dentro</div>
   <h2>Qué pasó con <em>cada anuncio.</em></h2>
   <div class="acc mt24" id="acc">
     <div class="glass acc-item open" data-ad="alm">
@@ -1459,11 +1492,12 @@ h4{
 
 <!-- 9 WINNERS / LOSERS -->
 <section id="balance" data-sec="Qué funcionó" class="reveal">
-  <div class="eyebrow c-green">09 · Qué funcionó y qué no</div>
+  <div class="eyebrow c-green">10 · Qué funcionó y qué no</div>
   <h2>Lo que repetimos <em>y lo que cortamos.</em></h2>
   <div class="vs-grid mt24">
     <div class="glass vs-card winners">
       <h3 class="c-green">Funcionó</h3>
+      <div class="vs-item"><div class="name">Primera semana de ventas</div><div class="metrics">$19,58 invertidos · 51 compras · $511 en ventas · ROAS 26,10</div><div class="why">Con el píxel midiendo bien, cada dólar invertido trajo unos 26 dólares en ventas registradas y el ticket rondó los $10, en línea con los combos.</div></div>
       <div class="vs-item"><div class="name">REEL ALMUERZO · Instagram</div><div class="metrics">$43,87 · 818 clics de enlace · 195 compras · $0,22 por compra</div><div class="why">Mostrar el momento del almuerzo enganchó más que mostrar un plato suelto. De aquí salió el 78% de las compras de toda la campaña: es la base para la próxima ronda.</div></div>
       <div class="vs-item"><div class="name">De visita a carrito</div><div class="metrics">1.100 visitas · 470 carritos · 42,7%</div><div class="why">Casi la mitad de los que entran agregan algo. Cuando el tráfico es bueno, la web y la oferta hacen su parte.</div></div>
       <div class="vs-item"><div class="name">Costo de llegar a la gente</div><div class="metrics">CPM $0,45 · $0,05 por visita</div><div class="why">En Mérida la subasta está barata. Hay espacio para meter más presupuesto sin que el costo por atención se dispare.</div></div>
@@ -1471,7 +1505,7 @@ h4{
     <div class="glass vs-card losers">
       <h3 class="c-red">No funcionó</h3>
       <div class="vs-item"><div class="name">Audience Network</div><div class="metrics">$1,05 · 225 clics de enlace · CTR 16,6% · 2 compras</div><div class="why">Un CTR de 16% en apps externas son toques sin querer. Se llevó el 15% de los clics de enlace y menos del 1% de las compras.</div></div>
-      <div class="vs-item"><div class="name">Pagos iniciados contra compras</div><div class="metrics">87 pagos iniciados · 250 compras · 287%</div><div class="why">No puede haber más compras que pagos. El evento de compra se está disparando antes del pago real o en otro paso, y por eso el ROAS de 11,25 sale inflado.</div></div>
+      <div class="vs-item"><div class="name">El píxel desde el 8 de octubre</div><div class="metrics">199 compras · $128 en ventas · ticket $0,64</div><div class="why">Las compras se cuadruplicaron y el valor se desplomó el mismo día. Esas compras no son pedidos reales con su monto, así que el ROAS total de 11,25 mezcla ventas buenas con datos rotos.</div></div>
       <div class="vs-item"><div class="name">REEL CRISPY BOWL</div><div class="metrics">$1,25 · 2.791 impresiones · 5 compras</div><div class="why">No tuvo una prueba justa: Meta no le dio entrega frente al almuerzo y se pausó. Queda pendiente probarlo aparte.</div></div>
     </div>
   </div>
@@ -1479,7 +1513,7 @@ h4{
 
 <!-- 10 PATTERNS -->
 <section id="patrones" data-sec="Patrones" class="reveal">
-  <div class="eyebrow c-violet">10 · Lo que se puede repetir</div>
+  <div class="eyebrow c-violet">11 · Lo que se puede repetir</div>
   <h2>Patrones para <em>la próxima campaña.</em></h2>
   <div class="patterns mt24">
     <div class="glass pattern"><div class="tag c-cyan">Creativo</div><h4>El <em>momento de comer</em> vende más que el plato</h4><p><span class="code">REEL ALMUERZO</span> se llevó el 97,8% de la entrega frente a <span class="code">REEL CRISPY BOWL</span>. Meta decide rápido y eligió la ocasión de consumo.</p></div>
@@ -1491,22 +1525,22 @@ h4{
 
 <!-- 11 INSIGHTS -->
 <section id="lecciones" data-sec="Lecciones" class="reveal">
-  <div class="eyebrow c-cyan">11 · Tres cosas para no olvidar</div>
+  <div class="eyebrow c-cyan">12 · Tres cosas para no olvidar</div>
   <h2>Lo que nos dicen <em>los números.</em></h2>
   <div class="insights mt24">
     <div class="glass insight"><div class="big">97,8%</div><p>de la inversión dependió de <strong>un solo reel</strong>. Si se cansa, se cae la campaña: hacen falta 2 o 3 variantes más.</p></div>
     <div class="glass insight"><div class="big">3,26</div><p>veces vio cada persona el anuncio en 20 días (<strong>38.643 personas</strong>). Todavía está bien, pero con el mismo reel se acerca al cansancio.</p></div>
-    <div class="glass insight"><div class="big">$2,56</div><p>de ticket promedio según el píxel, cuando lo más barato cuesta <strong>$6,49</strong>. El valor que se manda a Meta no es el del pedido.</p></div>
+    <div class="glass insight"><div class="big">$511</div><p>en ventas medidas en la primera semana con <strong>$19,58</strong> de inversión. Es la cifra de ventas más confiable que tenemos: 26 dólares por cada dólar.</p></div>
   </div>
 </section>
 
 <!-- 12 ACTION PLAN -->
 <section id="plan" data-sec="Próximos pasos" class="reveal">
-  <div class="eyebrow">12 · Qué movemos en Ads Manager</div>
+  <div class="eyebrow">13 · Qué movemos en Ads Manager</div>
   <h2>El plan para <em>la siguiente ronda.</em></h2>
   <div class="actions mt24">
-    <div class="glass action high"><div class="action-num">01</div><div><h4>Cruzar las 250 compras con <em>los pedidos reales</em></h4><p>Pedirle a Burger House los pedidos de la web del 1 al 20 de octubre y compararlos día por día con la serie de este informe.</p><div class="how"><b>CÓMO</b> · Exportar pedidos 01–20 oct y ponerlos al lado de la columna de compras diarias. Con eso sacamos el costo real por pedido.</div></div><div class="action-meta"><span class="urgency u-red">HOY</span><span class="impact">Costo real por pedido</span></div></div>
-    <div class="glass action mid"><div class="action-num">02</div><div><h4>Arreglar el evento y <em>el valor de compra</em></h4><p>La compra tiene que dispararse solo en la confirmación del pedido y mandar el monto real.</p><div class="how"><b>CÓMO</b> · En Events Manager, dataset BURGER HOUSE WEB: ver en qué URL o botón dispara Purchase, revisar el parámetro value y hacer una compra de prueba. Si se puede, sumar Conversions API.</div></div><div class="action-meta"><span class="urgency u-amber">ESTA SEMANA</span><span class="impact">ROAS confiable</span></div></div>
+    <div class="glass action high"><div class="action-num">01</div><div><h4>Cruzar las ventas con <em>los pedidos reales</em></h4><p>Pedirle a Burger House los pedidos de la web del 1 al 20 de octubre. Confirmar si los $511 del 1 al 7 cuadran y cuántos pedidos reales hubo del 8 al 20.</p><div class="how"><b>CÓMO</b> · Poner los pedidos al lado de la tabla "Ventas por día" de este informe. Con eso sacamos la venta real y el costo real por pedido de todo el período.</div></div><div class="action-meta"><span class="urgency u-red">HOY</span><span class="impact">Costo real por pedido</span></div></div>
+    <div class="glass action mid"><div class="action-num">02</div><div><h4>Ver qué cambió en la web <em>el 7–8 de octubre</em></h4><p>Hasta el 7 el píxel medía bien; desde el 8 cuenta compras con montos de centavos. Algo se tocó en la web o en el píxel esos días.</p><div class="how"><b>CÓMO</b> · Events Manager → dataset BURGER HOUSE WEB → Probar eventos: hacer una compra real y revisar en qué paso dispara Purchase y qué value y currency manda. Preguntar a Burger House si cambiaron la web, el checkout o la moneda esos días. Si se puede, sumar Conversions API.</div></div><div class="action-meta"><span class="urgency u-amber">ESTA SEMANA</span><span class="impact">ROAS confiable</span></div></div>
     <div class="glass action mid"><div class="action-num">03</div><div><h4>Sacar <em>Audience Network</em></h4><p>Se llevó 225 clics de enlace (15%) y solo 2 compras. Esa plata rinde más en Instagram.</p><div class="how"><b>CÓMO</b> · Conjunto de anuncios → Ubicaciones manuales → desmarcar Audience Network. Dejar Instagram, Facebook y WhatsApp.</div></div><div class="action-meta"><span class="urgency u-amber">48 HORAS</span><span class="impact">−15% clics basura</span></div></div>
     <div class="glass action mid"><div class="action-num">04</div><div><h4>Reactivar con el <em>Reel Almuerzo</em> y 2 variantes</h4><p>Mantener la pieza ganadora y sumar dos reels con el mismo ángulo de almuerzo, por ejemplo el combo de lunes a miércoles.</p><div class="how"><b>CÓMO</b> · Reactivar esta misma campaña y agregar los 2 anuncios nuevos al conjunto actual. No duplicar la campaña.</div></div><div class="action-meta"><span class="urgency u-amber">ESTA SEMANA</span><span class="impact">Frecuencia &lt; 4</span></div></div>
     <div class="glass action low"><div class="action-num">05</div><div><h4>Darle una <em>prueba justa</em> al Crispy Bowl</h4><p>Con $1,25 no hay veredicto. Si queremos saber si vende, necesita su propio espacio.</p><div class="how"><b>CÓMO</b> · Conjunto aparte con presupuesto diario fijo por 5–7 días y comparar su costo por pedido real con el del almuerzo.</div></div><div class="action-meta"><span class="urgency u-cyan">ESTE MES</span><span class="impact">Decidir sobre el producto</span></div></div>

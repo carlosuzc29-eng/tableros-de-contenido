@@ -5056,8 +5056,9 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
           </div>
           <div class="tool-selects">
             <select class="tool-select" id="selectTipoInforme" aria-label="Tipo de informe">
-              <option value="gestion">Gestión y rendimiento</option>
+              <option value="todos">Todos los informes</option>
               <option value="meta-ads">Meta Ads</option>
+              <option value="gestion">Gestión y rendimiento</option>
             </select>
             <button class="btn-tool" id="btnRefreshInformes" title="Actualizar lista de informes">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -6577,9 +6578,28 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
   var SK_FILTER_STATE = 'nexo-filter-state';
   var SK_SORT_ORDER = 'nexo-sort-order';
 
+  var EMBEDDED_INFORMES_DATA = [
+    {
+      id: "burger-house-2026-10-e43bfb",
+      tipo: "meta-ads",
+      cliente: "Burger House",
+      periodo: "2026-10",
+      url: "https://carlosuzc29-eng.github.io/tableros-de-contenido/informes/meta-ads/burger-house-2026-10-e43bfb.html",
+      registrado: "2026-10-21T14:54:17.124Z"
+    },
+    {
+      id: "burger-house-2026-10-interno-5a12ca",
+      tipo: "meta-ads",
+      cliente: "Burger House (interno)",
+      periodo: "2026-10",
+      url: "https://carlosuzc29-eng.github.io/tableros-de-contenido/informes/meta-ads/burger-house-2026-10-interno-5a12ca.html",
+      registrado: "2026-10-22T03:26:06.220Z"
+    }
+  ];
+
   var allTableros = [];
   var allProduccion = [];
-  var allInformes = [];
+  var allInformes = EMBEDDED_INFORMES_DATA.slice();
   var activeTab = 'hub';
   var unsubscribeFirestore = null;
   var unsubscribeProduccion = null;
@@ -8377,12 +8397,10 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
   function renderInformesList(){
     if (!informesContent) return;
 
-    var tipo = (selectTipoInforme && selectTipoInforme.value) ? selectTipoInforme.value : 'gestion';
-    var isGestion = (tipo === 'gestion');
-    var badgeClass = isGestion ? 'badge-gestion' : 'badge-meta';
-    var badgeLabel = isGestion ? 'Gestión y rendimiento' : 'Meta Ads';
+    var tipo = (selectTipoInforme && selectTipoInforme.value) ? selectTipoInforme.value : 'todos';
 
     var filteredDocs = allInformes.filter(function(doc){
+      if (tipo === 'todos') return true;
       return (doc.tipo || 'gestion') === tipo;
     });
 
@@ -8396,7 +8414,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
     }
 
     var parsedItems = filteredDocs.map(function(d){
-      return parseInformeItem(d, tipo);
+      return parseInformeItem(d, d.tipo || (tipo === 'todos' ? 'meta-ads' : tipo));
     });
 
     var q = (searchInformeInp && searchInformeInp.value ? searchInformeInp.value : '').toLowerCase().trim();
@@ -8450,13 +8468,17 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
         '<div class="clients-grid">';
 
       items.forEach(function(it){
+        var isGest = (it.tipo === 'gestion');
+        var cardBadgeClass = isGest ? 'badge-gestion' : 'badge-meta';
+        var cardBadgeLabel = isGest ? 'Gestión' : 'Meta Ads';
+
         html += '<div class="board-card" data-report-url="' + escapeHtml(it.url) + '">' +
           '<div class="card-top">' +
             '<div>' +
               '<div class="card-period">' + escapeHtml(it.clienteTitle) + '</div>' +
               '<div class="card-sub">' + escapeHtml(it.mesTexto) + '</div>' +
             '</div>' +
-            '<span class="badge ' + badgeClass + '">' + badgeLabel + '</span>' +
+            '<span class="badge ' + cardBadgeClass + '">' + cardBadgeLabel + '</span>' +
           '</div>' +
           '<div class="card-foot" style="margin-top:auto; padding-top:10px;">' +
             '<div class="card-actions" style="width:100%; justify-content:flex-end;">' +
@@ -8588,13 +8610,16 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
     // 3. Colección informes (informes registrados)
     unsubscribeInformes = db.collection('informes').onSnapshot(function(snapshot){
       if (btnRef) btnRef.disabled = false;
-      var docs = [];
+      var map = {};
+      EMBEDDED_INFORMES_DATA.forEach(function(item){
+        map[item.id] = Object.assign({}, item);
+      });
       snapshot.forEach(function(doc){
         var d = doc.data();
         if (!d.id) d.id = doc.id;
-        docs.push(d);
+        map[d.id] = Object.assign(map[d.id] || {}, d);
       });
-      allInformes = docs;
+      allInformes = Object.keys(map).map(function(k){ return map[k]; });
       updateHubInformesMetrics();
       if (activeTab === 'informes') {
         renderInformesList();
@@ -8603,6 +8628,12 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
     }, function(err){
       if (btnRef) btnRef.disabled = false;
       console.warn('Sincronización de informes:', err && err.message ? err.message : err);
+      // Mantener al menos los informes embebidos en caso de error de conexión o permisos
+      if (!allInformes.length) {
+        allInformes = EMBEDDED_INFORMES_DATA.slice();
+        updateHubInformesMetrics();
+        if (activeTab === 'informes') renderInformesList();
+      }
     });
   }
 
@@ -8676,7 +8707,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
       } catch(e){}
       allTableros = [];
       allProduccion = [];
-      allInformes = [];
+      allInformes = EMBEDDED_INFORMES_DATA.slice();
       updateHubInformesMetrics();
       showPublic();
       toast('Sesión cerrada');
@@ -8706,7 +8737,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
       stopRealtimeSync();
       allTableros = [];
       allProduccion = [];
-      allInformes = [];
+      allInformes = EMBEDDED_INFORMES_DATA.slice();
       showPublic();
     }
   }, function(err){
@@ -8809,6 +8840,41 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
   }
   if (btnGoInformes) {
     btnGoInformes.addEventListener('click', function(){ switchView('informes'); });
+  }
+
+  // Clic en métricas de informes en la tarjeta del Hub
+  if (hubInfTotal) {
+    var pTotal = hubInfTotal.closest('.hub-metric-pill');
+    if (pTotal) {
+      pTotal.style.cursor = 'pointer';
+      pTotal.addEventListener('click', function(e){
+        e.stopPropagation();
+        if (selectTipoInforme) selectTipoInforme.value = 'todos';
+        switchView('informes');
+      });
+    }
+  }
+  if (hubInfGestion) {
+    var pGest = hubInfGestion.closest('.hub-metric-pill');
+    if (pGest) {
+      pGest.style.cursor = 'pointer';
+      pGest.addEventListener('click', function(e){
+        e.stopPropagation();
+        if (selectTipoInforme) selectTipoInforme.value = 'gestion';
+        switchView('informes');
+      });
+    }
+  }
+  if (hubInfMeta) {
+    var pMeta = hubInfMeta.closest('.hub-metric-pill');
+    if (pMeta) {
+      pMeta.style.cursor = 'pointer';
+      pMeta.addEventListener('click', function(e){
+        e.stopPropagation();
+        if (selectTipoInforme) selectTipoInforme.value = 'meta-ads';
+        switchView('informes');
+      });
+    }
   }
 
   // Interacción al hacer clic en los dispositivos gráficos interactivos

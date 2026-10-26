@@ -2194,6 +2194,93 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
 .badge-wait{background:rgba(255,255,255,.05);color:var(--ink-2);border:1px solid rgba(255,255,255,.1)}
 .badge-gestion{background:rgba(92,184,62,.15);color:#5CB83E;border:1px solid rgba(92,184,62,.35)}
 .badge-meta{background:#1F3549;color:#ffffff;border:1px solid rgba(255,255,255,.25);box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.badge-interno{background:rgba(255,255,255,0.08);color:var(--ink-2);border:1px solid rgba(255,255,255,0.18);font-size:10px;padding:2px 7px}
+
+/* Grid de dos columnas para Informes (Orgánico | Meta Ads) */
+.informes-columns{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:24px;
+  align-items:start;
+}
+.informes-col{
+  background:linear-gradient(145deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 100%);
+  border:1px solid rgba(255,255,255,0.09);
+  border-radius:18px;
+  padding:20px;
+  box-shadow:0 8px 24px -6px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  scroll-margin-top:24px;
+}
+.informes-col-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:14px 18px;
+  margin:-20px -20px 18px -20px;
+  border-bottom:1px solid rgba(255,255,255,0.09);
+  border-radius:18px 18px 0 0;
+  background:linear-gradient(135deg, rgba(31,53,73,0.85) 0%, rgba(13,23,34,0.92) 100%);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  position:sticky;
+  top:0;
+  z-index:5;
+}
+.informes-col-head h3{
+  margin:0;
+  font-size:17px;
+  font-weight:700;
+  color:#fff;
+  letter-spacing:0.02em;
+}
+.informes-col-head .month-count-pill{
+  font-variant-numeric:tabular-nums;
+}
+.informes-col-body{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  min-width:0;
+}
+.informes-col-body .month-block{
+  margin-bottom:8px;
+}
+.informes-col-body .clients-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:12px;
+}
+.informes-col-body .board-card{
+  width:100%;
+}
+.informes-col-empty{
+  text-align:center;
+  padding:44px 16px;
+  color:var(--ink-2);
+}
+.informes-col-empty h4{
+  font-size:15px;
+  font-weight:600;
+  color:#fff;
+  margin:0 0 6px 0;
+}
+.informes-col-empty p{
+  font-size:13px;
+  line-height:1.45;
+  margin:0;
+  color:var(--ink-2);
+}
+
+@media(max-width:899px){
+  .informes-columns{
+    grid-template-columns:1fr;
+    gap:20px;
+  }
+}
 
 /* Responsivo para barra de herramientas y buscador a 390px */
 @media(max-width:480px){
@@ -5045,7 +5132,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
         </div>
       </div>
 
-      <!-- Barra de herramientas: buscador por cliente, selector de tipo y botón actualizar -->
+      <!-- Barra de herramientas: buscador por cliente y botón actualizar -->
       <div class="toolbar-wrap" id="informesToolbar">
         <div class="toolbar-row-main">
           <div class="search-box">
@@ -5055,10 +5142,6 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
             <input type="search" id="searchInforme" placeholder="Buscar cliente por nombre…">
           </div>
           <div class="tool-selects">
-            <select class="tool-select" id="selectTipoInforme" aria-label="Tipo de informe">
-              <option value="gestion">Gestión y rendimiento</option>
-              <option value="meta-ads">Meta Ads</option>
-            </select>
             <button class="btn-tool" id="btnRefreshInformes" title="Actualizar lista de informes">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="23 4 23 10 17 10"></polyline>
@@ -5070,8 +5153,23 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
         </div>
       </div>
 
-      <!-- Contenedor dinámico de informes -->
-      <div id="informesContent"></div>
+      <!-- Contenedor dinámico de informes en dos columnas (Orgánico | Meta Ads) -->
+      <div class="informes-columns" id="informesContent">
+        <section class="informes-col" data-tipo="gestion" aria-labelledby="colGestionTitle">
+          <header class="informes-col-head">
+            <h3 id="colGestionTitle">Orgánico</h3>
+            <span class="month-count-pill" id="colGestionCount">0 informes</span>
+          </header>
+          <div class="informes-col-body" id="colGestionBody"></div>
+        </section>
+        <section class="informes-col" data-tipo="meta-ads" aria-labelledby="colMetaTitle">
+          <header class="informes-col-head">
+            <h3 id="colMetaTitle">Meta Ads</h3>
+            <span class="month-count-pill" id="colMetaCount">0 informes</span>
+          </header>
+          <div class="informes-col-body" id="colMetaBody"></div>
+        </section>
+      </div>
     </div>
   </div>
 </div>
@@ -6601,10 +6699,13 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
   var btnTabInformes = document.getElementById('btnTabInformes');
   var sectionInformes = document.getElementById('sectionInformes');
   var btnBackFromInformes = document.getElementById('btnBackFromInformes');
-  var selectTipoInforme = document.getElementById('selectTipoInforme');
   var searchInformeInp = document.getElementById('searchInforme');
   var btnRefreshInformes = document.getElementById('btnRefreshInformes');
   var informesContent = document.getElementById('informesContent');
+  var colGestionBody = document.getElementById('colGestionBody');
+  var colMetaBody = document.getElementById('colMetaBody');
+  var colGestionCount = document.getElementById('colGestionCount');
+  var colMetaCount = document.getElementById('colMetaCount');
   var currentInformesList = [];
 
   var ALLOWED_EMAILS = ['carlosuzc29@gmail.com', 'andrevmuedit@gmail.com'];
@@ -8315,9 +8416,12 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
     }).join(' ');
   }
 
-  function parseInformeItem(doc, tipoSelected){
-    var tipo = doc.tipo || tipoSelected || 'gestion';
-    var clienteTitle = doc.cliente || slugToTitleCase(doc.id || '');
+  function parseInformeItem(doc, defaultTipo){
+    var tipo = (doc.tipo || defaultTipo || 'gestion').toLowerCase();
+    var rawCliente = (doc.cliente || slugToTitleCase(doc.id || '')).trim();
+    var docId = doc.id || '';
+    var isInterno = rawCliente.toLowerCase().endsWith('(interno)') || docId.indexOf('-interno-') !== -1;
+    var clienteBase = rawCliente.replace(/\s*\(interno\)\s*$/i, '').trim() || rawCliente;
     var periodo = doc.periodo || '';
     var mesTexto = 'Informe';
     var sortScore = 0;
@@ -8330,7 +8434,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
       mesTexto = mesNom + ' ' + y;
       sortScore = parseInt(y, 10) * 100 + parseInt(mm, 10);
     } else {
-      var m2 = (doc.id || '').match(/(\d{4})-(\d{2})/);
+      var m2 = docId.match(/(\d{4})-(\d{2})/);
       if (m2) {
         var y2 = m2[1];
         var mm2 = m2[2];
@@ -8342,13 +8446,15 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
 
     var url = doc.url;
     if (!url) {
-      url = 'https://carlosuzc29-eng.github.io/tableros-de-contenido/informes/' + encodeURIComponent(tipo) + '/' + encodeURIComponent(doc.id || '') + '.html';
+      url = 'https://carlosuzc29-eng.github.io/tableros-de-contenido/informes/' + encodeURIComponent(tipo) + '/' + encodeURIComponent(docId) + '.html';
     }
 
     return {
-      id: doc.id || '',
+      id: docId,
       tipo: tipo,
-      clienteTitle: clienteTitle,
+      rawCliente: rawCliente,
+      clienteBase: clienteBase,
+      isInterno: isInterno,
       mesTexto: mesTexto,
       sortScore: sortScore,
       url: url
@@ -8375,67 +8481,94 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
   }
 
   function renderInformesList(){
-    if (!informesContent) return;
-
-    var tipo = (selectTipoInforme && selectTipoInforme.value) ? selectTipoInforme.value : 'gestion';
-    var isGestion = (tipo === 'gestion');
-    var badgeClass = isGestion ? 'badge-gestion' : 'badge-meta';
-    var badgeLabel = isGestion ? 'Gestión y rendimiento' : 'Meta Ads';
-
-    var filteredDocs = allInformes.filter(function(doc){
-      return (doc.tipo || 'gestion') === tipo;
-    });
-
-    if (!filteredDocs.length) {
-      informesContent.innerHTML =
-        '<div class="state-message">' +
-          '<h3>Aún no hay informes</h3>' +
-          '<p>Los informes registrados en esta categoría aparecerán aquí automáticamente.</p>' +
-        '</div>';
-      return;
-    }
-
-    var parsedItems = filteredDocs.map(function(d){
-      return parseInformeItem(d, tipo);
-    });
+    if (!colGestionBody || !colMetaBody) return;
 
     var q = (searchInformeInp && searchInformeInp.value ? searchInformeInp.value : '').toLowerCase().trim();
-    if (q) {
-      parsedItems = parsedItems.filter(function(it){
-        return it.clienteTitle.toLowerCase().indexOf(q) !== -1;
-      });
+
+    var docsGestion = [];
+    var docsMeta = [];
+    allInformes.forEach(function(doc){
+      if ((doc.tipo || 'gestion') === 'meta-ads') {
+        docsMeta.push(doc);
+      } else {
+        docsGestion.push(doc);
+      }
+    });
+
+    if (colGestionCount) {
+      colGestionCount.textContent = docsGestion.length + (docsGestion.length === 1 ? ' informe' : ' informes');
+    }
+    if (colMetaCount) {
+      colMetaCount.textContent = docsMeta.length + (docsMeta.length === 1 ? ' informe' : ' informes');
     }
 
-    if (!parsedItems.length) {
-      informesContent.innerHTML =
-        '<div class="state-message">' +
-          '<h3>No encontramos informes que coincidan</h3>' +
-          '<p>Intenta con otro término de búsqueda.</p>' +
+    renderInformesColumn(colGestionBody, docsGestion, 'gestion', q);
+    renderInformesColumn(colMetaBody, docsMeta, 'meta-ads', q);
+
+    attachInformesCardEvents(informesContent || document.getElementById('sectionInformes'));
+  }
+
+  function renderInformesColumn(targetEl, rawDocs, tipoColumna, searchQuery){
+    if (!targetEl) return;
+
+    if (!rawDocs.length) {
+      targetEl.innerHTML =
+        '<div class="informes-col-empty">' +
+          '<h4>Aún no hay informes de este tipo</h4>' +
+          '<p>Los informes registrados aquí aparecerán automáticamente.</p>' +
         '</div>';
       return;
     }
 
-    // Agrupar por cliente, con el mes más reciente primero
-    var clientGroups = {};
-    parsedItems.forEach(function(it){
-      var c = it.clienteTitle || 'Sin cliente';
-      if (!clientGroups[c]) clientGroups[c] = [];
-      clientGroups[c].push(it);
+    var parsed = rawDocs.map(function(d){
+      return parseInformeItem(d, tipoColumna);
     });
 
-    // Ordenar reportes de cada cliente con el mes más reciente primero
-    Object.keys(clientGroups).forEach(function(c){
-      clientGroups[c].sort(function(a, b){
-        return b.sortScore - a.sortScore;
+    if (searchQuery) {
+      parsed = parsed.filter(function(it){
+        return it.rawCliente.toLowerCase().indexOf(searchQuery) !== -1 ||
+               it.clienteBase.toLowerCase().indexOf(searchQuery) !== -1;
+      });
+    }
+
+    if (!parsed.length) {
+      targetEl.innerHTML =
+        '<div class="informes-col-empty">' +
+          '<h4>Sin resultados para esa búsqueda</h4>' +
+          '<p>Intenta con otro término o limpia el buscador.</p>' +
+        '</div>';
+      return;
+    }
+
+    var groups = {};
+    parsed.forEach(function(it){
+      var groupKey = it.clienteBase || 'Sin cliente';
+      if (!groups[groupKey]) groups[groupKey] = [];
+      groups[groupKey].push(it);
+    });
+
+    Object.keys(groups).forEach(function(k){
+      groups[k].sort(function(a, b){
+        if (b.sortScore !== a.sortScore) {
+          return b.sortScore - a.sortScore;
+        }
+        if (a.isInterno !== b.isInterno) {
+          return a.isInterno ? 1 : -1;
+        }
+        return (a.id || '').localeCompare(b.id || '');
       });
     });
 
-    var clientNames = Object.keys(clientGroups);
-    clientNames.sort(function(a, b){ return a.localeCompare(b); });
+    var groupNames = Object.keys(groups);
+    groupNames.sort(function(a, b){ return a.localeCompare(b); });
+
+    var isGestion = (tipoColumna === 'gestion');
+    var badgeClass = isGestion ? 'badge-gestion' : 'badge-meta';
+    var badgeLabel = isGestion ? 'Orgánico' : 'Meta Ads';
 
     var html = '';
-    clientNames.forEach(function(cName){
-      var items = clientGroups[cName];
+    groupNames.forEach(function(gName){
+      var items = groups[gName];
       html += '<div class="month-block">' +
         '<div class="month-header-bar">' +
           '<div class="month-header-title">' +
@@ -8443,20 +8576,24 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
               '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>' +
               '<circle cx="12" cy="7" r="4"></circle>' +
             '</svg>' +
-            '<h3>' + escapeHtml(cName) + '</h3>' +
+            '<h3>' + escapeHtml(gName) + '</h3>' +
           '</div>' +
           '<span class="month-count-pill">' + items.length + (items.length === 1 ? ' informe' : ' informes') + '</span>' +
         '</div>' +
         '<div class="clients-grid">';
 
       items.forEach(function(it){
+        var internoBadgeHtml = it.isInterno ? ' <span class="badge badge-interno">Interno</span>' : '';
         html += '<div class="board-card" data-report-url="' + escapeHtml(it.url) + '">' +
           '<div class="card-top">' +
             '<div>' +
-              '<div class="card-period">' + escapeHtml(it.clienteTitle) + '</div>' +
+              '<div class="card-period">' + escapeHtml(it.rawCliente) + '</div>' +
               '<div class="card-sub">' + escapeHtml(it.mesTexto) + '</div>' +
             '</div>' +
-            '<span class="badge ' + badgeClass + '">' + badgeLabel + '</span>' +
+            '<div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; justify-content:flex-end;">' +
+              '<span class="badge ' + badgeClass + '">' + badgeLabel + '</span>' +
+              internoBadgeHtml +
+            '</div>' +
           '</div>' +
           '<div class="card-foot" style="margin-top:auto; padding-top:10px;">' +
             '<div class="card-actions" style="width:100%; justify-content:flex-end;">' +
@@ -8483,9 +8620,12 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
       html += '</div></div>';
     });
 
-    informesContent.innerHTML = html;
+    targetEl.innerHTML = html;
+  }
 
-    var copyBtns = informesContent.querySelectorAll('.btn-copy-report');
+  function attachInformesCardEvents(container){
+    if (!container) return;
+    var copyBtns = container.querySelectorAll('.btn-copy-report');
     copyBtns.forEach(function(b){
       b.onclick = function(e){
         e.stopPropagation();
@@ -8494,7 +8634,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
       };
     });
 
-    var cards = informesContent.querySelectorAll('.board-card');
+    var cards = container.querySelectorAll('.board-card');
     cards.forEach(function(card){
       card.onclick = function(e){
         if (e.target.closest('.card-actions') || e.target.closest('button') || e.target.closest('a')) {
@@ -8603,6 +8743,11 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
     }, function(err){
       if (btnRef) btnRef.disabled = false;
       console.warn('Sincronización de informes:', err && err.message ? err.message : err);
+      if (activeTab === 'informes') {
+        var errHtml = '<div class="informes-col-empty"><h4>No fue posible cargar los informes</h4><p>Verifica tu conexión a internet o los permisos de acceso.</p></div>';
+        if (colGestionBody) colGestionBody.innerHTML = errHtml;
+        if (colMetaBody) colMetaBody.innerHTML = errHtml;
+      }
     });
   }
 
@@ -8783,12 +8928,6 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
   if (btnBackFromInformes) {
     btnBackFromInformes.addEventListener('click', function(){ switchView('hub'); });
   }
-  if (selectTipoInforme) {
-    selectTipoInforme.addEventListener('change', function(){
-      if (searchInformeInp) searchInformeInp.value = '';
-      loadAndRenderInformes(false);
-    });
-  }
   if (searchInformeInp) {
     searchInformeInp.addEventListener('input', function(){
       renderInformesList();
@@ -8798,6 +8937,54 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
     btnRefreshInformes.addEventListener('click', function(){
       loadAndRenderInformes(true);
     });
+  }
+
+  // Interacción de pastillas métricas del Hub hacia Informes
+  if (hubInfTotal) {
+    var pTotal = hubInfTotal.closest('.hub-metric-pill');
+    if (pTotal) {
+      pTotal.style.cursor = 'pointer';
+      pTotal.setAttribute('title', 'Ver todos los informes');
+      pTotal.addEventListener('click', function(e){
+        e.stopPropagation();
+        switchView('informes');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+  }
+  if (hubInfGestion) {
+    var pGest = hubInfGestion.closest('.hub-metric-pill');
+    if (pGest) {
+      pGest.style.cursor = 'pointer';
+      pGest.setAttribute('title', 'Ver informes de Orgánico');
+      pGest.addEventListener('click', function(e){
+        e.stopPropagation();
+        switchView('informes');
+        setTimeout(function(){
+          var col = document.querySelector('.informes-col[data-tipo="gestion"]');
+          if (col) {
+            col.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 60);
+      });
+    }
+  }
+  if (hubInfMeta) {
+    var pMeta = hubInfMeta.closest('.hub-metric-pill');
+    if (pMeta) {
+      pMeta.style.cursor = 'pointer';
+      pMeta.setAttribute('title', 'Ver informes de Meta Ads');
+      pMeta.addEventListener('click', function(e){
+        e.stopPropagation();
+        switchView('informes');
+        setTimeout(function(){
+          var col = document.querySelector('.informes-col[data-tipo="meta-ads"]');
+          if (col) {
+            col.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 60);
+      });
+    }
   }
 
   // Botones de ingreso directo desde tarjetas de categorías del Hub

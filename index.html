@@ -6670,6 +6670,70 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
     auth.setPersistence(firebase.auth.Auth.Persistence.SESSION).catch(function(){});
   } catch(e){}
 
+  var REGEX_FRASES_PEGADAS = /[.?!…:][A-ZÁÉÍÓÚÑ¿¡]/;
+
+  function actualizarPieza(tableroId, piezaId, mutador){
+    var docRef = db.collection('tableros').doc(tableroId);
+    return db.runTransaction(function(transaction){
+      return transaction.get(docRef).then(function(doc){
+        if (!doc.exists) {
+          throw new Error('El tablero no existe en Firestore');
+        }
+        var data = doc.data() || {};
+        var rawContenidos = Array.isArray(data.contenidos) ? data.contenidos : [];
+        var items = JSON.parse(JSON.stringify(rawContenidos));
+
+        var idx = items.findIndex(function(x, i){
+          return (x.id && piezaId && String(x.id) === String(piezaId)) ||
+                 (+x.n === +piezaId) ||
+                 (i + 1 === +piezaId);
+        });
+
+        if (idx === -1) {
+          throw new Error('No se encontró la pieza ' + piezaId + ' en el tablero');
+        }
+
+        var piezaOriginal = JSON.parse(JSON.stringify(items[idx]));
+        var piezaCopia = items[idx];
+
+        var resMutador = mutador(piezaCopia, piezaOriginal);
+        if (resMutador === false) {
+          return null;
+        }
+
+        var newOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
+        var newFix = items.filter(function(x){ return x.estado === 'cambios' || x.estado === 'en_correccion'; }).length;
+        var newCorregidos = items.filter(function(x){ return x.estado === 'corregido'; }).length;
+        var newPend = items.filter(function(x){ return x.estado === 'en_revision' || x.estado === 'pendiente' || !x.estado; }).length;
+
+        var newEstadoGeneral = (newFix > 0) ? 'Con cambios' :
+                               (newCorregidos > 0 ? 'En revisión' :
+                               ((newOk === items.length && items.length > 0) ? 'Aprobado' : (newOk > 0 ? 'Parcial' : 'En revisión')));
+
+        var nowIso = new Date().toISOString();
+        var updatePayload = {
+          contenidos: items,
+          aprobados: newOk,
+          cambios: newFix,
+          pendientes: newPend,
+          estado: newEstadoGeneral,
+          actualizado: nowIso
+        };
+
+        transaction.update(docRef, updatePayload);
+        return {
+          items: items,
+          updatedPiece: items[idx],
+          aprobados: newOk,
+          cambios: newFix,
+          pendientes: newPend,
+          estado: newEstadoGeneral,
+          actualizado: nowIso
+        };
+      });
+    });
+  }
+
   var SK_FILTER_Q = 'nexo-filter-q';
   var SK_FILTER_PERIOD = 'nexo-filter-period';
   var SK_FILTER_STATE = 'nexo-filter-state';
@@ -9219,125 +9283,136 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
     if (!editingBoardId || !editingItemN) return;
     var t = allTableros.find(function(x){ return x.id === editingBoardId; });
     if (!t) return;
-    var bData = boardCache[editingBoardId];
-    var items = getMergedItems(t, bData);
 
-    var idx = items.findIndex(function(x){ return x.n === editingItemN; });
-    if (idx === -1) idx = editingItemN - 1;
-    if (idx < 0 || idx >= items.length) return;
-
-    items[idx].titulo = editItemTitulo ? editItemTitulo.value.trim() : items[idx].titulo;
-    items[idx].formato = editItemFormato ? editItemFormato.value : items[idx].formato;
-    items[idx].formatoOriginal = items[idx].formato;
-    items[idx].pilar = editItemPilar ? editItemPilar.value.trim() : items[idx].pilar;
-    items[idx].fechaPublicacion = editItemFecha ? editItemFecha.value.trim() : items[idx].fechaPublicacion;
-    items[idx].guion = editItemGuion ? editItemGuion.value.trim() : items[idx].guion;
-    items[idx].copy = editItemCopy ? editItemCopy.value.trim() : items[idx].copy;
-    items[idx].hashtags = editItemHashtags ? editItemHashtags.value.trim() : items[idx].hashtags;
-    if (editItemEstado) items[idx].estado = editItemEstado.value;
-    if (editItemComentario) items[idx].comentario = editItemComentario.value.trim();
-
-    var newOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
-    var newFix = items.filter(function(x){ return x.estado === 'cambios'; }).length;
-    var newCorregidos = items.filter(function(x){ return x.estado === 'corregido'; }).length;
-    var newPend = items.filter(function(x){ return x.estado === 'pendiente'; }).length;
-
-    var newEstado = (newFix > 0) ? 'Con cambios' :
-                    (newCorregidos > 0 ? 'En revisión' :
-                    ((newOk === items.length && items.length > 0) ? 'Aprobado' : (newOk > 0 ? 'Parcial' : 'Pendiente')));
+    var newG = editItemGuion ? editItemGuion.value.trim() : '';
+    var newCp = editItemCopy ? editItemCopy.value.trim() : '';
+    if (REGEX_FRASES_PEGADAS.test(newG) || REGEX_FRASES_PEGADAS.test(newCp)) {
+      toast('⚠️ Parece que faltan saltos de línea: revisa antes de guardar');
+    }
 
     if (btnSaveEditModal) {
       btnSaveEditModal.disabled = true;
       btnSaveEditModal.textContent = 'Guardando…';
     }
 
-    db.collection('tableros').doc(t.id).set({
-      contenidos: items,
-      aprobados: newOk,
-      cambios: newFix,
-      pendientes: newPend,
-      estado: newEstado,
-      actualizado: new Date().toISOString()
-    }, { merge: true })
-    .then(function(){
-      t.contenidos = items;
-      t.aprobados = newOk;
-      t.cambios = newFix;
-      t.pendientes = newPend;
-      t.estado = newEstado;
+    actualizarPieza(t.id, editingItemN, function(piezaCopia, piezaOriginal){
+      var newTit = editItemTitulo ? editItemTitulo.value.trim() : (piezaOriginal.titulo || '');
+      piezaCopia.titulo = newTit;
+      piezaCopia.formato = editItemFormato ? editItemFormato.value : (piezaOriginal.formato || 'Post');
+      piezaCopia.formatoOriginal = piezaCopia.formato;
+      piezaCopia.pilar = editItemPilar ? editItemPilar.value.trim() : (piezaOriginal.pilar || '');
+      piezaCopia.fechaPublicacion = editItemFecha ? editItemFecha.value.trim() : (piezaOriginal.fechaPublicacion || '');
+      piezaCopia.guion = newG;
+      piezaCopia.copy = newCp;
+      piezaCopia.hashtags = editItemHashtags ? editItemHashtags.value.trim() : (piezaOriginal.hashtags || '');
+      if (editItemEstado) piezaCopia.estado = editItemEstado.value;
+      if (editItemComentario) piezaCopia.comentario = editItemComentario.value.trim();
+
+      if (piezaCopia.estado === 'aprobado' && piezaOriginal.estado !== 'aprobado') {
+        if (piezaOriginal.borrador) {
+          var bG = piezaOriginal.borrador.guion || '';
+          var bC = piezaOriginal.borrador.copy || '';
+          if ((bG && bG !== (piezaOriginal.guion || '')) || (bC && bC !== (piezaOriginal.copy || ''))) {
+            throw new Error('Hay una corrección sin terminar en el Banco de trabajo');
+          }
+        }
+        var revWho = (typeof auth !== 'undefined' && auth.currentUser && auth.currentUser.email) ? ('Agencia (' + (auth.currentUser.displayName || auth.currentUser.email.split('@')[0]) + ')') : 'Equipo Nexo';
+        piezaCopia.revisadoPor = revWho;
+        piezaCopia.fechaAprobacion = new Date().toISOString();
+        piezaCopia.aprobacion = {
+          version: parseInt(piezaOriginal.version, 10) || 1,
+          usuario: revWho,
+          fecha: piezaCopia.fechaAprobacion,
+          titulo: piezaOriginal.titulo || '',
+          formato: piezaOriginal.formato || '',
+          guion: piezaOriginal.guion || '',
+          copy: piezaOriginal.copy || '',
+          hashtags: piezaOriginal.hashtags || ''
+        };
+      }
+    }).then(function(res){
+      t.contenidos = res.items;
+      t.aprobados = res.aprobados;
+      t.cambios = res.cambios;
+      t.pendientes = res.pendientes;
+      t.estado = res.estado;
       if (boardCache[t.id]) {
-        boardCache[t.id].contenidos = items;
+        boardCache[t.id].contenidos = res.items;
       }
       var fnKey = t.url ? t.url.split('/').pop().split('?')[0].split('#')[0].replace('.html','') : '';
       if (fnKey && boardCache[fnKey]) {
-        boardCache[fnKey].contenidos = items;
+        boardCache[fnKey].contenidos = res.items;
       }
       if (btnSaveEditModal) {
         btnSaveEditModal.disabled = false;
         btnSaveEditModal.textContent = 'Guardar cambios';
       }
       closeEditModal();
-      var stateToastMsg = (items[idx].estado === 'corregido') ?
+      var stateToastMsg = (res.updatedPiece && res.updatedPiece.estado === 'corregido') ?
         '✓ Contenido #' + (editingItemN < 10 ? '0' : '') + editingItemN + ' corregido y listo para reenvío' :
         '✓ Contenido actualizado con éxito';
       toast(stateToastMsg);
       renderBoardDetail(t.id);
       applyFiltersAndRender();
       if (typeof updateGlobalMetrics === 'function') updateGlobalMetrics(allTableros);
-    })
-    .catch(function(err){
+    }).catch(function(err){
       console.error('Error al guardar contenido en Firestore:', err);
       if (btnSaveEditModal) {
         btnSaveEditModal.disabled = false;
         btnSaveEditModal.textContent = 'Guardar cambios';
       }
-      toast('Error al guardar los cambios');
+      toast(err.message === 'Hay una corrección sin terminar en el Banco de trabajo' ? err.message : 'Error al guardar los cambios');
     });
   }
 
   function quickApproveItem(tId, itemN){
     var t = allTableros.find(function(x){ return x.id === tId; });
     if (!t) return;
-    var bData = boardCache[tId];
-    var items = getMergedItems(t, bData);
-    var idx = items.findIndex(function(x){ return x.n === itemN; });
-    if (idx === -1) idx = itemN - 1;
-    if (idx < 0 || idx >= items.length) return;
-
-    items[idx].estado = 'aprobado';
-
-    var newOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
-    var newFix = items.filter(function(x){ return x.estado === 'cambios'; }).length;
-    var newPend = items.filter(function(x){ return x.estado === 'pendiente'; }).length;
-    var newEstado = (newFix > 0) ? 'Con cambios' : ((newOk === items.length && items.length > 0) ? 'Aprobado' : (newOk > 0 ? 'Parcial' : 'Pendiente'));
 
     toast('Aprobando contenido #' + (itemN < 10 ? '0' : '') + itemN + '…');
 
-    db.collection('tableros').doc(t.id).set({
-      contenidos: items,
-      aprobados: newOk,
-      cambios: newFix,
-      pendientes: newPend,
-      estado: newEstado,
-      actualizado: new Date().toISOString()
-    }, { merge: true })
-    .then(function(){
-      t.contenidos = items;
-      t.aprobados = newOk;
-      t.cambios = newFix;
-      t.pendientes = newPend;
-      t.estado = newEstado;
+    actualizarPieza(tId, itemN, function(piezaCopia, piezaOriginal){
+      if (piezaOriginal.borrador) {
+        var bGuion = piezaOriginal.borrador.guion || '';
+        var bCopy = piezaOriginal.borrador.copy || '';
+        var curGuion = piezaOriginal.guion || '';
+        var curCopy = piezaOriginal.copy || '';
+        if ((bGuion && bGuion !== curGuion) || (bCopy && bCopy !== curCopy)) {
+          throw new Error('Hay una corrección sin terminar en el Banco de trabajo');
+        }
+      }
+      var curV = parseInt(piezaOriginal.version, 10) || 1;
+      var revWho = (typeof auth !== 'undefined' && auth.currentUser && auth.currentUser.email) ? ('Agencia (' + (auth.currentUser.displayName || auth.currentUser.email.split('@')[0]) + ')') : 'Equipo Nexo';
+      var nowIso = new Date().toISOString();
+      piezaCopia.estado = 'aprobado';
+      piezaCopia.revisadoPor = revWho;
+      piezaCopia.fechaAprobacion = nowIso;
+      piezaCopia.aprobacion = {
+        version: curV,
+        usuario: revWho,
+        fecha: nowIso,
+        titulo: piezaOriginal.titulo || '',
+        formato: piezaOriginal.formato || '',
+        guion: piezaOriginal.guion || '',
+        copy: piezaOriginal.copy || '',
+        hashtags: piezaOriginal.hashtags || ''
+      };
+    }).then(function(res){
+      t.contenidos = res.items;
+      t.aprobados = res.aprobados;
+      t.cambios = res.cambios;
+      t.pendientes = res.pendientes;
+      t.estado = res.estado;
       if (boardCache[t.id]) {
-        boardCache[t.id].contenidos = items;
+        boardCache[t.id].contenidos = res.items;
       }
       toast('✓ Contenido #' + (itemN < 10 ? '0' : '') + itemN + ' marcado como Aprobado');
       renderBoardDetail(t.id);
       applyFiltersAndRender();
       if (typeof updateGlobalMetrics === 'function') updateGlobalMetrics(allTableros);
-    })
-    .catch(function(err){
+    }).catch(function(err){
       console.error('Error al aprobar contenido en Firestore:', err);
-      toast('Error al actualizar el estado en Firestore');
+      toast(err.message === 'Hay una corrección sin terminar en el Banco de trabajo' ? err.message : 'Error al actualizar el estado en Firestore');
     });
   }
 
@@ -10050,36 +10125,26 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
   function startPieceCorrection(tId, itemN){
     var t = allTableros.find(function(x){ return x.id === tId; });
     if (!t) return;
-    var bData = boardCache[tId];
-    var items = getMergedItems(t, bData);
-    var idx = items.findIndex(function(x){ return x.n === itemN; });
-    if (idx === -1) idx = itemN - 1;
-    if (idx < 0 || idx >= items.length) return;
 
-    items[idx].estado = 'en_correccion';
-    var curV = parseInt(items[idx].version, 10) || 1;
-    var nowIso = new Date().toISOString();
+    actualizarPieza(tId, itemN, function(piezaCopia, piezaOriginal){
+      piezaCopia.estado = 'en_correccion';
+      var curV = parseInt(piezaOriginal.version, 10) || 1;
+      var nowIso = new Date().toISOString();
 
-    items[idx].historial = items[idx].historial || [];
-    items[idx].historial.push({
-      version: curV,
-      accion: 'Equipo comenzó a trabajar en los ajustes',
-      usuario: 'Equipo Nexo',
-      fecha: nowIso
-    });
-
-    db.collection('tableros').doc(t.id).set({
-      contenidos: items,
-      actualizado: nowIso
-    }, { merge: true })
-    .then(function(){
-      t.contenidos = items;
-      if (boardCache[t.id]) boardCache[t.id].contenidos = items;
+      piezaCopia.historial = Array.isArray(piezaOriginal.historial) ? piezaOriginal.historial.slice() : [];
+      piezaCopia.historial.push({
+        version: curV,
+        accion: 'Equipo comenzó a trabajar en los ajustes',
+        usuario: 'Equipo Nexo',
+        fecha: nowIso
+      });
+    }).then(function(res){
+      t.contenidos = res.items;
+      if (boardCache[t.id]) boardCache[t.id].contenidos = res.items;
       toast('✓ Estado cambiado a "En corrección". Abriendo editor…');
       renderBoardWorkspace();
       openPieceEditor(t.id, itemN);
-    })
-    .catch(function(err){
+    }).catch(function(err){
       console.error('Error actualizando estado a en_correccion:', err);
       // Abrir editor igualmente con el cambio local
       openPieceEditor(t.id, itemN);
@@ -10090,69 +10155,47 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
   function sendPieceToReview(tId, itemN){
     var t = allTableros.find(function(x){ return x.id === tId; });
     if (!t) return;
-    var bData = boardCache[tId];
-    var items = getMergedItems(t, bData);
-    var idx = items.findIndex(function(x){ return x.n === itemN; });
-    if (idx === -1) idx = itemN - 1;
-    if (idx < 0 || idx >= items.length) return;
 
-    var curV = parseInt(items[idx].version, 10) || 1;
-    var nowIso = new Date().toISOString();
+    var curV = 1;
+    actualizarPieza(tId, itemN, function(piezaCopia, piezaOriginal){
+      curV = parseInt(piezaOriginal.version, 10) || 1;
+      var nowIso = new Date().toISOString();
 
-    items[idx].estado = 'en_revision';
-    items[idx].fechaEnvio = nowIso;
-    delete items[idx].borrador;
+      piezaCopia.estado = 'en_revision';
+      piezaCopia.fechaEnvio = nowIso;
+      delete piezaCopia.borrador;
 
-    // Almacenar copia de la versión enviada
-    items[idx].versiones = items[idx].versiones || {};
-    items[idx].versiones['v' + curV] = {
-      version: curV,
-      titulo: items[idx].titulo,
-      guion: items[idx].guion,
-      copy: items[idx].copy,
-      referencias: items[idx].referencias || [],
-      fechaEnvio: nowIso
-    };
+      // Almacenar copia de la versión enviada
+      piezaCopia.versiones = piezaOriginal.versiones ? JSON.parse(JSON.stringify(piezaOriginal.versiones)) : {};
+      piezaCopia.versiones['v' + curV] = {
+        version: curV,
+        titulo: piezaOriginal.titulo,
+        guion: piezaOriginal.guion,
+        copy: piezaOriginal.copy,
+        referencias: piezaOriginal.referencias || [],
+        fechaEnvio: nowIso
+      };
 
-    items[idx].historial = items[idx].historial || [];
-    items[idx].historial.push({
-      version: curV,
-      accion: 'Versión v' + curV + ' enviada a revisión del cliente',
-      usuario: 'Equipo Nexo',
-      fecha: nowIso
-    });
-
-    var newOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
-    var newFix = items.filter(function(x){ return x.estado === 'cambios' || x.estado === 'en_correccion'; }).length;
-    var newCorregidos = items.filter(function(x){ return x.estado === 'corregido'; }).length;
-    var newPend = items.filter(function(x){ return x.estado === 'en_revision' || x.estado === 'pendiente' || !x.estado; }).length;
-
-    var newEstadoGeneral = (newFix > 0) ? 'Con cambios' :
-                           (newCorregidos > 0 ? 'En revisión' :
-                           ((newOk === items.length && items.length > 0) ? 'Aprobado' : (newOk > 0 ? 'Parcial' : 'En revisión')));
-
-    db.collection('tableros').doc(t.id).set({
-      contenidos: items,
-      aprobados: newOk,
-      cambios: newFix,
-      pendientes: newPend,
-      estado: newEstadoGeneral,
-      actualizado: nowIso
-    }, { merge: true })
-    .then(function(){
-      t.contenidos = items;
-      t.aprobados = newOk;
-      t.cambios = newFix;
-      t.pendientes = newPend;
-      t.estado = newEstadoGeneral;
-      if (boardCache[t.id]) boardCache[t.id].contenidos = items;
+      piezaCopia.historial = Array.isArray(piezaOriginal.historial) ? piezaOriginal.historial.slice() : [];
+      piezaCopia.historial.push({
+        version: curV,
+        accion: 'Versión v' + curV + ' enviada a revisión del cliente',
+        usuario: 'Equipo Nexo',
+        fecha: nowIso
+      });
+    }).then(function(res){
+      t.contenidos = res.items;
+      t.aprobados = res.aprobados;
+      t.cambios = res.cambios;
+      t.pendientes = res.pendientes;
+      t.estado = res.estado;
+      if (boardCache[t.id]) boardCache[t.id].contenidos = res.items;
       toast('✓ Versión v' + curV + ' enviada a revisión del cliente');
       currentWorkspaceTab = 'en_revision';
       renderBoardWorkspace();
       applyFiltersAndRender();
       if (typeof updateGlobalMetrics === 'function') updateGlobalMetrics(allTableros);
-    })
-    .catch(function(err){
+    }).catch(function(err){
       console.error('Error enviando a revisión:', err);
       toast('Error al registrar envío en Firestore');
     });
@@ -10389,39 +10432,39 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
     );
     if (!okFork) return;
 
-    it.borrador = {
-      titulo: it.titulo || '',
-      formato: it.formato || 'Reel',
-      pilar: it.pilar || '',
-      fechaPublicacion: it.fechaPublicacion || '',
-      guion: it.guion || '',
-      copy: it.copy || '',
-      hashtags: it.hashtags || '',
-      referencias: Array.isArray(it.referencias) ? JSON.parse(JSON.stringify(it.referencias)) : []
-    };
-    it.version = nextV;
-    it.estado = 'en_correccion';
-    delete it.aprobacion;
+    actualizarPieza(t.id, it.id || it.n, function(piezaCopia, piezaOriginal){
+      var vNum = parseInt(piezaOriginal.version, 10) || 1;
+      nextV = vNum + 1;
+      var nowIso = new Date().toISOString();
 
-    var nowIso = new Date().toISOString();
-    it.historial = it.historial || [];
-    it.historial.push({
-      version: nextV,
-      accion: 'Iniciada nueva versión v' + nextV + ' para ajustes tras aprobación de v' + curApprovedV,
-      usuario: 'Equipo Nexo',
-      fecha: nowIso
-    });
+      piezaCopia.borrador = {
+        titulo: piezaOriginal.titulo || '',
+        formato: piezaOriginal.formato || 'Reel',
+        pilar: piezaOriginal.pilar || '',
+        fechaPublicacion: piezaOriginal.fechaPublicacion || '',
+        guion: piezaOriginal.guion || '',
+        copy: piezaOriginal.copy || '',
+        hashtags: piezaOriginal.hashtags || '',
+        referencias: Array.isArray(piezaOriginal.referencias) ? JSON.parse(JSON.stringify(piezaOriginal.referencias)) : []
+      };
+      piezaCopia.version = nextV;
+      piezaCopia.estado = 'en_correccion';
+      delete piezaCopia.aprobacion;
 
-    db.collection('tableros').doc(t.id).set({
-      contenidos: t.contenidos,
-      actualizado: nowIso
-    }, { merge: true })
-    .then(function(){
+      piezaCopia.historial = Array.isArray(piezaOriginal.historial) ? piezaOriginal.historial.slice() : [];
+      piezaCopia.historial.push({
+        version: nextV,
+        accion: 'Iniciada nueva versión v' + nextV + ' para ajustes tras aprobación de v' + vNum,
+        usuario: 'Equipo Nexo',
+        fecha: nowIso
+      });
+    }).then(function(res){
+      t.contenidos = res.items;
+      if (boardCache[t.id]) boardCache[t.id].contenidos = res.items;
       toast('✓ Iniciada versión v' + nextV + ' para corrección');
       openPieceEditor(t.id, it.n);
       renderBoardWorkspace();
-    })
-    .catch(function(err){
+    }).catch(function(err){
       console.error('Error iniciando versión v' + nextV + ':', err);
       openPieceEditor(t.id, it.n);
     });
@@ -10626,24 +10669,10 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
       if (callback) callback(null);
       return;
     }
-    var bData = boardCache[editingBoardId];
-    var items = getMergedItems(t, bData);
-    var idx = items.findIndex(function(x){ return x.n === editingItemN; });
-    if (idx === -1) idx = editingItemN - 1;
-    if (idx < 0 || idx >= items.length) {
-      if (callback) callback(null);
-      return;
-    }
 
     var vals = getPieceFormValues();
-    items[idx].borrador = vals;
-    items[idx].titulo = vals.titulo || items[idx].titulo;
-    items[idx].formato = vals.formato || items[idx].formato;
-    items[idx].formatoOriginal = items[idx].formato;
-
-    // Si estaba en 'cambios', la acción de comenzar a editar lo pasa automáticamente a 'en_correccion'
-    if (items[idx].estado === 'cambios') {
-      items[idx].estado = 'en_correccion';
+    if (!isSilent && (REGEX_FRASES_PEGADAS.test(vals.guion || '') || REGEX_FRASES_PEGADAS.test(vals.copy || ''))) {
+      toast('⚠️ Parece que faltan saltos de línea: revisa antes de guardar');
     }
 
     updatePieceAutoSaveStatus('saving');
@@ -10655,19 +10684,23 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
 
     pieceSaveInFlight = true;
 
-    db.collection('tableros').doc(t.id).set({
-      contenidos: items,
-      actualizado: new Date().toISOString()
-    }, { merge: true })
-    .then(function(){
+    actualizarPieza(t.id, editingItemN, function(piezaCopia, piezaOriginal){
+      piezaCopia.borrador = vals;
+      piezaCopia.titulo = vals.titulo || piezaOriginal.titulo;
+      piezaCopia.formato = vals.formato || piezaOriginal.formato;
+      piezaCopia.formatoOriginal = piezaCopia.formato;
+      if (piezaOriginal.estado === 'cambios') {
+        piezaCopia.estado = 'en_correccion';
+      }
+    }).then(function(res){
       pieceSaveInFlight = false;
-      t.contenidos = items;
-      if (boardCache[t.id]) boardCache[t.id].contenidos = items;
+      t.contenidos = res.items;
+      if (boardCache[t.id]) boardCache[t.id].contenidos = res.items;
       var fnKey = t.url ? t.url.split('/').pop().split('?')[0].split('#')[0].replace('.html','') : '';
-      if (fnKey && boardCache[fnKey]) boardCache[fnKey].contenidos = items;
+      if (fnKey && boardCache[fnKey]) boardCache[fnKey].contenidos = res.items;
 
       updatePieceAutoSaveStatus('saved');
-      editingPieceOriginal = JSON.parse(JSON.stringify(items[idx]));
+      editingPieceOriginal = JSON.parse(JSON.stringify(res.updatedPiece));
 
       if (btnPieceSaveDraft && !isSilent) {
         btnPieceSaveDraft.disabled = false;
@@ -10675,8 +10708,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
         toast('✓ Borrador guardado exitosamente');
       }
       if (callback) callback(null);
-    })
-    .catch(function(err){
+    }).catch(function(err){
       pieceSaveInFlight = false;
       console.error('Error guardando borrador:', err);
       updatePieceAutoSaveStatus('error');
@@ -10728,79 +10760,60 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
         return;
       }
 
-      var bData = boardCache[editingBoardId];
-      var items = getMergedItems(t, bData);
-      var idx = items.findIndex(function(x){ return x.n === editingItemN; });
-      if (idx === -1) idx = editingItemN - 1;
-      if (idx < 0 || idx >= items.length) return;
-
       var vals = getPieceFormValues();
-      var curV = parseInt(items[idx].version, 10) || 1;
-      var nextV = curV + 1;
-      var nowIso = new Date().toISOString();
+      if (REGEX_FRASES_PEGADAS.test(vals.guion || '') || REGEX_FRASES_PEGADAS.test(vals.copy || '')) {
+        toast('⚠️ Parece que faltan saltos de línea: revisa antes de guardar');
+      }
 
-      // Guardar copia de la versión finalizada
-      items[idx].versiones = items[idx].versiones || {};
-      items[idx].versiones['v' + nextV] = {
-        version: nextV,
-        titulo: vals.titulo || items[idx].titulo,
-        guion: vals.guion,
-        copy: vals.copy,
-        referencias: vals.referencias,
-        fechaCorreccion: nowIso
-      };
+      var nextV = 2;
+      actualizarPieza(t.id, editingItemN, function(piezaCopia, piezaOriginal){
+        var curV = parseInt(piezaOriginal.version, 10) || 1;
+        nextV = curV + 1;
+        var nowIso = new Date().toISOString();
 
-      // Historial cronológico estricto
-      var hist = Array.isArray(items[idx].historial) ? items[idx].historial.slice() : [];
-      hist.push({
-        version: nextV,
-        fecha: nowIso,
-        estadoAnterior: items[idx].estado,
-        accion: 'Ajustes guardados como corregidos (v' + nextV + ')',
-        usuario: 'Equipo Nexo'
-      });
+        piezaCopia.versiones = piezaOriginal.versiones ? JSON.parse(JSON.stringify(piezaOriginal.versiones)) : {};
+        piezaCopia.versiones['v' + nextV] = {
+          version: nextV,
+          titulo: vals.titulo || piezaOriginal.titulo,
+          guion: vals.guion,
+          copy: vals.copy,
+          referencias: vals.referencias,
+          fechaCorreccion: nowIso
+        };
 
-      items[idx].titulo = vals.titulo || items[idx].titulo;
-      items[idx].formato = vals.formato || items[idx].formato;
-      items[idx].formatoOriginal = items[idx].formato;
-      items[idx].pilar = vals.pilar;
-      items[idx].fechaPublicacion = vals.fechaPublicacion;
-      items[idx].guion = vals.guion;
-      items[idx].copy = vals.copy;
-      items[idx].hashtags = vals.hashtags;
-      items[idx].referencias = vals.referencias;
-      items[idx].version = nextV;
-      items[idx].estado = 'corregido';
-      items[idx].fechaCorreccion = nowIso;
-      items[idx].historial = hist;
-      delete items[idx].borrador;
+        var hist = Array.isArray(piezaOriginal.historial) ? piezaOriginal.historial.slice() : [];
+        hist.push({
+          version: nextV,
+          fecha: nowIso,
+          estadoAnterior: piezaOriginal.estado,
+          accion: 'Ajustes guardados como corregidos (v' + nextV + ')',
+          usuario: 'Equipo Nexo'
+        });
 
-      var newOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
-      var newFix = items.filter(function(x){ return x.estado === 'cambios' || x.estado === 'en_correccion'; }).length;
-      var newCorregidos = items.filter(function(x){ return x.estado === 'corregido'; }).length;
-      var newPend = items.filter(function(x){ return x.estado === 'en_revision' || x.estado === 'pendiente' || !x.estado; }).length;
-
-      var newEstadoGeneral = (newFix > 0) ? 'Con cambios' :
-                             (newCorregidos > 0 ? 'En revisión' :
-                             ((newOk === items.length && items.length > 0) ? 'Aprobado' : (newOk > 0 ? 'Parcial' : 'En revisión')));
-
-      db.collection('tableros').doc(t.id).set({
-        contenidos: items,
-        aprobados: newOk,
-        cambios: newFix,
-        pendientes: newPend,
-        estado: newEstadoGeneral,
-        actualizado: nowIso
-      }, { merge: true })
-      .then(function(){
-        t.contenidos = items;
-        t.aprobados = newOk;
-        t.cambios = newFix;
-        t.pendientes = newPend;
-        t.estado = newEstadoGeneral;
-        if (boardCache[t.id]) boardCache[t.id].contenidos = items;
+        piezaCopia.titulo = vals.titulo || piezaOriginal.titulo;
+        piezaCopia.formato = vals.formato || piezaOriginal.formato;
+        piezaCopia.formatoOriginal = piezaCopia.formato;
+        piezaCopia.pilar = vals.pilar;
+        piezaCopia.fechaPublicacion = vals.fechaPublicacion;
+        piezaCopia.guion = vals.guion;
+        piezaCopia.copy = vals.copy;
+        piezaCopia.hashtags = vals.hashtags;
+        piezaCopia.referencias = vals.referencias;
+        piezaCopia.version = nextV;
+        piezaCopia.estado = 'corregido';
+        piezaCopia.fechaCorreccion = nowIso;
+        piezaCopia.historial = hist;
+        delete piezaCopia.borrador;
+        delete piezaCopia.aprobacion;
+      }).then(function(res){
+        t.contenidos = res.items;
+        t.aprobados = res.aprobados;
+        t.cambios = res.cambios;
+        t.pendientes = res.pendientes;
+        t.estado = res.estado;
+        if (boardCache[t.id]) boardCache[t.id].contenidos = res.items;
         var fnKey = t.url ? t.url.split('/').pop().split('?')[0].split('#')[0].replace('.html','') : '';
-        if (fnKey && boardCache[fnKey]) boardCache[fnKey].contenidos = items;
+        if (fnKey && boardCache[fnKey]) boardCache[fnKey].contenidos = res.items;
 
         if (btnPieceFinalize) {
           btnPieceFinalize.disabled = false;
@@ -10812,8 +10825,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
         renderBoardWorkspace();
         applyFiltersAndRender();
         if (typeof updateGlobalMetrics === 'function') updateGlobalMetrics(allTableros);
-      })
-      .catch(function(err){
+      }).catch(function(err){
         console.error('Error finalizando corrección:', err);
         if (btnPieceFinalize) {
           btnPieceFinalize.disabled = false;
@@ -10845,78 +10857,60 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
         return;
       }
 
-      var bData = boardCache[editingBoardId];
-      var items = getMergedItems(t, bData);
-      var idx = items.findIndex(function(x){ return x.n === editingItemN; });
-      if (idx === -1) idx = editingItemN - 1;
-      if (idx < 0 || idx >= items.length) return;
-
       var vals = getPieceFormValues();
-      var curV = parseInt(items[idx].version, 10) || 1;
-      var nextV = curV + 1;
-      var nowIso = new Date().toISOString();
+      if (REGEX_FRASES_PEGADAS.test(vals.guion || '') || REGEX_FRASES_PEGADAS.test(vals.copy || '')) {
+        toast('⚠️ Parece que faltan saltos de línea: revisa antes de guardar');
+      }
 
-      // Guardar copia de la versión que el cliente está revisando
-      items[idx].versiones = items[idx].versiones || {};
-      items[idx].versiones['v' + nextV] = {
-        version: nextV,
-        titulo: vals.titulo || items[idx].titulo,
-        guion: vals.guion,
-        copy: vals.copy,
-        referencias: vals.referencias,
-        fechaEnvio: nowIso
-      };
+      var nextV = 2;
+      actualizarPieza(t.id, editingItemN, function(piezaCopia, piezaOriginal){
+        var curV = parseInt(piezaOriginal.version, 10) || 1;
+        nextV = curV + 1;
+        var nowIso = new Date().toISOString();
 
-      var hist = Array.isArray(items[idx].historial) ? items[idx].historial.slice() : [];
-      hist.push({
-        version: nextV,
-        fecha: nowIso,
-        estadoAnterior: items[idx].estado,
-        accion: 'Corrección finalizada y enviada directamente a revisión (v' + nextV + ')',
-        usuario: 'Equipo Nexo'
-      });
+        piezaCopia.versiones = piezaOriginal.versiones ? JSON.parse(JSON.stringify(piezaOriginal.versiones)) : {};
+        piezaCopia.versiones['v' + nextV] = {
+          version: nextV,
+          titulo: vals.titulo || piezaOriginal.titulo,
+          guion: vals.guion,
+          copy: vals.copy,
+          referencias: vals.referencias,
+          fechaEnvio: nowIso
+        };
 
-      items[idx].titulo = vals.titulo || items[idx].titulo;
-      items[idx].formato = vals.formato || items[idx].formato;
-      items[idx].formatoOriginal = items[idx].formato;
-      items[idx].pilar = vals.pilar;
-      items[idx].fechaPublicacion = vals.fechaPublicacion;
-      items[idx].guion = vals.guion;
-      items[idx].copy = vals.copy;
-      items[idx].hashtags = vals.hashtags;
-      items[idx].referencias = vals.referencias;
-      items[idx].version = nextV;
-      items[idx].estado = 'en_revision';
-      items[idx].fechaEnvio = nowIso;
-      items[idx].historial = hist;
-      delete items[idx].borrador;
+        var hist = Array.isArray(piezaOriginal.historial) ? piezaOriginal.historial.slice() : [];
+        hist.push({
+          version: nextV,
+          fecha: nowIso,
+          estadoAnterior: piezaOriginal.estado,
+          accion: 'Corrección finalizada y enviada directamente a revisión (v' + nextV + ')',
+          usuario: 'Equipo Nexo'
+        });
 
-      var newOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
-      var newFix = items.filter(function(x){ return x.estado === 'cambios' || x.estado === 'en_correccion'; }).length;
-      var newCorregidos = items.filter(function(x){ return x.estado === 'corregido'; }).length;
-      var newPend = items.filter(function(x){ return x.estado === 'en_revision' || x.estado === 'pendiente' || !x.estado; }).length;
-
-      var newEstadoGeneral = (newFix > 0) ? 'Con cambios' :
-                             (newCorregidos > 0 ? 'En revisión' :
-                             ((newOk === items.length && items.length > 0) ? 'Aprobado' : (newOk > 0 ? 'Parcial' : 'En revisión')));
-
-      db.collection('tableros').doc(t.id).set({
-        contenidos: items,
-        aprobados: newOk,
-        cambios: newFix,
-        pendientes: newPend,
-        estado: newEstadoGeneral,
-        actualizado: nowIso
-      }, { merge: true })
-      .then(function(){
-        t.contenidos = items;
-        t.aprobados = newOk;
-        t.cambios = newFix;
-        t.pendientes = newPend;
-        t.estado = newEstadoGeneral;
-        if (boardCache[t.id]) boardCache[t.id].contenidos = items;
+        piezaCopia.titulo = vals.titulo || piezaOriginal.titulo;
+        piezaCopia.formato = vals.formato || piezaOriginal.formato;
+        piezaCopia.formatoOriginal = piezaCopia.formato;
+        piezaCopia.pilar = vals.pilar;
+        piezaCopia.fechaPublicacion = vals.fechaPublicacion;
+        piezaCopia.guion = vals.guion;
+        piezaCopia.copy = vals.copy;
+        piezaCopia.hashtags = vals.hashtags;
+        piezaCopia.referencias = vals.referencias;
+        piezaCopia.version = nextV;
+        piezaCopia.estado = 'en_revision';
+        piezaCopia.fechaEnvio = nowIso;
+        piezaCopia.historial = hist;
+        delete piezaCopia.borrador;
+        delete piezaCopia.aprobacion;
+      }).then(function(res){
+        t.contenidos = res.items;
+        t.aprobados = res.aprobados;
+        t.cambios = res.cambios;
+        t.pendientes = res.pendientes;
+        t.estado = res.estado;
+        if (boardCache[t.id]) boardCache[t.id].contenidos = res.items;
         var fnKey = t.url ? t.url.split('/').pop().split('?')[0].split('#')[0].replace('.html','') : '';
-        if (fnKey && boardCache[fnKey]) boardCache[fnKey].contenidos = items;
+        if (fnKey && boardCache[fnKey]) boardCache[fnKey].contenidos = res.items;
 
         if (btnPieceFinalizeAndSend) {
           btnPieceFinalizeAndSend.disabled = false;
@@ -10928,8 +10922,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
         renderBoardWorkspace();
         applyFiltersAndRender();
         if (typeof updateGlobalMetrics === 'function') updateGlobalMetrics(allTableros);
-      })
-      .catch(function(err){
+      }).catch(function(err){
         console.error('Error finalizando y enviando corrección:', err);
         if (btnPieceFinalizeAndSend) {
           btnPieceFinalizeAndSend.disabled = false;

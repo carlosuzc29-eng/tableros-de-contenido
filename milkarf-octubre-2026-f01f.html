@@ -507,6 +507,42 @@ footer .logo svg{height:76px;margin:0 auto 12px}
   margin-top:8px;
 }
 /* AGENCIA DIRECT CORRECTIONS FOOTER LINK & STYLES */
+.btn-topbar-agency{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:rgba(31,53,73,.05);
+  border:1px solid rgba(31,53,73,.14);
+  color:var(--ink-2);
+  font-size:12px;
+  font-weight:600;
+  cursor:pointer;
+  padding:6px 12px;
+  border-radius:20px;
+  text-decoration:none;
+  transition:all .2s var(--ease);
+  font-family:inherit;
+  white-space:nowrap;
+}
+.btn-topbar-agency:hover{
+  background:rgba(31,53,73,.1);
+  color:var(--ink);
+  border-color:rgba(31,53,73,.28);
+  transform:translateY(-1px);
+}
+.btn-topbar-agency.active{
+  background:rgba(92,184,62,.15);
+  color:var(--verde-dk);
+  border-color:rgba(92,184,62,.4);
+  font-weight:700;
+}
+@media (max-width:640px){
+  .btn-topbar-agency{
+    font-size:11px;
+    padding:4px 8px;
+    gap:4px;
+  }
+}
 .btn-agency-access{
   display:inline-block;
   background:none;
@@ -676,6 +712,19 @@ footer .logo svg{height:76px;margin:0 auto 12px}
   border: 1px solid rgba(245,158,11,0.3);
   font-weight: 600;
 }
+.card-unsaved-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  background:rgba(230,74,0,0.12);
+  color:#e64a00;
+  border:1px solid rgba(230,74,0,0.3);
+  padding:4px 10px;
+  border-radius:8px;
+  font-size:11px;
+  font-weight:700;
+  margin:8px 0 0 0;
+}
 .card-agency-bar{
   display:flex;
   align-items:center;
@@ -844,7 +893,10 @@ footer .logo svg{height:76px;margin:0 auto 12px}
 
 <div class="topbar"><div class="shell">
   <div class="logo" data-logo=""><svg role="img" aria-label="NEXO Agencia Creativa" xmlns="http://www.w3.org/2000/svg" viewBox="758 532 862 1350"><g transform="translate(0,2364) scale(1,-1)"><path fill="#1F3549" d="M763 1617 l0 -210 47 0 46 0 0 129 0 129 3 -4 c3 -4 29 -32 31 -34 1 -1 5 -6 10 -11 4 -4 15 -16 23 -25 9 -10 17 -20 20 -22 2 -2 11 -12 19 -21 9 -10 16 -18 16 -19 1 0 5 -5 10 -10 17 -18 28 -32 29 -33 2 -1 15 -15 33 -35 9 -10 16 -18 16 -19 5 -4 18 -19 20 -22 l3 -3 47 0 46 0 0 210 0 209 -46 0 -46 0 0 -129 c0 -106 0 -128 -1 -127 -1 1 -4 5 -8 8 -6 7 -21 24 -24 27 -2 2 -6 7 -44 49 -15 15 -28 31 -31 33 -2 2 -5 5 -6 7 -1 1 -5 6 -10 11 -5 5 -9 10 -10 11 -1 1 -5 6 -10 11 -37 41 -53 58 -60 66 -5 5 -10 11 -11 12 -1 1 -6 6 -10 11 l-9 10 -47 0 -46 0 0 -209z M1238 1825 c-1 0 -1 -21 -1 -46 l0 -46 182 0 182 0 0 47 0 46 -181 0 c-100 0 -182 0 -182 -1z M1237 1615 l0 -46 182 0 182 0 0 46 0 46 -182 0 -182 0 0 -46z M1237 1454 l0 -47 182 0 182 0 0 47 0 46 -182 0 -182 0 0 -46z M764 1351 c0 -1 31 -48 69 -105 38 -57 69 -104 69 -104 -1 -1 -32 -48 -70 -105 l-69 -104 70 0 71 0 34 52 c19 28 35 51 35 51 0 0 16 -23 35 -52 l34 -51 70 0 c60 0 70 0 70 1 -1 1 -32 48 -69 104 -37 56 -68 103 -69 104 0 0 31 47 69 104 38 57 69 104 69 105 0 1 -22 1 -65 1 l-64 0 -40 -59 c-22 -33 -40 -60 -40 -60 0 0 -18 27 -40 60 l-39 59 -66 0 c-52 0 -65 0 -64 -1z M1372 1351 c-96 -9 -175 -84 -188 -180 -21 -147 116 -269 261 -231 109 28 177 142 149 252 -25 101 -119 168 -222 159z m38 -91 c102 -17 136 -150 53 -212 -79 -59 -190 -4 -190 95 0 72 65 128 137 117z"></path><path fill="#5CB83E" d="M803 774 c-18 -40 -32 -73 -33 -74 0 -2 0 -2 10 -2 l9 1 10 21 9 22 27 0 28 0 9 -22 9 -22 10 0 c6 0 9 0 9 1 0 2 -64 148 -65 148 0 0 -15 -33 -32 -73z m43 9 l11 -25 -22 0 c-20 0 -21 0 -21 2 3 6 21 47 21 47 0 0 5 -11 11 -24z M1145 773 l0 -75 8 0 9 0 0 53 1 53 51 -56 c28 -30 51 -55 51 -55 1 0 1 34 1 75 l0 74 -8 0 -9 0 0 -54 0 -53 -52 56 c-28 31 -51 56 -52 56 0 0 0 -34 0 -74z M1480 773 c-18 -40 -32 -74 -32 -74 0 -1 4 -1 10 -1 l9 1 9 21 10 22 27 0 28 0 9 -22 9 -22 10 0 c8 0 9 0 9 2 -1 3 -64 147 -65 147 0 0 -15 -33 -33 -74z m44 10 c5 -13 10 -24 10 -24 0 -1 -9 -1 -21 -1 -12 0 -21 0 -21 1 0 1 20 48 21 48 0 0 5 -11 11 -24z M952 844 c-36 -6 -58 -35 -58 -75 0 -36 18 -61 49 -71 12 -4 38 -4 50 0 27 10 43 32 45 64 l0 11 -30 0 -30 0 0 -8 0 -8 21 0 20 0 -1 -4 c-5 -34 -42 -52 -75 -36 -38 18 -41 80 -4 104 15 10 39 10 55 1 5 -2 15 -12 18 -17 l2 -2 7 5 c4 3 7 7 7 8 0 3 -16 17 -24 21 -14 7 -35 10 -52 7z M1338 843 c-25 -6 -45 -25 -53 -48 -3 -12 -4 -32 -1 -44 12 -50 70 -72 115 -44 l6 3 0 12 0 12 -7 -6 c-24 -23 -58 -22 -81 0 -12 13 -16 24 -16 42 0 51 59 77 96 43 4 -3 7 -6 7 -6 1 0 1 5 1 11 l0 12 -6 3 c-18 11 -41 15 -61 10z M1051 770 l0 -72 38 0 39 1 0 8 0 8 -29 0 -30 0 0 27 0 27 30 0 29 0 0 8 0 8 -29 0 -30 0 0 20 0 20 30 0 29 0 0 9 0 8 -38 0 -39 0 0 -72z M1422 770 l0 -72 9 0 9 0 0 72 0 72 -9 0 -9 0 0 -72z M825 688 c-33 -5 -57 -31 -61 -65 -6 -61 47 -101 104 -78 l6 2 0 22 c0 11 0 21 -1 21 0 0 -3 -3 -7 -6 -29 -25 -68 -2 -62 36 3 21 16 33 36 33 12 0 16 -2 28 -12 l6 -5 0 22 0 22 -7 2 c-13 6 -29 8 -42 6z M1128 687 c-21 -7 -32 -25 -32 -52 0 -25 8 -42 25 -50 6 -3 7 -3 18 -3 16 0 22 2 30 11 l6 6 0 -7 0 -7 17 0 16 0 0 50 0 50 -16 0 -17 0 0 -7 0 -7 -3 3 c-4 5 -8 8 -13 11 -6 3 -25 4 -31 2z m37 -30 c14 -7 15 -34 2 -42 -13 -9 -30 -4 -34 11 -7 23 12 41 32 31z M883 614 l0 -72 19 0 19 0 0 27 0 26 16 -26 15 -27 23 0 c12 0 22 0 22 0 0 1 -9 14 -19 29 -21 30 -20 29 -17 29 7 0 20 10 25 20 3 7 3 7 3 20 0 18 -4 28 -16 37 -11 7 -14 7 -54 8 l-36 0 0 -71z m60 37 c7 -4 10 -15 6 -23 -3 -7 -8 -9 -19 -10 l-9 0 0 18 0 18 9 0 c7 0 10 -1 13 -3z M1000 614 l0 -72 44 0 44 0 0 17 0 16 -25 0 -25 0 0 12 0 11 24 0 23 0 0 16 0 15 -23 0 -24 0 0 12 0 12 25 0 25 0 0 16 0 16 -44 0 -44 0 0 -71z M1220 631 l0 -55 -23 0 -23 0 0 -17 1 -16 58 -1 59 0 0 17 0 17 -16 0 -16 0 0 55 0 54 -20 0 -20 0 0 -54z M1302 614 l0 -72 20 0 20 0 0 72 0 71 -20 0 -20 0 0 -71z M1349 685 c0 0 13 -32 30 -71 l30 -71 15 -1 16 0 29 70 c16 38 29 70 30 71 0 2 -1 2 -21 2 l-21 0 -16 -42 c-9 -22 -17 -41 -17 -41 0 0 -8 19 -16 42 l-16 41 -22 0 c-11 0 -21 0 -21 0z M1510 684 c-1 -1 -14 -33 -30 -71 -16 -38 -29 -70 -29 -70 0 -1 9 -1 21 -1 l21 0 2 5 c1 3 8 21 16 41 7 19 14 35 14 36 0 2 6 -11 17 -40 l16 -42 22 0 21 0 -4 9 c-2 5 -16 37 -30 72 l-26 62 -15 0 c-12 0 -16 0 -16 -1z"></path></g></svg></div>
-  <div class="meta">Parrilla de contenidos<b id="metaTitle">Milkarf · <i>Octubre 2026</i></b></div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <button type="button" class="btn-topbar-agency" id="btnAgencyAccess" title="Acceso exclusivo para el equipo de Nexo">🔒 Acceso Administrador</button>
+    <div class="meta">Parrilla de contenidos<b id="metaTitle">Milkarf · <i>Octubre 2026</i></b></div>
+  </div>
 </div></div>
 
 <div class="shell" id="agencyActiveBarWrap" style="display:none;padding:0 16px;">
@@ -962,7 +1014,7 @@ Por eso esta vez preferimos que te lo cuenten ellos.
 
 Experiencias diferentes, perros diferentes y una misma decisión: prestar más atención a lo que reciben todos los días.
 
-Conoce nuestras fórmulas desde el link de nuestra bio.</p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: grid;"><div class="cm-bubble"><div class="cm-av">D</div><div class="cm-right"><div class="cm-top"><b class="cm-author">Delia</b><button class="cm-del" type="button" title="Eliminar este comentario">×</button></div><p class="cm-txt">De este dos con gente así cortos y luego uno que pueden ser mis hermanos o cuñada un poco más largo y bloopers que si porque soy la hermana y tal</p></div></div></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v1 aprobada por Delia el 05-oct. 12:30 p. m.</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✓ Aprobado por agencia · v1</span><div class="card-agency-actions"><button class="btn-agency-save" type="button" title="Guarda el guion y copy corregidos en Firestore">💾 Guardar cambios</button><button class="btn-agency-approve" type="button" title="Aprobar esta versión y sincronizarla directamente en Firestore">✓ Aprobar versión</button></div></div></article><article class="card in" id="c2" data-state="aprobado" data-piece-num="2"><div class="c-top"><div class="big">02</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label><span class="tag version">v2</span><span class="tag ctx-correction">🔄 Revisión de correcciones</span></div><h2>¿Está recibiendo todo lo que necesita?</h2></div><span class="badge">Aprobado</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">Prepararle carne y vegetales a tu perro puede parecer una buena forma de alimentarlo.
+Conoce nuestras fórmulas desde el link de nuestra bio.</p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: grid;"><div class="cm-bubble"><div class="cm-av">D</div><div class="cm-right"><div class="cm-top"><b class="cm-author">Delia</b><button class="cm-del" type="button" title="Eliminar este comentario">×</button></div><p class="cm-txt">De este dos con gente así cortos y luego uno que pueden ser mis hermanos o cuñada un poco más largo y bloopers que si porque soy la hermana y tal</p></div></div></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v1 aprobada por Delia el 05-oct. 12:30 p. m.</div></div></div><div class="card-unsaved-badge" style="display: none;">⚠️ Sin guardar en la nube</div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✓ Aprobado por agencia · v1</span><div class="card-agency-actions"><button class="btn-agency-save" type="button" title="Guarda el guion y copy corregidos en Firestore">💾 Guardar cambios</button><button class="btn-agency-approve" type="button" title="Aprobar esta versión y sincronizarla directamente en Firestore">✓ Aprobar versión</button></div></div></article><article class="card in" id="c2" data-state="aprobado" data-piece-num="2"><div class="c-top"><div class="big">02</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label><span class="tag version">v2</span><span class="tag ctx-correction">🔄 Revisión de correcciones</span></div><h2>¿Está recibiendo todo lo que necesita?</h2></div><span class="badge">Aprobado</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">Prepararle carne y vegetales a tu perro puede parecer una buena forma de alimentarlo.
 Pero hay una pregunta más importante:
 ¿Está recibiendo todo lo que necesita?
 Porque un plato puede verse variado y aun así no decirte si las proporciones son las adecuadas o si están presentes todos los nutrientes que necesita.
@@ -978,7 +1030,7 @@ Porque no se trata únicamente de que el plato tenga ingredientes que reconocemo
 
 Milkarf hace esa parte más sencilla: alimentación real, completa y balanceada, lista para servir.
 
-Conoce nuestras fórmulas de Pollo y Carne desde el link de la bio.</p></div></div></div><div class="review"><div class="correction-summary-box" style="margin-bottom: 12px; background: rgba(2, 132, 199, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 8px; padding: 10px 12px;"><div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#38BDF8;margin-bottom:4px;"><span>🔄 Versión corregida (v2)</span></div><div style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.4;">Ajustes realizados por el equipo según las observaciones de la versión anterior.</div></div><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: grid;"><div class="cm-bubble"><div class="cm-av">D</div><div class="cm-right"><div class="cm-top"><b class="cm-author">Delia</b><button class="cm-del" type="button" title="Eliminar este comentario">×</button></div><p class="cm-txt">Enfocarnos más en beneficios que en lo completo de la fórmula con este</p></div></div></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v2 aprobada por Delia el 05-oct. 12:30 p. m.</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✓ Aprobado por agencia · v2</span><div class="card-agency-actions"><button class="btn-agency-save" type="button" title="Guarda el guion y copy corregidos en Firestore">💾 Guardar cambios</button><button class="btn-agency-approve" type="button" title="Aprobar esta versión y sincronizarla directamente en Firestore">✓ Aprobar versión</button></div></div></article><article class="card in" id="c3" data-state="aprobado" data-piece-num="3"><div class="c-top"><div class="big">03</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label><span class="tag version">v1</span><span class="tag ctx-first">✨ Primera revisión</span></div><h2>Isa / ¿Crudo significa inseguro?</h2></div><span class="badge">Aprobado</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">Que un alimento esté crudo no significa que sea una mala opción para tu perro.
+Conoce nuestras fórmulas de Pollo y Carne desde el link de la bio.</p></div></div></div><div class="review"><div class="correction-summary-box" style="margin-bottom: 12px; background: rgba(2, 132, 199, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 8px; padding: 10px 12px;"><div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#38BDF8;margin-bottom:4px;"><span>🔄 Versión corregida (v2)</span></div><div style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.4;">Ajustes realizados por el equipo según las observaciones de la versión anterior.</div></div><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: grid;"><div class="cm-bubble"><div class="cm-av">D</div><div class="cm-right"><div class="cm-top"><b class="cm-author">Delia</b><button class="cm-del" type="button" title="Eliminar este comentario">×</button></div><p class="cm-txt">Enfocarnos más en beneficios que en lo completo de la fórmula con este</p></div></div></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v2 aprobada por Delia el 05-oct. 12:30 p. m.</div></div></div><div class="card-unsaved-badge" style="display: none;">⚠️ Sin guardar en la nube</div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✓ Aprobado por agencia · v2</span><div class="card-agency-actions"><button class="btn-agency-save" type="button" title="Guarda el guion y copy corregidos en Firestore">💾 Guardar cambios</button><button class="btn-agency-approve" type="button" title="Aprobar esta versión y sincronizarla directamente en Firestore">✓ Aprobar versión</button></div></div></article><article class="card in" id="c3" data-state="aprobado" data-piece-num="3"><div class="c-top"><div class="big">03</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label><span class="tag version">v1</span><span class="tag ctx-first">✨ Primera revisión</span></div><h2>Isa / ¿Crudo significa inseguro?</h2></div><span class="badge">Aprobado</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">Que un alimento esté crudo no significa que sea una mala opción para tu perro.
 El punto no es simplemente si está cocido o crudo.
 Lo importante es qué estás ofreciendo realmente.
 Porque no es lo mismo colocar carne cruda directamente en su plato que ofrecer una alimentación cruda formulada para cubrir sus necesidades.
@@ -992,7 +1044,7 @@ Por eso la conversación no debería quedarse solo en si está cocido o crudo, s
 
 Entender esa diferencia también ayuda a tomar decisiones con más criterio sobre lo que llega a su plato.
 
-Guarda este video si todavía estás aprendiendo sobre alimentación cruda para perros.</p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v1 aprobada por Delia el 05-oct. 12:30 p. m.</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✓ Aprobado por agencia · v1</span><div class="card-agency-actions"><button class="btn-agency-save" type="button" title="Guarda el guion y copy corregidos en Firestore">💾 Guardar cambios</button><button class="btn-agency-approve" type="button" title="Aprobar esta versión y sincronizarla directamente en Firestore">✓ Aprobar versión</button></div></div></article><article class="card in" id="c4" data-state="aprobado" data-piece-num="4"><div class="c-top"><div class="big">04</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label><span class="tag version">v1</span><span class="tag ctx-first">✨ Primera revisión</span></div><h2>Su comida no termina en el plato vacío</h2></div><span class="badge">Aprobado</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">Servir su comida no termina cuando deja el plato vacío.
+Guarda este video si todavía estás aprendiendo sobre alimentación cruda para perros.</p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v1 aprobada por Delia el 05-oct. 12:30 p. m.</div></div></div><div class="card-unsaved-badge" style="display: none;">⚠️ Sin guardar en la nube</div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✓ Aprobado por agencia · v1</span><div class="card-agency-actions"><button class="btn-agency-save" type="button" title="Guarda el guion y copy corregidos en Firestore">💾 Guardar cambios</button><button class="btn-agency-approve" type="button" title="Aprobar esta versión y sincronizarla directamente en Firestore">✓ Aprobar versión</button></div></div></article><article class="card in" id="c4" data-state="aprobado" data-piece-num="4"><div class="c-top"><div class="big">04</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label><span class="tag version">v1</span><span class="tag ctx-first">✨ Primera revisión</span></div><h2>Su comida no termina en el plato vacío</h2></div><span class="badge">Aprobado</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">Servir su comida no termina cuando deja el plato vacío.
 Después de comer, retira lo que haya quedado y lava bien su plato antes de volver a utilizarlo.
 Parece algo pequeño, pero la forma en la que manipulamos sus alimentos también forma parte de una buena rutina.
 Con Milkarf: descongela correctamente, sirve su porción, conserva el restante siguiendo las indicaciones y mantén limpio su plato.
@@ -1003,7 +1055,7 @@ Servir la porción correspondiente, conservar correctamente el producto y manten
 
 Con Milkarf queremos que alimentarlo mejor también sea fácil de incorporar a tu día a día.
 
-Guarda este post para tener estas recomendaciones a mano.</p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v1 aprobada por Delia el 05-oct. 12:30 p. m.</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✓ Aprobado por agencia · v1</span><div class="card-agency-actions"><button class="btn-agency-save" type="button" title="Guarda el guion y copy corregidos en Firestore">💾 Guardar cambios</button><button class="btn-agency-approve" type="button" title="Aprobar esta versión y sincronizarla directamente en Firestore">✓ Aprobar versión</button></div></div></article><article class="card in" id="c5" data-state="aprobado" data-piece-num="5"><div class="c-top"><div class="big">05</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Carrusel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel" selected="">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label><span class="tag version">v1</span><span class="tag ctx-first">✨ Primera revisión</span></div><h2>Esa es la idea</h2></div><span class="badge">Aprobado</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">Slide 1
+Guarda este post para tener estas recomendaciones a mano.</p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v1 aprobada por Delia el 05-oct. 12:30 p. m.</div></div></div><div class="card-unsaved-badge" style="display: none;">⚠️ Sin guardar en la nube</div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✓ Aprobado por agencia · v1</span><div class="card-agency-actions"><button class="btn-agency-save" type="button" title="Guarda el guion y copy corregidos en Firestore">💾 Guardar cambios</button><button class="btn-agency-approve" type="button" title="Aprobar esta versión y sincronizarla directamente en Firestore">✓ Aprobar versión</button></div></div></article><article class="card in" id="c5" data-state="aprobado" data-piece-num="5"><div class="c-top"><div class="big">05</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Carrusel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel" selected="">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label><span class="tag version">v1</span><span class="tag ctx-first">✨ Primera revisión</span></div><h2>Esa es la idea</h2></div><span class="badge">Aprobado</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">Slide 1
 Que disfrute su plato
 y que tú entiendas mejor lo que necesita.
 Esa es la idea
@@ -1023,7 +1075,7 @@ Menos improvisación, y una alimentación pensada tanto para ellos como para la 
 
 Buscamos decisiones que puedas mantener, que tengan sentido para tu perro y que también funcionen dentro de tu día a día.
 
-Si ese también es el tipo de cuidado que quieres construir, quédate por aquí.</p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v1 aprobada por Delia el 05-oct. 12:30 p. m.</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✓ Aprobado por agencia · v1</span><div class="card-agency-actions"><button class="btn-agency-save" type="button" title="Guarda el guion y copy corregidos en Firestore">💾 Guardar cambios</button><button class="btn-agency-approve" type="button" title="Aprobar esta versión y sincronizarla directamente en Firestore">✓ Aprobar versión</button></div></div></article><article class="card in" id="c6" data-state="aprobado" data-piece-num="6"><div class="c-top"><div class="big">06</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label><span class="tag version">v1</span><span class="tag ctx-first">✨ Primera revisión</span></div><h2>Pastor belga / Energía</h2></div><span class="badge">Aprobado</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">Cuando hablamos de energía, probablemente piensas en esto.
+Si ese también es el tipo de cuidado que quieres construir, quédate por aquí.</p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v1 aprobada por Delia el 05-oct. 12:30 p. m.</div></div></div><div class="card-unsaved-badge" style="display: none;">⚠️ Sin guardar en la nube</div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✓ Aprobado por agencia · v1</span><div class="card-agency-actions"><button class="btn-agency-save" type="button" title="Guarda el guion y copy corregidos en Firestore">💾 Guardar cambios</button><button class="btn-agency-approve" type="button" title="Aprobar esta versión y sincronizarla directamente en Firestore">✓ Aprobar versión</button></div></div></article><article class="card in" id="c6" data-state="aprobado" data-piece-num="6"><div class="c-top"><div class="big">06</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label><span class="tag version">v1</span><span class="tag ctx-first">✨ Primera revisión</span></div><h2>Pastor belga / Energía</h2></div><span class="badge">Aprobado</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">Cuando hablamos de energía, probablemente piensas en esto.
 Correr.
 Saltar.
 Jugar.
@@ -1040,14 +1092,14 @@ Por eso observarlos no significa compararlos, sino aprender qué es normal en ca
 
 Su apetito, su experiencia al comer, sus heces, su pelaje y su comportamiento cotidiano también pueden darte información.
 
-Síguenos para seguir aprendiendo a mirar más allá de su plato.</p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v1 aprobada por Delia el 05-oct. 12:30 p. m.</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✓ Aprobado por agencia · v1</span><div class="card-agency-actions"><button class="btn-agency-save" type="button" title="Guarda el guion y copy corregidos en Firestore">💾 Guardar cambios</button><button class="btn-agency-approve" type="button" title="Aprobar esta versión y sincronizarla directamente en Firestore">✓ Aprobar versión</button></div></div></article><article class="card in" id="c7" data-state="aprobado" data-piece-num="7"><div class="c-top"><div class="big">07</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Carrusel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel" selected="">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label><span class="tag version">v5</span><span class="tag ctx-correction">🔄 Revisión de correcciones</span></div><h2>No tienes que cambiar todo de una vez</h2></div><span class="badge">Aprobado</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">¿Y si una sola vez de Milkarf al día fuera suficiente para empezar a notar la diferencia?No tienes que cambiar toda su alimentación de golpe. Solo intégralo a su rutina sin mezclarlo en el mismo plato y observa cómo responde.Eso sí, te advertimos algo…Tú puedes empezar pensando que será solo una vez al día.Pero después de probarlo, puede que tu perro tenga otros planes.Y que poco a poco sea él quien te convenza de hacer el cambio completo.Empieza con una. Milkarf hace el resto.</p></div><div class="copy-wrap"><span class="lbl">Copy</span><div class="post"><div class="post-h"><div class="av">M</div><div><b>milkarfood</b><small>Vista previa del copy</small></div></div><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el copy</div><p class="p-copy">Empezar con Milkarf no significa necesariamente cambiar toda su alimentación de un día para otro.
+Síguenos para seguir aprendiendo a mirar más allá de su plato.</p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v1 aprobada por Delia el 05-oct. 12:30 p. m.</div></div></div><div class="card-unsaved-badge" style="display: none;">⚠️ Sin guardar en la nube</div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✓ Aprobado por agencia · v1</span><div class="card-agency-actions"><button class="btn-agency-save" type="button" title="Guarda el guion y copy corregidos en Firestore">💾 Guardar cambios</button><button class="btn-agency-approve" type="button" title="Aprobar esta versión y sincronizarla directamente en Firestore">✓ Aprobar versión</button></div></div></article><article class="card in" id="c7" data-state="aprobado" data-piece-num="7"><div class="c-top"><div class="big">07</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Carrusel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel" selected="">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label><span class="tag version">v5</span><span class="tag ctx-correction">🔄 Revisión de correcciones</span></div><h2>No tienes que cambiar todo de una vez</h2></div><span class="badge">Aprobado</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">¿Y si una sola vez de Milkarf al día fuera suficiente para empezar a notar la diferencia?No tienes que cambiar toda su alimentación de golpe. Solo intégralo a su rutina sin mezclarlo en el mismo plato y observa cómo responde.Eso sí, te advertimos algo…Tú puedes empezar pensando que será solo una vez al día.Pero después de probarlo, puede que tu perro tenga otros planes.Y que poco a poco sea él quien te convenza de hacer el cambio completo.Empieza con una. Milkarf hace el resto.</p></div><div class="copy-wrap"><span class="lbl">Copy</span><div class="post"><div class="post-h"><div class="av">M</div><div><b>milkarfood</b><small>Vista previa del copy</small></div></div><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el copy</div><p class="p-copy">Empezar con Milkarf no significa necesariamente cambiar toda su alimentación de un día para otro.
 
 También puedes incorporarlo progresivamente mientras tu perro y tú se adaptan a una nueva rutina.
 
 Lo importante es respetar sus porciones y organizar correctamente cada comida.
 
 Calcula cuánto necesita desde el link de nuestra bio y escríbenos por WhatsApp para ayudarte a elegir cómo comenzar.</p></div></div></div><div class="review"><div class="correction-summary-box" style="margin-bottom: 12px; background: rgba(2, 132, 199, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 8px; padding: 10px 12px;"><div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#38BDF8;margin-bottom:4px;"><span>🔄 Versión corregida (v5)</span></div><div style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.4;">Ajustes realizados por el equipo según las observaciones de la versión anterior.</div></div><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: grid;"><div class="cm-bubble"><div class="cm-av">D</div><div class="cm-right"><div class="cm-top"><b class="cm-author">Delia</b><button class="cm-del" type="button" title="Eliminar este comentario">×</button></div><p class="cm-txt">En el comentario antes decía ver cómo decir que así sea más “costoso” es porque tendrá más beneficios que lo seco de la perrarina que dura años ahí en un saco</p></div></div><div class="cm-bubble"><div class="cm-av">D</div><div class="cm-right"><div class="cm-top"><b class="cm-author">Delia</b><button class="cm-del" type="button" title="Eliminar este comentario">×</button></div><p class="cm-txt">Que pena pero no, este no me gusta. Si es mucho rollo ponemos otro de testimonios o algo mientras esto se evalúa mejor con tiempo. Podría ser como que una vez al día también funciona y después le aseguramos que su perrito lo querrá siempre pero, no pude crearlo yo. Ayer lo intenté con Claude pero quedó a medias, si este es mucho tema modificarlo que sea otro de testimonios o no se pero no me gusta el enfoque 🙈🙈
-Si se puede tipo “una vez al día por una semana y tu perro lo pedirá solo”.. no se, pero no nos enfoquemos en lo costoso ni perrarina jaja sorry</p></div></div></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v5 aprobada por Delia el 05-oct. 12:30 p. m.</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✓ Aprobado por agencia · v5</span><div class="card-agency-actions"><button class="btn-agency-save" type="button" title="Guarda el guion y copy corregidos en Firestore">💾 Guardar cambios</button><button class="btn-agency-approve" type="button" title="Aprobar esta versión y sincronizarla directamente en Firestore">✓ Aprobar versión</button></div></div></article><article class="card in" id="c8" data-state="aprobado" data-piece-num="8"><div class="c-top"><div class="big">08</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Carrusel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel" selected="">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label><span class="tag version">v1</span><span class="tag ctx-first">✨ Primera revisión</span></div><h2>¿250 g o 550 g?</h2></div><span class="badge">Aprobado</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">¿250 g o 550 g?
+Si se puede tipo “una vez al día por una semana y tu perro lo pedirá solo”.. no se, pero no nos enfoquemos en lo costoso ni perrarina jaja sorry</p></div></div></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v5 aprobada por Delia el 05-oct. 12:30 p. m.</div></div></div><div class="card-unsaved-badge" style="display: none;">⚠️ Sin guardar en la nube</div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✓ Aprobado por agencia · v5</span><div class="card-agency-actions"><button class="btn-agency-save" type="button" title="Guarda el guion y copy corregidos en Firestore">💾 Guardar cambios</button><button class="btn-agency-approve" type="button" title="Aprobar esta versión y sincronizarla directamente en Firestore">✓ Aprobar versión</button></div></div></article><article class="card in" id="c8" data-state="aprobado" data-piece-num="8"><div class="c-top"><div class="big">08</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Carrusel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel" selected="">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label><span class="tag version">v1</span><span class="tag ctx-first">✨ Primera revisión</span></div><h2>¿250 g o 550 g?</h2></div><span class="badge">Aprobado</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">¿250 g o 550 g?
 Para elegir la presentación, primero necesitas saber cuánto debería comer tu perro al día.
 Te contamos cómo funciona en la descripción. ↓</p></div><div class="copy-wrap"><span class="lbl">Copy</span><div class="post"><div class="post-h"><div class="av">M</div><div><b>milkarfood</b><small>Vista previa del copy</small></div></div><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el copy</div><p class="p-copy">Elegir entre una bolsa de 250 g o 550 g no depende simplemente de cuál te resulte más cómoda.
 
@@ -1059,19 +1111,19 @@ Así puedes organizar mejor cuánto necesitas, cómo conservarlo y qué opción 
 
 Primero conoce su porción. Después deja que la guía te ayude a elegir la bolsa.
 
-Ingresa a nuestra pagina web www.milkarf.com y conoce todos los detalles.</p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: grid;"><div class="cm-bubble"><div class="cm-av">D</div><div class="cm-right"><div class="cm-top"><b class="cm-author">Delia</b><button class="cm-del" type="button" title="Eliminar este comentario">×</button></div><p class="cm-txt">De último jaja hasta revisar la página a fondo</p></div></div></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v1 aprobada por Delia el 05-oct. 12:30 p. m.</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✓ Aprobado por agencia · v1</span><div class="card-agency-actions"><button class="btn-agency-save" type="button" title="Guarda el guion y copy corregidos en Firestore">💾 Guardar cambios</button><button class="btn-agency-approve" type="button" title="Aprobar esta versión y sincronizarla directamente en Firestore">✓ Aprobar versión</button></div></div></article><article class="card in" id="c9" data-state="aprobado" data-piece-num="9"><div class="c-top"><div class="big">09</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label><span class="tag version">v3</span><span class="tag ctx-correction">🔄 Revisión de correcciones</span><span class="tag date">🚀 01-oct. 08:00 p. m.</span></div><h2>Milka León</h2></div><span class="badge">Aprobado</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">Yo haciéndome pasar por otro perro para que me den cena otra vez.</p></div><div class="copy-wrap"><span class="lbl">Copy</span><div class="post"><div class="post-h"><div class="av">M</div><div><b>milkarfood</b><small>Vista previa del copy</small></div></div><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el copy</div><p class="p-copy">Cambias el look.
+Ingresa a nuestra pagina web www.milkarf.com y conoce todos los detalles.</p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: grid;"><div class="cm-bubble"><div class="cm-av">D</div><div class="cm-right"><div class="cm-top"><b class="cm-author">Delia</b><button class="cm-del" type="button" title="Eliminar este comentario">×</button></div><p class="cm-txt">De último jaja hasta revisar la página a fondo</p></div></div></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v1 aprobada por Delia el 05-oct. 12:30 p. m.</div></div></div><div class="card-unsaved-badge" style="display: none;">⚠️ Sin guardar en la nube</div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✓ Aprobado por agencia · v1</span><div class="card-agency-actions"><button class="btn-agency-save" type="button" title="Guarda el guion y copy corregidos en Firestore">💾 Guardar cambios</button><button class="btn-agency-approve" type="button" title="Aprobar esta versión y sincronizarla directamente en Firestore">✓ Aprobar versión</button></div></div></article><article class="card in" id="c9" data-state="aprobado" data-piece-num="9"><div class="c-top"><div class="big">09</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label><span class="tag version">v3</span><span class="tag ctx-correction">🔄 Revisión de correcciones</span><span class="tag date">🚀 01-oct. 08:00 p. m.</span></div><h2>Milka León</h2></div><span class="badge">Aprobado</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">Yo haciéndome pasar por otro perro para que me den cena otra vez.</p></div><div class="copy-wrap"><span class="lbl">Copy</span><div class="post"><div class="post-h"><div class="av">M</div><div><b>milkarfood</b><small>Vista previa del copy</small></div></div><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el copy</div><p class="p-copy">Cambias el look.
 
 Cambias la identidad.
 
 Y vuelves a intentarlo como si nadie te hubiera visto terminar el plato hace cinco minutos.
 
-Si tu perro también tiene un máster en conseguir comida extra, comparte esto con alguien que vive exactamente la misma historia.</p></div></div></div><div class="review"><div class="correction-summary-box" style="margin-bottom: 12px; background: rgba(2, 132, 199, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 8px; padding: 10px 12px;"><div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#38BDF8;margin-bottom:4px;"><span>🔄 Versión corregida (v3)</span><span style="font-weight:400;color:rgba(255,255,255,0.5);font-size:11px;">· 01-oct. 08:00 p. m.</span></div><div style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.4;">Ajustes realizados por el equipo según las observaciones de la versión anterior.</div></div><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v3 aprobada por Agencia (Carlos) el 05-oct. 12:30 p. m.</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✓ Aprobado por agencia · v3</span><div class="card-agency-actions"><button class="btn-agency-save" type="button" title="Guarda el guion y copy corregidos en Firestore">💾 Guardar cambios</button><button class="btn-agency-approve" type="button" title="Aprobar esta versión y sincronizarla directamente en Firestore">✓ Aprobar versión</button></div></div></article><article class="card in" id="c10" data-state="aprobado" data-piece-num="10"><div class="c-top"><div class="big">10</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label><span class="tag version">v1</span><span class="tag ctx-first">✨ Primera revisión</span></div><h2>Halloween</h2></div><span class="badge">Aprobado</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">EL VERDADERO TERROR DE HALLOWEEN:
+Si tu perro también tiene un máster en conseguir comida extra, comparte esto con alguien que vive exactamente la misma historia.</p></div></div></div><div class="review"><div class="correction-summary-box" style="margin-bottom: 12px; background: rgba(2, 132, 199, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 8px; padding: 10px 12px;"><div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#38BDF8;margin-bottom:4px;"><span>🔄 Versión corregida (v3)</span><span style="font-weight:400;color:rgba(255,255,255,0.5);font-size:11px;">· 01-oct. 08:00 p. m.</span></div><div style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.4;">Ajustes realizados por el equipo según las observaciones de la versión anterior.</div></div><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v3 aprobada por Agencia (Carlos) el 05-oct. 12:30 p. m.</div></div></div><div class="card-unsaved-badge" style="display: none;">⚠️ Sin guardar en la nube</div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✓ Aprobado por agencia · v3</span><div class="card-agency-actions"><button class="btn-agency-save" type="button" title="Guarda el guion y copy corregidos en Firestore">💾 Guardar cambios</button><button class="btn-agency-approve" type="button" title="Aprobar esta versión y sincronizarla directamente en Firestore">✓ Aprobar versión</button></div></div></article><article class="card in" id="c10" data-state="aprobado" data-piece-num="10"><div class="c-top"><div class="big">10</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Reel</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel" selected="">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post">Post</option></select></label><span class="tag version">v1</span><span class="tag ctx-first">✨ Primera revisión</span></div><h2>Halloween</h2></div><span class="badge">Aprobado</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">EL VERDADERO TERROR DE HALLOWEEN:
 Abrir el congelador…
 y descubrir que queda una sola bolsita de Milkarf.</p></div><div class="copy-wrap"><span class="lbl">Copy</span><div class="post"><div class="post-h"><div class="av">M</div><div><b>milkarfood</b><small>Vista previa del copy</small></div></div><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el copy</div><p class="p-copy">Organiza su alimentación haz tu pedido para tener sus porciones listas, para no pasar estos sustos
 
 Y si todavía no sabes cuántas bolsas necesitas o qué presentación se adapta mejor a su consumo, nuestra guía web te orienta según su porción diaria.
 
-Haz tu pedido desde el link de nuestra bio. Y que el único susto de Halloween sea el disfraz. 🎃</p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v1 aprobada por Delia el 05-oct. 12:30 p. m.</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✓ Aprobado por agencia · v1</span><div class="card-agency-actions"><button class="btn-agency-save" type="button" title="Guarda el guion y copy corregidos en Firestore">💾 Guardar cambios</button><button class="btn-agency-approve" type="button" title="Aprobar esta versión y sincronizarla directamente en Firestore">✓ Aprobar versión</button></div></div></article><article class="card in" id="c11" data-state="aprobado" data-piece-num="11"><div class="c-top"><div class="big">11</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Post</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post" selected="">Post</option></select></label><span class="tag version">v1</span><span class="tag ctx-first">✨ Primera revisión</span></div><h2>Ingredientes reales</h2></div><span class="badge">Aprobado</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">Que tenga /ingredientes reales/es solo el comienzo.
+Haz tu pedido desde el link de nuestra bio. Y que el único susto de Halloween sea el disfraz. 🎃</p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v1 aprobada por Delia el 05-oct. 12:30 p. m.</div></div></div><div class="card-unsaved-badge" style="display: none;">⚠️ Sin guardar en la nube</div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✓ Aprobado por agencia · v1</span><div class="card-agency-actions"><button class="btn-agency-save" type="button" title="Guarda el guion y copy corregidos en Firestore">💾 Guardar cambios</button><button class="btn-agency-approve" type="button" title="Aprobar esta versión y sincronizarla directamente en Firestore">✓ Aprobar versión</button></div></div></article><article class="card in" id="c11" data-state="aprobado" data-piece-num="11"><div class="c-top"><div class="big">11</div><div><div class="tags"><div style="position: relative; display: inline-block;"><span class="tag fmt">Post</span><div class="fmt-popover"></div></div><label class="fmt-wrap"><select class="fmt-sel" aria-label="Tipo de contenido"><option value="Reel">Reel</option><option value="Carrusel">Carrusel</option><option value="Carrusel con video">Carrusel con video</option><option value="Post" selected="">Post</option></select></label><span class="tag version">v1</span><span class="tag ctx-first">✨ Primera revisión</span></div><h2>Ingredientes reales</h2></div><span class="badge">Aprobado</span></div><div class="c-body"><div class="guion"><span class="lbl">Guion / texto</span><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el guion</div><p class="p-guion">Que tenga /ingredientes reales/es solo el comienzo.
 También importa/cuánto recibe de cada uno.
 5 slides con fotos de los ingredientes</p></div><div class="copy-wrap"><span class="lbl">Copy</span><div class="post"><div class="post-h"><div class="av">M</div><div><b>milkarfood</b><small>Vista previa del copy</small></div></div><div class="card-agency-edit-hint">✎ Haz clic en el texto para editar el copy</div><p class="p-copy">Reconocer los ingredientes que ves en su plato puede darte tranquilidad, pero esa es solamente una parte de la alimentación.
 
@@ -1081,13 +1133,13 @@ Por eso en Milkarf no hablamos de ingredientes reales como un fin en sí mismo.
 
 Hablamos de alimentación real, completa y balanceada.
 
-Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v1 aprobada por Delia el 05-oct. 12:30 p. m.</div></div></div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✓ Aprobado por agencia · v1</span><div class="card-agency-actions"><button class="btn-agency-save" type="button" title="Guarda el guion y copy corregidos en Firestore">💾 Guardar cambios</button><button class="btn-agency-approve" type="button" title="Aprobar esta versión y sincronizarla directamente en Firestore">✓ Aprobar versión</button></div></div></article></div>
+Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div></div></div><div class="review"><div class="comment-box"><div class="cm-head"><h4>💬 Comentarios y observaciones</h4><span class="cm-sub">Cualquier persona del equipo puede dejar comentarios</span></div><div class="cm-thread" style="display: none;"></div><div class="cm-form"><textarea class="cm-textarea" placeholder="Escribe aquí tu comentario, ajuste o sugerencia…"></textarea><div class="cm-form-foot"><span class="hint">✎ Si pides cambios, debes detallar qué ajustar para poder enviar.</span><button class="btn-add-cm" type="button">+ Agregar comentario</button></div></div></div><div class="review-decision"><div class="dec-head"><h4>¿Cuál es tu decisión sobre este contenido?</h4><span class="req-badge">* Paso obligatorio</span></div><div class="seg"><button class="approve on" type="button" aria-pressed="true"><span class="ic">✓</span>Aprobar esta versión</button><button class="change" type="button" aria-pressed="false"><span class="ic">✎</span>Solicitar cambios</button></div><div class="dec-status ok">✓ Versión v1 aprobada por Delia el 05-oct. 12:30 p. m.</div></div></div><div class="card-unsaved-badge" style="display: none;">⚠️ Sin guardar en la nube</div><div class="card-agency-bar" style="display: none;"><span class="agency-bar-info">✓ Aprobado por agencia · v1</span><div class="card-agency-actions"><button class="btn-agency-save" type="button" title="Guarda el guion y copy corregidos en Firestore">💾 Guardar cambios</button><button class="btn-agency-approve" type="button" title="Aprobar esta versión y sincronizarla directamente en Firestore">✓ Aprobar versión</button></div></div></article></div>
       <div class="empty" id="empty" style="display: none;">No hay contenidos en este filtro.</div>
       <footer>
         <div class="logo" data-logo=""><svg role="img" aria-label="NEXO Agencia Creativa" xmlns="http://www.w3.org/2000/svg" viewBox="758 532 862 1350"><g transform="translate(0,2364) scale(1,-1)"><path fill="#1F3549" d="M763 1617 l0 -210 47 0 46 0 0 129 0 129 3 -4 c3 -4 29 -32 31 -34 1 -1 5 -6 10 -11 4 -4 15 -16 23 -25 9 -10 17 -20 20 -22 2 -2 11 -12 19 -21 9 -10 16 -18 16 -19 1 0 5 -5 10 -10 17 -18 28 -32 29 -33 2 -1 15 -15 33 -35 9 -10 16 -18 16 -19 5 -4 18 -19 20 -22 l3 -3 47 0 46 0 0 210 0 209 -46 0 -46 0 0 -129 c0 -106 0 -128 -1 -127 -1 1 -4 5 -8 8 -6 7 -21 24 -24 27 -2 2 -6 7 -44 49 -15 15 -28 31 -31 33 -2 2 -5 5 -6 7 -1 1 -5 6 -10 11 -5 5 -9 10 -10 11 -1 1 -5 6 -10 11 -37 41 -53 58 -60 66 -5 5 -10 11 -11 12 -1 1 -6 6 -10 11 l-9 10 -47 0 -46 0 0 -209z M1238 1825 c-1 0 -1 -21 -1 -46 l0 -46 182 0 182 0 0 47 0 46 -181 0 c-100 0 -182 0 -182 -1z M1237 1615 l0 -46 182 0 182 0 0 46 0 46 -182 0 -182 0 0 -46z M1237 1454 l0 -47 182 0 182 0 0 47 0 46 -182 0 -182 0 0 -46z M764 1351 c0 -1 31 -48 69 -105 38 -57 69 -104 69 -104 -1 -1 -32 -48 -70 -105 l-69 -104 70 0 71 0 34 52 c19 28 35 51 35 51 0 0 16 -23 35 -52 l34 -51 70 0 c60 0 70 0 70 1 -1 1 -32 48 -69 104 -37 56 -68 103 -69 104 0 0 31 47 69 104 38 57 69 104 69 105 0 1 -22 1 -65 1 l-64 0 -40 -59 c-22 -33 -40 -60 -40 -60 0 0 -18 27 -40 60 l-39 59 -66 0 c-52 0 -65 0 -64 -1z M1372 1351 c-96 -9 -175 -84 -188 -180 -21 -147 116 -269 261 -231 109 28 177 142 149 252 -25 101 -119 168 -222 159z m38 -91 c102 -17 136 -150 53 -212 -79 -59 -190 -4 -190 95 0 72 65 128 137 117z"></path><path fill="#5CB83E" d="M803 774 c-18 -40 -32 -73 -33 -74 0 -2 0 -2 10 -2 l9 1 10 21 9 22 27 0 28 0 9 -22 9 -22 10 0 c6 0 9 0 9 1 0 2 -64 148 -65 148 0 0 -15 -33 -32 -73z m43 9 l11 -25 -22 0 c-20 0 -21 0 -21 2 3 6 21 47 21 47 0 0 5 -11 11 -24z M1145 773 l0 -75 8 0 9 0 0 53 1 53 51 -56 c28 -30 51 -55 51 -55 1 0 1 34 1 75 l0 74 -8 0 -9 0 0 -54 0 -53 -52 56 c-28 31 -51 56 -52 56 0 0 0 -34 0 -74z M1480 773 c-18 -40 -32 -74 -32 -74 0 -1 4 -1 10 -1 l9 1 9 21 10 22 27 0 28 0 9 -22 9 -22 10 0 c8 0 9 0 9 2 -1 3 -64 147 -65 147 0 0 -15 -33 -33 -74z m44 10 c5 -13 10 -24 10 -24 0 -1 -9 -1 -21 -1 -12 0 -21 0 -21 1 0 1 20 48 21 48 0 0 5 -11 11 -24z M952 844 c-36 -6 -58 -35 -58 -75 0 -36 18 -61 49 -71 12 -4 38 -4 50 0 27 10 43 32 45 64 l0 11 -30 0 -30 0 0 -8 0 -8 21 0 20 0 -1 -4 c-5 -34 -42 -52 -75 -36 -38 18 -41 80 -4 104 15 10 39 10 55 1 5 -2 15 -12 18 -17 l2 -2 7 5 c4 3 7 7 7 8 0 3 -16 17 -24 21 -14 7 -35 10 -52 7z M1338 843 c-25 -6 -45 -25 -53 -48 -3 -12 -4 -32 -1 -44 12 -50 70 -72 115 -44 l6 3 0 12 0 12 -7 -6 c-24 -23 -58 -22 -81 0 -12 13 -16 24 -16 42 0 51 59 77 96 43 4 -3 7 -6 7 -6 1 0 1 5 1 11 l0 12 -6 3 c-18 11 -41 15 -61 10z M1051 770 l0 -72 38 0 39 1 0 8 0 8 -29 0 -30 0 0 27 0 27 30 0 29 0 0 8 0 8 -29 0 -30 0 0 20 0 20 30 0 29 0 0 9 0 8 -38 0 -39 0 0 -72z M1422 770 l0 -72 9 0 9 0 0 72 0 72 -9 0 -9 0 0 -72z M825 688 c-33 -5 -57 -31 -61 -65 -6 -61 47 -101 104 -78 l6 2 0 22 c0 11 0 21 -1 21 0 0 -3 -3 -7 -6 -29 -25 -68 -2 -62 36 3 21 16 33 36 33 12 0 16 -2 28 -12 l6 -5 0 22 0 22 -7 2 c-13 6 -29 8 -42 6z M1128 687 c-21 -7 -32 -25 -32 -52 0 -25 8 -42 25 -50 6 -3 7 -3 18 -3 16 0 22 2 30 11 l6 6 0 -7 0 -7 17 0 16 0 0 50 0 50 -16 0 -17 0 0 -7 0 -7 -3 3 c-4 5 -8 8 -13 11 -6 3 -25 4 -31 2z m37 -30 c14 -7 15 -34 2 -42 -13 -9 -30 -4 -34 11 -7 23 12 41 32 31z M883 614 l0 -72 19 0 19 0 0 27 0 26 16 -26 15 -27 23 0 c12 0 22 0 22 0 0 1 -9 14 -19 29 -21 30 -20 29 -17 29 7 0 20 10 25 20 3 7 3 7 3 20 0 18 -4 28 -16 37 -11 7 -14 7 -54 8 l-36 0 0 -71z m60 37 c7 -4 10 -15 6 -23 -3 -7 -8 -9 -19 -10 l-9 0 0 18 0 18 9 0 c7 0 10 -1 13 -3z M1000 614 l0 -72 44 0 44 0 0 17 0 16 -25 0 -25 0 0 12 0 11 24 0 23 0 0 16 0 15 -23 0 -24 0 0 12 0 12 25 0 25 0 0 16 0 16 -44 0 -44 0 0 -71z M1220 631 l0 -55 -23 0 -23 0 0 -17 1 -16 58 -1 59 0 0 17 0 17 -16 0 -16 0 0 55 0 54 -20 0 -20 0 0 -54z M1302 614 l0 -72 20 0 20 0 0 72 0 71 -20 0 -20 0 0 -71z M1349 685 c0 0 13 -32 30 -71 l30 -71 15 -1 16 0 29 70 c16 38 29 70 30 71 0 2 -1 2 -21 2 l-21 0 -16 -42 c-9 -22 -17 -41 -17 -41 0 0 -8 19 -16 42 l-16 41 -22 0 c-11 0 -21 0 -21 0z M1510 684 c-1 -1 -14 -33 -30 -71 -16 -38 -29 -70 -29 -70 0 -1 9 -1 21 -1 l21 0 2 5 c1 3 8 21 16 41 7 19 14 35 14 36 0 2 6 -11 17 -40 l16 -42 22 0 21 0 -4 9 c-2 5 -16 37 -30 72 l-26 62 -15 0 c-12 0 -16 0 -16 -1z"></path></g></svg></div>
         <div>Mérida, Venezuela</div>
         <div style="margin-top:10px;">
-          <button type="button" class="btn-agency-access" id="btnAgencyAccess">Acceso equipo Nexo</button>
+          <button type="button" class="btn-agency-access" id="btnAgencyAccessFooter">Acceso equipo Nexo</button>
         </div>
       </footer>
     </main>
@@ -2985,7 +3037,7 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
       if (!txt) return false;
       var auth = getReviewerName() || '';
       it.comentarios = it.comentarios || [];
-      var newCm = { autor: auth, texto: txt, fecha: new Date().toISOString() };
+      var newCm = { autor: auth, texto: txt, fecha: new Date().toISOString(), version: parseInt(it.version, 10) || 1 };
       it.comentarios.push(newCm);
       it.comentario = formatComentariosString(it.comentarios);
       if (auth) it.revisadoPor = auth;
@@ -3119,12 +3171,21 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
     // Guardar referencia a la función de auto-commit para validación global
     card.__commitDraftComment = addCommentFromInput;
 
+    var unsavedBadge = el('div', 'card-unsaved-badge', '⚠️ Sin guardar en la nube');
+    unsavedBadge.style.display = 'none';
+    card.appendChild(unsavedBadge);
+    function setUnsavedState(isUnsaved){
+      card.classList.toggle('card-unsaved', !!isUnsaved);
+      unsavedBadge.style.display = isUnsaved ? 'inline-flex' : 'none';
+    }
+
     paint();
     cards.push({
       card: card,
       nav: a,
       it: it,
       setDecision: set,
+      setUnsavedState: setUnsavedState,
       commitComment: addCommentFromInput,
       renderThread: renderThread,
       paint: paint,
@@ -3405,7 +3466,10 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
     if (!v || typeof v !== 'object') return v;
     if ('stringValue' in v) return v.stringValue;
     if ('integerValue' in v) return parseInt(v.integerValue, 10);
+    if ('doubleValue' in v) return (typeof v.doubleValue === 'number' ? v.doubleValue : parseFloat(v.doubleValue));
     if ('booleanValue' in v) return v.booleanValue;
+    if ('nullValue' in v) return null;
+    if ('timestampValue' in v) return v.timestampValue;
     if ('mapValue' in v) {
       var m = {};
       var mFields = (v.mapValue && v.mapValue.fields) || {};
@@ -3417,6 +3481,269 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
       return arr.map(unpackFsValue);
     }
     return v;
+  }
+
+  function packFsValue(v){
+    if (v === undefined) return undefined;
+    if (v === null) return { nullValue: null };
+    if (typeof v === 'boolean') return { booleanValue: v };
+    if (typeof v === 'number') {
+      if (Number.isInteger(v)) {
+        return { integerValue: String(v) };
+      }
+      return { doubleValue: v };
+    }
+    if (typeof v === 'string') return { stringValue: v };
+    if (Array.isArray(v)) {
+      var vals = [];
+      for (var i = 0; i < v.length; i++) {
+        var pv = packFsValue(v[i]);
+        if (pv !== undefined) vals.push(pv);
+      }
+      return { arrayValue: vals.length ? { values: vals } : {} };
+    }
+    if (typeof v === 'object') {
+      var f = {};
+      for (var k in v) {
+        if (Object.prototype.hasOwnProperty.call(v, k)) {
+          var pf = packFsValue(v[k]);
+          if (pf !== undefined) f[k] = pf;
+        }
+      }
+      return { mapValue: { fields: f } };
+    }
+    return { stringValue: String(v) };
+  }
+
+  function leerTextoEditable(el){
+    if (!el) return '';
+    var clone = el.cloneNode(true);
+    var brs = clone.querySelectorAll('br');
+    for (var i = 0; i < brs.length; i++) {
+      brs[i].replaceWith('\n');
+    }
+    var blocks = clone.querySelectorAll('div, p, li');
+    for (var j = 0; j < blocks.length; j++) {
+      if (j > 0 || blocks[j] !== clone.firstChild) {
+        blocks[j].before('\n');
+      }
+    }
+    var text = clone.textContent || '';
+    text = text.replace(/\u00a0/g, ' ');
+    text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+    var lines = text.split('\n').map(function(l){ return l.replace(/[ \t]+$/, ''); });
+    text = lines.join('\n');
+    text = text.replace(/\n{3,}/g, '\n\n');
+    return text.trim();
+  }
+
+  var REGEX_FRASES_PEGADAS = /[.?!…:][A-ZÁÉÍÓÚÑ¿¡]/;
+
+  function setupPlainTextEditable(node, isSingleLine){
+    if (!node) return;
+    try {
+      node.contentEditable = 'plaintext-only';
+    } catch(e) {
+      node.setAttribute('contenteditable', 'true');
+    }
+    if (node.contentEditable !== 'plaintext-only') {
+      node.setAttribute('contenteditable', 'true');
+    }
+    node.setAttribute('spellcheck', 'true');
+    if (!node._agencyKeyBound) {
+      node._agencyKeyBound = true;
+      node.addEventListener('keydown', function(e){
+        if (e.key === 'Enter') {
+          if (isSingleLine) {
+            e.preventDefault();
+          } else {
+            e.preventDefault();
+            if (document.queryCommandSupported && document.queryCommandSupported('insertLineBreak')) {
+              document.execCommand('insertLineBreak');
+            } else {
+              document.execCommand('insertText', false, '\n');
+            }
+          }
+        }
+      });
+      node.addEventListener('paste', function(e){
+        if (node.contentEditable !== 'plaintext-only') {
+          e.preventDefault();
+          var clip = (e.clipboardData || window.clipboardData);
+          var text = clip ? clip.getData('text/plain') : '';
+          if (isSingleLine) text = text.replace(/[\r\n]+/g, ' ');
+          document.execCommand('insertText', false, text);
+        }
+      });
+    }
+  }
+
+  function guardarPiezas(cambiosPorId, opciones){
+    opciones = opciones || {};
+    var intentosMax = 3;
+    var intentoActual = opciones.intento || 1;
+
+    if (!FB || !FB.projectId || !DATA.id) {
+      return Promise.reject(new Error('Firebase no está configurado en este tablero.'));
+    }
+
+    var docUrl = 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(FB.projectId) +
+      '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
+      '?key=' + encodeURIComponent(FB.apiKey);
+
+    return getValidAgencyToken().then(function(token){
+      var getHeaders = {};
+      if (token) getHeaders['Authorization'] = 'Bearer ' + token;
+      return fetch(docUrl, { headers: getHeaders }).then(function(res){
+        if (!res.ok) {
+          return res.json().catch(function(){ return {}; }).then(function(j){
+            throw new Error((j.error && j.error.message) || ('HTTP ' + res.status + ' al leer tablero'));
+          });
+        }
+        return res.json();
+      });
+    }).then(function(doc){
+      var updateTime = doc.updateTime;
+      var f = {};
+      var docFields = doc.fields || {};
+      for (var k in docFields) f[k] = unpackFsValue(docFields[k]);
+
+      var rawContenidos = Array.isArray(f.contenidos) ? f.contenidos : [];
+      var baseContenidos = [];
+
+      // Si contenidos está vacío en Firestore (primera revisión), parte de items con todos sus campos
+      if (rawContenidos.length === 0) {
+        baseContenidos = items.map(function(it, i){
+          var baseObj = Object.assign({}, it);
+          baseObj.n = i + 1;
+          baseObj.id = it.id || ('c' + (i + 1));
+          return baseObj;
+        });
+      } else {
+        baseContenidos = rawContenidos.map(function(item){
+          return Object.assign({}, item);
+        });
+      }
+
+      // Fusionar cambios por pieza sin borrar claves que no conoce
+      baseContenidos.forEach(function(pieza, idx){
+        var n = pieza.n || (idx + 1);
+        var id = pieza.id || ('c' + n);
+        var rawCambio = (cambiosPorId && (cambiosPorId[id] || cambiosPorId[n] || cambiosPorId[String(n)])) || null;
+
+        if (rawCambio) {
+          var cambios = (typeof rawCambio === 'function') ? rawCambio(pieza) : Object.assign({}, rawCambio);
+
+          // Si el cambio aprueba y hay un borrador del banco distinto de guion/copy, bloquear
+          if (cambios.estado === 'aprobado' && pieza.borrador) {
+            var bGuion = pieza.borrador.guion || '';
+            var bCopy = pieza.borrador.copy || '';
+            var curGuion = pieza.guion || '';
+            var curCopy = pieza.copy || '';
+            if ((bGuion && bGuion !== curGuion) || (bCopy && bCopy !== curCopy)) {
+              throw new Error('Hay una corrección sin terminar en el Banco de trabajo');
+            }
+          }
+
+          if (cambios.solicitarAprobacionSnapshot) {
+            var snapVersion = parseInt(pieza.version, 10) || 1;
+            var snapFecha = (opciones.tableroFields && opciones.tableroFields.ultimaRevision) || new Date().toISOString();
+            var snapUsuario = cambios.aprobadorNombre || cambios.revisadoPor || 'Cliente';
+            pieza.aprobacion = {
+              version: snapVersion,
+              usuario: snapUsuario,
+              fecha: snapFecha,
+              titulo: pieza.titulo || '',
+              formato: pieza.formato || '',
+              guion: pieza.guion || '',
+              copy: pieza.copy || '',
+              hashtags: pieza.hashtags || ''
+            };
+            delete cambios.solicitarAprobacionSnapshot;
+            delete cambios.aprobadorNombre;
+          }
+
+          Object.assign(pieza, cambios);
+          if (cambios.aprobacion === null) {
+            delete pieza.aprobacion;
+          }
+        }
+      });
+
+      // Recalcular contadores a partir del arreglo fusionado
+      var totalOk = baseContenidos.filter(function(x){ return x.estado === 'aprobado'; }).length;
+      var totalFix = baseContenidos.filter(function(x){ return x.estado === 'cambios' || x.estado === 'en_correccion'; }).length;
+      var totalCorr = baseContenidos.filter(function(x){ return x.estado === 'corregido'; }).length;
+      var totalPend = baseContenidos.filter(function(x){
+        return x.estado === 'pendiente' || x.estado === 'en_revision' || x.estado === 'borrador' || !x.estado;
+      }).length;
+
+      var estadoGeneral = (totalFix > 0) ? 'Con cambios' :
+                          (totalCorr > 0 ? 'En revisión' :
+                          ((totalOk === baseContenidos.length && baseContenidos.length > 0) ? 'Aprobado' : (totalOk > 0 ? 'Parcial' : 'Sin revisar')));
+
+      var patchFields = {
+        aprobados: totalOk,
+        cambios: totalFix,
+        pendientes: totalPend,
+        estado: estadoGeneral,
+        contenidos: baseContenidos
+      };
+
+      if (opciones.tableroFields) {
+        for (var tf in opciones.tableroFields) {
+          patchFields[tf] = opciones.tableroFields[tf];
+        }
+      }
+
+      var updateMask = 'updateMask.fieldPaths=aprobados&updateMask.fieldPaths=cambios&updateMask.fieldPaths=pendientes&updateMask.fieldPaths=estado&updateMask.fieldPaths=contenidos';
+      if (opciones.tableroFields) {
+        for (var tfKey in opciones.tableroFields) {
+          updateMask += '&updateMask.fieldPaths=' + encodeURIComponent(tfKey);
+        }
+      }
+
+      var patchUrl = 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(FB.projectId) +
+        '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
+        '?' + updateMask +
+        (updateTime ? ('&currentDocument.updateTime=' + encodeURIComponent(updateTime)) : '') +
+        '&key=' + encodeURIComponent(FB.apiKey);
+
+      var packedFields = {};
+      for (var pf in patchFields) {
+        var pv = packFsValue(patchFields[pf]);
+        if (pv !== undefined) packedFields[pf] = pv;
+      }
+
+      return getValidAgencyToken().then(function(token){
+        var patchHeaders = { 'Content-Type': 'application/json' };
+        if (token) patchHeaders['Authorization'] = 'Bearer ' + token;
+        return fetch(patchUrl, {
+          method: 'PATCH',
+          headers: patchHeaders,
+          body: JSON.stringify({ fields: packedFields })
+        });
+      }).then(function(patchRes){
+        if (!patchRes.ok) {
+          return patchRes.json().catch(function(){ return {}; }).then(function(errJson){
+            var errMsg = (errJson.error && errJson.error.message) || ('HTTP ' + patchRes.status);
+            var isPrecondition = (patchRes.status === 400 || patchRes.status === 409 || patchRes.status === 412) ||
+              (errJson.error && (errJson.error.status === 'FAILED_PRECONDITION' || errJson.error.status === 'ABORTED'));
+
+            if (isPrecondition && intentoActual < intentosMax) {
+              console.warn('Reintento por precondición (' + intentoActual + '/' + intentosMax + ')...');
+              var reintentarOpciones = Object.assign({}, opciones, { intento: intentoActual + 1 });
+              return guardarPiezas(cambiosPorId, reintentarOpciones);
+            }
+            throw new Error(errMsg);
+          });
+        }
+        return patchRes.json();
+      }).then(function(savedDoc){
+        syncBoardWithFirestore(savedDoc);
+        return savedDoc;
+      });
+    });
   }
 
   function syncBoardWithFirestore(doc){
@@ -3462,6 +3789,7 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
         });
 
         if (fsItem) {
+          if (cObj.setUnsavedState) cObj.setUnsavedState(false);
           if (fsItem.estado && ['borrador', 'en_revision', 'pendiente', 'cambios', 'en_correccion', 'corregido', 'aprobado'].indexOf(fsItem.estado) >= 0) {
             it.estado = (fsItem.estado === 'pendiente') ? 'en_revision' : fsItem.estado;
           }
@@ -3503,6 +3831,17 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
           if (fsItem.fechaCorreccion) {
             it.fechaCorreccion = fsItem.fechaCorreccion;
           }
+
+          // Preservar campos ricos de Firestore para que nunca se pierdan
+          if (fsItem.historial) it.historial = fsItem.historial;
+          if (fsItem.versiones) it.versiones = fsItem.versiones;
+          if (fsItem.borrador) it.borrador = fsItem.borrador;
+          if (fsItem.hashtags) it.hashtags = fsItem.hashtags;
+          if (fsItem.referencias) it.referencias = fsItem.referencias;
+          if (fsItem.pilar) it.pilar = fsItem.pilar;
+          if (fsItem.fechaPublicacion) it.fechaPublicacion = fsItem.fechaPublicacion;
+          if (fsItem.tipoOriginal) it.tipoOriginal = fsItem.tipoOriginal;
+          if (fsItem.clickupId) it.clickupId = fsItem.clickupId;
 
           // Filtrar notas de corrección internas del comentario
           var rawComment = it.comentario || '';
@@ -3605,17 +3944,13 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
     commitAllDraftComments();
     var revName = getReviewerName() || 'Cliente';
     DATA.revision = {revisadoPor: revName, fecha: new Date().toISOString()};
-    var k = counts();
-    var totalGlobalOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
-    var totalGlobalFix = items.filter(function(x){ return x.estado === 'cambios'; }).length;
-    var totalGlobalPend = items.filter(function(x){ return x.estado === 'pendiente' || !x.estado; }).length;
-    var estadoGeneral = (totalGlobalFix > 0) ? 'Con cambios' : (totalGlobalOk === items.length ? 'Aprobado' : (totalGlobalOk > 0 ? 'Parcial' : 'Sin revisar'));
 
     var btn = $('dl');
     btn.disabled = true; btn.textContent = 'Enviando…';
 
     function ok(){
       btn.disabled = false; btn.textContent = 'Enviar revisión ✓'; saveDraft();
+      var k = counts();
       modal({
         kind:'ok',
         icon:'✓',
@@ -3638,81 +3973,46 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
       });
     }
 
-    var firestoreContenidos = items.map(function(it, i){
+    var evaluatedItems = (targetPieceNumbers && targetPieceNumbers.length > 0)
+      ? items.filter(function(it, idx){ return targetPieceNumbers.indexOf(idx + 1) !== -1; })
+      : items;
+
+    var cambiosPorId = {};
+    evaluatedItems.forEach(function(it){
       var cList = (it.comentarios && it.comentarios.length) ? it.comentarios : (it.comentario ? [{ autor: it.revisadoPor || revName, texto: it.comentario, fecha: '' }] : []);
       var fullComment = formatComentariosString(cList) || it.comentario || '';
       var lastAuthor = (cList.length && cList[cList.length - 1].autor) ? cList[cList.length - 1].autor : (it.revisadoPor || revName);
-      var fMap = {
-        n: { integerValue: String(i + 1) },
-        id: { stringValue: String(it.id || ('c' + (i + 1))) },
-        titulo: { stringValue: String(it.titulo || '') },
-        formato: { stringValue: String(it.formato || '') },
-        formatoOriginal: { stringValue: String(it.formatoOriginal || '') },
-        estado: { stringValue: String(it.estado || 'pendiente') },
-        comentario: { stringValue: String(fullComment) },
-        revisadoPor: { stringValue: String(lastAuthor) }
+
+      var itemCambios = {
+        estado: it.estado || 'pendiente',
+        comentario: fullComment,
+        revisadoPor: lastAuthor,
+        formato: it.formato || '',
+        formatoOriginal: it.formatoOriginal || it.formato || ''
       };
-      if (it.guion != null) fMap.guion = { stringValue: String(it.guion) };
-      if (it.copy != null) fMap.copy = { stringValue: String(it.copy) };
-      if (it.version != null) fMap.version = { integerValue: String(it.version) };
-      if (it.fechaCorreccion) fMap.fechaCorreccion = { stringValue: String(it.fechaCorreccion) };
-      if (it.fechaEnvio) fMap.fechaEnvio = { stringValue: String(it.fechaEnvio) };
-      if (it.aprobacion && it.estado === 'aprobado') {
-        fMap.aprobacion = {
-          mapValue: {
-            fields: {
-              version: { integerValue: String(it.aprobacion.version || it.version || 1) },
-              usuario: { stringValue: String(it.aprobacion.usuario || revName) },
-              fecha: { stringValue: String(it.aprobacion.fecha || DATA.revision.fecha) }
-            }
-          }
-        };
+
+      if (it.estado === 'aprobado') {
+        itemCambios.solicitarAprobacionSnapshot = true;
+        itemCambios.aprobadorNombre = revName;
+      } else {
+        itemCambios.aprobacion = null;
       }
-      return {
-        mapValue: {
-          fields: fMap
-        }
-      };
+
+      cambiosPorId[it.id] = itemCambios;
     });
 
-    var fsUrl = 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(FB.projectId) +
-      '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
-      '?updateMask.fieldPaths=aprobados&updateMask.fieldPaths=cambios&updateMask.fieldPaths=pendientes&updateMask.fieldPaths=estado&updateMask.fieldPaths=revisadoPor&updateMask.fieldPaths=ultimaRevision&updateMask.fieldPaths=contenidos' +
-      '&key=' + encodeURIComponent(FB.apiKey);
-
-    var fsBody = JSON.stringify({
-      fields: {
-        aprobados: { integerValue: String(totalGlobalOk) },
-        cambios: { integerValue: String(totalGlobalFix) },
-        pendientes: { integerValue: String(totalGlobalPend) },
-        estado: { stringValue: estadoGeneral },
-        revisadoPor: { stringValue: revName },
-        ultimaRevision: { stringValue: DATA.revision.fecha },
-        contenidos: {
-          arrayValue: {
-            values: firestoreContenidos
-          }
-        }
+    var opciones = {
+      tableroFields: {
+        revisadoPor: revName,
+        ultimaRevision: DATA.revision.fecha
       }
+    };
+
+    guardarPiezas(cambiosPorId, opciones).then(function(){
+      ok();
+    }).catch(function(err){
+      fail(err);
     });
-
-    getValidAgencyToken().then(function(token){
-      var headers = { 'Content-Type': 'application/json' };
-      if (token) headers['Authorization'] = 'Bearer ' + token;
-      return fetch(fsUrl, {
-        method: 'PATCH',
-        headers: headers,
-        body: fsBody
-      });
-    })
-    .then(function(r){
-      if (!r.ok) {
-        return r.json().then(function(j){ throw new Error((j.error && j.error.message) || ('HTTP ' + r.status)); });
-      }
-      return r.json();
-    })
-    .then(function(){ ok(); })
-    .catch(function(err){ fail(err); });
   }
 
   // VALIDACIÓN OBLIGATORIA (EN PC Y CELULARES)
@@ -3869,12 +4169,17 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
   function updateAgencyUI(){
     var isAgency = !!agencyUser;
     var accessBtn = $('btnAgencyAccess');
+    var accessBtnFooter = $('btnAgencyAccessFooter');
     var activeBar = $('agencyActiveBarWrap');
     var userLbl = $('agencyUserLabel');
 
     if (accessBtn) {
       accessBtn.classList.toggle('active', isAgency);
-      accessBtn.textContent = isAgency ? '✓ Modo Agencia activo' : 'Acceso equipo Nexo';
+      accessBtn.textContent = isAgency ? '✓ Modo Administrador activo' : '🔒 Acceso Administrador';
+    }
+    if (accessBtnFooter) {
+      accessBtnFooter.classList.toggle('active', isAgency);
+      accessBtnFooter.textContent = isAgency ? '✓ Modo Agencia activo' : 'Acceso equipo Nexo';
     }
     if (activeBar) {
       activeBar.style.display = isAgency ? 'block' : 'none';
@@ -3903,6 +4208,7 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
   var btnLoginSubmit = $('btnAgencyModalSubmit');
   var btnLoginCancel = $('btnAgencyModalCancel');
   var btnAgencyAccess = $('btnAgencyAccess');
+  var btnAgencyAccessFooter = $('btnAgencyAccessFooter');
   var btnAgencyLogout = $('btnAgencyLogout');
 
   function openAgencyLogin(){
@@ -3919,6 +4225,15 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
 
   if (btnAgencyAccess) {
     btnAgencyAccess.onclick = function(){
+      if (agencyUser) {
+        toast('Modo editor de agencia ya activo');
+      } else {
+        openAgencyLogin();
+      }
+    };
+  }
+  if (btnAgencyAccessFooter) {
+    btnAgencyAccessFooter.onclick = function(){
       if (agencyUser) {
         toast('Modo editor de agencia ya activo');
       } else {
@@ -4149,205 +4464,107 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
   // Guardar cambio de formato directo en Firestore (Modo Agencia)
   function saveAgencyFormatoChange(it, newFormato){
     if (!FB || !FB.projectId || !DATA.id) {
-      toast('✓ Formato guardado localmente: ' + newFormato);
+      toast('Formato cambiado localmente (sin conexión a Firestore)');
       return;
     }
 
-    var firestoreContenidos = items.map(function(item, i){
-      var cList = (item.comentarios && item.comentarios.length) ? item.comentarios : (item.comentario ? [{ autor: item.revisadoPor || 'Cliente', texto: item.comentario, fecha: '' }] : []);
-      var fullComment = formatComentariosString(cList) || item.comentario || '';
-      var lastAuthor = (cList.length && cList[cList.length - 1].autor) ? cList[cList.length - 1].autor : (item.revisadoPor || 'Cliente');
-      var fMap = {
-        n: { integerValue: String(i + 1) },
-        id: { stringValue: String(item.id || ('c' + (i + 1))) },
-        titulo: { stringValue: String(item.titulo || '') },
-        formato: { stringValue: String(item.formato || '') },
-        formatoOriginal: { stringValue: String(item.formatoOriginal || item.formato || '') },
-        estado: { stringValue: String(item.estado || 'pendiente') },
-        comentario: { stringValue: String(fullComment) },
-        revisadoPor: { stringValue: String(lastAuthor) }
-      };
-      if (item.guion != null) fMap.guion = { stringValue: String(item.guion) };
-      if (item.copy != null) fMap.copy = { stringValue: String(item.copy) };
-      if (item.version != null) fMap.version = { integerValue: String(item.version) };
-      return {
-        mapValue: { fields: fMap }
-      };
-    });
+    var cObj = cards.find(function(c){ return c.it === it; });
+    var cambiosPorId = {};
+    cambiosPorId[it.id] = {
+      formato: newFormato,
+      formatoOriginal: newFormato
+    };
 
-    var fsUrl = 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(FB.projectId) +
-      '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
-      '?updateMask.fieldPaths=contenidos&key=' + encodeURIComponent(FB.apiKey);
-
-    getValidAgencyToken().then(function(token){
-      var headers = { 'Content-Type': 'application/json' };
-      if (token) headers['Authorization'] = 'Bearer ' + token;
-      return fetch(fsUrl, {
-        method: 'PATCH',
-        headers: headers,
-        body: JSON.stringify({
-          fields: {
-            contenidos: { arrayValue: { values: firestoreContenidos } }
-          }
-        })
-      });
-    })
-    .then(function(r){
-      if (!r.ok) {
-        return r.json().then(function(j){ throw new Error((j.error && j.error.message) || ('HTTP ' + r.status)); });
-      }
-      return r.json();
-    })
-    .then(function(){
+    guardarPiezas(cambiosPorId).then(function(){
+      if (cObj && cObj.setUnsavedState) cObj.setUnsavedState(false);
       toast('✓ Tipo de contenido (' + newFormato + ') sincronizado en Firestore');
-    })
-    .catch(function(err){
+    }).catch(function(err){
       console.error('Error guardando formato en Firestore:', err);
-      toast('✓ Formato cambiado localmente (error al sincronizar nube)');
+      if (cObj && cObj.setUnsavedState) cObj.setUnsavedState(true);
+      modal({
+        kind: 'warn',
+        icon: '!',
+        title: 'No se guardó en la nube',
+        text: 'No se pudo sincronizar el formato (' + newFormato + ') en Firestore. Revisa tu conexión.',
+        buttons: [
+          { label: 'Reintentar', primary: true, fn: function(){ saveAgencyFormatoChange(it, newFormato); } },
+          { label: 'Cerrar' }
+        ]
+      });
     });
   }
 
   // Guardar corrección directa en Firestore y actualizar tarjeta
-  function saveCardCorrection(it, cObj, newGuion, newCopy, editorBox, btnSave){
+  function saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnSave){
     if (btnSave) { btnSave.disabled = true; btnSave.textContent = 'Guardando…'; }
 
-    var curV = parseInt(it.version, 10) || 1;
-    var nextVersion = (it.estado === 'cambios' || it.estado === 'en_correccion' || it.estado === 'aprobado') ? (curV + 1) : curV;
-    it.guion = newGuion;
-    it.copy = newCopy;
-    it.formato = cObj.fs ? cObj.fs.value : it.formato;
-    it.formatoOriginal = it.formato;
-    if (cObj.fmtTag) cObj.fmtTag.textContent = it.formato;
-    it.version = nextVersion;
-    it.estado = 'corregido';
-    it.fechaCorreccion = new Date().toISOString();
-    delete it.aprobacion; // Nueva versión requiere nueva aprobación del cliente
+    var nowIso = new Date().toISOString();
+    var cambiosPorId = {};
+    cambiosPorId[it.id] = function(piezaFs){
+      var curV = parseInt(piezaFs.version, 10) || 1;
+      var curGuion = piezaFs.guion || '';
+      var curCopy = piezaFs.copy || '';
+      var curTitle = piezaFs.titulo || '';
 
-    it.historial = it.historial || [];
-    it.historial.push({
-      version: nextVersion,
-      accion: 'Corrección guardada (v' + nextVersion + ')',
-      usuario: agencyUser ? ('Agencia (' + agencyUser + ')') : 'Equipo Nexo',
-      fecha: it.fechaCorreccion
-    });
+      var textoCambio = (newGuion !== curGuion) || (newCopy !== curCopy) || (newTitle !== curTitle);
+      var nextVersion = (textoCambio && piezaFs.estado !== 'corregido') ? (curV + 1) : curV;
 
-    it.revisadoPor = '';
-    it.comentario = formatComentariosString(it.comentarios);
-
-    if ($('reviewed')) $('reviewed').classList.remove('show');
-
-    // Actualizar visualización en vivo de la tarjeta
-    if (cObj.h2Title && it.titulo) {
-      cObj.h2Title.textContent = it.titulo;
-    }
-    if (cObj.guionParagraph) {
-      cObj.guionParagraph.textContent = newGuion;
-    }
-    if (cObj.copyParagraph) {
-      cObj.copyParagraph.textContent = newCopy;
-    }
-    if (cObj.vTag) {
-      cObj.vTag.textContent = 'v' + nextVersion;
-    }
-    if (cObj.ctxTag) {
-      var isCorr = nextVersion > 1;
-      cObj.ctxTag.className = 'tag ' + (isCorr ? 'ctx-correction' : 'ctx-first');
-      cObj.ctxTag.textContent = isCorr ? '🔄 Revisión de correcciones' : '✨ Primera revisión';
-    }
-
-    if (cObj.renderThread) cObj.renderThread();
-    if (cObj.paint) cObj.paint();
-    refresh();
-    updateApartadoCorregidos();
-    saveDraft();
-
-    // Actualizar en Firestore si está conectado
-    if (FB && FB.projectId && DATA.id) {
-      var totalGlobalOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
-      var totalGlobalFix = items.filter(function(x){ return x.estado === 'cambios' || x.estado === 'en_correccion'; }).length;
-      var totalGlobalCorr = items.filter(function(x){ return x.estado === 'corregido'; }).length;
-      var totalGlobalPend = items.filter(function(x){ return x.estado === 'pendiente' || x.estado === 'en_revision' || !x.estado; }).length;
-      var estadoGeneral = (totalGlobalFix > 0) ? 'Con cambios' :
-                          (totalGlobalCorr > 0 ? 'En revisión' :
-                          (totalGlobalOk === items.length ? 'Aprobado' : (totalGlobalOk > 0 ? 'Parcial' : 'Sin revisar')));
-
-      var firestoreContenidos = items.map(function(item, i){
-        var cList = (item.comentarios && item.comentarios.length) ? item.comentarios : (item.comentario ? [{ autor: item.revisadoPor || 'Cliente', texto: item.comentario, fecha: '' }] : []);
-        var fullComment = formatComentariosString(cList) || item.comentario || '';
-        var lastAuthor = (item.estado === 'corregido') ? '' : ((cList.length && cList[cList.length - 1].autor) ? cList[cList.length - 1].autor : (item.revisadoPor || 'Cliente'));
-        var fMap = {
-          n: { integerValue: String(i + 1) },
-          id: { stringValue: String(item.id || ('c' + (i + 1))) },
-          titulo: { stringValue: String(item.titulo || '') },
-          formato: { stringValue: String(item.formato || '') },
-          formatoOriginal: { stringValue: String(item.formatoOriginal || '') },
-          estado: { stringValue: String(item.estado || 'en_revision') },
-          comentario: { stringValue: String(fullComment) },
-          revisadoPor: { stringValue: String(lastAuthor) }
-        };
-        if (item.guion != null) fMap.guion = { stringValue: String(item.guion) };
-        if (item.copy != null) fMap.copy = { stringValue: String(item.copy) };
-        if (item.version != null) fMap.version = { integerValue: String(item.version) };
-        if (item.fechaCorreccion) fMap.fechaCorreccion = { stringValue: String(item.fechaCorreccion) };
-        if (item.fechaEnvio) fMap.fechaEnvio = { stringValue: String(item.fechaEnvio) };
-        if (item.aprobacion && item.estado === 'aprobado') {
-          fMap.aprobacion = {
-            mapValue: {
-              fields: {
-                version: { integerValue: String(item.aprobacion.version || item.version || 1) },
-                usuario: { stringValue: String(item.aprobacion.usuario || '') },
-                fecha: { stringValue: String(item.aprobacion.fecha || '') }
-              }
-            }
-          };
-        }
-        return {
-          mapValue: { fields: fMap }
-        };
+      var hist = Array.isArray(piezaFs.historial) ? piezaFs.historial.slice() : [];
+      hist.push({
+        version: nextVersion,
+        accion: 'Corrección guardada (v' + nextVersion + ')',
+        usuario: agencyUser ? ('Agencia (' + agencyUser + ')') : 'Equipo Nexo',
+        fecha: nowIso
       });
 
-      var fsUrl = 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(FB.projectId) +
-        '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
-        '?updateMask.fieldPaths=contenidos&updateMask.fieldPaths=estado&updateMask.fieldPaths=aprobados&updateMask.fieldPaths=cambios&updateMask.fieldPaths=pendientes&updateMask.fieldPaths=revisadoPor&updateMask.fieldPaths=ultimaRevision&key=' + encodeURIComponent(FB.apiKey);
+      return {
+        titulo: newTitle,
+        guion: newGuion,
+        copy: newCopy,
+        formato: (cObj && cObj.fs) ? cObj.fs.value : (piezaFs.formato || it.formato),
+        formatoOriginal: (cObj && cObj.fs) ? cObj.fs.value : (piezaFs.formatoOriginal || it.formatoOriginal),
+        version: nextVersion,
+        estado: 'corregido',
+        fechaCorreccion: nowIso,
+        aprobacion: null,
+        historial: hist
+      };
+    };
 
-      getValidAgencyToken().then(function(token){
-        var headers = { 'Content-Type': 'application/json' };
-        if (token) headers['Authorization'] = 'Bearer ' + token;
-        return fetch(fsUrl, {
-          method: 'PATCH',
-          headers: headers,
-          body: JSON.stringify({
-            fields: {
-              estado: { stringValue: estadoGeneral },
-              aprobados: { integerValue: String(totalGlobalOk) },
-              cambios: { integerValue: String(totalGlobalFix) },
-              pendientes: { integerValue: String(totalGlobalPend) },
-              revisadoPor: { stringValue: '' },
-              ultimaRevision: { stringValue: '' },
-              contenidos: { arrayValue: { values: firestoreContenidos } }
-            }
-          })
-        });
-      })
-      .then(function(r){
-        if (!r.ok) {
-          return r.json().then(function(j){ throw new Error((j.error && j.error.message) || ('HTTP ' + r.status)); });
-        }
-        return r.json();
-      })
-      .then(function(){
-        if (btnSave) { btnSave.disabled = false; btnSave.textContent = '💾 Guardar cambios'; }
-        toast('✓ Corrección guardada (v' + nextVersion + ') y sincronizada en el tablero');
-      })
-      .catch(function(err){
-        console.error('Error guardando corrección en Firestore:', err);
-        if (btnSave) { btnSave.disabled = false; btnSave.textContent = '💾 Guardar cambios'; }
-        toast('✓ Cambios guardados localmente (verifica conexión)');
-      });
-    } else {
+    var opciones = {
+      tableroFields: {
+        revisadoPor: '',
+        ultimaRevision: ''
+      }
+    };
+
+    guardarPiezas(cambiosPorId, opciones).then(function(){
       if (btnSave) { btnSave.disabled = false; btnSave.textContent = '💾 Guardar cambios'; }
-      toast('✓ Corrección guardada (v' + nextVersion + ')');
-    }
+      if (cObj && cObj.setUnsavedState) cObj.setUnsavedState(false);
+      if ($('reviewed')) $('reviewed').classList.remove('show');
+      toast('✓ Corrección guardada (v' + it.version + ') y sincronizada en el tablero');
+      if (cObj && cObj.updateAgencyBarText) cObj.updateAgencyBarText();
+    }).catch(function(err){
+      console.error('Error guardando corrección en Firestore:', err);
+      if (btnSave) { btnSave.disabled = false; btnSave.textContent = '💾 Guardar cambios'; }
+      if (cObj && cObj.setUnsavedState) cObj.setUnsavedState(true);
+      modal({
+        kind: 'warn',
+        icon: '!',
+        title: 'No se guardó en la nube',
+        text: 'Ocurrió un error al guardar la corrección en Firestore (' + (err.message || 'error de conexión') + '). Tus cambios están guardados en tu navegador.',
+        buttons: [
+          {
+            label: 'Reintentar',
+            primary: true,
+            fn: function(){
+              saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnSave);
+            }
+          },
+          { label: 'Cerrar' }
+        ]
+      });
+    });
   }
 
   // Sincronizar decisión de aprobación/cambios directamente en Firestore (Modo Agencia)
@@ -4355,99 +4572,71 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
     if (btn) btn.disabled = true;
 
     var cObj = cards.find(function(c){ return c.it === it; });
-    if (cObj) {
-      if (cObj.paint) cObj.paint();
-      if (cObj.updateAgencyBarText) cObj.updateAgencyBarText();
-    }
-    refresh();
-    updateApartadoCorregidos();
-    saveDraft();
+    var pieceNum = items.indexOf(it) + 1;
 
-    if (!FB || !FB.projectId || !DATA.id) {
-      if (btn) btn.disabled = false;
-      toast('✓ Estado (' + (decision === 'aprobado' ? 'Aprobado' : decision) + ') guardado localmente');
-      return;
-    }
-
-    var totalGlobalOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
-    var totalGlobalFix = items.filter(function(x){ return x.estado === 'cambios' || x.estado === 'en_correccion'; }).length;
-    var totalGlobalCorr = items.filter(function(x){ return x.estado === 'corregido'; }).length;
-    var totalGlobalPend = items.filter(function(x){ return x.estado === 'pendiente' || x.estado === 'en_revision' || !x.estado; }).length;
-    var estadoGeneral = (totalGlobalFix > 0) ? 'Con cambios' :
-                        (totalGlobalCorr > 0 ? 'En revisión' :
-                        (totalGlobalOk === items.length ? 'Aprobado' : (totalGlobalOk > 0 ? 'Parcial' : 'Sin revisar')));
-
-    var firestoreContenidos = items.map(function(item, i){
-      var cList = (item.comentarios && item.comentarios.length) ? item.comentarios : (item.comentario ? [{ autor: item.revisadoPor || 'Cliente', texto: item.comentario, fecha: '' }] : []);
-      var fullComment = formatComentariosString(cList) || item.comentario || '';
-      var lastAuthor = (item.estado === 'corregido') ? '' : ((cList.length && cList[cList.length - 1].autor) ? cList[cList.length - 1].autor : (item.revisadoPor || 'Cliente'));
-      var fMap = {
-        n: { integerValue: String(i + 1) },
-        id: { stringValue: String(item.id || ('c' + (i + 1))) },
-        titulo: { stringValue: String(item.titulo || '') },
-        formato: { stringValue: String(item.formato || '') },
-        formatoOriginal: { stringValue: String(item.formatoOriginal || '') },
-        estado: { stringValue: String(item.estado || 'en_revision') },
-        comentario: { stringValue: String(fullComment) },
-        revisadoPor: { stringValue: String(lastAuthor) }
-      };
-      if (item.guion != null) fMap.guion = { stringValue: String(item.guion) };
-      if (item.copy != null) fMap.copy = { stringValue: String(item.copy) };
-      if (item.version != null) fMap.version = { integerValue: String(item.version) };
-      if (item.fechaCorreccion) fMap.fechaCorreccion = { stringValue: String(item.fechaCorreccion) };
-      if (item.fechaEnvio) fMap.fechaEnvio = { stringValue: String(item.fechaEnvio) };
-      if (item.aprobacion && item.estado === 'aprobado') {
-        fMap.aprobacion = {
-          mapValue: {
-            fields: {
-              version: { integerValue: String(item.aprobacion.version || item.version || 1) },
-              usuario: { stringValue: String(item.aprobacion.usuario || (agencyUser ? ('Agencia (' + agencyUser + ')') : 'Cliente')) },
-              fecha: { stringValue: String(item.aprobacion.fecha || new Date().toISOString()) }
-            }
+    var cambiosPorId = {};
+    if (decision === 'aprobado') {
+      cambiosPorId[it.id] = function(piezaFs){
+        if (piezaFs.borrador) {
+          var bGuion = piezaFs.borrador.guion || '';
+          var bCopy = piezaFs.borrador.copy || '';
+          var curGuion = piezaFs.guion || '';
+          var curCopy = piezaFs.copy || '';
+          if ((bGuion && bGuion !== curGuion) || (bCopy && bCopy !== curCopy)) {
+            throw new Error('Hay una corrección sin terminar en el Banco de trabajo');
+          }
+        }
+        var vNum = parseInt(piezaFs.version, 10) || 1;
+        var revWho = agencyUser ? ('Agencia (' + agencyUser + ')') : 'Equipo Nexo';
+        var nowIso = new Date().toISOString();
+        return {
+          estado: 'aprobado',
+          revisadoPor: revWho,
+          fechaAprobacion: nowIso,
+          aprobacion: {
+            version: vNum,
+            usuario: revWho,
+            fecha: nowIso,
+            titulo: piezaFs.titulo || it.titulo || '',
+            formato: piezaFs.formato || it.formato || '',
+            guion: piezaFs.guion || it.guion || '',
+            copy: piezaFs.copy || it.copy || '',
+            hashtags: piezaFs.hashtags || it.hashtags || ''
           }
         };
-      }
-      return {
-        mapValue: { fields: fMap }
       };
-    });
+    } else {
+      cambiosPorId[it.id] = {
+        estado: decision,
+        aprobacion: null
+      };
+    }
 
-    var fsUrl = 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(FB.projectId) +
-      '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
-      '?updateMask.fieldPaths=contenidos&updateMask.fieldPaths=estado&updateMask.fieldPaths=aprobados&updateMask.fieldPaths=cambios&updateMask.fieldPaths=pendientes&key=' + encodeURIComponent(FB.apiKey);
-
-    getValidAgencyToken().then(function(token){
-      var headers = { 'Content-Type': 'application/json' };
-      if (token) headers['Authorization'] = 'Bearer ' + token;
-      return fetch(fsUrl, {
-        method: 'PATCH',
-        headers: headers,
-        body: JSON.stringify({
-          fields: {
-            estado: { stringValue: estadoGeneral },
-            aprobados: { integerValue: String(totalGlobalOk) },
-            cambios: { integerValue: String(totalGlobalFix) },
-            pendientes: { integerValue: String(totalGlobalPend) },
-            contenidos: { arrayValue: { values: firestoreContenidos } }
-          }
-        })
-      });
-    })
-    .then(function(r){
-      if (!r.ok) {
-        return r.json().then(function(j){ throw new Error((j.error && j.error.message) || ('HTTP ' + r.status)); });
-      }
-      return r.json();
-    })
-    .then(function(){
+    guardarPiezas(cambiosPorId).then(function(){
       if (btn) btn.disabled = false;
-      var pieceNum = items.indexOf(it) + 1;
+      if (cObj && cObj.setUnsavedState) cObj.setUnsavedState(false);
       toast('✓ Contenido #' + (pieceNum < 10 ? '0' : '') + pieceNum + ' marcado como ' + (decision === 'aprobado' ? 'Aprobado' : decision) + ' y sincronizado');
-    })
-    .catch(function(err){
+      if (cObj && cObj.updateAgencyBarText) cObj.updateAgencyBarText();
+    }).catch(function(err){
       console.error('Error sincronizando estado en Firestore:', err);
       if (btn) btn.disabled = false;
-      toast('✓ Estado guardado localmente (error al sincronizar nube)');
+      if (cObj && cObj.setUnsavedState) cObj.setUnsavedState(true);
+      modal({
+        kind: 'warn',
+        icon: '!',
+        title: 'No se guardó en la nube',
+        text: 'No se pudo actualizar el estado en Firestore (' + (err.message || 'error') + ').',
+        buttons: [
+          {
+            label: 'Reintentar',
+            primary: true,
+            fn: function(){
+              saveAgencyDecisionChange(it, decision, btn);
+            }
+          },
+          { label: 'Cerrar' }
+        ]
+      });
     });
   }
 
@@ -4495,11 +4684,15 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
     btnSave.textContent = '💾 Guardar cambios';
     btnSave.title = 'Guarda el guion y copy corregidos en Firestore';
     btnSave.onclick = function(){
-      var newTitle = cObj.h2Title ? cObj.h2Title.textContent.trim() : (it.titulo || '');
-      var newGuion = cObj.guionParagraph ? cObj.guionParagraph.textContent.trim() : (it.guion || '');
-      var newCopy = cObj.copyParagraph ? cObj.copyParagraph.textContent.trim() : (it.copy || '');
-      it.titulo = newTitle;
-      saveCardCorrection(it, cObj, newGuion, newCopy, null, btnSave);
+      var newTitle = cObj.h2Title ? leerTextoEditable(cObj.h2Title).replace(/[\r\n]+/g, ' ').trim() : (it.titulo || '');
+      var newGuion = cObj.guionParagraph ? leerTextoEditable(cObj.guionParagraph) : (it.guion || '');
+      var newCopy = cObj.copyParagraph ? leerTextoEditable(cObj.copyParagraph) : (it.copy || '');
+
+      if (REGEX_FRASES_PEGADAS.test(newGuion) || REGEX_FRASES_PEGADAS.test(newCopy)) {
+        toast('⚠️ Parece que faltan saltos de línea: revisa antes de guardar');
+      }
+
+      saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnSave);
       setTimeout(function(){
         updateAgencyBarText();
       }, 300);
@@ -4511,17 +4704,14 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
     btnApprove.textContent = '✓ Aprobar versión';
     btnApprove.title = 'Aprobar esta versión y sincronizarla directamente en Firestore';
     btnApprove.onclick = function(){
-      var newTitle = cObj.h2Title ? cObj.h2Title.textContent.trim() : (it.titulo || '');
-      var newGuion = cObj.guionParagraph ? cObj.guionParagraph.textContent.trim() : (it.guion || '');
-      var newCopy = cObj.copyParagraph ? cObj.copyParagraph.textContent.trim() : (it.copy || '');
+      var newTitle = cObj.h2Title ? leerTextoEditable(cObj.h2Title).replace(/[\r\n]+/g, ' ').trim() : (it.titulo || '');
+      var newGuion = cObj.guionParagraph ? leerTextoEditable(cObj.guionParagraph) : (it.guion || '');
+      var newCopy = cObj.copyParagraph ? leerTextoEditable(cObj.copyParagraph) : (it.copy || '');
+
       it.titulo = newTitle;
       if (newGuion) it.guion = newGuion;
       if (newCopy) it.copy = newCopy;
-      if (cObj.setDecision) {
-        cObj.setDecision('aprobado');
-      } else {
-        saveAgencyDecisionChange(it, 'aprobado', btnApprove);
-      }
+      saveAgencyDecisionChange(it, 'aprobado', btnApprove);
     };
     agencyBtns.appendChild(btnApprove);
 
@@ -4546,17 +4736,14 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
           }
         }
         if (cObj.h2Title) {
-          cObj.h2Title.setAttribute('contenteditable', 'true');
-          cObj.h2Title.setAttribute('spellcheck', 'true');
+          setupPlainTextEditable(cObj.h2Title, true);
           cObj.h2Title.setAttribute('title', 'Haz clic para editar el título');
         }
         if (cObj.guionParagraph) {
-          cObj.guionParagraph.setAttribute('contenteditable', 'true');
-          cObj.guionParagraph.setAttribute('spellcheck', 'true');
+          setupPlainTextEditable(cObj.guionParagraph, false);
         }
         if (cObj.copyParagraph) {
-          cObj.copyParagraph.setAttribute('contenteditable', 'true');
-          cObj.copyParagraph.setAttribute('spellcheck', 'true');
+          setupPlainTextEditable(cObj.copyParagraph, false);
         }
       } else {
         card.classList.remove('card-agency-edit-mode');
@@ -4583,8 +4770,9 @@ Conoce qué hay detrás de nuestras fórmulas desde el link de la bio.</p></div>
 
   updateAgencyUI();
 
-  // Si se abre con ?agencia=1 o #agencia y aún no está iniciada la sesión, abrir modal de autenticación inmediatamente
-  if (window.location.search.indexOf('agencia=1') !== -1 || window.location.hash.indexOf('agencia') !== -1) {
+  // Si se abre con ?agencia=1, #agencia, ?admin=1 o #admin y aún no está iniciada la sesión, abrir modal de autenticación inmediatamente
+  if (window.location.search.indexOf('agencia=1') !== -1 || window.location.hash.indexOf('agencia') !== -1 ||
+      window.location.search.indexOf('admin=1') !== -1 || window.location.hash.indexOf('admin') !== -1) {
     if (!agencyUser) {
       setTimeout(function(){
         openAgencyLogin();

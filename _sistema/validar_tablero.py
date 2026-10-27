@@ -160,6 +160,32 @@ def validar_datos_tablero(data, modo_estricto=True):
             else:
                 c['referencias'] = []
 
+            # Aceptación de campos extendidos del flujo de guardado seguro
+            # _sync: huella de sincronización
+            if '_sync' in c and not isinstance(c['_sync'], dict):
+                advertencias.append(f"Contenido #{num}: '_sync' debe ser un objeto con huellas de sincronización.")
+                c.pop('_sync', None)
+
+            # aprobacion: snapshot de aprobación congelada
+            if 'aprobacion' in c and c['aprobacion'] is not None:
+                if not isinstance(c['aprobacion'], dict):
+                    advertencias.append(f"Contenido #{num}: 'aprobacion' debe ser un objeto.")
+                else:
+                    # Sanitizar campos de texto si existen en la instantánea
+                    for f in ('titulo', 'guion', 'copy', 'hashtags', 'usuario'):
+                        if f in c['aprobacion'] and isinstance(c['aprobacion'][f], str):
+                            c['aprobacion'][f] = sanitizar_texto(c['aprobacion'][f])
+
+            # historial: registro de correcciones y eventos de la pieza
+            if 'historial' in c and c['historial'] is not None:
+                if not isinstance(c['historial'], list):
+                    advertencias.append(f"Contenido #{num}: 'historial' debe ser una lista.")
+                    c['historial'] = []
+
+            # hashtags: texto plano opcional
+            if 'hashtags' in c and c['hashtags'] is not None:
+                c['hashtags'] = sanitizar_texto(str(c['hashtags']))
+
     # 5. Validación de identificador del tablero si ya está presente
     b_id = norm.get('id')
     if b_id:

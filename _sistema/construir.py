@@ -17,7 +17,12 @@ Qué hace:
   6. Con --publicar: hace git add + commit + push.
 No usa IA: no gasta créditos.
 """
-import json, os, re, sys, secrets, subprocess, time, unicodedata, urllib.request, urllib.error, tempfile, shutil
+import json, os, re, sys, secrets, subprocess, time, unicodedata, urllib.request, urllib.error, tempfile, shutil, hashlib
+
+def calc_sha1(val):
+    if val is None:
+        val = ''
+    return hashlib.sha1(str(val).strip().encode('utf-8')).hexdigest()
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(AQUI)
@@ -124,6 +129,11 @@ def sincronizar_desde_firestore(cfg, data):
             cid = contenido.get('id') or f'c{n}'
             fs_item = fs_map.get(n) or fs_map.get(cid)
             if not fs_item:
+                contenido['_sync'] = {
+                    'guion': calc_sha1(contenido.get('guion')),
+                    'copy': calc_sha1(contenido.get('copy')),
+                    'version': int(contenido.get('version') or 1)
+                }
                 continue
 
             fs_estado = fs_item.get('estado')
@@ -131,31 +141,66 @@ def sincronizar_desde_firestore(cfg, data):
             fs_formato = normalizar_formato(fs_item.get('formato'))
             local_formato = normalizar_formato(contenido.get('formato') or contenido.get('formatoOriginal'))
 
-            # Preservar historial rico si existe
-            if fs_item.get('versiones'):
-                contenido['versiones'] = fs_item['versiones']
-            if fs_item.get('aprobacion'):
-                contenido['aprobacion'] = fs_item['aprobacion']
-            if fs_item.get('historial_aprobacion'):
-                contenido['historial_aprobacion'] = fs_item['historial_aprobacion']
-            if fs_item.get('observaciones_historial'):
-                contenido['observaciones_historial'] = fs_item['observaciones_historial']
-            if fs_item.get('fechaCorreccion'):
-                contenido['fechaCorreccion'] = fs_item['fechaCorreccion']
-            if fs_item.get('estado_aprobacion'):
-                contenido['estado_aprobacion'] = fs_item['estado_aprobacion']
-            if fs_item.get('estado_produccion'):
-                contenido['estado_produccion'] = fs_item['estado_produccion']
+            prev_sync = contenido.get('_sync')
+            local_guion_sha1 = calc_sha1(contenido.get('guion'))
+            local_copy_sha1 = calc_sha1(contenido.get('copy'))
 
-            # Si el contenido ya fue aprobado en Firestore
-            if fs_estado == 'aprobado':
-                # Comprobar si el borrador propone un texto distinto
-                texto_local_cambio = (
-                    (contenido.get('guion') and fs_item.get('guion') and contenido['guion'].strip() != fs_item['guion'].strip()) or
-                    (contenido.get('copy') and fs_item.get('copy') and contenido['copy'].strip() != fs_item['copy'].strip())
-                )
-                if texto_local_cambio:
-                    # No sobrescribir silenciosamente la versión aprobada: archivamos en versiones y subimos versión
+            # Comprobar si el JSON local cambió desde la última sincronización
+            json_cambio = False
+            if prev_sync and isinstance(prev_sync, dict):
+                if prev_sync.get('guion') != local_guion_sha1 or prev_sync.get('copy') != local_copy_sha1:
+                    json_cambio = True
+
+            if not json_cambio:
+                # Regla: Si el JSON no cambió desde la última sincronización (su huella coincide con _sync, o todavía no existe _sync)
+                # -> Firestore manda: copia al JSON titulo, guion, copy, formato, version, hashtags, referencias, fechaCorreccion y aprobacion cuando existan en Firestore, en cualquier estado.
+                if fs_item.get('titulo') and fs_item.get('titulo') != contenido.get('titulo'):
+                    contenido['titulo'] = fs_item['titulo']
+                    cambios += 1
+                if fs_item.get('guion') is not None and fs_item.get('guion') != contenido.get('guion'):
+                    contenido['guion'] = fs_item['guion']
+                    cambios += 1
+                if fs_item.get('copy') is not None and fs_item.get('copy') != contenido.get('copy'):
+                    contenido['copy'] = fs_item['copy']
+                    cambios += 1
+                if fs_formato and fs_formato != local_formato:
+                    contenido['formato'] = fs_formato
+                    contenido['formatoOriginal'] = fs_item.get('formatoOriginal') or fs_formato
+                    cambios += 1
+                if fs_item.get('version') and int(fs_item.get('version')) != int(contenido.get('version') or 1):
+                    contenido['version'] = fs_version
+                    cambios += 1
+                if fs_item.get('hashtags') is not None and fs_item.get('hashtags') != contenido.get('hashtags'):
+                    contenido['hashtags'] = fs_item['hashtags']
+                    cambios += 1
+                if fs_item.get('referencias') is not None and fs_item.get('referencias') != contenido.get('referencias'):
+                    contenido['referencias'] = fs_item['referencias']
+                    cambios += 1
+                if fs_item.get('fechaCorreccion') and fs_item.get('fechaCorreccion') != contenido.get('fechaCorreccion'):
+                    contenido['fechaCorreccion'] = fs_item['fechaCorreccion']
+                    cambios += 1
+                if fs_item.get('aprobacion') and fs_item.get('aprobacion') != contenido.get('aprobacion'):
+                    contenido['aprobacion'] = fs_item['aprobacion']
+                    cambios += 1
+                if fs_estado and fs_estado != contenido.get('estado'):
+                    contenido['estado'] = fs_estado
+                    cambios += 1
+
+                # Metadatos e historial de Firestore
+                if fs_item.get('historial'): contenido['historial'] = fs_item['historial']
+                if fs_item.get('versiones'): contenido['versiones'] = fs_item['versiones']
+                if fs_item.get('historial_aprobacion'): contenido['historial_aprobacion'] = fs_item['historial_aprobacion']
+                if fs_item.get('observaciones_historial'): contenido['observaciones_historial'] = fs_item['observaciones_historial']
+                if fs_item.get('comentario') and not contenido.get('comentario'): contenido['comentario'] = fs_item['comentario']
+                if fs_item.get('revisadoPor') and not contenido.get('revisadoPor'): contenido['revisadoPor'] = fs_item['revisadoPor']
+                if fs_item.get('comentarios'): contenido['comentarios'] = fs_item['comentarios']
+                if fs_item.get('estado_aprobacion'): contenido['estado_aprobacion'] = fs_item['estado_aprobacion']
+                if fs_item.get('estado_produccion'): contenido['estado_produccion'] = fs_item['estado_produccion']
+
+            else:
+                # Solo si el JSON cambió después de la última sincronización (huella distinta de _sync)
+                # y la pieza está 'aprobado' en Firestore -> aplica la lógica de archivar en versiones y subir a v+1 corregido
+                if fs_estado == 'aprobado':
                     contenido.setdefault('versiones', {})
                     contenido['versiones'][f'v{fs_version}'] = {
                         'version': fs_version,
@@ -170,33 +215,31 @@ def sincronizar_desde_firestore(cfg, data):
                     }
                     contenido['version'] = fs_version + 1
                     contenido['estado'] = 'corregido'
-                    contenido['estado_aprobacion'] = 'corregido'
+                    if 'estado_aprobacion' in contenido:
+                        contenido['estado_aprobacion'] = 'corregido'
                     cambios += 1
                     print(f"  ↑ Contenido #{n} ({contenido.get('titulo')}): Aprobación previa de v{fs_version} archivada; preparado como v{contenido['version']} corregido.")
                 else:
-                    contenido['estado'] = 'aprobado'
-                    contenido['version'] = fs_version
-                    if fs_item.get('guion'): contenido['guion'] = fs_item['guion']
-                    if fs_item.get('copy'): contenido['copy'] = fs_item['copy']
-            elif fs_estado and fs_estado in ('corregido', 'cambios', 'en_correccion', 'en_revision', 'pendiente'):
-                if contenido.get('estado') != fs_estado:
-                    contenido['estado'] = fs_estado
-                    cambios += 1
-                if fs_estado == 'corregido':
-                    if fs_item.get('guion'): contenido['guion'] = fs_item['guion']
-                    if fs_item.get('copy'): contenido['copy'] = fs_item['copy']
-                    if fs_item.get('version'): contenido['version'] = fs_version
-                    cambios += 1
+                    if fs_formato and fs_formato != local_formato:
+                        contenido['formato'] = fs_formato
+                        contenido['formatoOriginal'] = fs_item.get('formatoOriginal') or fs_formato
+                        cambios += 1
+                    if fs_estado and contenido.get('estado') != fs_estado:
+                        contenido['estado'] = fs_estado
+                        cambios += 1
+                    if fs_item.get('historial'): contenido['historial'] = fs_item['historial']
+                    if fs_item.get('versiones'): contenido['versiones'] = fs_item['versiones']
+                    if fs_item.get('comentario') and not contenido.get('comentario'):
+                        contenido['comentario'] = fs_item['comentario']
+                    if fs_item.get('revisadoPor') and not contenido.get('revisadoPor'):
+                        contenido['revisadoPor'] = fs_item['revisadoPor']
 
-            if fs_formato and fs_formato != local_formato:
-                contenido['formato'] = fs_formato
-                contenido['formatoOriginal'] = fs_formato
-                cambios += 1
-
-            if fs_item.get('comentario') and not contenido.get('comentario'):
-                contenido['comentario'] = fs_item['comentario']
-            if fs_item.get('revisadoPor') and not contenido.get('revisadoPor'):
-                contenido['revisadoPor'] = fs_item['revisadoPor']
+            # Actualizar _sync al final de cada contenido procesado
+            contenido['_sync'] = {
+                'guion': calc_sha1(contenido.get('guion')),
+                'copy': calc_sha1(contenido.get('copy')),
+                'version': int(contenido.get('version') or 1)
+            }
 
         if cambios:
             print(f'  ↑ Sincronizados {cambios} cambio(s) desde Firestore al JSON (versiones, formatos, estados)')
@@ -360,10 +403,23 @@ def main():
     if '--reiniciar' not in sys.argv:
         sincronizar_desde_firestore(cfg, data)
 
+    # Garantizar que todos los contenidos tengan su huella _sync en el JSON local
+    for c in data.get('contenidos', []):
+        if not c.get('_sync') or not isinstance(c.get('_sync'), dict):
+            c['_sync'] = {
+                'guion': calc_sha1(c.get('guion')),
+                'copy': calc_sha1(c.get('copy')),
+                'version': int(c.get('version') or 1)
+            }
+
     json.dump(data, open(ruta, 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
 
     html = open(PLANTILLA, encoding='utf-8').read()
-    datos = {k: v for k, v in data.items() if k != 'archivo'}
+    # Excluir archivo y excluir _sync de cada contenido en el HTML publicado
+    datos = json.loads(json.dumps({k: v for k, v in data.items() if k != 'archivo'}))
+    for c in datos.get('contenidos', []):
+        if isinstance(c, dict):
+            c.pop('_sync', None)
     html = html.replace('__DATA__', json.dumps(datos, ensure_ascii=False, indent=2).replace('</', '<\\/'))
 
     chrome_bin = chrome()

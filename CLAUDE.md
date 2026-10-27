@@ -89,10 +89,11 @@ El script imprime la URL de GitHub Pages y el mensaje listo para enviar al clien
 
 ## 4. Manejo de Tableros Existentes y Aprobaciones Previas
 
-- **Preservación Incondicional**: `construir.py` consulta Firestore antes de compilar. Si un contenido ya fue aprobado (`aprobado`) y el borrador propone un texto nuevo, el sistema:
-  - Archiva la versión aprobada anterior en `versiones.v1`.
-  - Incrementa la versión a `v2`.
-  - Coloca el contenido como borrador/en corrección sin borrar la aprobación previa del historial.
+- **Preservación Incondicional y Sincronización con Firestore (`_sync`)**:
+  `construir.py` consulta Firestore antes de compilar y compara la huella sha1 del texto local (`guion` y `copy`) con el campo `_sync` del JSON:
+  - **Si el JSON no cambió desde la última sincronización** (su huella coincide con `_sync` o todavía no existe `_sync`): **Firestore manda**. Se copian al JSON `titulo`, `guion`, `copy`, `formato`, `version`, `hashtags`, `referencias`, `fechaCorreccion` y `aprobacion` en cualquier estado. Las piezas aprobadas en Firestore **no se reabren**.
+  - **Solo si el JSON cambió localmente después de la última sincronización** (huella distinta de `_sync`) y la pieza está `aprobado` en Firestore: se archiva la versión aprobada previa en `versiones['v' + version]` y se avanza a `v+1` en estado `corregido`.
+  - La huella técnica `_sync` se almacena exclusivamente en el archivo JSON local del borrador y nunca se inyecta en el HTML final ni en Firestore.
 - **Reinicio Forzado a Solicitud de Carlos**:
   Solo si Carlos solicita explícitamente reiniciar un tablero a cero, usa:
   ```bash

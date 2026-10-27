@@ -29,6 +29,34 @@ Un archivo por tablero en `borradores/` (esa carpeta no se publica). Ejemplo: `b
 
 `construir.py` agrega solo: `archivo` (nombre con código aleatorio, uno por cliente), `id`, `url`, `endpoint`, `estado`, `comentario` y `revision`.
 
+## Campos opcionales y extendidos del flujo de aprobación
+- `aprobacion`: Objeto con la instantánea congelada del texto en el momento exacto en que fue aprobado:
+  ```json
+  {
+    "version": 1,
+    "usuario": "Cliente (o Agencia)",
+    "fecha": "2026-10-27T10:00:00.000Z",
+    "titulo": "Título de la pieza",
+    "formato": "Reel",
+    "guion": "Texto exacto aprobado...",
+    "copy": "Texto exacto de copy aprobado...",
+    "hashtags": "#nexo #contenido"
+  }
+  ```
+  Permite a la skill de ClickUp leer exactamente qué texto aprobó el cliente sin adivinar versiones ni verse afectado por ediciones posteriores.
+- `historial`: Lista de eventos de corrección y revisiones internas de la pieza (fecha, versión, notas técnicas de agencia). Las notas automáticas de corrección viven aquí y no en `comentario`/`comentarios`.
+- `_sync`: Objeto interno de control en los archivos JSON de `borradores/`:
+  ```json
+  {
+    "guion": "sha1_hash...",
+    "copy": "sha1_hash...",
+    "version": 1
+  }
+  ```
+  Permite a `construir.py` determinar si el JSON fue editado a mano tras la última sincronización con Firestore. Si no cambió, Firestore manda y no se reabren aprobados. **Nunca se publica en el HTML final**.
+- `huellasClickup`: Diccionario opcional en el borrador `{ "c1": "sha1_hash...", "c2": "..." }` para registrar qué piezas ya fueron subidas a ClickUp y permitir re-sincronizaciones parciales marcando piezas como `sin_cambios` o `texto_cambio`.
+- `borrador`: Objeto temporal utilizado en el Banco de trabajo (`index.html`) para almacenar una edición de guion/copy en curso antes de "Guardar como corregido". Si una pieza tiene un `borrador` activo, el sistema bloquea su aprobación hasta resolverlo.
+
 ## Reglas para pasar el documento del mes a este JSON
 
 - Un objeto por contenido, **en el mismo orden** del documento. La numeración 01, 02… la pone el tablero.

@@ -73,6 +73,35 @@ El archivo `index.html` es el Banco de Trabajo interno de Nexo para gestionar y 
 - Pestaña de Producción para seguimiento en vivo de pautas de rodaje.
 - **Regla estricta de seguridad**: Nunca se escriben nombres de clientes, URLs de tableros ni claves privadas dentro de archivos del repositorio público.
 
+## Correcciones: reglas de guardado
+
+Para garantizar que ninguna corrección se pierda, no se descarten saltos de línea ni se pisen campos entre personas o pestañas:
+1. **Modo Agencia (`plantilla-tablero.html`) — Guardado seguro por pieza (`guardarPiezas`)**:
+   - Nunca reconstruye el arreglo `contenidos` desde el estado local de memoria.
+   - Realiza un `GET` a Firestore, obtiene `updateTime` y fusiona cada pieza afectada (`Object.assign({}, piezaFirestore, cambios)`), preservando intactos todos los campos no modificados (`historial`, `versiones`, `borrador`, `hashtags`, `referencias`, `pilar`, `fechaPublicacion`, `comentarios[].atendido`).
+   - Control de concurrencia optimista (`&currentDocument.updateTime=<updateTime>`) con hasta 3 reintentos automáticos si responde 400/409/412 (`FAILED_PRECONDITION`).
+   - Si la escritura falla: **jamás mostrar "✓"**. Se muestra aviso claro ("No se guardó en la nube. Reintentar"), botón de reintento y badge de "Sin guardar".
+   - `doSend` (cliente): envía solo `estado`, `comentario`, `revisadoPor`, `formato` y snapshot `aprobacion`. **El cliente nunca envía `guion`, `copy` ni `titulo`.**
+   - Notas internas de agencia (ej. "Pieza corregida a versión v2…"): van exclusivamente a `historial`, nunca a `comentario` ni `comentarios`.
+2. **Preservación de saltos de línea (`leerTextoEditable`)**:
+   - Los campos editables usan `contenteditable="plaintext-only"` y `leerTextoEditable`, que convierte `<br>` y `<div>/<p>/<li>` en `\n`, normaliza espacios y descarta líneas en blanco excesivas.
+   - Validación previa con alerta visual no bloqueante si se detectan frases pegadas sin salto (`/[.?!…:][A-ZÁÉÍÓÚÑ¿¡]/`).
+3. **Banco de trabajo (`index.html`) — Transacciones atómicas (`actualizarPieza`)**:
+   - Toda mutación de contenidos en `index.html` se ejecuta mediante `db.runTransaction`, leyendo el documento fresco de Firestore y recalculando contadores y estado general de forma atómica.
+   - Si una pieza tiene un `borrador` de corrección pendiente distinto del texto actual, se bloquea la aprobación advirtiendo al usuario.
+4. **Instantánea de aprobación congelada (`aprobacion`)**:
+   - Cada vez que una pieza pasa a `aprobado` (cliente, agencia o banco), se guarda:
+     `{version, usuario, fecha, titulo, formato, guion, copy, hashtags}` tomando el texto exacto aprobado en Firestore.
+5. **Seguimiento en `construir.py` con huella `_sync`**:
+   - Guarda la huella sha1 de `guion` y `copy` en `_sync`.
+   - Si el JSON no cambió localmente desde la última sincronización, **Firestore manda**: se sincronizan textos y estados sin reabrir piezas aprobadas.
+   - Solo si el JSON cambió localmente a mano y la pieza está `aprobado` en Firestore, se archiva la aprobación previa en `versiones['v' + fs_version]` y se pasa a `v+1` `corregido`.
+   - La huella `_sync` se almacena solo en el JSON local y nunca se inyecta en el HTML publicado.
+6. **Fuente única para ClickUp (`_sistema/preparar_clickup.py`)**:
+   - Genera `borradores/<cliente>-<mes>-<año>.clickup.json` con prioridad: instantánea `aprobacion` > `firestore` > `borrador`.
+   - Determina `listo: true` solo si todas las piezas están aprobadas y no hay bloqueantes. Produce la descripción formateada exacta para ClickUp.
+
+
 
 ## Tableros de producción (días de pauta)
 

@@ -5332,6 +5332,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
           <span>⚡ Unir aprobados</span>
         </button>
         <button class="btn-card pri" id="wsBtnOpenClientView" title="Abrir vista pública del tablero">Abrir público ↗</button>
+        <button class="btn-card sec" id="wsBtnOpenAgencyView" title="Abrir tablero en Modo Editor / Administrador para correcciones">Modo Editor ✎</button>
         <button class="btn-modal-close" id="btnCloseWorkspace" aria-label="Cerrar espacio de trabajo">&times;</button>
       </div>
     </div>
@@ -9466,6 +9467,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
   var wsBoardBadge = document.getElementById('wsBoardBadge');
   var wsBoardProg = document.getElementById('wsBoardProg');
   var wsBtnOpenClientView = document.getElementById('wsBtnOpenClientView');
+  var wsBtnOpenAgencyView = document.getElementById('wsBtnOpenAgencyView');
   var wsBodyContent = document.getElementById('wsBodyContent');
   var wsTabBtnListos = document.getElementById('wsTabBtnListos');
 
@@ -9555,6 +9557,12 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
         if (targetUrl) window.open(targetUrl, '_blank');
       };
       wsBtnOpenClientView.style.display = targetUrl ? 'inline-flex' : 'none';
+      if (wsBtnOpenAgencyView) {
+        wsBtnOpenAgencyView.onclick = function(){
+          if (targetUrl) window.open(targetUrl + '#agencia', '_blank');
+        };
+        wsBtnOpenAgencyView.style.display = targetUrl ? 'inline-flex' : 'none';
+      }
     }
 
     // Cargar datos del tablero si faltan en cache

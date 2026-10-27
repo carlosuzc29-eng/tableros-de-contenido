@@ -508,6 +508,42 @@ footer .logo svg{height:76px;margin:0 auto 12px}
   margin-top:8px;
 }
 /* AGENCIA DIRECT CORRECTIONS FOOTER LINK & STYLES */
+.btn-topbar-agency{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:rgba(31,53,73,.05);
+  border:1px solid rgba(31,53,73,.14);
+  color:var(--ink-2);
+  font-size:12px;
+  font-weight:600;
+  cursor:pointer;
+  padding:6px 12px;
+  border-radius:20px;
+  text-decoration:none;
+  transition:all .2s var(--ease);
+  font-family:inherit;
+  white-space:nowrap;
+}
+.btn-topbar-agency:hover{
+  background:rgba(31,53,73,.1);
+  color:var(--ink);
+  border-color:rgba(31,53,73,.28);
+  transform:translateY(-1px);
+}
+.btn-topbar-agency.active{
+  background:rgba(92,184,62,.15);
+  color:var(--verde-dk);
+  border-color:rgba(92,184,62,.4);
+  font-weight:700;
+}
+@media (max-width:640px){
+  .btn-topbar-agency{
+    font-size:11px;
+    padding:4px 8px;
+    gap:4px;
+  }
+}
 .btn-agency-access{
   display:inline-block;
   background:none;
@@ -858,7 +894,10 @@ footer .logo svg{height:76px;margin:0 auto 12px}
 
 <div class="topbar"><div class="shell">
   <div class="logo" data-logo></div>
-  <div class="meta">Parrilla de contenidos<b id="metaTitle"></b></div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <button type="button" class="btn-topbar-agency" id="btnAgencyAccess" title="Acceso exclusivo para el equipo de Nexo">🔒 Acceso Administrador</button>
+    <div class="meta">Parrilla de contenidos<b id="metaTitle"></b></div>
+  </div>
 </div></div>
 
 <div class="shell" id="agencyActiveBarWrap" style="display:none;padding:0 16px;">
@@ -969,7 +1008,7 @@ footer .logo svg{height:76px;margin:0 auto 12px}
         <div class="logo" data-logo></div>
         <div>Mérida, Venezuela</div>
         <div style="margin-top:10px;">
-          <button type="button" class="btn-agency-access" id="btnAgencyAccess">Acceso equipo Nexo</button>
+          <button type="button" class="btn-agency-access" id="btnAgencyAccessFooter">Acceso equipo Nexo</button>
         </div>
       </footer>
     </main>
@@ -3785,12 +3824,17 @@ __DATA__
   function updateAgencyUI(){
     var isAgency = !!agencyUser;
     var accessBtn = $('btnAgencyAccess');
+    var accessBtnFooter = $('btnAgencyAccessFooter');
     var activeBar = $('agencyActiveBarWrap');
     var userLbl = $('agencyUserLabel');
 
     if (accessBtn) {
       accessBtn.classList.toggle('active', isAgency);
-      accessBtn.textContent = isAgency ? '✓ Modo Agencia activo' : 'Acceso equipo Nexo';
+      accessBtn.textContent = isAgency ? '✓ Modo Administrador activo' : '🔒 Acceso Administrador';
+    }
+    if (accessBtnFooter) {
+      accessBtnFooter.classList.toggle('active', isAgency);
+      accessBtnFooter.textContent = isAgency ? '✓ Modo Agencia activo' : 'Acceso equipo Nexo';
     }
     if (activeBar) {
       activeBar.style.display = isAgency ? 'block' : 'none';
@@ -3819,6 +3863,7 @@ __DATA__
   var btnLoginSubmit = $('btnAgencyModalSubmit');
   var btnLoginCancel = $('btnAgencyModalCancel');
   var btnAgencyAccess = $('btnAgencyAccess');
+  var btnAgencyAccessFooter = $('btnAgencyAccessFooter');
   var btnAgencyLogout = $('btnAgencyLogout');
 
   function openAgencyLogin(){
@@ -3835,6 +3880,15 @@ __DATA__
 
   if (btnAgencyAccess) {
     btnAgencyAccess.onclick = function(){
+      if (agencyUser) {
+        toast('Modo editor de agencia ya activo');
+      } else {
+        openAgencyLogin();
+      }
+    };
+  }
+  if (btnAgencyAccessFooter) {
+    btnAgencyAccessFooter.onclick = function(){
       if (agencyUser) {
         toast('Modo editor de agencia ya activo');
       } else {
@@ -4371,8 +4425,9 @@ __DATA__
 
   updateAgencyUI();
 
-  // Si se abre con ?agencia=1 o #agencia y aún no está iniciada la sesión, abrir modal de autenticación inmediatamente
-  if (window.location.search.indexOf('agencia=1') !== -1 || window.location.hash.indexOf('agencia') !== -1) {
+  // Si se abre con ?agencia=1, #agencia, ?admin=1 o #admin y aún no está iniciada la sesión, abrir modal de autenticación inmediatamente
+  if (window.location.search.indexOf('agencia=1') !== -1 || window.location.hash.indexOf('agencia') !== -1 ||
+      window.location.search.indexOf('admin=1') !== -1 || window.location.hash.indexOf('admin') !== -1) {
     if (!agencyUser) {
       setTimeout(function(){
         openAgencyLogin();

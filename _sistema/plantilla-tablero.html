@@ -677,6 +677,19 @@ footer .logo svg{height:76px;margin:0 auto 12px}
   border: 1px solid rgba(245,158,11,0.3);
   font-weight: 600;
 }
+.card-unsaved-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  background:rgba(230,74,0,0.12);
+  color:#e64a00;
+  border:1px solid rgba(230,74,0,0.3);
+  padding:4px 10px;
+  border-radius:8px;
+  font-size:11px;
+  font-weight:700;
+  margin:8px 0 0 0;
+}
 .card-agency-bar{
   display:flex;
   align-items:center;
@@ -2640,7 +2653,7 @@ __DATA__
       if (!txt) return false;
       var auth = getReviewerName() || '';
       it.comentarios = it.comentarios || [];
-      var newCm = { autor: auth, texto: txt, fecha: new Date().toISOString() };
+      var newCm = { autor: auth, texto: txt, fecha: new Date().toISOString(), version: parseInt(it.version, 10) || 1 };
       it.comentarios.push(newCm);
       it.comentario = formatComentariosString(it.comentarios);
       if (auth) it.revisadoPor = auth;
@@ -2774,12 +2787,21 @@ __DATA__
     // Guardar referencia a la función de auto-commit para validación global
     card.__commitDraftComment = addCommentFromInput;
 
+    var unsavedBadge = el('div', 'card-unsaved-badge', '⚠️ Sin guardar en la nube');
+    unsavedBadge.style.display = 'none';
+    card.appendChild(unsavedBadge);
+    function setUnsavedState(isUnsaved){
+      card.classList.toggle('card-unsaved', !!isUnsaved);
+      unsavedBadge.style.display = isUnsaved ? 'inline-flex' : 'none';
+    }
+
     paint();
     cards.push({
       card: card,
       nav: a,
       it: it,
       setDecision: set,
+      setUnsavedState: setUnsavedState,
       commitComment: addCommentFromInput,
       renderThread: renderThread,
       paint: paint,
@@ -3060,7 +3082,10 @@ __DATA__
     if (!v || typeof v !== 'object') return v;
     if ('stringValue' in v) return v.stringValue;
     if ('integerValue' in v) return parseInt(v.integerValue, 10);
+    if ('doubleValue' in v) return (typeof v.doubleValue === 'number' ? v.doubleValue : parseFloat(v.doubleValue));
     if ('booleanValue' in v) return v.booleanValue;
+    if ('nullValue' in v) return null;
+    if ('timestampValue' in v) return v.timestampValue;
     if ('mapValue' in v) {
       var m = {};
       var mFields = (v.mapValue && v.mapValue.fields) || {};
@@ -3072,6 +3097,269 @@ __DATA__
       return arr.map(unpackFsValue);
     }
     return v;
+  }
+
+  function packFsValue(v){
+    if (v === undefined) return undefined;
+    if (v === null) return { nullValue: null };
+    if (typeof v === 'boolean') return { booleanValue: v };
+    if (typeof v === 'number') {
+      if (Number.isInteger(v)) {
+        return { integerValue: String(v) };
+      }
+      return { doubleValue: v };
+    }
+    if (typeof v === 'string') return { stringValue: v };
+    if (Array.isArray(v)) {
+      var vals = [];
+      for (var i = 0; i < v.length; i++) {
+        var pv = packFsValue(v[i]);
+        if (pv !== undefined) vals.push(pv);
+      }
+      return { arrayValue: vals.length ? { values: vals } : {} };
+    }
+    if (typeof v === 'object') {
+      var f = {};
+      for (var k in v) {
+        if (Object.prototype.hasOwnProperty.call(v, k)) {
+          var pf = packFsValue(v[k]);
+          if (pf !== undefined) f[k] = pf;
+        }
+      }
+      return { mapValue: { fields: f } };
+    }
+    return { stringValue: String(v) };
+  }
+
+  function leerTextoEditable(el){
+    if (!el) return '';
+    var clone = el.cloneNode(true);
+    var brs = clone.querySelectorAll('br');
+    for (var i = 0; i < brs.length; i++) {
+      brs[i].replaceWith('\n');
+    }
+    var blocks = clone.querySelectorAll('div, p, li');
+    for (var j = 0; j < blocks.length; j++) {
+      if (j > 0 || blocks[j] !== clone.firstChild) {
+        blocks[j].before('\n');
+      }
+    }
+    var text = clone.textContent || '';
+    text = text.replace(/\u00a0/g, ' ');
+    text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+    var lines = text.split('\n').map(function(l){ return l.replace(/[ \t]+$/, ''); });
+    text = lines.join('\n');
+    text = text.replace(/\n{3,}/g, '\n\n');
+    return text.trim();
+  }
+
+  var REGEX_FRASES_PEGADAS = /[.?!…:][A-ZÁÉÍÓÚÑ¿¡]/;
+
+  function setupPlainTextEditable(node, isSingleLine){
+    if (!node) return;
+    try {
+      node.contentEditable = 'plaintext-only';
+    } catch(e) {
+      node.setAttribute('contenteditable', 'true');
+    }
+    if (node.contentEditable !== 'plaintext-only') {
+      node.setAttribute('contenteditable', 'true');
+    }
+    node.setAttribute('spellcheck', 'true');
+    if (!node._agencyKeyBound) {
+      node._agencyKeyBound = true;
+      node.addEventListener('keydown', function(e){
+        if (e.key === 'Enter') {
+          if (isSingleLine) {
+            e.preventDefault();
+          } else {
+            e.preventDefault();
+            if (document.queryCommandSupported && document.queryCommandSupported('insertLineBreak')) {
+              document.execCommand('insertLineBreak');
+            } else {
+              document.execCommand('insertText', false, '\n');
+            }
+          }
+        }
+      });
+      node.addEventListener('paste', function(e){
+        if (node.contentEditable !== 'plaintext-only') {
+          e.preventDefault();
+          var clip = (e.clipboardData || window.clipboardData);
+          var text = clip ? clip.getData('text/plain') : '';
+          if (isSingleLine) text = text.replace(/[\r\n]+/g, ' ');
+          document.execCommand('insertText', false, text);
+        }
+      });
+    }
+  }
+
+  function guardarPiezas(cambiosPorId, opciones){
+    opciones = opciones || {};
+    var intentosMax = 3;
+    var intentoActual = opciones.intento || 1;
+
+    if (!FB || !FB.projectId || !DATA.id) {
+      return Promise.reject(new Error('Firebase no está configurado en este tablero.'));
+    }
+
+    var docUrl = 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(FB.projectId) +
+      '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
+      '?key=' + encodeURIComponent(FB.apiKey);
+
+    return getValidAgencyToken().then(function(token){
+      var getHeaders = {};
+      if (token) getHeaders['Authorization'] = 'Bearer ' + token;
+      return fetch(docUrl, { headers: getHeaders }).then(function(res){
+        if (!res.ok) {
+          return res.json().catch(function(){ return {}; }).then(function(j){
+            throw new Error((j.error && j.error.message) || ('HTTP ' + res.status + ' al leer tablero'));
+          });
+        }
+        return res.json();
+      });
+    }).then(function(doc){
+      var updateTime = doc.updateTime;
+      var f = {};
+      var docFields = doc.fields || {};
+      for (var k in docFields) f[k] = unpackFsValue(docFields[k]);
+
+      var rawContenidos = Array.isArray(f.contenidos) ? f.contenidos : [];
+      var baseContenidos = [];
+
+      // Si contenidos está vacío en Firestore (primera revisión), parte de items con todos sus campos
+      if (rawContenidos.length === 0) {
+        baseContenidos = items.map(function(it, i){
+          var baseObj = Object.assign({}, it);
+          baseObj.n = i + 1;
+          baseObj.id = it.id || ('c' + (i + 1));
+          return baseObj;
+        });
+      } else {
+        baseContenidos = rawContenidos.map(function(item){
+          return Object.assign({}, item);
+        });
+      }
+
+      // Fusionar cambios por pieza sin borrar claves que no conoce
+      baseContenidos.forEach(function(pieza, idx){
+        var n = pieza.n || (idx + 1);
+        var id = pieza.id || ('c' + n);
+        var rawCambio = (cambiosPorId && (cambiosPorId[id] || cambiosPorId[n] || cambiosPorId[String(n)])) || null;
+
+        if (rawCambio) {
+          var cambios = (typeof rawCambio === 'function') ? rawCambio(pieza) : Object.assign({}, rawCambio);
+
+          // Si el cambio aprueba y hay un borrador del banco distinto de guion/copy, bloquear
+          if (cambios.estado === 'aprobado' && pieza.borrador) {
+            var bGuion = pieza.borrador.guion || '';
+            var bCopy = pieza.borrador.copy || '';
+            var curGuion = pieza.guion || '';
+            var curCopy = pieza.copy || '';
+            if ((bGuion && bGuion !== curGuion) || (bCopy && bCopy !== curCopy)) {
+              throw new Error('Hay una corrección sin terminar en el Banco de trabajo');
+            }
+          }
+
+          if (cambios.solicitarAprobacionSnapshot) {
+            var snapVersion = parseInt(pieza.version, 10) || 1;
+            var snapFecha = (opciones.tableroFields && opciones.tableroFields.ultimaRevision) || new Date().toISOString();
+            var snapUsuario = cambios.aprobadorNombre || cambios.revisadoPor || 'Cliente';
+            pieza.aprobacion = {
+              version: snapVersion,
+              usuario: snapUsuario,
+              fecha: snapFecha,
+              titulo: pieza.titulo || '',
+              formato: pieza.formato || '',
+              guion: pieza.guion || '',
+              copy: pieza.copy || '',
+              hashtags: pieza.hashtags || ''
+            };
+            delete cambios.solicitarAprobacionSnapshot;
+            delete cambios.aprobadorNombre;
+          }
+
+          Object.assign(pieza, cambios);
+          if (cambios.aprobacion === null) {
+            delete pieza.aprobacion;
+          }
+        }
+      });
+
+      // Recalcular contadores a partir del arreglo fusionado
+      var totalOk = baseContenidos.filter(function(x){ return x.estado === 'aprobado'; }).length;
+      var totalFix = baseContenidos.filter(function(x){ return x.estado === 'cambios' || x.estado === 'en_correccion'; }).length;
+      var totalCorr = baseContenidos.filter(function(x){ return x.estado === 'corregido'; }).length;
+      var totalPend = baseContenidos.filter(function(x){
+        return x.estado === 'pendiente' || x.estado === 'en_revision' || x.estado === 'borrador' || !x.estado;
+      }).length;
+
+      var estadoGeneral = (totalFix > 0) ? 'Con cambios' :
+                          (totalCorr > 0 ? 'En revisión' :
+                          ((totalOk === baseContenidos.length && baseContenidos.length > 0) ? 'Aprobado' : (totalOk > 0 ? 'Parcial' : 'Sin revisar')));
+
+      var patchFields = {
+        aprobados: totalOk,
+        cambios: totalFix,
+        pendientes: totalPend,
+        estado: estadoGeneral,
+        contenidos: baseContenidos
+      };
+
+      if (opciones.tableroFields) {
+        for (var tf in opciones.tableroFields) {
+          patchFields[tf] = opciones.tableroFields[tf];
+        }
+      }
+
+      var updateMask = 'updateMask.fieldPaths=aprobados&updateMask.fieldPaths=cambios&updateMask.fieldPaths=pendientes&updateMask.fieldPaths=estado&updateMask.fieldPaths=contenidos';
+      if (opciones.tableroFields) {
+        for (var tfKey in opciones.tableroFields) {
+          updateMask += '&updateMask.fieldPaths=' + encodeURIComponent(tfKey);
+        }
+      }
+
+      var patchUrl = 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(FB.projectId) +
+        '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
+        '?' + updateMask +
+        (updateTime ? ('&currentDocument.updateTime=' + encodeURIComponent(updateTime)) : '') +
+        '&key=' + encodeURIComponent(FB.apiKey);
+
+      var packedFields = {};
+      for (var pf in patchFields) {
+        var pv = packFsValue(patchFields[pf]);
+        if (pv !== undefined) packedFields[pf] = pv;
+      }
+
+      return getValidAgencyToken().then(function(token){
+        var patchHeaders = { 'Content-Type': 'application/json' };
+        if (token) patchHeaders['Authorization'] = 'Bearer ' + token;
+        return fetch(patchUrl, {
+          method: 'PATCH',
+          headers: patchHeaders,
+          body: JSON.stringify({ fields: packedFields })
+        });
+      }).then(function(patchRes){
+        if (!patchRes.ok) {
+          return patchRes.json().catch(function(){ return {}; }).then(function(errJson){
+            var errMsg = (errJson.error && errJson.error.message) || ('HTTP ' + patchRes.status);
+            var isPrecondition = (patchRes.status === 400 || patchRes.status === 409 || patchRes.status === 412) ||
+              (errJson.error && (errJson.error.status === 'FAILED_PRECONDITION' || errJson.error.status === 'ABORTED'));
+
+            if (isPrecondition && intentoActual < intentosMax) {
+              console.warn('Reintento por precondición (' + intentoActual + '/' + intentosMax + ')...');
+              var reintentarOpciones = Object.assign({}, opciones, { intento: intentoActual + 1 });
+              return guardarPiezas(cambiosPorId, reintentarOpciones);
+            }
+            throw new Error(errMsg);
+          });
+        }
+        return patchRes.json();
+      }).then(function(savedDoc){
+        syncBoardWithFirestore(savedDoc);
+        return savedDoc;
+      });
+    });
   }
 
   function syncBoardWithFirestore(doc){
@@ -3117,6 +3405,7 @@ __DATA__
         });
 
         if (fsItem) {
+          if (cObj.setUnsavedState) cObj.setUnsavedState(false);
           if (fsItem.estado && ['borrador', 'en_revision', 'pendiente', 'cambios', 'en_correccion', 'corregido', 'aprobado'].indexOf(fsItem.estado) >= 0) {
             it.estado = (fsItem.estado === 'pendiente') ? 'en_revision' : fsItem.estado;
           }
@@ -3158,6 +3447,17 @@ __DATA__
           if (fsItem.fechaCorreccion) {
             it.fechaCorreccion = fsItem.fechaCorreccion;
           }
+
+          // Preservar campos ricos de Firestore para que nunca se pierdan
+          if (fsItem.historial) it.historial = fsItem.historial;
+          if (fsItem.versiones) it.versiones = fsItem.versiones;
+          if (fsItem.borrador) it.borrador = fsItem.borrador;
+          if (fsItem.hashtags) it.hashtags = fsItem.hashtags;
+          if (fsItem.referencias) it.referencias = fsItem.referencias;
+          if (fsItem.pilar) it.pilar = fsItem.pilar;
+          if (fsItem.fechaPublicacion) it.fechaPublicacion = fsItem.fechaPublicacion;
+          if (fsItem.tipoOriginal) it.tipoOriginal = fsItem.tipoOriginal;
+          if (fsItem.clickupId) it.clickupId = fsItem.clickupId;
 
           // Filtrar notas de corrección internas del comentario
           var rawComment = it.comentario || '';
@@ -3260,17 +3560,13 @@ __DATA__
     commitAllDraftComments();
     var revName = getReviewerName() || 'Cliente';
     DATA.revision = {revisadoPor: revName, fecha: new Date().toISOString()};
-    var k = counts();
-    var totalGlobalOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
-    var totalGlobalFix = items.filter(function(x){ return x.estado === 'cambios'; }).length;
-    var totalGlobalPend = items.filter(function(x){ return x.estado === 'pendiente' || !x.estado; }).length;
-    var estadoGeneral = (totalGlobalFix > 0) ? 'Con cambios' : (totalGlobalOk === items.length ? 'Aprobado' : (totalGlobalOk > 0 ? 'Parcial' : 'Sin revisar'));
 
     var btn = $('dl');
     btn.disabled = true; btn.textContent = 'Enviando…';
 
     function ok(){
       btn.disabled = false; btn.textContent = 'Enviar revisión ✓'; saveDraft();
+      var k = counts();
       modal({
         kind:'ok',
         icon:'✓',
@@ -3293,81 +3589,46 @@ __DATA__
       });
     }
 
-    var firestoreContenidos = items.map(function(it, i){
+    var evaluatedItems = (targetPieceNumbers && targetPieceNumbers.length > 0)
+      ? items.filter(function(it, idx){ return targetPieceNumbers.indexOf(idx + 1) !== -1; })
+      : items;
+
+    var cambiosPorId = {};
+    evaluatedItems.forEach(function(it){
       var cList = (it.comentarios && it.comentarios.length) ? it.comentarios : (it.comentario ? [{ autor: it.revisadoPor || revName, texto: it.comentario, fecha: '' }] : []);
       var fullComment = formatComentariosString(cList) || it.comentario || '';
       var lastAuthor = (cList.length && cList[cList.length - 1].autor) ? cList[cList.length - 1].autor : (it.revisadoPor || revName);
-      var fMap = {
-        n: { integerValue: String(i + 1) },
-        id: { stringValue: String(it.id || ('c' + (i + 1))) },
-        titulo: { stringValue: String(it.titulo || '') },
-        formato: { stringValue: String(it.formato || '') },
-        formatoOriginal: { stringValue: String(it.formatoOriginal || '') },
-        estado: { stringValue: String(it.estado || 'pendiente') },
-        comentario: { stringValue: String(fullComment) },
-        revisadoPor: { stringValue: String(lastAuthor) }
+
+      var itemCambios = {
+        estado: it.estado || 'pendiente',
+        comentario: fullComment,
+        revisadoPor: lastAuthor,
+        formato: it.formato || '',
+        formatoOriginal: it.formatoOriginal || it.formato || ''
       };
-      if (it.guion != null) fMap.guion = { stringValue: String(it.guion) };
-      if (it.copy != null) fMap.copy = { stringValue: String(it.copy) };
-      if (it.version != null) fMap.version = { integerValue: String(it.version) };
-      if (it.fechaCorreccion) fMap.fechaCorreccion = { stringValue: String(it.fechaCorreccion) };
-      if (it.fechaEnvio) fMap.fechaEnvio = { stringValue: String(it.fechaEnvio) };
-      if (it.aprobacion && it.estado === 'aprobado') {
-        fMap.aprobacion = {
-          mapValue: {
-            fields: {
-              version: { integerValue: String(it.aprobacion.version || it.version || 1) },
-              usuario: { stringValue: String(it.aprobacion.usuario || revName) },
-              fecha: { stringValue: String(it.aprobacion.fecha || DATA.revision.fecha) }
-            }
-          }
-        };
+
+      if (it.estado === 'aprobado') {
+        itemCambios.solicitarAprobacionSnapshot = true;
+        itemCambios.aprobadorNombre = revName;
+      } else {
+        itemCambios.aprobacion = null;
       }
-      return {
-        mapValue: {
-          fields: fMap
-        }
-      };
+
+      cambiosPorId[it.id] = itemCambios;
     });
 
-    var fsUrl = 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(FB.projectId) +
-      '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
-      '?updateMask.fieldPaths=aprobados&updateMask.fieldPaths=cambios&updateMask.fieldPaths=pendientes&updateMask.fieldPaths=estado&updateMask.fieldPaths=revisadoPor&updateMask.fieldPaths=ultimaRevision&updateMask.fieldPaths=contenidos' +
-      '&key=' + encodeURIComponent(FB.apiKey);
-
-    var fsBody = JSON.stringify({
-      fields: {
-        aprobados: { integerValue: String(totalGlobalOk) },
-        cambios: { integerValue: String(totalGlobalFix) },
-        pendientes: { integerValue: String(totalGlobalPend) },
-        estado: { stringValue: estadoGeneral },
-        revisadoPor: { stringValue: revName },
-        ultimaRevision: { stringValue: DATA.revision.fecha },
-        contenidos: {
-          arrayValue: {
-            values: firestoreContenidos
-          }
-        }
+    var opciones = {
+      tableroFields: {
+        revisadoPor: revName,
+        ultimaRevision: DATA.revision.fecha
       }
+    };
+
+    guardarPiezas(cambiosPorId, opciones).then(function(){
+      ok();
+    }).catch(function(err){
+      fail(err);
     });
-
-    getValidAgencyToken().then(function(token){
-      var headers = { 'Content-Type': 'application/json' };
-      if (token) headers['Authorization'] = 'Bearer ' + token;
-      return fetch(fsUrl, {
-        method: 'PATCH',
-        headers: headers,
-        body: fsBody
-      });
-    })
-    .then(function(r){
-      if (!r.ok) {
-        return r.json().then(function(j){ throw new Error((j.error && j.error.message) || ('HTTP ' + r.status)); });
-      }
-      return r.json();
-    })
-    .then(function(){ ok(); })
-    .catch(function(err){ fail(err); });
   }
 
   // VALIDACIÓN OBLIGATORIA (EN PC Y CELULARES)
@@ -3804,205 +4065,107 @@ __DATA__
   // Guardar cambio de formato directo en Firestore (Modo Agencia)
   function saveAgencyFormatoChange(it, newFormato){
     if (!FB || !FB.projectId || !DATA.id) {
-      toast('✓ Formato guardado localmente: ' + newFormato);
+      toast('Formato cambiado localmente (sin conexión a Firestore)');
       return;
     }
 
-    var firestoreContenidos = items.map(function(item, i){
-      var cList = (item.comentarios && item.comentarios.length) ? item.comentarios : (item.comentario ? [{ autor: item.revisadoPor || 'Cliente', texto: item.comentario, fecha: '' }] : []);
-      var fullComment = formatComentariosString(cList) || item.comentario || '';
-      var lastAuthor = (cList.length && cList[cList.length - 1].autor) ? cList[cList.length - 1].autor : (item.revisadoPor || 'Cliente');
-      var fMap = {
-        n: { integerValue: String(i + 1) },
-        id: { stringValue: String(item.id || ('c' + (i + 1))) },
-        titulo: { stringValue: String(item.titulo || '') },
-        formato: { stringValue: String(item.formato || '') },
-        formatoOriginal: { stringValue: String(item.formatoOriginal || item.formato || '') },
-        estado: { stringValue: String(item.estado || 'pendiente') },
-        comentario: { stringValue: String(fullComment) },
-        revisadoPor: { stringValue: String(lastAuthor) }
-      };
-      if (item.guion != null) fMap.guion = { stringValue: String(item.guion) };
-      if (item.copy != null) fMap.copy = { stringValue: String(item.copy) };
-      if (item.version != null) fMap.version = { integerValue: String(item.version) };
-      return {
-        mapValue: { fields: fMap }
-      };
-    });
+    var cObj = cards.find(function(c){ return c.it === it; });
+    var cambiosPorId = {};
+    cambiosPorId[it.id] = {
+      formato: newFormato,
+      formatoOriginal: newFormato
+    };
 
-    var fsUrl = 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(FB.projectId) +
-      '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
-      '?updateMask.fieldPaths=contenidos&key=' + encodeURIComponent(FB.apiKey);
-
-    getValidAgencyToken().then(function(token){
-      var headers = { 'Content-Type': 'application/json' };
-      if (token) headers['Authorization'] = 'Bearer ' + token;
-      return fetch(fsUrl, {
-        method: 'PATCH',
-        headers: headers,
-        body: JSON.stringify({
-          fields: {
-            contenidos: { arrayValue: { values: firestoreContenidos } }
-          }
-        })
-      });
-    })
-    .then(function(r){
-      if (!r.ok) {
-        return r.json().then(function(j){ throw new Error((j.error && j.error.message) || ('HTTP ' + r.status)); });
-      }
-      return r.json();
-    })
-    .then(function(){
+    guardarPiezas(cambiosPorId).then(function(){
+      if (cObj && cObj.setUnsavedState) cObj.setUnsavedState(false);
       toast('✓ Tipo de contenido (' + newFormato + ') sincronizado en Firestore');
-    })
-    .catch(function(err){
+    }).catch(function(err){
       console.error('Error guardando formato en Firestore:', err);
-      toast('✓ Formato cambiado localmente (error al sincronizar nube)');
+      if (cObj && cObj.setUnsavedState) cObj.setUnsavedState(true);
+      modal({
+        kind: 'warn',
+        icon: '!',
+        title: 'No se guardó en la nube',
+        text: 'No se pudo sincronizar el formato (' + newFormato + ') en Firestore. Revisa tu conexión.',
+        buttons: [
+          { label: 'Reintentar', primary: true, fn: function(){ saveAgencyFormatoChange(it, newFormato); } },
+          { label: 'Cerrar' }
+        ]
+      });
     });
   }
 
   // Guardar corrección directa en Firestore y actualizar tarjeta
-  function saveCardCorrection(it, cObj, newGuion, newCopy, editorBox, btnSave){
+  function saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnSave){
     if (btnSave) { btnSave.disabled = true; btnSave.textContent = 'Guardando…'; }
 
-    var curV = parseInt(it.version, 10) || 1;
-    var nextVersion = (it.estado === 'cambios' || it.estado === 'en_correccion' || it.estado === 'aprobado') ? (curV + 1) : curV;
-    it.guion = newGuion;
-    it.copy = newCopy;
-    it.formato = cObj.fs ? cObj.fs.value : it.formato;
-    it.formatoOriginal = it.formato;
-    if (cObj.fmtTag) cObj.fmtTag.textContent = it.formato;
-    it.version = nextVersion;
-    it.estado = 'corregido';
-    it.fechaCorreccion = new Date().toISOString();
-    delete it.aprobacion; // Nueva versión requiere nueva aprobación del cliente
+    var nowIso = new Date().toISOString();
+    var cambiosPorId = {};
+    cambiosPorId[it.id] = function(piezaFs){
+      var curV = parseInt(piezaFs.version, 10) || 1;
+      var curGuion = piezaFs.guion || '';
+      var curCopy = piezaFs.copy || '';
+      var curTitle = piezaFs.titulo || '';
 
-    it.historial = it.historial || [];
-    it.historial.push({
-      version: nextVersion,
-      accion: 'Corrección guardada (v' + nextVersion + ')',
-      usuario: agencyUser ? ('Agencia (' + agencyUser + ')') : 'Equipo Nexo',
-      fecha: it.fechaCorreccion
-    });
+      var textoCambio = (newGuion !== curGuion) || (newCopy !== curCopy) || (newTitle !== curTitle);
+      var nextVersion = (textoCambio && piezaFs.estado !== 'corregido') ? (curV + 1) : curV;
 
-    it.revisadoPor = '';
-    it.comentario = formatComentariosString(it.comentarios);
-
-    if ($('reviewed')) $('reviewed').classList.remove('show');
-
-    // Actualizar visualización en vivo de la tarjeta
-    if (cObj.h2Title && it.titulo) {
-      cObj.h2Title.textContent = it.titulo;
-    }
-    if (cObj.guionParagraph) {
-      cObj.guionParagraph.textContent = newGuion;
-    }
-    if (cObj.copyParagraph) {
-      cObj.copyParagraph.textContent = newCopy;
-    }
-    if (cObj.vTag) {
-      cObj.vTag.textContent = 'v' + nextVersion;
-    }
-    if (cObj.ctxTag) {
-      var isCorr = nextVersion > 1;
-      cObj.ctxTag.className = 'tag ' + (isCorr ? 'ctx-correction' : 'ctx-first');
-      cObj.ctxTag.textContent = isCorr ? '🔄 Revisión de correcciones' : '✨ Primera revisión';
-    }
-
-    if (cObj.renderThread) cObj.renderThread();
-    if (cObj.paint) cObj.paint();
-    refresh();
-    updateApartadoCorregidos();
-    saveDraft();
-
-    // Actualizar en Firestore si está conectado
-    if (FB && FB.projectId && DATA.id) {
-      var totalGlobalOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
-      var totalGlobalFix = items.filter(function(x){ return x.estado === 'cambios' || x.estado === 'en_correccion'; }).length;
-      var totalGlobalCorr = items.filter(function(x){ return x.estado === 'corregido'; }).length;
-      var totalGlobalPend = items.filter(function(x){ return x.estado === 'pendiente' || x.estado === 'en_revision' || !x.estado; }).length;
-      var estadoGeneral = (totalGlobalFix > 0) ? 'Con cambios' :
-                          (totalGlobalCorr > 0 ? 'En revisión' :
-                          (totalGlobalOk === items.length ? 'Aprobado' : (totalGlobalOk > 0 ? 'Parcial' : 'Sin revisar')));
-
-      var firestoreContenidos = items.map(function(item, i){
-        var cList = (item.comentarios && item.comentarios.length) ? item.comentarios : (item.comentario ? [{ autor: item.revisadoPor || 'Cliente', texto: item.comentario, fecha: '' }] : []);
-        var fullComment = formatComentariosString(cList) || item.comentario || '';
-        var lastAuthor = (item.estado === 'corregido') ? '' : ((cList.length && cList[cList.length - 1].autor) ? cList[cList.length - 1].autor : (item.revisadoPor || 'Cliente'));
-        var fMap = {
-          n: { integerValue: String(i + 1) },
-          id: { stringValue: String(item.id || ('c' + (i + 1))) },
-          titulo: { stringValue: String(item.titulo || '') },
-          formato: { stringValue: String(item.formato || '') },
-          formatoOriginal: { stringValue: String(item.formatoOriginal || '') },
-          estado: { stringValue: String(item.estado || 'en_revision') },
-          comentario: { stringValue: String(fullComment) },
-          revisadoPor: { stringValue: String(lastAuthor) }
-        };
-        if (item.guion != null) fMap.guion = { stringValue: String(item.guion) };
-        if (item.copy != null) fMap.copy = { stringValue: String(item.copy) };
-        if (item.version != null) fMap.version = { integerValue: String(item.version) };
-        if (item.fechaCorreccion) fMap.fechaCorreccion = { stringValue: String(item.fechaCorreccion) };
-        if (item.fechaEnvio) fMap.fechaEnvio = { stringValue: String(item.fechaEnvio) };
-        if (item.aprobacion && item.estado === 'aprobado') {
-          fMap.aprobacion = {
-            mapValue: {
-              fields: {
-                version: { integerValue: String(item.aprobacion.version || item.version || 1) },
-                usuario: { stringValue: String(item.aprobacion.usuario || '') },
-                fecha: { stringValue: String(item.aprobacion.fecha || '') }
-              }
-            }
-          };
-        }
-        return {
-          mapValue: { fields: fMap }
-        };
+      var hist = Array.isArray(piezaFs.historial) ? piezaFs.historial.slice() : [];
+      hist.push({
+        version: nextVersion,
+        accion: 'Corrección guardada (v' + nextVersion + ')',
+        usuario: agencyUser ? ('Agencia (' + agencyUser + ')') : 'Equipo Nexo',
+        fecha: nowIso
       });
 
-      var fsUrl = 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(FB.projectId) +
-        '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
-        '?updateMask.fieldPaths=contenidos&updateMask.fieldPaths=estado&updateMask.fieldPaths=aprobados&updateMask.fieldPaths=cambios&updateMask.fieldPaths=pendientes&updateMask.fieldPaths=revisadoPor&updateMask.fieldPaths=ultimaRevision&key=' + encodeURIComponent(FB.apiKey);
+      return {
+        titulo: newTitle,
+        guion: newGuion,
+        copy: newCopy,
+        formato: (cObj && cObj.fs) ? cObj.fs.value : (piezaFs.formato || it.formato),
+        formatoOriginal: (cObj && cObj.fs) ? cObj.fs.value : (piezaFs.formatoOriginal || it.formatoOriginal),
+        version: nextVersion,
+        estado: 'corregido',
+        fechaCorreccion: nowIso,
+        aprobacion: null,
+        historial: hist
+      };
+    };
 
-      getValidAgencyToken().then(function(token){
-        var headers = { 'Content-Type': 'application/json' };
-        if (token) headers['Authorization'] = 'Bearer ' + token;
-        return fetch(fsUrl, {
-          method: 'PATCH',
-          headers: headers,
-          body: JSON.stringify({
-            fields: {
-              estado: { stringValue: estadoGeneral },
-              aprobados: { integerValue: String(totalGlobalOk) },
-              cambios: { integerValue: String(totalGlobalFix) },
-              pendientes: { integerValue: String(totalGlobalPend) },
-              revisadoPor: { stringValue: '' },
-              ultimaRevision: { stringValue: '' },
-              contenidos: { arrayValue: { values: firestoreContenidos } }
-            }
-          })
-        });
-      })
-      .then(function(r){
-        if (!r.ok) {
-          return r.json().then(function(j){ throw new Error((j.error && j.error.message) || ('HTTP ' + r.status)); });
-        }
-        return r.json();
-      })
-      .then(function(){
-        if (btnSave) { btnSave.disabled = false; btnSave.textContent = '💾 Guardar cambios'; }
-        toast('✓ Corrección guardada (v' + nextVersion + ') y sincronizada en el tablero');
-      })
-      .catch(function(err){
-        console.error('Error guardando corrección en Firestore:', err);
-        if (btnSave) { btnSave.disabled = false; btnSave.textContent = '💾 Guardar cambios'; }
-        toast('✓ Cambios guardados localmente (verifica conexión)');
-      });
-    } else {
+    var opciones = {
+      tableroFields: {
+        revisadoPor: '',
+        ultimaRevision: ''
+      }
+    };
+
+    guardarPiezas(cambiosPorId, opciones).then(function(){
       if (btnSave) { btnSave.disabled = false; btnSave.textContent = '💾 Guardar cambios'; }
-      toast('✓ Corrección guardada (v' + nextVersion + ')');
-    }
+      if (cObj && cObj.setUnsavedState) cObj.setUnsavedState(false);
+      if ($('reviewed')) $('reviewed').classList.remove('show');
+      toast('✓ Corrección guardada (v' + it.version + ') y sincronizada en el tablero');
+      if (cObj && cObj.updateAgencyBarText) cObj.updateAgencyBarText();
+    }).catch(function(err){
+      console.error('Error guardando corrección en Firestore:', err);
+      if (btnSave) { btnSave.disabled = false; btnSave.textContent = '💾 Guardar cambios'; }
+      if (cObj && cObj.setUnsavedState) cObj.setUnsavedState(true);
+      modal({
+        kind: 'warn',
+        icon: '!',
+        title: 'No se guardó en la nube',
+        text: 'Ocurrió un error al guardar la corrección en Firestore (' + (err.message || 'error de conexión') + '). Tus cambios están guardados en tu navegador.',
+        buttons: [
+          {
+            label: 'Reintentar',
+            primary: true,
+            fn: function(){
+              saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnSave);
+            }
+          },
+          { label: 'Cerrar' }
+        ]
+      });
+    });
   }
 
   // Sincronizar decisión de aprobación/cambios directamente en Firestore (Modo Agencia)
@@ -4010,99 +4173,71 @@ __DATA__
     if (btn) btn.disabled = true;
 
     var cObj = cards.find(function(c){ return c.it === it; });
-    if (cObj) {
-      if (cObj.paint) cObj.paint();
-      if (cObj.updateAgencyBarText) cObj.updateAgencyBarText();
-    }
-    refresh();
-    updateApartadoCorregidos();
-    saveDraft();
+    var pieceNum = items.indexOf(it) + 1;
 
-    if (!FB || !FB.projectId || !DATA.id) {
-      if (btn) btn.disabled = false;
-      toast('✓ Estado (' + (decision === 'aprobado' ? 'Aprobado' : decision) + ') guardado localmente');
-      return;
-    }
-
-    var totalGlobalOk = items.filter(function(x){ return x.estado === 'aprobado'; }).length;
-    var totalGlobalFix = items.filter(function(x){ return x.estado === 'cambios' || x.estado === 'en_correccion'; }).length;
-    var totalGlobalCorr = items.filter(function(x){ return x.estado === 'corregido'; }).length;
-    var totalGlobalPend = items.filter(function(x){ return x.estado === 'pendiente' || x.estado === 'en_revision' || !x.estado; }).length;
-    var estadoGeneral = (totalGlobalFix > 0) ? 'Con cambios' :
-                        (totalGlobalCorr > 0 ? 'En revisión' :
-                        (totalGlobalOk === items.length ? 'Aprobado' : (totalGlobalOk > 0 ? 'Parcial' : 'Sin revisar')));
-
-    var firestoreContenidos = items.map(function(item, i){
-      var cList = (item.comentarios && item.comentarios.length) ? item.comentarios : (item.comentario ? [{ autor: item.revisadoPor || 'Cliente', texto: item.comentario, fecha: '' }] : []);
-      var fullComment = formatComentariosString(cList) || item.comentario || '';
-      var lastAuthor = (item.estado === 'corregido') ? '' : ((cList.length && cList[cList.length - 1].autor) ? cList[cList.length - 1].autor : (item.revisadoPor || 'Cliente'));
-      var fMap = {
-        n: { integerValue: String(i + 1) },
-        id: { stringValue: String(item.id || ('c' + (i + 1))) },
-        titulo: { stringValue: String(item.titulo || '') },
-        formato: { stringValue: String(item.formato || '') },
-        formatoOriginal: { stringValue: String(item.formatoOriginal || '') },
-        estado: { stringValue: String(item.estado || 'en_revision') },
-        comentario: { stringValue: String(fullComment) },
-        revisadoPor: { stringValue: String(lastAuthor) }
-      };
-      if (item.guion != null) fMap.guion = { stringValue: String(item.guion) };
-      if (item.copy != null) fMap.copy = { stringValue: String(item.copy) };
-      if (item.version != null) fMap.version = { integerValue: String(item.version) };
-      if (item.fechaCorreccion) fMap.fechaCorreccion = { stringValue: String(item.fechaCorreccion) };
-      if (item.fechaEnvio) fMap.fechaEnvio = { stringValue: String(item.fechaEnvio) };
-      if (item.aprobacion && item.estado === 'aprobado') {
-        fMap.aprobacion = {
-          mapValue: {
-            fields: {
-              version: { integerValue: String(item.aprobacion.version || item.version || 1) },
-              usuario: { stringValue: String(item.aprobacion.usuario || (agencyUser ? ('Agencia (' + agencyUser + ')') : 'Cliente')) },
-              fecha: { stringValue: String(item.aprobacion.fecha || new Date().toISOString()) }
-            }
+    var cambiosPorId = {};
+    if (decision === 'aprobado') {
+      cambiosPorId[it.id] = function(piezaFs){
+        if (piezaFs.borrador) {
+          var bGuion = piezaFs.borrador.guion || '';
+          var bCopy = piezaFs.borrador.copy || '';
+          var curGuion = piezaFs.guion || '';
+          var curCopy = piezaFs.copy || '';
+          if ((bGuion && bGuion !== curGuion) || (bCopy && bCopy !== curCopy)) {
+            throw new Error('Hay una corrección sin terminar en el Banco de trabajo');
+          }
+        }
+        var vNum = parseInt(piezaFs.version, 10) || 1;
+        var revWho = agencyUser ? ('Agencia (' + agencyUser + ')') : 'Equipo Nexo';
+        var nowIso = new Date().toISOString();
+        return {
+          estado: 'aprobado',
+          revisadoPor: revWho,
+          fechaAprobacion: nowIso,
+          aprobacion: {
+            version: vNum,
+            usuario: revWho,
+            fecha: nowIso,
+            titulo: piezaFs.titulo || it.titulo || '',
+            formato: piezaFs.formato || it.formato || '',
+            guion: piezaFs.guion || it.guion || '',
+            copy: piezaFs.copy || it.copy || '',
+            hashtags: piezaFs.hashtags || it.hashtags || ''
           }
         };
-      }
-      return {
-        mapValue: { fields: fMap }
       };
-    });
+    } else {
+      cambiosPorId[it.id] = {
+        estado: decision,
+        aprobacion: null
+      };
+    }
 
-    var fsUrl = 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(FB.projectId) +
-      '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
-      '?updateMask.fieldPaths=contenidos&updateMask.fieldPaths=estado&updateMask.fieldPaths=aprobados&updateMask.fieldPaths=cambios&updateMask.fieldPaths=pendientes&key=' + encodeURIComponent(FB.apiKey);
-
-    getValidAgencyToken().then(function(token){
-      var headers = { 'Content-Type': 'application/json' };
-      if (token) headers['Authorization'] = 'Bearer ' + token;
-      return fetch(fsUrl, {
-        method: 'PATCH',
-        headers: headers,
-        body: JSON.stringify({
-          fields: {
-            estado: { stringValue: estadoGeneral },
-            aprobados: { integerValue: String(totalGlobalOk) },
-            cambios: { integerValue: String(totalGlobalFix) },
-            pendientes: { integerValue: String(totalGlobalPend) },
-            contenidos: { arrayValue: { values: firestoreContenidos } }
-          }
-        })
-      });
-    })
-    .then(function(r){
-      if (!r.ok) {
-        return r.json().then(function(j){ throw new Error((j.error && j.error.message) || ('HTTP ' + r.status)); });
-      }
-      return r.json();
-    })
-    .then(function(){
+    guardarPiezas(cambiosPorId).then(function(){
       if (btn) btn.disabled = false;
-      var pieceNum = items.indexOf(it) + 1;
+      if (cObj && cObj.setUnsavedState) cObj.setUnsavedState(false);
       toast('✓ Contenido #' + (pieceNum < 10 ? '0' : '') + pieceNum + ' marcado como ' + (decision === 'aprobado' ? 'Aprobado' : decision) + ' y sincronizado');
-    })
-    .catch(function(err){
+      if (cObj && cObj.updateAgencyBarText) cObj.updateAgencyBarText();
+    }).catch(function(err){
       console.error('Error sincronizando estado en Firestore:', err);
       if (btn) btn.disabled = false;
-      toast('✓ Estado guardado localmente (error al sincronizar nube)');
+      if (cObj && cObj.setUnsavedState) cObj.setUnsavedState(true);
+      modal({
+        kind: 'warn',
+        icon: '!',
+        title: 'No se guardó en la nube',
+        text: 'No se pudo actualizar el estado en Firestore (' + (err.message || 'error') + ').',
+        buttons: [
+          {
+            label: 'Reintentar',
+            primary: true,
+            fn: function(){
+              saveAgencyDecisionChange(it, decision, btn);
+            }
+          },
+          { label: 'Cerrar' }
+        ]
+      });
     });
   }
 
@@ -4150,11 +4285,15 @@ __DATA__
     btnSave.textContent = '💾 Guardar cambios';
     btnSave.title = 'Guarda el guion y copy corregidos en Firestore';
     btnSave.onclick = function(){
-      var newTitle = cObj.h2Title ? cObj.h2Title.textContent.trim() : (it.titulo || '');
-      var newGuion = cObj.guionParagraph ? cObj.guionParagraph.textContent.trim() : (it.guion || '');
-      var newCopy = cObj.copyParagraph ? cObj.copyParagraph.textContent.trim() : (it.copy || '');
-      it.titulo = newTitle;
-      saveCardCorrection(it, cObj, newGuion, newCopy, null, btnSave);
+      var newTitle = cObj.h2Title ? leerTextoEditable(cObj.h2Title).replace(/[\r\n]+/g, ' ').trim() : (it.titulo || '');
+      var newGuion = cObj.guionParagraph ? leerTextoEditable(cObj.guionParagraph) : (it.guion || '');
+      var newCopy = cObj.copyParagraph ? leerTextoEditable(cObj.copyParagraph) : (it.copy || '');
+
+      if (REGEX_FRASES_PEGADAS.test(newGuion) || REGEX_FRASES_PEGADAS.test(newCopy)) {
+        toast('⚠️ Parece que faltan saltos de línea: revisa antes de guardar');
+      }
+
+      saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnSave);
       setTimeout(function(){
         updateAgencyBarText();
       }, 300);
@@ -4166,17 +4305,14 @@ __DATA__
     btnApprove.textContent = '✓ Aprobar versión';
     btnApprove.title = 'Aprobar esta versión y sincronizarla directamente en Firestore';
     btnApprove.onclick = function(){
-      var newTitle = cObj.h2Title ? cObj.h2Title.textContent.trim() : (it.titulo || '');
-      var newGuion = cObj.guionParagraph ? cObj.guionParagraph.textContent.trim() : (it.guion || '');
-      var newCopy = cObj.copyParagraph ? cObj.copyParagraph.textContent.trim() : (it.copy || '');
+      var newTitle = cObj.h2Title ? leerTextoEditable(cObj.h2Title).replace(/[\r\n]+/g, ' ').trim() : (it.titulo || '');
+      var newGuion = cObj.guionParagraph ? leerTextoEditable(cObj.guionParagraph) : (it.guion || '');
+      var newCopy = cObj.copyParagraph ? leerTextoEditable(cObj.copyParagraph) : (it.copy || '');
+
       it.titulo = newTitle;
       if (newGuion) it.guion = newGuion;
       if (newCopy) it.copy = newCopy;
-      if (cObj.setDecision) {
-        cObj.setDecision('aprobado');
-      } else {
-        saveAgencyDecisionChange(it, 'aprobado', btnApprove);
-      }
+      saveAgencyDecisionChange(it, 'aprobado', btnApprove);
     };
     agencyBtns.appendChild(btnApprove);
 
@@ -4201,17 +4337,14 @@ __DATA__
           }
         }
         if (cObj.h2Title) {
-          cObj.h2Title.setAttribute('contenteditable', 'true');
-          cObj.h2Title.setAttribute('spellcheck', 'true');
+          setupPlainTextEditable(cObj.h2Title, true);
           cObj.h2Title.setAttribute('title', 'Haz clic para editar el título');
         }
         if (cObj.guionParagraph) {
-          cObj.guionParagraph.setAttribute('contenteditable', 'true');
-          cObj.guionParagraph.setAttribute('spellcheck', 'true');
+          setupPlainTextEditable(cObj.guionParagraph, false);
         }
         if (cObj.copyParagraph) {
-          cObj.copyParagraph.setAttribute('contenteditable', 'true');
-          cObj.copyParagraph.setAttribute('spellcheck', 'true');
+          setupPlainTextEditable(cObj.copyParagraph, false);
         }
       } else {
         card.classList.remove('card-agency-edit-mode');

@@ -136,22 +136,89 @@ def main():
     # Convertir a estructura de campos Firestore
     fields = {k: to_fs_value(v) for k, v in doc_data.items()}
 
-    # 3. Guardar documento en Cloud Firestore vía REST
+    # 3. Guardar o actualizar documento en Cloud Firestore vía REST
     doc_url = f"https://firestore.googleapis.com/v1/projects/{fb['projectId']}/databases/(default)/documents/produccion/{doc_id}"
-    patch_req = urllib.request.Request(doc_url, data=json.dumps({'fields': fields}).encode(), headers={
-        'Content-Type': 'application/json',
-        'Authorization': f"Bearer {token}"
-    }, method='PATCH')
 
-    r = urllib.request.urlopen(patch_req, timeout=30)
-    if r.status in (200, 201):
-        print(f'✓ Tablero de producción registrado en Cloud Firestore: {doc_id}')
-        print(f'  Cliente: {data.get("cliente")}')
-        print(f'  Fecha: {data.get("fecha")}')
-        print(f'  Tarjetas: {len(orden)} (por hacer: {todo_count}, grabando: {grabando_count}, listo: {listo_count})')
-        print(f'  URL: {url}')
+    doc_existente = None
+    try:
+        get_req = urllib.request.Request(doc_url, headers={
+            'Authorization': f"Bearer {token}"
+        }, method='GET')
+        with urllib.request.urlopen(get_req, timeout=30) as resp:
+            if resp.status == 200:
+                doc_existente = json.loads(resp.read().decode('utf-8'))
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            doc_existente = None
+        else:
+            sys.exit(f'Error al verificar documento existente en Firestore: HTTP {e.code}')
+
+    if doc_existente:
+        # Documento ya existe: NO reiniciar, solo agregar tarjetas nuevas
+        fs_fields = doc_existente.get('fields', {})
+        fs_tarjetas = fs_fields.get('tarjetas', {}).get('mapValue', {}).get('fields', {})
+        fs_orden_vals = fs_fields.get('orden', {}).get('arrayValue', {}).get('values', [])
+        fs_orden = [v.get('stringValue') for v in fs_orden_vals if isinstance(v, dict) and 'stringValue' in v]
+
+        tarjetas_nuevas = {}
+        nuevo_orden = list(fs_orden)
+
+        for cid, t_data in tarjetas_map.items():
+            if cid not in fs_tarjetas:
+                tarjetas_nuevas[cid] = t_data
+                if cid not in nuevo_orden:
+                    nuevo_orden.append(cid)
+
+        if not tarjetas_nuevas:
+            print(f'ℹ️ El tablero {doc_id} ya existe en Firestore y no tiene tarjetas nuevas por agregar (0 agregadas).')
+            return
+
+        mask_paths = ['orden', 'actualizado'] + [f'tarjetas.{cid}' for cid in tarjetas_nuevas]
+        query_mask = '&'.join([f'updateMask.fieldPaths={p}' for p in mask_paths])
+        update_url = f"{doc_url}?{query_mask}"
+
+        patch_body = {
+            'fields': {
+                'orden': to_fs_value(nuevo_orden),
+                'actualizado': to_fs_value(now_iso),
+                'tarjetas': {
+                    'mapValue': {
+                        'fields': {cid: to_fs_value(t) for cid, t in tarjetas_nuevas.items()}
+                    }
+                }
+            }
+        }
+
+        patch_req = urllib.request.Request(update_url, data=json.dumps(patch_body).encode(), headers={
+            'Content-Type': 'application/json',
+            'Authorization': f"Bearer {token}"
+        }, method='PATCH')
+
+        r = urllib.request.urlopen(patch_req, timeout=30)
+        if r.status in (200, 201):
+            print(f'✓ Tablero de producción existente actualizado: {doc_id}')
+            print(f'  Cliente: {data.get("cliente")}')
+            print(f'  Se agregaron {len(tarjetas_nuevas)} tarjeta(s) nueva(s) sin reiniciar el rodaje.')
+            print(f'  Total tarjetas en orden: {len(nuevo_orden)}')
+            print(f'  URL: {url}')
+        else:
+            sys.exit(f'Error al actualizar tarjetas en Firestore: HTTP {r.status}')
     else:
-        sys.exit(f'Error en respuesta de Firestore: HTTP {r.status}')
+        # Documento nuevo: registrar completo
+        patch_req = urllib.request.Request(doc_url, data=json.dumps({'fields': fields}).encode(), headers={
+            'Content-Type': 'application/json',
+            'Authorization': f"Bearer {token}"
+        }, method='PATCH')
+
+        r = urllib.request.urlopen(patch_req, timeout=30)
+        if r.status in (200, 201):
+            print(f'✓ Tablero de producción registrado en Cloud Firestore: {doc_id}')
+            print(f'  Cliente: {data.get("cliente")}')
+            print(f'  Fecha: {data.get("fecha")}')
+            print(f'  Tarjetas: {len(orden)} (por hacer: {todo_count}, grabando: {grabando_count}, listo: {listo_count})')
+            print(f'  URL: {url}')
+        else:
+            sys.exit(f'Error en respuesta de Firestore: HTTP {r.status}')
 
 if __name__ == '__main__':
     main()

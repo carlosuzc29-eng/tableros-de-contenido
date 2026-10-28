@@ -518,6 +518,26 @@
       box-shadow: 0 0 8px rgba(92, 184, 62, 0.8);
       animation: beaconPulse 2s infinite ease-in-out;
     }
+    .live-status.syncing {
+      color: var(--nexo-orange);
+      border-color: rgba(230, 74, 0, 0.3);
+      background: var(--nexo-orange-soft);
+    }
+    .live-status.syncing .live-dot {
+      background: var(--nexo-orange);
+      box-shadow: 0 0 8px rgba(230, 74, 0, 0.8);
+      animation: beaconPulse 1s infinite ease-in-out;
+    }
+    .live-status.offline {
+      color: var(--text-muted);
+      border-color: var(--border-color);
+      background: var(--chip-bg);
+    }
+    .live-status.offline .live-dot {
+      background: #94A3B8;
+      box-shadow: none;
+      animation: none;
+    }
     @keyframes beaconPulse {
       0%, 100% { transform: scale(1); opacity: 1; }
       50% { transform: scale(1.3); opacity: 0.65; }
@@ -2461,22 +2481,26 @@
         if (liveEl) liveEl.style.display = 'inline-flex';
 
         let isFirstSync = true;
-        prodDocRef.onSnapshot((doc) => {
+        prodDocRef.onSnapshot({ includeMetadataChanges: true }, (doc) => {
           if (!doc) return;
+          if (doc.metadata) {
+            updateLiveIndicator(doc.metadata);
+          }
           if (doc.exists) {
-            setFirestoreStatus(true);
             const remote = doc.data();
             if (isFirstSync) {
               isFirstSync = false;
-              // Si Firestore está en estado inicial (todo por hacer) pero el usuario
-              // ya tenía avance en su navegador (grabando o listo), subimos el avance local a Firestore
-              const local = buildTarjetas(false);
-              const remoteHasNoProgress = (!remote.grabando && !remote.listo) || (remote.todo === (remote.orden || []).length);
-              const localHasProgress = (local.counts.grabando > 0 || local.counts.listo > 0);
-              if (localHasProgress && remoteHasNoProgress) {
-                syncToFirestore(null, true);
-                return;
-              }
+              // En la primera sincronización, sube solo las tarjetas con avance local
+              // cuyo estado remoto sea todo, una por una con tarjetas.<id>
+              const remoteTarjetas = remote.tarjetas || {};
+              state.contenidos.forEach(localCard => {
+                const rCard = remoteTarjetas[localCard.id];
+                const tieneAvanceLocal = (localCard.estado === 'grabando' || localCard.estado === 'listo');
+                const remotoEsTodo = !rCard || rCard.estado === 'todo';
+                if (tieneAvanceLocal && remotoEsTodo) {
+                  syncCardToFirestore(localCard.id);
+                }
+              });
             }
             if (doc.metadata && doc.metadata.hasPendingWrites) {
               // Modificación local en tránsito, evitar parpadeos
@@ -2488,42 +2512,53 @@
           }
         }, (err) => {
           console.warn('Firestore offline o reglas restringidas:', err);
-          setFirestoreStatus(false);
+          updateLiveIndicator({ fromCache: true });
         });
       } catch (e) {
         console.warn('Error inicializando Firebase:', e);
-        setFirestoreStatus(false);
+        updateLiveIndicator({ fromCache: true });
+      }
+    }
+
+    function updateLiveIndicator(metadata) {
+      const live = document.getElementById('live-indicator');
+      const label = document.getElementById('live-indicator-label');
+      if (!live) return;
+      live.classList.remove('online', 'offline', 'syncing');
+
+      if (!metadata || metadata.fromCache) {
+        live.classList.add('offline');
+        live.setAttribute('aria-label', 'Sin conexión');
+        live.setAttribute('title', 'Sin conexión · guardado en este teléfono');
+        if (label) label.textContent = 'Sin conexión · guardado en este teléfono';
+        isFirestoreOnline = false;
+      } else if (metadata.hasPendingWrites) {
+        live.classList.add('syncing');
+        live.setAttribute('aria-label', 'Sincronizando');
+        live.setAttribute('title', 'Sincronizando…');
+        if (label) label.textContent = 'Sincronizando…';
+        isFirestoreOnline = true;
+      } else {
+        live.classList.add('online');
+        live.setAttribute('aria-label', 'En vivo');
+        live.setAttribute('title', 'En vivo');
+        if (label) label.textContent = 'En vivo';
+        isFirestoreOnline = true;
       }
     }
 
     function setFirestoreStatus(online) {
-      isFirestoreOnline = online;
-      const live = document.getElementById('live-indicator');
-      const label = document.getElementById('live-indicator-label');
-      if (!live) return;
-      if (online) {
-        live.classList.add('online');
-        live.setAttribute('aria-label', 'En vivo');
-        if (label) label.textContent = 'En vivo';
-      } else {
-        live.classList.remove('online');
-        live.setAttribute('aria-label', 'Local');
-        if (label) label.textContent = 'Local';
-      }
+      updateLiveIndicator(online ? { fromCache: false, hasPendingWrites: false } : { fromCache: true });
     }
 
     window.addEventListener('online', () => {
-      setFirestoreStatus(true);
       if (prodDocRef) {
-        const local = buildTarjetas(false);
-        if (local.counts.grabando || local.counts.listo) {
-          syncToFirestore(null, true);
-        }
+        recalcularContadoresRemotos();
       }
     });
 
     window.addEventListener('offline', () => {
-      setFirestoreStatus(false);
+      updateLiveIndicator({ fromCache: true });
     });
 
     function buildTarjetas(forceTodo) {
@@ -2563,32 +2598,41 @@
         tarjetas: b.tarjetas,
         todo: b.orden.length,
         grabando: 0,
-        listo: 0
+        listo: 0,
+        eliminadas: []
       };
       db.runTransaction(tx => tx.get(prodDocRef).then(d => {
         if (!d.exists) tx.set(prodDocRef, docData);
       })).then(() => {
         isSeeding = false;
-        setFirestoreStatus(true);
-        // Si ya había avance local antes del registro, subirlo
-        const local = buildTarjetas(false);
-        if (local.counts.grabando || local.counts.listo) syncToFirestore(null, true);
+        updateLiveIndicator({ fromCache: false, hasPendingWrites: false });
+        // Si ya había avance local antes del registro, subir solo tarjetas con avance
+        state.contenidos.forEach(localCard => {
+          if (localCard.estado === 'grabando' || localCard.estado === 'listo') {
+            syncCardToFirestore(localCard.id);
+          }
+        });
       }).catch(err => {
         isSeeding = false;
         console.warn('Autorregistro produccion fallido:', err);
-        setFirestoreStatus(false);
+        updateLiveIndicator({ fromCache: true });
       });
     }
 
     function applyRemoteUpdate(remote) {
       if (!remote || !remote.tarjetas || typeof remote.tarjetas !== 'object') return;
-      const orden = Array.isArray(remote.orden) ? remote.orden : Object.keys(remote.tarjetas);
+      const eliminadasSet = new Set(Array.isArray(remote.eliminadas) ? remote.eliminadas : []);
+      const remoteTarjetas = remote.tarjetas;
+      const orden = Array.isArray(remote.orden) ? remote.orden : Object.keys(remoteTarjetas);
       const remoteList = [];
-      orden.forEach(id => { if (remote.tarjetas[id]) remoteList.push(remote.tarjetas[id]); });
-      Object.keys(remote.tarjetas).forEach(id => { if (!orden.includes(id)) remoteList.push(remote.tarjetas[id]); });
+      orden.forEach(id => { if (remoteTarjetas[id]) remoteList.push(remoteTarjetas[id]); });
+      Object.keys(remoteTarjetas).forEach(id => { if (!orden.includes(id)) remoteList.push(remoteTarjetas[id]); });
 
       let changed = false;
+
+      // 1. Aplicar actualizaciones desde remoto a tarjetas locales existentes o agregar nuevas remotas
       remoteList.forEach(rCard => {
+        if (eliminadasSet.has(rCard.id)) return;
         const local = state.contenidos.find(c => c.id === rCard.id);
         if (local) {
           if (local.estado !== rCard.estado) {
@@ -2617,11 +2661,18 @@
           if (cc) { state.contenidos.push(cc); changed = true; }
         }
       });
-      // Tarjetas borradas en otro dispositivo
-      const remoteIds = new Set(remoteList.map(r => r.id));
-      const before = state.contenidos.length;
-      state.contenidos = state.contenidos.filter(c => remoteIds.has(c.id));
-      if (state.contenidos.length !== before) changed = true;
+
+      // 2. Si alguna tarjeta local fue marcada en eliminadas en Firestore, eliminarla localmente
+      const beforeFilter = state.contenidos.length;
+      state.contenidos = state.contenidos.filter(c => !eliminadasSet.has(c.id));
+      if (state.contenidos.length !== beforeFilter) changed = true;
+
+      // 3. Tarjetas locales que falten en remoto: subirlas con tarjetas.<id>, salvo que su id esté en eliminadas
+      state.contenidos.forEach(localCard => {
+        if (!remoteTarjetas[localCard.id] && !eliminadasSet.has(localCard.id)) {
+          syncCardToFirestore(localCard.id);
+        }
+      });
 
       if (changed) {
         renderCards();
@@ -2633,20 +2684,71 @@
       }
     }
 
-    function syncToFirestore(cardId, isFullSync) {
-      if (!prodDocRef || !isFirestoreOnline) return;
-      const b = buildTarjetas(false);
-      const payload = {
-        orden: b.orden,
-        tarjetas: b.tarjetas,
-        todo: b.counts.todo,
-        grabando: b.counts.grabando,
-        listo: b.counts.listo,
+    function syncCardToFirestore(cardId) {
+      if (!prodDocRef) return;
+      const card = state.contenidos.find(c => c.id === cardId);
+      if (!card) return;
+      const clean = cleanCard(card);
+      const updateData = {
+        ['tarjetas.' + cardId]: clean,
         actualizado: new Date().toISOString()
       };
-      prodDocRef.update(payload).catch(err => {
-        console.error('Error sincronizando con Firestore:', err);
+      prodDocRef.update(updateData).then(() => {
+        recalcularContadoresRemotos();
+      }).catch(err => {
+        console.warn('Sync tarjeta en cola/offline:', err);
       });
+    }
+
+    function syncOrderToFirestore(cardIdMover) {
+      if (!prodDocRef) return;
+      const orden = state.contenidos.map(c => c.id);
+      const updateData = {
+        orden: orden,
+        actualizado: new Date().toISOString()
+      };
+      if (cardIdMover) {
+        const card = state.contenidos.find(c => c.id === cardIdMover);
+        if (card) updateData['tarjetas.' + cardIdMover] = cleanCard(card);
+      }
+      prodDocRef.update(updateData).then(() => {
+        if (cardIdMover) recalcularContadoresRemotos();
+      }).catch(err => {
+        console.warn('Sync orden en cola/offline:', err);
+      });
+    }
+
+    let isRecalculatingCounters = false;
+    function recalcularContadoresRemotos() {
+      if (!prodDocRef || !db || isRecalculatingCounters) return;
+      if (!navigator.onLine || !isFirestoreOnline) return;
+      isRecalculatingCounters = true;
+      db.runTransaction(async (tx) => {
+        const snap = await tx.get(prodDocRef);
+        if (!snap.exists) return;
+        const d = snap.data();
+        const tarjetas = d.tarjetas || {};
+        let todo = 0, grabando = 0, listo = 0;
+        Object.values(tarjetas).forEach(t => {
+          if (!t) return;
+          if (t.estado === 'grabando') grabando++;
+          else if (t.estado === 'listo') listo++;
+          else todo++;
+        });
+        tx.update(prodDocRef, { todo, grabando, listo, actualizado: new Date().toISOString() });
+      }).catch(err => {
+        console.debug('Recálculo de contadores pospuesto:', err);
+      }).finally(() => {
+        isRecalculatingCounters = false;
+      });
+    }
+
+    function syncToFirestore(cardId, isFullSync) {
+      if (cardId) {
+        syncCardToFirestore(cardId);
+      } else if (isFullSync) {
+        syncOrderToFirestore();
+      }
     }
 
     // ── RENDER DE TARJETAS KANBAN ──────────────────────────────────────────
@@ -2786,7 +2888,7 @@
       if (newStatus === 'listo') card.subtareas.forEach(s => s.done = true);
       else if (newStatus === 'todo') card.subtareas.forEach(s => s.done = false);
       updateUI();
-      syncToFirestore(cardId, false);
+      syncCardToFirestore(cardId);
       if (currentDrawerCardId === cardId) updateDrawerContent(card);
     }
 
@@ -3038,7 +3140,7 @@
       sub.done = !sub.done;
 
       updateUI();
-      syncToFirestore(cardId, false);
+      syncCardToFirestore(cardId);
       if (currentDrawerCardId === cardId) updateDrawerContent(card);
     }
 
@@ -3173,6 +3275,9 @@
           card.subtareas = subtareas;
           card.mediaLinks = mediaLinks;
         }
+        closeModal();
+        updateUI();
+        syncCardToFirestore(id);
       } else {
         const newCard = {
           id: 'c_' + Math.random().toString(36).substr(2, 8),
@@ -3185,11 +3290,11 @@
           mediaLinks
         };
         state.contenidos.unshift(newCard);
+        closeModal();
+        updateUI();
+        syncCardToFirestore(newCard.id);
+        syncOrderToFirestore();
       }
-
-      closeModal();
-      updateUI();
-      syncToFirestore(id || null, true);
     }
 
     function deleteCard(cardId) {
@@ -3197,7 +3302,18 @@
       state.contenidos = state.contenidos.filter(c => c.id !== cardId);
       if (currentDrawerCardId === cardId) closeDrawer();
       updateUI();
-      syncToFirestore(cardId, true);
+      if (prodDocRef) {
+        const updateData = {
+          eliminadas: firebase.firestore.FieldValue.arrayUnion(cardId),
+          ['tarjetas.' + cardId]: firebase.firestore.FieldValue.delete(),
+          actualizado: new Date().toISOString()
+        };
+        prodDocRef.update(updateData).then(() => {
+          recalcularContadoresRemotos();
+        }).catch(err => {
+          console.warn('Error al eliminar tarjeta en remoto:', err);
+        });
+      }
     }
 
     // ── DRAG AND DROP (SORTABLEJS) ──────────────────────────────────────────
@@ -3244,7 +3360,7 @@
                 state.contenidos = newOrdered;
               }
               updateUI();
-              syncToFirestore(cardId, false);
+              syncOrderToFirestore(cardId);
             }
           }
         });

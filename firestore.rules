@@ -21,7 +21,7 @@ service cloud.firestore {
     match /tableros/{tableroId} {
       allow list: if isAuthenticated();
       allow get: if true;
-      allow delete: if isAuthenticated();
+      allow delete: if false;
 
       // Autorregistro sin sesión o creación por equipo autenticado
       allow create: if isAuthenticated() || (
@@ -68,7 +68,7 @@ service cloud.firestore {
         request.resource.data.id == prodId &&
         hasValidRandomSuffix(prodId) &&
         request.resource.data.keys().hasOnly([
-          'id', 'cliente', 'fecha', 'url', 'registrado', 'orden', 'tarjetas', 'todo', 'grabando', 'listo', 'actualizado'
+          'id', 'cliente', 'fecha', 'url', 'registrado', 'orden', 'tarjetas', 'todo', 'grabando', 'listo', 'actualizado', 'eliminadas'
         ]) &&
         request.resource.data.todo == request.resource.data.orden.size() &&
         request.resource.data.grabando == 0 &&
@@ -82,7 +82,7 @@ service cloud.firestore {
         request.resource.data.fecha == resource.data.fecha &&
         request.resource.data.url == resource.data.url &&
         request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-          'tarjetas', 'orden', 'todo', 'grabando', 'listo', 'actualizado'
+          'tarjetas', 'orden', 'todo', 'grabando', 'listo', 'actualizado', 'eliminadas'
         ])
       );
     }

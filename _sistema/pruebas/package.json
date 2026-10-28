@@ -1,0 +1,12 @@
+{
+  "name": "pruebas-nexo",
+  "version": "1.0.0",
+  "description": "Pruebas automáticas de tableros de contenido Nexo",
+  "main": "probar_todo.js",
+  "scripts": {
+    "test": "node probar_todo.js"
+  },
+  "dependencies": {
+    "playwright": "^1.49.0"
+  }
+}

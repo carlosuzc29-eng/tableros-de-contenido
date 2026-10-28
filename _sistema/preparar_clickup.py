@@ -21,8 +21,18 @@ import hashlib
 import urllib.request
 import urllib.error
 
-REGEX_FRASES_PEGADAS = re.compile(r'[.?!…:][A-ZÁÉÍÓÚÑ¿¡]')
+REGEX_FRASES_PEGADAS = re.compile(r'(?:[.?!…]|(?<!\d):)[A-ZÁÉÍÓÚÑ¿¡]')
+REGEX_FALTA_ESPACIO_COLON = re.compile(r'\d:[A-ZÁÉÍÓÚÑ¿¡a-záéíóúñ]')
 REGEX_NOTA_AGENCIA = re.compile(r'^\s*\[?(Agencia|Nexo Agencia)[\s\S]*', re.IGNORECASE)
+
+def formatear_fecha_legible(fecha_str):
+    if not fecha_str:
+        return ''
+    m = re.match(r'^(\d{4})-(\d{2})-(\d{2})', str(fecha_str).strip())
+    if m:
+        anio, mes, dia = m.groups()
+        return f"{dia}/{mes}/{anio}"
+    return str(fecha_str).strip()
 
 def unpack_fs_val(v):
     """Convierte un valor de Firestore REST API a tipos nativos de Python."""
@@ -100,7 +110,8 @@ def construir_descripcion_clickup(version, fecha_aprobacion, aprobado_por, guion
 
     <hashtags>
     """
-    cabecera = f"✅ VERSIÓN APROBADA v{version} · {fecha_aprobacion or 'Fecha no especificada'} · {aprobado_por or 'Cliente'}"
+    fecha_legible = formatear_fecha_legible(fecha_aprobacion) or 'Fecha no especificada'
+    cabecera = f"✅ VERSIÓN APROBADA v{version} · {fecha_legible} · {aprobado_por or 'Cliente'}"
     bloques = [cabecera]
 
     if guion and guion.strip():
@@ -174,7 +185,19 @@ def procesar(borrador_path, firestore_path=None):
     fecha_revision_general = fs_data.get('ultimaRevision') or borrador.get('revision', {}).get('fecha') or ''
 
     huellas_previas_clickup = borrador.get('huellasClickup') or {}
-    sincronizado_previo = borrador.get('sincronizadoClickup') or {}
+    sincronizado_previo = borrador.get('sincronizadoClickup')
+
+    # 1. Verificar correspondencia del documento de Firestore con este tablero
+    fs_id = fs_data.get('id')
+    if not fs_id and 'name' in fs_data:
+        fs_id = str(fs_data['name']).split('/')[-1]
+    if fs_id and fs_id != tablero_id:
+        bloqueantes.append("El documento de Firestore no corresponde a este tablero")
+
+    # 2. Bloqueante si el borrador ya está sincronizado sin huellas parciales
+    if sincronizado_previo and not huellas_previas_clickup:
+        fecha_sinc = formatear_fecha_legible(sincronizado_previo) if isinstance(sincronizado_previo, str) else str(sincronizado_previo)
+        bloqueantes.append(f"Este tablero ya se sincronizó el {fecha_sinc}. Confirma con Carlos antes de repetir")
 
     for i, c_borrador in enumerate(borrador_contenidos):
         n = i + 1
@@ -237,46 +260,79 @@ def procesar(borrador_path, firestore_path=None):
 
         aprobado_por = ''
         fecha_aprobacion = ''
-        if isinstance(aprobacion_snap, dict) and aprobacion_snap.get('usuario'):
-            aprobado_por = aprobacion_snap['usuario']
+        if isinstance(aprobacion_snap, dict) and aprobacion_snap.get('fecha'):
             fecha_aprobacion = aprobacion_snap.get('fecha') or ''
-        elif c_fs.get('revisadoPor'):
-            aprobado_por = c_fs['revisadoPor']
+        if not fecha_aprobacion:
             fecha_aprobacion = c_fs.get('fechaAprobacion') or c_fs.get('fechaEnvio') or fecha_revision_general
-        else:
-            aprobado_por = revisado_por_general
-            fecha_aprobacion = fecha_revision_general
+
+        if isinstance(aprobacion_snap, dict) and aprobacion_snap.get('usuario'):
+            aprobado_por = aprobacion_snap.get('usuario') or ''
+        if not aprobado_por:
+            aprobado_por = c_fs.get('revisadoPor') or revisado_por_general
 
         # Separar comentarios de aprobación (solo cliente sobre versión aprobada) vs historial de observaciones
         comentarios_aprobacion = []
         historial_observaciones = []
+        textos_observaciones_vistos = set()
+        textos_aprobacion_vistos = set()
+
+        fecha_corr = c_fs.get('fechaCorreccion') or c_borrador.get('fechaCorreccion') or ''
 
         if isinstance(comentarios_fs, list):
             for com in comentarios_fs:
                 if not isinstance(com, dict):
                     continue
-                texto_com = com.get('texto') or ''
+                texto_com = (com.get('texto') or '').strip()
                 if not texto_com or es_nota_agencia(texto_com):
                     continue
-                com_ver = int(com.get('version') or 1)
-                com_obj = {
-                    'usuario': com.get('usuario') or 'Cliente',
-                    'fecha': com.get('fecha') or '',
-                    'texto': texto_com,
-                    'version': com_ver
-                }
-                if com_ver == version:
-                    comentarios_aprobacion.append(com_obj)
-                else:
-                    historial_observaciones.append(com_obj)
 
-        if not comentarios_aprobacion and c_fs.get('comentario') and not es_nota_agencia(c_fs.get('comentario')):
-            comentarios_aprobacion.append({
-                'usuario': aprobado_por or 'Cliente',
-                'fecha': fecha_aprobacion,
-                'texto': c_fs['comentario'],
-                'version': version
-            })
+                com_ver = com.get('version')
+                com_fecha = com.get('fecha') or ''
+
+                if com_ver is not None:
+                    try:
+                        es_version_aprobada = (int(com_ver) == version)
+                    except (ValueError, TypeError):
+                        es_version_aprobada = False
+                elif fecha_corr and com_fecha:
+                    es_version_aprobada = (com_fecha > fecha_corr)
+                elif fecha_corr:
+                    es_version_aprobada = False
+                else:
+                    es_version_aprobada = (version == 1)
+
+                com_obj = {
+                    'usuario': com.get('usuario') or com.get('autor') or 'Cliente',
+                    'fecha': com_fecha,
+                    'texto': texto_com,
+                    'version': int(com_ver) if com_ver is not None else (version if es_version_aprobada else 1)
+                }
+
+                if es_version_aprobada:
+                    if texto_com not in textos_aprobacion_vistos:
+                        textos_aprobacion_vistos.add(texto_com)
+                        comentarios_aprobacion.append(com_obj)
+                else:
+                    if texto_com not in textos_observaciones_vistos and texto_com not in textos_aprobacion_vistos:
+                        textos_observaciones_vistos.add(texto_com)
+                        historial_observaciones.append(com_obj)
+
+        if not comentarios_aprobacion and not historial_observaciones and c_fs.get('comentario') and not es_nota_agencia(c_fs.get('comentario')):
+            c_txt = c_fs['comentario'].strip()
+            if version == 1 and not fecha_corr:
+                comentarios_aprobacion.append({
+                    'usuario': aprobado_por or 'Cliente',
+                    'fecha': fecha_aprobacion,
+                    'texto': c_txt,
+                    'version': version
+                })
+            else:
+                historial_observaciones.append({
+                    'usuario': aprobado_por or 'Cliente',
+                    'fecha': fecha_aprobacion,
+                    'texto': c_txt,
+                    'version': 1
+                })
 
         # Alertas de calidad
         alertas = []
@@ -288,15 +344,24 @@ def procesar(borrador_path, firestore_path=None):
         if REGEX_FRASES_PEGADAS.search(copy):
             alertas.append('Parece haber frases pegadas sin salto de línea en el copy.')
 
+        if REGEX_FALTA_ESPACIO_COLON.search(guion) or REGEX_FALTA_ESPACIO_COLON.search(copy):
+            alertas.append("falta un espacio después de ':'")
+
         if version > 1 and not c_fs.get('fechaCorreccion') and not c_borrador.get('fechaCorreccion'):
             alertas.append('Versión mayor a 1 sin registro de fecha de corrección.')
 
         guion_fs = (c_fs.get('guion') or '').strip()
         guion_borrador = (c_borrador.get('guion') or '').strip()
         if guion_fs and guion_borrador and guion_fs != guion_borrador:
-            alertas.append('Guion en Firestore difiere del borrador local.')
+            if version > 1:
+                alertas.append(f"Corregido en Modo Agencia (v{version})")
+            else:
+                alertas.append('Guion en Firestore difiere del borrador local.')
 
         huella_texto = calc_sha1(f"{guion.strip()}\n---\n{copy.strip()}")
+
+        clickup_id_val = c_borrador.get('clickupId') or c_fs.get('clickupId') or ''
+        accion_clickup = "actualizar" if clickup_id_val else "crear"
 
         estado_cambio_clickup = 'nuevo'
         if cid in huellas_previas_clickup:
@@ -304,7 +369,7 @@ def procesar(borrador_path, firestore_path=None):
                 estado_cambio_clickup = 'sin_cambios'
             else:
                 estado_cambio_clickup = 'texto_cambio'
-        elif cid in sincronizado_previo:
+        elif sincronizado_previo and (isinstance(sincronizado_previo, dict) and cid in sincronizado_previo):
             estado_cambio_clickup = 'texto_cambio'
 
         desc_clickup = construir_descripcion_clickup(
@@ -319,7 +384,8 @@ def procesar(borrador_path, firestore_path=None):
         item_resumen = {
             'id': cid,
             'n': n,
-            'clickupId': c_borrador.get('clickupId') or c_fs.get('clickupId') or '',
+            'clickupId': clickup_id_val,
+            'accionClickup': accion_clickup,
             'titulo': titulo_pieza,
             'formato': formato,
             'tipoOriginal': c_borrador.get('tipoOriginal') or formato,
@@ -387,13 +453,16 @@ def procesar(borrador_path, firestore_path=None):
     if bloqueantes:
         print(f"\n⚠️ PIEZAS BLOQUEANTES ({len(bloqueantes)}):")
         for b in bloqueantes:
-            com = f" | Obs: \"{b['ultimoComentario']}\"" if b['ultimoComentario'] else ""
-            print(f"  • #{b['n']} [{b['id']}] {b['titulo']} -> Estado: {b['estado']}{com}")
+            if isinstance(b, dict):
+                com = f" | Obs: \"{b.get('ultimoComentario')}\"" if b.get('ultimoComentario') else ""
+                print(f"  • #{b.get('n', '?')} [{b.get('id', '?')}] {b.get('titulo', '')} -> Estado: {b.get('estado')}{com}")
+            else:
+                print(f"  • 🛑 {b}")
 
     print("\n📋 DETALLE DE PIEZAS PROCESADAS:")
     for it in items_clickup:
         alert_str = f" ⚠️ ({'; '.join(it['alertas'])})" if it['alertas'] else ""
-        print(f"  [{it['id']}] #{it['n']} {it['titulo']} | v{it['version']} | Fuente: {it['fuenteTexto']} | ClickUp: {it['estadoClickup']}{alert_str}")
+        print(f"  [{it['id']}] #{it['n']} {it['titulo']} | v{it['version']} | Fuente: {it['fuenteTexto']} | Acción: {it['accionClickup']} ({it['estadoClickup']}){alert_str}")
 
     print("=" * 65 + "\n")
     return out_path, listo

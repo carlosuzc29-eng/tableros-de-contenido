@@ -25,8 +25,8 @@ def calc_sha1(val):
     return hashlib.sha1(str(val).strip().encode('utf-8')).hexdigest()
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
-REPO = os.path.dirname(AQUI)
-CONFIG = os.path.join(os.path.dirname(REPO), '.nexo-config.json')   # fuera del repo (privado)
+REPO = os.environ.get('NEXO_REPO', os.path.dirname(AQUI))
+CONFIG = os.environ.get('NEXO_CONFIG', os.path.join(os.path.dirname(REPO), '.nexo-config.json'))   # fuera del repo (privado)
 PLANTILLA = os.path.join(AQUI, 'plantilla-tablero.html')
 
 def slug(s):

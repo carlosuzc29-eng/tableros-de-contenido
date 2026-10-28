@@ -10,6 +10,7 @@ Responde siempre en español latinoamericano neutro, con "tú". Sé breve, rigur
 - **No regeneres ni reescribas archivos HTML completos a mano.** Los tableros se construyen automáticamente con `python3 _sistema/construir.py`, que pre-renderiza con Chrome headless para garantizar la vista previa de iPhone y no consume créditos.
 - Para un tablero nuevo, tu único trabajo es crear `borradores/<cliente>-<mes>-<año>.json` desde el documento, siguiendo `_sistema/FORMATO-DATOS.md`. Luego ejecuta el script con `--publicar`.
 - Para cambios de diseño o lógica, edita **únicamente** `_sistema/plantilla-tablero.html` o `_sistema/fondo-red.js` con cambios quirúrgicos. Luego reconstruye los tableros con `construir.py`.
+- **Antes de publicar cualquier cambio en `_sistema/` o `index.html`, ejecutar `node _sistema/pruebas/probar_todo.js`; si falla, no publicar.**
 - No toques los tableros HTML de la raíz manualmente; siempre compílalos desde sus borradores para mantener sincronizados el DOM pre-renderizado, el JSON incrustado y el registro en Cloud Firestore.
 
 ## Flujo para un tablero nuevo o actualización

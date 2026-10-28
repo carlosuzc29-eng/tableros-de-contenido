@@ -2891,6 +2891,8 @@
       syncCardToFirestore(cardId);
       if (currentDrawerCardId === cardId) updateDrawerContent(card);
     }
+    window.quickMoveCard = quickMoveCard;
+    window.moverEstado = quickMoveCard;
 
     function openModalWithStatus(status) {
       modalPreselectedStatus = status || 'todo';

@@ -9,6 +9,7 @@ Este repositorio contiene los tableros de revisión, correcciones y aprobación 
 
 - **Fuente de Verdad**: Los contenidos se definen en `borradores/<cliente>-<mes>-<año>.json` y se registran en Cloud Firestore (`tableros/{id}`).
 - **Plantilla Maestra**: `_sistema/plantilla-tablero.html`. Nunca crees ni edites archivos HTML en la raíz manualmente; todos los tableros se compilan automáticamente desde su JSON con `_sistema/construir.py`.
+- **Pruebas obligatorias**: Antes de publicar cualquier cambio en `_sistema/` o `index.html`, ejecutar `node _sistema/pruebas/probar_todo.js`; si falla, no publicar.
 - **Aislamiento de Secretos**: Las claves privadas de Firebase viven en `../.nexo-config.json` y el token de GitHub en `../.github-token` (ambos fuera del repositorio y estrictamente ignorados en git). Nunca expongas credenciales en archivos públicos.
 - **Un solo enlace por cliente**: Cada cliente mantiene un único enlace público estable (ej. `milkarf-octubre-2026-f01f.html`). El mes nuevo reutiliza el archivo del tablero anterior para que el cliente siempre acceda a la versión vigente.
 

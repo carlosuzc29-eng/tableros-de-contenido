@@ -96,6 +96,21 @@ def validar_datos_tablero(data, modo_estricto=True):
         errores.append("Campo 'contenidos' debe ser una lista con al menos una pieza.")
     else:
         ids_vistos = set()
+        clickup_ids_vistos = {}
+        sinc_clickup_raw = norm.get('sincronizadoClickup')
+        mes_sincronizado = None
+        if sinc_clickup_raw:
+            m_match = re.search(r'\d{4}-(\d{2})', str(sinc_clickup_raw))
+            if m_match:
+                m_num = int(m_match.group(1))
+                if 1 <= m_num <= 12:
+                    mes_sincronizado = MESES_VALIDOS[m_num - 1]
+            if not mes_sincronizado:
+                for mv in MESES_VALIDOS:
+                    if mv.lower() in str(sinc_clickup_raw).lower():
+                        mes_sincronizado = mv
+                        break
+
         for idx, c in enumerate(contenidos):
             num = idx + 1
             if not isinstance(c, dict):
@@ -108,6 +123,31 @@ def validar_datos_tablero(data, modo_estricto=True):
                 errores.append(f"Contenido #{num} tiene un ID duplicado: '{c_id}'.")
             ids_vistos.add(c_id)
             c['id'] = c_id
+
+            # clickupId: validación de duplicados y coherencia con mes de sincronización
+            cid = c.get('clickupId')
+            if cid:
+                cid_str = str(cid).strip()
+                c['clickupId'] = cid_str
+                if cid_str in clickup_ids_vistos:
+                    advertencias.append(
+                        f"Contenido #{num} tiene el mismo clickupId ('{cid_str}') que el contenido #{clickup_ids_vistos[cid_str]}."
+                    )
+                else:
+                    clickup_ids_vistos[cid_str] = num
+
+                c_sinc = c.get('sincronizadoClickup') or sinc_clickup_raw
+                c_mes_sinc = mes_sincronizado
+                if c.get('sincronizadoClickup'):
+                    m_c = re.search(r'\d{4}-(\d{2})', str(c.get('sincronizadoClickup')))
+                    if m_c:
+                        c_num = int(m_c.group(1))
+                        if 1 <= c_num <= 12:
+                            c_mes_sinc = MESES_VALIDOS[c_num - 1]
+                if c_sinc and c_mes_sinc and mes_norm and c_mes_sinc.lower() != mes_norm.lower():
+                    advertencias.append(
+                        f"Contenido #{num} trae clickupId ('{cid_str}') y el mes del JSON ('{mes_norm}') es distinto del mes de su sincronizadoClickup ('{c_mes_sinc}')."
+                    )
 
             # Título
             titulo = c.get('titulo')

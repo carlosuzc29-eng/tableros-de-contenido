@@ -368,21 +368,42 @@ def main():
     if not n: sys.exit('El JSON no tiene contenidos.')
 
     # Un solo enlace por cliente: cada mes nuevo reutiliza el archivo del tablero anterior.
+    previo = enlace_previo(ruta, data['cliente'])
+    enlace_reutilizado = False
     if not data.get('archivo') and '--nuevo-enlace' not in sys.argv:
-        previo = enlace_previo(ruta, data['cliente'])
         if previo:
             data['archivo'] = previo
+            enlace_reutilizado = True
             print(f'↻ Mismo enlace que el mes anterior: {previo}')
+    elif previo and data.get('archivo') == previo:
+        enlace_reutilizado = True
+
     if not data.get('archivo'):
         data['archivo'] = f"{slug(data['cliente'])}-{secrets.token_hex(3)}.html"
     id_mes = f"{slug(data['cliente'])}-{data['anio']}-{slug(data['mes'])}"
     if not str(data.get('id', '')).startswith(id_mes):
         # JSON copiado de otro mes: se limpia la revisión para que el tablero salga como nuevo.
+        old_id = str(data.get('id', ''))
+        mes_anterior = "mes anterior"
+        if old_id:
+            partes = old_id.split('-')
+            if len(partes) >= 3:
+                mes_anterior = partes[2]
         data['token'] = secrets.token_hex(4)
         data['id'] = f"{id_mes}-{data['token']}"
         data['revision'] = {'revisadoPor': '', 'fecha': ''}
+        for k in ('sincronizadoClickup', 'huellasClickup', 'tableroProduccion', 'resetAt'):
+            data.pop(k, None)
+        n_clickup = 0
         for c in data.get('contenidos', []):
-            for k in ('id', 'estado', 'comentario', 'comentarios', 'revisadoPor', 'formatoOriginal'): c.pop(k, None)
+            if c.get('clickupId'):
+                n_clickup += 1
+            for k in ('id', 'estado', 'comentario', 'comentarios', 'revisadoPor', 'formatoOriginal',
+                      'clickupId', 'version', 'aprobacion', 'versiones', 'historial',
+                      'fechaCorreccion', 'fechaEnvio', 'fechaAprobacion', 'estado_aprobacion',
+                      'borrador', '_sync'):
+                c.pop(k, None)
+        print(f"JSON copiado de {mes_anterior}: se limpiaron {n_clickup} clickupId y la sincronización anterior")
     if not data.get('token'):
         data['token'] = secrets.token_hex(4)
     data['id'] = f"{id_mes}-{data['token']}"
@@ -415,11 +436,13 @@ def main():
     json.dump(data, open(ruta, 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
 
     html = open(PLANTILLA, encoding='utf-8').read()
-    # Excluir archivo y excluir _sync de cada contenido en el HTML publicado
-    datos = json.loads(json.dumps({k: v for k, v in data.items() if k != 'archivo'}))
+    # Excluir archivo, clickupId, tipoOriginal, sincronizadoClickup, huellasClickup y tableroProduccion del HTML público
+    claves_excluir_tablero = {'archivo', 'clickupId', 'tipoOriginal', 'sincronizadoClickup', 'huellasClickup', 'tableroProduccion'}
+    datos = json.loads(json.dumps({k: v for k, v in data.items() if k not in claves_excluir_tablero}))
     for c in datos.get('contenidos', []):
         if isinstance(c, dict):
-            c.pop('_sync', None)
+            for k in ('_sync', 'clickupId', 'tipoOriginal'):
+                c.pop(k, None)
     html = html.replace('__DATA__', json.dumps(datos, ensure_ascii=False, indent=2).replace('</', '<\\/'))
 
     chrome_bin = chrome()
@@ -464,9 +487,11 @@ def main():
         print('✓ Publicado (GitHub tarda 1-2 minutos en actualizar)')
 
     print('\nEnlace:', data['url'])
-    print(f"\nMensaje para WhatsApp:\n¡Hola! 👋 Te comparto la parrilla de contenidos de {data['mes']}: {data['url']}\n"
+    variante_enlace = f"en el mismo enlace de siempre: {data['url']}" if enlace_reutilizado else f"{data['url']}"
+    print(f"\nMensaje para WhatsApp:\n¡Hola! 👋 Te compartimos la parrilla de contenidos de {data['mes']} {variante_enlace}\n\n"
           "Ábrela en tu navegador, revisa cada contenido y márcalo como *Aprobado* o *Pedir cambios* (puedes dejarnos comentarios "
-          "y cambiar el tipo de contenido si lo prefieres en otro formato). Al terminar, escribe tu nombre abajo y toca *Enviar revisión*. ¡Gracias! 💚")
+          "y cambiar el tipo de contenido si lo prefieres en otro formato). Al terminar, escribe tu nombre abajo y toca *Enviar revisión*.\n\n"
+          "— Equipo Nexo Agencia Creativa")
 
 if __name__ == '__main__':
     main()

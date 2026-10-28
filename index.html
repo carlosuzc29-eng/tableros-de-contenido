@@ -8035,6 +8035,15 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
       return true;
     });
 
+    if (!allTableros.length) {
+      dashContent.innerHTML =
+        '<div class="state-message">' +
+          '<h3>Aún no tienes tableros aquí</h3>' +
+          '<p>Cuando crees uno nuevo, aparecerá listo para revisar y organizado por meses.</p>' +
+        '</div>';
+      return;
+    }
+
     if (!filtered.length) {
       dashContent.innerHTML =
         '<div class="state-message">' +
@@ -8844,6 +8853,9 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
     }, function(err){
       if (btnRef) btnRef.disabled = false;
       console.warn('Sincronización de tableros:', err && err.message ? err.message : err);
+      if (err && (err.code === 'permission-denied' || String(err).indexOf('permission-denied') !== -1)) {
+        toast('⚠️ Error de permisos en Firebase. Revisa las reglas o tu sesión.');
+      }
     });
 
     // 2. Colección produccion (pautas en vivo)

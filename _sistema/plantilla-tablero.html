@@ -658,7 +658,9 @@ footer .logo svg{height:76px;margin:0 auto 12px}
   display:block;
 }
 .card-agency-edit-mode .guion p[contenteditable="true"],
-.card-agency-edit-mode .post p[contenteditable="true"]{
+.card-agency-edit-mode .guion p[contenteditable="plaintext-only"],
+.card-agency-edit-mode .post p[contenteditable="true"],
+.card-agency-edit-mode .post p[contenteditable="plaintext-only"]{
   outline:2px dashed rgba(92,184,62,.6);
   outline-offset:4px;
   border-radius:8px;
@@ -671,17 +673,22 @@ footer .logo svg{height:76px;margin:0 auto 12px}
   word-break:break-word;
 }
 .card-agency-edit-mode .guion p[contenteditable="true"]:hover,
-.card-agency-edit-mode .post p[contenteditable="true"]:hover{
+.card-agency-edit-mode .guion p[contenteditable="plaintext-only"]:hover,
+.card-agency-edit-mode .post p[contenteditable="true"]:hover,
+.card-agency-edit-mode .post p[contenteditable="plaintext-only"]:hover{
   background:rgba(92,184,62,.07);
   outline-color:rgba(92,184,62,.85);
 }
 .card-agency-edit-mode .guion p[contenteditable="true"]:focus,
-.card-agency-edit-mode .post p[contenteditable="true"]:focus{
+.card-agency-edit-mode .guion p[contenteditable="plaintext-only"]:focus,
+.card-agency-edit-mode .post p[contenteditable="true"]:focus,
+.card-agency-edit-mode .post p[contenteditable="plaintext-only"]:focus{
   outline:2.5px solid var(--verde);
   background:rgba(92,184,62,.09);
   box-shadow:0 0 0 5px rgba(92,184,62,.13);
 }
-.card-agency-edit-mode .c-top h2[contenteditable="true"]{
+.card-agency-edit-mode .c-top h2[contenteditable="true"],
+.card-agency-edit-mode .c-top h2[contenteditable="plaintext-only"]{
   outline: 2px dashed rgba(92,184,62,.6);
   outline-offset: 4px;
   border-radius: 6px;
@@ -690,7 +697,8 @@ footer .logo svg{height:76px;margin:0 auto 12px}
   background: rgba(92,184,62,.04);
   transition: outline-color .2s, background .2s;
 }
-.card-agency-edit-mode .c-top h2[contenteditable="true"]:focus{
+.card-agency-edit-mode .c-top h2[contenteditable="true"]:focus,
+.card-agency-edit-mode .c-top h2[contenteditable="plaintext-only"]:focus{
   outline: 2.5px solid var(--verde);
   background: rgba(92,184,62,.09);
   box-shadow: 0 0 0 4px rgba(92,184,62,.13);
@@ -2239,6 +2247,10 @@ __DATA__
     return 'Post';
   }
 
+  function esSinEvaluar(estado) {
+    return !estado || estado === 'pendiente' || estado === 'en_revision' || estado === 'borrador';
+  }
+
   function isCorrectionNote(cm) {
     if (!cm) return false;
     var t = ((cm.texto || '') + ' ' + (cm.autor || '')).toLowerCase();
@@ -2610,9 +2622,11 @@ __DATA__
     var pn = el('div'); pn.appendChild(el('b', null, handle || 'tu cuenta')); pn.appendChild(el('small', null, 'Vista previa del copy'));
     ph.appendChild(pn); post.appendChild(ph);
     var pCopy = el('p', 'p-copy', it.copy || '');
-    if (it.hashtags) pCopy.appendChild(el('span', 'hash', it.hashtags));
+    if (!it.copy) pCopy.style.display = agencyUser ? 'block' : 'none';
+    var pHash = el('p', 'hash', it.hashtags || '');
+    if (!it.hashtags) pHash.style.display = agencyUser ? 'block' : 'none';
     if (!hasCopy) cw.style.display = agencyUser ? 'block' : 'none';
-    post.appendChild(pCopy); cw.appendChild(post); body.appendChild(cw);
+    post.appendChild(pCopy); post.appendChild(pHash); cw.appendChild(post); body.appendChild(cw);
     card.appendChild(body);
 
     var rv = el('div', 'review');
@@ -2855,6 +2869,7 @@ __DATA__
       ctxTag: ctxTag,
       guionParagraph: pGuion,
       copyParagraph: pCopy,
+      hashParagraph: pHash,
       copyContainer: cw
     });
   });
@@ -2866,7 +2881,11 @@ __DATA__
       : items;
     evaluatedItems.forEach(function(it){
       var st = it.estado || 'pendiente';
-      o[st] = (o[st] || 0) + 1;
+      if (esSinEvaluar(st)) {
+        o.pendiente = (o.pendiente || 0) + 1;
+      } else {
+        o[st] = (o[st] || 0) + 1;
+      }
     });
     return o;
   }
@@ -3173,6 +3192,10 @@ __DATA__
   function leerTextoEditable(el){
     if (!el) return '';
     var clone = el.cloneNode(true);
+    var hashes = clone.querySelectorAll('.hash');
+    for (var h = 0; h < hashes.length; h++) {
+      hashes[h].remove();
+    }
     var brs = clone.querySelectorAll('br');
     for (var i = 0; i < brs.length; i++) {
       brs[i].replaceWith('\n');
@@ -3251,6 +3274,47 @@ __DATA__
       if (token) getHeaders['Authorization'] = 'Bearer ' + token;
       return fetch(docUrl, { headers: getHeaders }).then(function(res){
         if (!res.ok) {
+          if (res.status === 404 && !opciones._autoRegistrado) {
+            var nowIso = new Date().toISOString();
+            var initialFields = {
+              id: { stringValue: String(DATA.id) },
+              cliente: { stringValue: String(DATA.cliente || '') },
+              mes: { stringValue: String(DATA.mes || '') },
+              anio: { stringValue: String(DATA.anio || '') },
+              url: { stringValue: String(DATA.url || window.location.href.split('?')[0].split('#')[0]) },
+              total: { integerValue: String(items.length) },
+              aprobados: { integerValue: '0' },
+              cambios: { integerValue: '0' },
+              pendientes: { integerValue: String(items.length) },
+              estado: { stringValue: 'Sin revisar' },
+              revisadoPor: { stringValue: '' },
+              ultimaRevision: { stringValue: '' },
+              registrado: { stringValue: nowIso },
+              contenidos: { arrayValue: {} }
+            };
+
+            var createUrl = 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(FB.projectId) +
+              '/databases/(default)/documents/tableros?documentId=' + encodeURIComponent(DATA.id) +
+              '&key=' + encodeURIComponent(FB.apiKey);
+
+            return fetch(createUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ fields: initialFields })
+            }).then(function(postRes){
+              if (!postRes.ok && postRes.status !== 409) {
+                var errReg = new Error('No pudimos registrar tu revisión. Descarga una copia y envíala por WhatsApp.');
+                errReg.isRegistrationFailure = true;
+                throw errReg;
+              }
+              return guardarPiezas(cambiosPorId, Object.assign({}, opciones, { _autoRegistrado: true }));
+            });
+          }
+          if (res.status === 404) {
+            var err404 = new Error('No pudimos registrar tu revisión. Descarga una copia y envíala por WhatsApp.');
+            err404.isRegistrationFailure = true;
+            throw err404;
+          }
           return res.json().catch(function(){ return {}; }).then(function(j){
             throw new Error((j.error && j.error.message) || ('HTTP ' + res.status + ' al leer tablero'));
           });
@@ -3258,6 +3322,7 @@ __DATA__
         return res.json();
       });
     }).then(function(doc){
+      if (!doc || !doc.fields) return doc;
       var updateTime = doc.updateTime;
       var f = {};
       var docFields = doc.fields || {};
@@ -3330,7 +3395,7 @@ __DATA__
       var totalFix = baseContenidos.filter(function(x){ return x.estado === 'cambios' || x.estado === 'en_correccion'; }).length;
       var totalCorr = baseContenidos.filter(function(x){ return x.estado === 'corregido'; }).length;
       var totalPend = baseContenidos.filter(function(x){
-        return x.estado === 'pendiente' || x.estado === 'en_revision' || x.estado === 'borrador' || !x.estado;
+        return esSinEvaluar(x.estado);
       }).length;
 
       var estadoGeneral = (totalFix > 0) ? 'Con cambios' :
@@ -3483,6 +3548,17 @@ __DATA__
             it.copy = fsItem.copy;
             if (cObj.copyParagraph) cObj.copyParagraph.textContent = fsItem.copy;
           }
+          if (fsItem.hashtags != null) {
+            it.hashtags = fsItem.hashtags;
+            if (cObj.hashParagraph) {
+              cObj.hashParagraph.textContent = fsItem.hashtags;
+              if (fsItem.hashtags || agencyUser) {
+                cObj.hashParagraph.style.display = 'block';
+              } else {
+                cObj.hashParagraph.style.display = 'none';
+              }
+            }
+          }
           if (fsItem.fechaCorreccion) {
             it.fechaCorreccion = fsItem.fechaCorreccion;
           }
@@ -3491,7 +3567,6 @@ __DATA__
           if (fsItem.historial) it.historial = fsItem.historial;
           if (fsItem.versiones) it.versiones = fsItem.versiones;
           if (fsItem.borrador) it.borrador = fsItem.borrador;
-          if (fsItem.hashtags) it.hashtags = fsItem.hashtags;
           if (fsItem.referencias) it.referencias = fsItem.referencias;
           if (fsItem.pilar) it.pilar = fsItem.pilar;
           if (fsItem.fechaPublicacion) it.fechaPublicacion = fsItem.fechaPublicacion;
@@ -3619,11 +3694,15 @@ __DATA__
     function fail(err){
       console.error('Error enviando revisión a Firestore:', err);
       btn.disabled = false; btn.textContent = 'Enviar revisión ✓';
+      var isRegFail = err && (err.isRegistrationFailure || (err.message && err.message.indexOf('No pudimos registrar tu revisión') !== -1));
+      var errorText = isRegFail
+        ? 'No pudimos registrar tu revisión. Descarga una copia y envíala por WhatsApp.'
+        : 'Revisa tu conexión e inténtalo de nuevo. Si el problema continúa, descarga una copia y compártela por WhatsApp.';
       modal({
         kind:'warn',
         icon:'!',
-        title:'No pudimos enviarla',
-        text:'Revisa tu conexión e inténtalo de nuevo. Si el problema continúa, descarga una copia y compártela por WhatsApp.',
+        title: isRegFail ? 'No pudimos registrar tu revisión' : 'No pudimos enviarla',
+        text: errorText,
         buttons:[{label:'Descargar copia', fn:doDownload}, {label:'Reintentar', primary:true, fn:doSend}]
       });
     }
@@ -3639,7 +3718,7 @@ __DATA__
       var lastAuthor = (cList.length && cList[cList.length - 1].autor) ? cList[cList.length - 1].autor : (it.revisadoPor || revName);
 
       var itemCambios = {
-        estado: it.estado || 'pendiente',
+        estado: esSinEvaluar(it.estado) ? 'pendiente' : (it.estado || 'pendiente'),
         comentario: fullComment,
         revisadoPor: lastAuthor,
         formato: it.formato || '',
@@ -3680,7 +3759,7 @@ __DATA__
       : cards;
 
     // 1. PASO OBLIGATORIO: Todos los contenidos evaluables deben estar evaluados (Aprobar o Solicitar cambios)
-    var pend = cardsToValidate.filter(function(c){ return c.it.estado === 'pendiente' || !c.it.estado; });
+    var pend = cardsToValidate.filter(function(c){ return esSinEvaluar(c.it.estado); });
     if (pend.length) {
       f = 'all'; applyFilter();
       [].forEach.call(document.querySelectorAll('.chip'), function(x){ x.classList.toggle('on', x.dataset.f === 'all'); });
@@ -4150,7 +4229,7 @@ __DATA__
   }
 
   // Guardar corrección directa en Firestore y actualizar tarjeta
-  function saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnSave){
+  function saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnSave, newHash){
     if (btnSave) { btnSave.disabled = true; btnSave.textContent = 'Guardando…'; }
 
     var nowIso = new Date().toISOString();
@@ -4160,22 +4239,27 @@ __DATA__
       var curGuion = piezaFs.guion || '';
       var curCopy = piezaFs.copy || '';
       var curTitle = piezaFs.titulo || '';
+      var curHash = piezaFs.hashtags || '';
 
-      var textoCambio = (newGuion !== curGuion) || (newCopy !== curCopy) || (newTitle !== curTitle);
+      var valHash = (newHash !== undefined) ? newHash : curHash;
+      var textoCambio = (newGuion.trim() !== curGuion.trim()) || (newCopy.trim() !== curCopy.trim()) || (newTitle.trim() !== curTitle.trim()) || (valHash.trim() !== curHash.trim());
       var nextVersion = (textoCambio && piezaFs.estado !== 'corregido') ? (curV + 1) : curV;
 
       var hist = Array.isArray(piezaFs.historial) ? piezaFs.historial.slice() : [];
-      hist.push({
-        version: nextVersion,
-        accion: 'Corrección guardada (v' + nextVersion + ')',
-        usuario: agencyUser ? ('Agencia (' + agencyUser + ')') : 'Equipo Nexo',
-        fecha: nowIso
-      });
+      if (textoCambio || piezaFs.estado !== 'corregido') {
+        hist.push({
+          version: nextVersion,
+          accion: 'Corrección guardada (v' + nextVersion + ')',
+          usuario: agencyUser ? ('Agencia (' + agencyUser + ')') : 'Equipo Nexo',
+          fecha: nowIso
+        });
+      }
 
       return {
         titulo: newTitle,
         guion: newGuion,
         copy: newCopy,
+        hashtags: valHash,
         formato: (cObj && cObj.fs) ? cObj.fs.value : (piezaFs.formato || it.formato),
         formatoOriginal: (cObj && cObj.fs) ? cObj.fs.value : (piezaFs.formatoOriginal || it.formatoOriginal),
         version: nextVersion,
@@ -4193,12 +4277,13 @@ __DATA__
       }
     };
 
-    guardarPiezas(cambiosPorId, opciones).then(function(){
+    return guardarPiezas(cambiosPorId, opciones).then(function(savedDoc){
       if (btnSave) { btnSave.disabled = false; btnSave.textContent = '💾 Guardar cambios'; }
       if (cObj && cObj.setUnsavedState) cObj.setUnsavedState(false);
       if ($('reviewed')) $('reviewed').classList.remove('show');
       toast('✓ Corrección guardada (v' + it.version + ') y sincronizada en el tablero');
       if (cObj && cObj.updateAgencyBarText) cObj.updateAgencyBarText();
+      return savedDoc;
     }).catch(function(err){
       console.error('Error guardando corrección en Firestore:', err);
       if (btnSave) { btnSave.disabled = false; btnSave.textContent = '💾 Guardar cambios'; }
@@ -4213,12 +4298,13 @@ __DATA__
             label: 'Reintentar',
             primary: true,
             fn: function(){
-              saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnSave);
+              saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnSave, newHash);
             }
           },
           { label: 'Cerrar' }
         ]
       });
+      throw err;
     });
   }
 
@@ -4310,6 +4396,11 @@ __DATA__
       var cHint = el('div', 'card-agency-edit-hint', '✎ Haz clic en el texto para editar el copy');
       cObj.copyParagraph.parentNode.insertBefore(cHint, cObj.copyParagraph);
     }
+    // Añadir etiqueta de ayuda sobre los hashtags
+    if (cObj.hashParagraph && cObj.hashParagraph.parentNode) {
+      var hHint = el('div', 'card-agency-edit-hint', '✎ Haz clic en el texto para editar los hashtags');
+      cObj.hashParagraph.parentNode.insertBefore(hHint, cObj.hashParagraph);
+    }
 
     // Barra inferior de acciones de agencia con botones Guardar y Aprobar
     var agencyBar = el('div', 'card-agency-bar');
@@ -4339,15 +4430,26 @@ __DATA__
     btnSave.textContent = '💾 Guardar cambios';
     btnSave.title = 'Guarda el guion y copy corregidos en Firestore';
     btnSave.onclick = function(){
-      var newTitle = cObj.h2Title ? leerTextoEditable(cObj.h2Title).replace(/[\r\n]+/g, ' ').trim() : (it.titulo || '');
+      var newTitle = cObj.h2Title ? leerTextoEditable(cObj.h2Title).replace(/[\r\n]+/g, ' ').trim() : (it.titulo || '').trim();
       var newGuion = cObj.guionParagraph ? leerTextoEditable(cObj.guionParagraph) : (it.guion || '');
       var newCopy = cObj.copyParagraph ? leerTextoEditable(cObj.copyParagraph) : (it.copy || '');
+      var newHash = cObj.hashParagraph ? leerTextoEditable(cObj.hashParagraph).replace(/[\r\n]+/g, ' ').trim() : (it.hashtags || '').trim();
+
+      var curTitle = (it.titulo || '').trim();
+      var curGuion = (it.guion || '').trim();
+      var curCopy = (it.copy || '').trim();
+      var curHash = (it.hashtags || '').trim();
+
+      if (newTitle.trim() === curTitle && newGuion.trim() === curGuion && newCopy.trim() === curCopy && newHash.trim() === curHash) {
+        toast('Sin cambios para guardar');
+        return;
+      }
 
       if (REGEX_FRASES_PEGADAS.test(newGuion) || REGEX_FRASES_PEGADAS.test(newCopy)) {
         toast('⚠️ Parece que faltan saltos de línea: revisa antes de guardar');
       }
 
-      saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnSave);
+      saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnSave, newHash);
       setTimeout(function(){
         updateAgencyBarText();
       }, 300);
@@ -4359,13 +4461,44 @@ __DATA__
     btnApprove.textContent = '✓ Aprobar versión';
     btnApprove.title = 'Aprobar esta versión y sincronizarla directamente en Firestore';
     btnApprove.onclick = function(){
-      var newTitle = cObj.h2Title ? leerTextoEditable(cObj.h2Title).replace(/[\r\n]+/g, ' ').trim() : (it.titulo || '');
+      var newTitle = cObj.h2Title ? leerTextoEditable(cObj.h2Title).replace(/[\r\n]+/g, ' ').trim() : (it.titulo || '').trim();
       var newGuion = cObj.guionParagraph ? leerTextoEditable(cObj.guionParagraph) : (it.guion || '');
       var newCopy = cObj.copyParagraph ? leerTextoEditable(cObj.copyParagraph) : (it.copy || '');
+      var newHash = cObj.hashParagraph ? leerTextoEditable(cObj.hashParagraph).replace(/[\r\n]+/g, ' ').trim() : (it.hashtags || '').trim();
+
+      var curTitle = (it.titulo || '').trim();
+      var curGuion = (it.guion || '').trim();
+      var curCopy = (it.copy || '').trim();
+      var curHash = (it.hashtags || '').trim();
+
+      var hasUnsaved = (newTitle.trim() !== curTitle) || (newGuion.trim() !== curGuion) || (newCopy.trim() !== curCopy) || (newHash.trim() !== curHash);
+
+      if (hasUnsaved) {
+        modal({
+          kind: 'warn',
+          icon: '!',
+          title: 'Tienes cambios sin guardar',
+          text: '¿Guardar la corrección y aprobar?',
+          buttons: [
+            {
+              label: 'Guardar y aprobar',
+              primary: true,
+              fn: function(){
+                saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnApprove, newHash).then(function(){
+                  saveAgencyDecisionChange(it, 'aprobado', btnApprove);
+                });
+              }
+            },
+            { label: 'Cancelar' }
+          ]
+        });
+        return;
+      }
 
       it.titulo = newTitle;
       if (newGuion) it.guion = newGuion;
       if (newCopy) it.copy = newCopy;
+      if (newHash) it.hashtags = newHash;
       saveAgencyDecisionChange(it, 'aprobado', btnApprove);
     };
     agencyBtns.appendChild(btnApprove);
@@ -4400,6 +4533,10 @@ __DATA__
         if (cObj.copyParagraph) {
           setupPlainTextEditable(cObj.copyParagraph, false);
         }
+        if (cObj.hashParagraph) {
+          cObj.hashParagraph.style.display = 'block';
+          setupPlainTextEditable(cObj.hashParagraph, true);
+        }
       } else {
         card.classList.remove('card-agency-edit-mode');
         agencyBar.style.display = 'none';
@@ -4418,6 +4555,11 @@ __DATA__
         if (cObj.copyParagraph) {
           cObj.copyParagraph.removeAttribute('contenteditable');
           cObj.copyParagraph.removeAttribute('spellcheck');
+        }
+        if (cObj.hashParagraph) {
+          cObj.hashParagraph.removeAttribute('contenteditable');
+          cObj.hashParagraph.removeAttribute('spellcheck');
+          if (!it.hashtags) cObj.hashParagraph.style.display = 'none';
         }
       }
     };

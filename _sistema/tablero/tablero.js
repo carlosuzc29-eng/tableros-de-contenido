@@ -1203,16 +1203,30 @@
     clearAgencySession();
   }
 
-  // Formatos exclusivos de trabajo: únicamente estos 4 formatos
-  var FORMATOS = ['Reel', 'Carrusel', 'Carrusel con video', 'Post'];
+  // Tipos de contenido: los mismos del campo "Tipo de contenido" de ClickUp
+  var FORMATOS = ['Reel', 'Carrusel', 'Carrusel con video', 'Post', 'Historia', 'Fotografía', 'Folleto'];
   function normalizeFormato(fmt) {
     if (!fmt) return 'Post';
-    var lower = String(fmt).trim().toLowerCase();
+    var lower = String(fmt).trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     if (lower.indexOf('carrusel con video') >= 0) return 'Carrusel con video';
     if (lower.indexOf('carrusel') >= 0) return 'Carrusel';
     if (lower.indexOf('reel') >= 0) return 'Reel';
+    if (lower.indexOf('historia') >= 0 || lower.indexOf('story') >= 0) return 'Historia';
+    if (lower.indexOf('fotograf') >= 0) return 'Fotografía';
+    if (lower.indexOf('folleto') >= 0) return 'Folleto';
     return 'Post';
   }
+
+  // Canal de cada pieza: 'Ads' (publicidad paga) u 'Orgánico'
+  function normalizeCanal(c) {
+    var l = String(c || '').trim().toLowerCase();
+    if (!l) return '';
+    if (l.indexOf('ads') >= 0 || l.indexOf('pauta') >= 0 || l.indexOf('publicidad') >= 0) return 'Ads';
+    if (l.indexOf('org') === 0) return 'Orgánico';
+    return '';
+  }
+  function canalLabel(c) { return c === 'Ads' ? '📣 Ads' : (c === 'Orgánico' ? '🌱 Orgánico' : ''); }
+  var fc = 'all'; // filtro por canal
 
   function esSinEvaluar(estado) {
     return !estado || estado === 'pendiente' || estado === 'en_revision' || estado === 'borrador';
@@ -1585,6 +1599,11 @@
     if (nav) nav.innerHTML = '';
     cards = [];
     var handle = (DATA.cuenta || DATA.cliente || '').replace(/^@/, '');
+    // Agrupar por canal solo si las piezas vienen ordenadas en bloques (orgánicos y luego Ads, o al revés)
+    var canalesSeq = items.map(function(x){ return normalizeCanal(x.canal); });
+    var bloques = canalesSeq.filter(function(c, i){ return c && (i === 0 || c !== canalesSeq[i - 1]); });
+    var canalAgrupado = canalesSeq.every(function(c){ return !!c; }) && bloques.length === 2 && bloques[0] !== bloques[1];
+    var ultimoCanal = null;
 
   items.forEach(function(it, i){
     var pieceNum = i + 1;
@@ -1616,6 +1635,7 @@
           it.formato = newFmt;
           it.formatoOriginal = newFmt;
           fmtTag.textContent = newFmt;
+          fs.value = newFmt;
           closeFmtPopover();
           saveDraft();
           toast('Guardando tipo de contenido (' + newFmt + ')…');
@@ -1666,8 +1686,15 @@
       });
     }
 
+    it.canal = normalizeCanal(it.canal);
+    card.dataset.canal = it.canal || '';
+    var canalTag = el('span', 'tag canal ' + (it.canal === 'Ads' ? 'canal-ads' : 'canal-org'), canalLabel(it.canal));
+    if (!it.canal) canalTag.style.display = 'none';
+    tags.appendChild(canalTag);
     if (it.pilar) tags.appendChild(el('span', 'tag', it.pilar));
-    if (it.fechaPublicacion) tags.appendChild(el('span', 'tag date', '📅 ' + it.fechaPublicacion));
+    var dateTag = el('span', 'tag date', '📅 ' + (it.fechaPublicacion || ''));
+    if (!it.fechaPublicacion) dateTag.style.display = 'none';
+    tags.appendChild(dateTag);
 
     // Versión concreta y contexto de revisión
     var vNum = parseInt(it.version, 10) || 1;
@@ -1842,6 +1869,19 @@
     rv.appendChild(decSec);
     card.appendChild(rv);
 
+    if (canalAgrupado && it.canal && it.canal !== ultimoCanal) {
+      ultimoCanal = it.canal;
+      var nCanal = items.filter(function(x){ return normalizeCanal(x.canal) === it.canal; }).length;
+      var sh = el('div', 'canal-section-head ' + (it.canal === 'Ads' ? 'canal-ads' : 'canal-org'));
+      sh.dataset.canal = it.canal;
+      sh.appendChild(el('span', 'csh-t', it.canal === 'Ads' ? '📣 Contenidos para Ads' : '🌱 Contenidos orgánicos'));
+      sh.appendChild(el('span', 'csh-n', nCanal + (nCanal === 1 ? ' pieza' : ' piezas')));
+      list.appendChild(sh);
+      var ns = el('div', 'nav-sec ' + (it.canal === 'Ads' ? 'canal-ads' : 'canal-org'), it.canal === 'Ads' ? '📣 Ads' : '🌱 Orgánicos');
+      ns.dataset.canal = it.canal;
+      nav.appendChild(ns);
+    }
+
     list.appendChild(card);
 
     var a = el('a'); a.href = '#' + it.id; a.dataset.state = it.estado;
@@ -1973,6 +2013,8 @@
       fs: fs,
       h2Title: h2Title,
       tagsEl: tags,
+      canalTag: canalTag,
+      dateTag: dateTag,
       vTag: vTag,
       ctxTag: ctxTag,
       guionParagraph: pGuion,
@@ -2008,6 +2050,44 @@
     var agencyBar = el('div', 'card-agency-bar');
     agencyBar.style.display = 'none';
 
+    // Canal y fecha: etiquetas visibles + editores del Modo Agencia
+    var agencyMeta = el('div', 'card-agency-meta');
+    var canalLbl = el('label', 'agency-meta-field');
+    canalLbl.appendChild(el('span', null, 'Canal'));
+    var canalSel = el('select', 'agency-canal-sel');
+    [['', 'Sin definir'], ['Orgánico', '🌱 Orgánico'], ['Ads', '📣 Ads']].forEach(function(o){
+      var op = el('option', null, o[1]); op.value = o[0]; canalSel.appendChild(op);
+    });
+    canalSel.value = normalizeCanal(it.canal);
+    canalLbl.appendChild(canalSel);
+    var fechaLbl = el('label', 'agency-meta-field');
+    fechaLbl.appendChild(el('span', null, 'Publicación'));
+    var fechaInp = el('input', 'agency-fecha-inp');
+    fechaInp.type = 'text'; fechaInp.placeholder = 'DD/MM'; fechaInp.maxLength = 10;
+    fechaInp.value = it.fechaPublicacion || '';
+    fechaLbl.appendChild(fechaInp);
+    agencyMeta.appendChild(canalLbl);
+    agencyMeta.appendChild(fechaLbl);
+    cObj.canalSel = canalSel;
+    cObj.fechaInp = fechaInp;
+
+    cObj.refreshMeta = function(){
+      var cn = normalizeCanal(it.canal);
+      it.canal = cn;
+      card.dataset.canal = cn || '';
+      if (cObj.canalTag) {
+        cObj.canalTag.textContent = canalLabel(cn);
+        cObj.canalTag.className = 'tag canal ' + (cn === 'Ads' ? 'canal-ads' : 'canal-org');
+        cObj.canalTag.style.display = cn ? '' : 'none';
+      }
+      if (cObj.dateTag) {
+        cObj.dateTag.textContent = '📅 ' + (it.fechaPublicacion || '');
+        cObj.dateTag.style.display = it.fechaPublicacion ? '' : 'none';
+      }
+      if (document.activeElement !== canalSel) canalSel.value = cn;
+      if (document.activeElement !== fechaInp) fechaInp.value = it.fechaPublicacion || '';
+    };
+
     var vNum = parseInt(it.version, 10) || 1;
     var barInfo = el('span', 'agency-bar-info');
     function updateAgencyBarText(){
@@ -2017,13 +2097,14 @@
       } else if (it.estado === 'corregido') {
         barInfo.textContent = '🔄 Versión corregida';
       } else {
-        barInfo.textContent = '✎ Modo corrección agencia';
+        barInfo.textContent = (it.estado === 'cambios' || it.estado === 'en_correccion') ? '✎ Corrección pedida por el cliente' : '✎ Edición libre del administrador';
       }
       if (cObj.vTag) cObj.vTag.textContent = 'v' + nv;
     }
     updateAgencyBarText();
     cObj.updateAgencyBarText = updateAgencyBarText;
     agencyBar.appendChild(barInfo);
+    agencyBar.appendChild(agencyMeta);
 
     var agencyBtns = el('div', 'card-agency-actions');
 
@@ -2041,8 +2122,11 @@
       var curGuion = (it.guion || '').trim();
       var curCopy = (it.copy || '').trim();
       var curHash = (it.hashtags || '').trim();
+      var meta = { canal: canalSel.value, fechaPublicacion: fechaInp.value.trim() };
+      var metaCambio = (meta.canal !== normalizeCanal(it.canal)) || (meta.fechaPublicacion !== (it.fechaPublicacion || ''));
+      var textoCambio = !(newTitle.trim() === curTitle && newGuion.trim() === curGuion && newCopy.trim() === curCopy && newHash.trim() === curHash);
 
-      if (newTitle.trim() === curTitle && newGuion.trim() === curGuion && newCopy.trim() === curCopy && newHash.trim() === curHash) {
+      if (!textoCambio && !metaCambio) {
         toast('Sin cambios para guardar');
         return;
       }
@@ -2051,10 +2135,30 @@
         toast('⚠️ Parece que faltan saltos de línea: revisa antes de guardar');
       }
 
-      saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnSave, newHash);
-      setTimeout(function(){
-        updateAgencyBarText();
-      }, 300);
+      function guardar(opts){
+        meta.modo = opts.modo;
+        saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnSave, newHash, meta);
+        setTimeout(function(){ updateAgencyBarText(); }, 300);
+      }
+
+      // Cambios de texto en una pieza ya aprobada: el administrador decide
+      if (textoCambio && it.estado === 'aprobado') {
+        modal({
+          kind: 'warn',
+          icon: '✎',
+          title: 'Esta pieza ya está aprobada',
+          text: '¿Quieres guardar el cambio y mantenerla aprobada, o enviarla al cliente como corrección para que la vuelva a revisar?',
+          buttons: [
+            { label: 'Guardar y mantener aprobada', primary: true, fn: function(){ guardar({ modo: 'libre' }); } },
+            { label: 'Enviar como corrección', fn: function(){ guardar({ modo: 'correccion' }); } },
+            { label: 'Cancelar' }
+          ]
+        });
+        return;
+      }
+      // Piezas con cambios pedidos por el cliente: el guardado es una corrección
+      var esCorreccion = textoCambio && (it.estado === 'cambios' || it.estado === 'en_correccion' || it.estado === 'corregido');
+      guardar({ modo: esCorreccion ? 'correccion' : 'libre' });
     };
     agencyBtns.appendChild(btnSave);
 
@@ -2215,12 +2319,22 @@
       if (isClosedMonth && isReviewShipment) {
         matchesFilter = (c.it._estadoInicial === 'corregido');
       }
+      if (fc !== 'all' && normalizeCanal(c.it.canal) !== fc) matchesFilter = false;
       var v = isIncludedInShipment && matchesFilter;
       c.card.style.display = v ? '' : 'none';
       c.nav.style.display = isIncludedInShipment ? (v ? '' : 'none') : 'none';
       if (v) vis++;
     });
     if ($('empty')) $('empty').style.display = vis ? 'none' : 'block';
+
+    // Encabezados de canal: visibles solo si su canal tiene piezas visibles
+    [].forEach.call(document.querySelectorAll('.canal-section-head, .nav-sec'), function(h){
+      var algunaVisible = cards.some(function(c){ return normalizeCanal(c.it.canal) === h.dataset.canal && c.card.style.display !== 'none'; });
+      h.style.display = algunaVisible ? '' : 'none';
+    });
+    [].forEach.call(document.querySelectorAll('.canal-btn'), function(x){
+      x.classList.toggle('on', x.dataset.c === fc);
+    });
 
     [].forEach.call(document.querySelectorAll('.chip'), function(x){
       x.classList.toggle('on', x.dataset.f === f);
@@ -2355,6 +2469,34 @@
       applyFilter();
     };
   });
+
+  function setupCanalFilter(){
+    var listEl = $('list');
+    if (!listEl || !listEl.parentNode) return;
+    var nAds = items.filter(function(x){ return normalizeCanal(x.canal) === 'Ads'; }).length;
+    var nOrg = items.filter(function(x){ return normalizeCanal(x.canal) === 'Orgánico'; }).length;
+    var bar = $('canalFilter');
+    if (!nAds && !nOrg) { if (bar) bar.style.display = 'none'; fc = 'all'; return; }
+    if (!bar) {
+      bar = el('div', 'canal-filter');
+      bar.id = 'canalFilter';
+      bar.setAttribute('role', 'tablist');
+      listEl.parentNode.insertBefore(bar, listEl);
+    }
+    bar.style.display = '';
+    bar.innerHTML = '';
+    [['all', 'Todos', items.length], ['Orgánico', '🌱 Orgánicos', nOrg], ['Ads', '📣 Ads', nAds]].forEach(function(o){
+      if (o[0] !== 'all' && !o[2]) return;
+      var b = el('button', 'canal-btn' + (fc === o[0] ? ' on' : ''));
+      b.type = 'button';
+      b.dataset.c = o[0];
+      b.setAttribute('role', 'tab');
+      b.appendChild(el('span', null, o[1]));
+      b.appendChild(el('span', 'canal-cnt', String(o[2])));
+      b.onclick = function(){ fc = o[0]; applyFilter(); };
+      bar.appendChild(b);
+    });
+  }
 
   try {
     var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) e.target.classList.add('in'); }); }, {threshold:.05});
@@ -2877,6 +3019,8 @@
           if (fsItem.referencias) it.referencias = fsItem.referencias;
           if (fsItem.pilar) it.pilar = fsItem.pilar;
           if (fsItem.fechaPublicacion) it.fechaPublicacion = fsItem.fechaPublicacion;
+          if (fsItem.canal !== undefined && fsItem.canal !== null) it.canal = normalizeCanal(fsItem.canal);
+          if (cObj.refreshMeta) cObj.refreshMeta();
           if (fsItem.tipoOriginal) it.tipoOriginal = fsItem.tipoOriginal;
           if (fsItem.clickupId) it.clickupId = fsItem.clickupId;
 
@@ -2898,6 +3042,7 @@
 
       refresh();
       updateApartadoCorregidos();
+      if (typeof setupCanalFilter === 'function') setupCanalFilter();
       applyFilter();
       saveDraft();
     }
@@ -3242,7 +3387,12 @@
       activeBar.style.display = isAgency ? 'block' : 'none';
     }
     if (userLbl && agencyUser) {
-      userLbl.textContent = agencyUser + ' (Modo Correcciones)';
+      userLbl.textContent = agencyUser + ' (Administrador)';
+    }
+    if (activeBar) {
+      [].forEach.call(activeBar.querySelectorAll('span'), function(sp){
+        if (/correcciones v\d/i.test(sp.textContent)) sp.textContent = 'Edita libremente cualquier pieza';
+      });
     }
 
     if (isAgency) {
@@ -3552,12 +3702,45 @@
   }
 
   // Guardar corrección directa en Firestore y actualizar tarjeta
-  function saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnSave, newHash){
+  function saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnSave, newHash, meta){
     if (btnSave) { btnSave.disabled = true; btnSave.textContent = 'Guardando…'; }
 
     var nowIso = new Date().toISOString();
     var cambiosPorId = {};
+    meta = meta || {};
     cambiosPorId[it.id] = function(piezaFs){
+      var metaFields = {};
+      if (meta.canal !== undefined) metaFields.canal = normalizeCanal(meta.canal);
+      if (meta.fechaPublicacion !== undefined) metaFields.fechaPublicacion = meta.fechaPublicacion;
+      var fmtActual = (cObj && cObj.fs && cObj.fs.value) ? cObj.fs.value : (piezaFs.formato || it.formato);
+
+      // Edición libre del administrador: no cambia estado ni versión
+      if (meta.modo === 'libre') {
+        var histL = Array.isArray(piezaFs.historial) ? piezaFs.historial.slice() : [];
+        histL.push({
+          version: parseInt(piezaFs.version, 10) || 1,
+          accion: 'Edición del equipo',
+          usuario: agencyUser ? ('Agencia (' + agencyUser + ')') : 'Equipo Nexo',
+          fecha: nowIso
+        });
+        var libre = Object.assign({
+          titulo: newTitle,
+          guion: newGuion,
+          copy: newCopy,
+          hashtags: (newHash !== undefined) ? newHash : (piezaFs.hashtags || ''),
+          formato: fmtActual,
+          formatoOriginal: fmtActual,
+          historial: histL
+        }, metaFields);
+        if (piezaFs.estado === 'aprobado' && piezaFs.aprobacion) {
+          libre.aprobacion = Object.assign({}, piezaFs.aprobacion, {
+            titulo: newTitle, guion: newGuion, copy: newCopy, hashtags: libre.hashtags, formato: fmtActual,
+            editadoPor: agencyUser ? ('Agencia (' + agencyUser + ')') : 'Equipo Nexo', fechaEdicion: nowIso
+          });
+        }
+        return libre;
+      }
+
       var curV = parseInt(piezaFs.version, 10) || 1;
       var curGuion = piezaFs.guion || '';
       var curCopy = piezaFs.copy || '';
@@ -3578,22 +3761,22 @@
         });
       }
 
-      return {
+      return Object.assign({
         titulo: newTitle,
         guion: newGuion,
         copy: newCopy,
         hashtags: valHash,
-        formato: (cObj && cObj.fs) ? cObj.fs.value : (piezaFs.formato || it.formato),
-        formatoOriginal: (cObj && cObj.fs) ? cObj.fs.value : (piezaFs.formatoOriginal || it.formatoOriginal),
+        formato: fmtActual,
+        formatoOriginal: fmtActual,
         version: nextVersion,
         estado: 'corregido',
         fechaCorreccion: nowIso,
         aprobacion: null,
         historial: hist
-      };
+      }, metaFields);
     };
 
-    var opciones = {
+    var opciones = (meta.modo === 'libre') ? {} : {
       tableroFields: {
         revisadoPor: '',
         ultimaRevision: ''
@@ -3603,8 +3786,16 @@
     return guardarPiezas(cambiosPorId, opciones).then(function(savedDoc){
       if (btnSave) { btnSave.disabled = false; btnSave.textContent = '💾 Guardar cambios'; }
       if (cObj && cObj.setUnsavedState) cObj.setUnsavedState(false);
-      if ($('reviewed')) $('reviewed').classList.remove('show');
-      toast('✓ Corrección guardada y sincronizada en el tablero');
+      if (meta.canal !== undefined) it.canal = normalizeCanal(meta.canal);
+      if (meta.fechaPublicacion !== undefined) it.fechaPublicacion = meta.fechaPublicacion;
+      if (meta.modo === 'libre') {
+        it.titulo = newTitle; it.guion = newGuion; it.copy = newCopy;
+        if (newHash !== undefined) it.hashtags = newHash;
+      }
+      if (cObj && cObj.refreshMeta) cObj.refreshMeta();
+      if (typeof setupCanalFilter === 'function') { setupCanalFilter(); applyFilter(); }
+      if (meta.modo !== 'libre' && $('reviewed')) $('reviewed').classList.remove('show');
+      toast(meta.modo === 'libre' ? '✓ Cambios guardados' : '✓ Corrección guardada y sincronizada en el tablero');
       if (cObj && cObj.updateAgencyBarText) cObj.updateAgencyBarText();
       return savedDoc;
     }).catch(function(err){
@@ -3736,6 +3927,7 @@
     }
 
     buildAllCards();
+    setupCanalFilter();
     syncAndRegisterBoard();
 
     counts();

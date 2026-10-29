@@ -73,6 +73,7 @@ Un archivo por tablero en `borradores/` (esa carpeta no se publica). Ejemplo: `b
 - Documentos de Nexo: `N. FORMATO — TÍTULO` → `formato` es lo de antes de la raya y `titulo` lo de después (en tipo oración, respetando nombres propios). `guion` es todo entre `GUION / TEXTO` y `CAPTION`. `copy` es todo después de `CAPTION`.
 - **Copiar literal: no resumir, corregir ni reescribir guiones ni copys.** Si hay errores de tipeo, se avisan aparte, no se corrigen.
 - Guion: un párrafo por línea (`\n`), con una línea en blanco antes de cada `Slide N`. Copy: párrafos separados con `\n\n`. Los hashtags del final del copy van en `hashtags`.
-- Formatos normalizados: Reel, Carrusel, Post, Story, Video, TikTok. Los compuestos se mantienen ("Reel / Post", "Post meme").
+- Formatos (los mismos del campo "Tipo de contenido" de ClickUp): `Reel`, `Carrusel`, `Carrusel con video`, `Post`, `Historia`, `Fotografía`, `Folleto`. Se copian tal cual vienen de ClickUp, sin reducirlos a Post.
+- `canal`: `"Ads"` si la pieza es de publicidad paga (etiqueta `ads` en ClickUp) u `"Orgánico"` si no. El tablero muestra la etiqueta en cada tarjeta y, si hay piezas de los dos canales, un filtro Todos / Orgánicos / Ads. Para que se vean en dos bloques, ordenar el JSON con los orgánicos primero y luego los de Ads.
 - Campos que no existen en el documento van vacíos: `""` o `[]`.
 - Las URLs del contenido van en `referencias`, solo las que empiezan con http/https.

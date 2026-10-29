@@ -51,7 +51,7 @@ def enlace_previo(ruta, cliente):
             hallados.append((os.path.getmtime(r), d['archivo']))
     return max(hallados)[1] if hallados else None
 
-FORMATOS_VALIDOS = ['Reel', 'Carrusel', 'Carrusel con video', 'Post', 'Story', 'Video']
+FORMATOS_VALIDOS = ['Reel', 'Carrusel', 'Carrusel con video', 'Post', 'Historia', 'Fotografía', 'Folleto', 'Video']
 
 def normalizar_formato(fmt):
     """Normaliza un string de formato al valor canónico permitido."""
@@ -60,7 +60,9 @@ def normalizar_formato(fmt):
     if 'carrusel con video' in lower: return 'Carrusel con video'
     if 'carrusel' in lower: return 'Carrusel'
     if 'reel' in lower: return 'Reel'
-    if 'story' in lower: return 'Story'
+    if 'historia' in lower or 'story' in lower: return 'Historia'
+    if 'fotograf' in lower: return 'Fotografía'
+    if 'folleto' in lower: return 'Folleto'
     if 'video' in lower or 'tiktok' in lower: return 'Video'
     return 'Post'
 
@@ -176,6 +178,10 @@ def sincronizar_desde_firestore(cfg, data):
                 if fs_item.get('hashtags') is not None and fs_item.get('hashtags') != contenido.get('hashtags'):
                     contenido['hashtags'] = fs_item['hashtags']
                     cambios += 1
+                for campo_meta in ('canal', 'fechaPublicacion'):
+                    if fs_item.get(campo_meta) and fs_item.get(campo_meta) != contenido.get(campo_meta):
+                        contenido[campo_meta] = fs_item[campo_meta]
+                        cambios += 1
                 if fs_item.get('referencias') is not None and fs_item.get('referencias') != contenido.get('referencias'):
                     contenido['referencias'] = fs_item['referencias']
                     cambios += 1

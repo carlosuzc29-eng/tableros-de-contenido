@@ -21,7 +21,11 @@ FORMATOS_CANONICOS = {
     'carrusel': 'Carrusel',
     'carrusel con video': 'Carrusel con video',
     'post': 'Post',
-    'story': 'Story',
+    'story': 'Historia',
+    'historia': 'Historia',
+    'fotografia': 'Fotografía',
+    'fotografía': 'Fotografía',
+    'folleto': 'Folleto',
     'video': 'Video',
     'tiktok': 'Video'
 }
@@ -163,6 +167,17 @@ def validar_datos_tablero(data, modo_estricto=True):
             # Formato
             fmt = c.get('formato')
             c['formato'] = normalizar_formato(fmt)
+
+            # Canal (Ads u Orgánico)
+            canal = str(c.get('canal') or '').strip()
+            if canal:
+                canal_l = canal.lower()
+                if 'ads' in canal_l or 'pauta' in canal_l:
+                    c['canal'] = 'Ads'
+                elif canal_l.startswith('org'):
+                    c['canal'] = 'Orgánico'
+                else:
+                    advertencias.append(f"Contenido #{num}: canal '{canal}' no reconocido (usa 'Ads' u 'Orgánico').")
 
             # Guion y Copy
             c['guion'] = sanitizar_texto(str(c.get('guion') or ''))

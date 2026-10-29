@@ -717,6 +717,11 @@ async function getToastText(page) {
         await g.click();
         await page.keyboard.type(' Cambio fallido');
         await card.locator('.btn-agency-save').click();
+        await page.waitForTimeout(400);
+        // Pieza aprobada: el administrador elige cómo guardar (se prueba el envío como corrección)
+        if ((await getModalText(page)).includes('ya está aprobada')) {
+          await page.locator('#box button', { hasText: 'Enviar como corrección' }).click();
+        }
         await page.waitForTimeout(2000);
 
         const toast = await getToastText(page);
@@ -731,7 +736,34 @@ async function getToastText(page) {
         await ctx.close();
       }
 
-      pass('Concurrencia con updateTime protegida, error de señal honesto y sin falsos positivos en 500');
+      // 9D: Edición libre del administrador en una pieza pendiente (no cambia estado ni versión) + canal y fecha
+      {
+        const st = new Stub(null);
+        const { ctx, page } = await abrirPagina(browser, st, 'file://' + caso1HtmlFile, true);
+        await page.waitForTimeout(1500);
+        const card = page.locator('article.card').first();
+        await card.locator('.guion p').first().click();
+        await page.keyboard.type(' Edición libre');
+        await card.locator('.agency-canal-sel').selectOption('Ads');
+        await card.locator('.agency-fecha-inp').fill('07/11');
+        await card.locator('.btn-agency-save').click();
+        await page.waitForTimeout(2000);
+        const cs = (st.fields && st.fields.contenidos) || [];
+        const c1 = cs.find(x => x && x.id === 'c1') || cs[0];
+        if (!c1) fail('9D: la edición libre no llegó a Firestore');
+        if (!String(c1.guion || '').includes('Edición libre')) fail('9D: el guion editado no se guardó');
+        if (c1.estado === 'corregido' || (parseInt(c1.version, 10) || 1) !== 1) {
+          fail(`9D: la edición libre cambió el estado o la versión (${c1.estado}, versión ${c1.version})`);
+        }
+        if (c1.canal !== 'Ads' || c1.fechaPublicacion !== '07/11') fail(`9D: canal/fecha no guardados (${c1.canal}, ${c1.fechaPublicacion})`);
+        const tagTxt = await card.locator('.tag.canal').innerText();
+        if (!tagTxt.includes('Ads')) fail('9D: la etiqueta de canal no se actualizó en la tarjeta');
+        const nBtns = await page.locator('.canal-btn').count();
+        if (nBtns < 2) fail('9D: no apareció el filtro por canal tras marcar una pieza como Ads');
+        await ctx.close();
+      }
+
+      pass('Concurrencia con updateTime protegida, error de señal honesto, sin falsos positivos en 500 y edición libre del administrador');
     }
 
     // ─────────────────────────────────────────────────────────────────────────

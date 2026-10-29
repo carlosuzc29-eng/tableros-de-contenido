@@ -23,7 +23,7 @@
     },
     {
       "formato": "Post",
-      "pilar": "",
+      "pilar": "📣 Publicidad (Ads)",
       "fechaPublicacion": "05/11",
       "titulo": "Recibimos pedidos hasta el 20 de noviembre",
       "guionLabel": "Guion / texto",
@@ -38,7 +38,7 @@
     },
     {
       "formato": "Post",
-      "pilar": "",
+      "pilar": "📣 Publicidad (Ads)",
       "fechaPublicacion": "05/11",
       "titulo": "Tu empaque navideño, de principio a fin",
       "guionLabel": "Guion / texto",
@@ -53,7 +53,7 @@
     },
     {
       "formato": "Post",
-      "pilar": "",
+      "pilar": "📣 Publicidad (Ads)",
       "fechaPublicacion": "05/11",
       "titulo": "Tu marca en Navidad, de Mérida a todo el país",
       "guionLabel": "Guion / texto",
@@ -68,7 +68,7 @@
     },
     {
       "formato": "Carrusel",
-      "pilar": "",
+      "pilar": "📣 Publicidad (Ads)",
       "fechaPublicacion": "05/11",
       "titulo": "Así pides tus empaques navideños",
       "guionLabel": "Guion / texto",
@@ -83,7 +83,7 @@
     },
     {
       "formato": "Carrusel",
-      "pilar": "",
+      "pilar": "📣 Publicidad (Ads)",
       "fechaPublicacion": "05/11",
       "titulo": "Empaques navideños por rubro",
       "guionLabel": "Guion / texto",
@@ -98,7 +98,7 @@
     },
     {
       "formato": "Post",
-      "pilar": "",
+      "pilar": "📣 Publicidad (Ads)",
       "fechaPublicacion": "05/11",
       "titulo": "Empaques navideños con respuesta inmediata",
       "guionLabel": "Guion / texto",
@@ -113,7 +113,7 @@
     },
     {
       "formato": "Post",
-      "pilar": "",
+      "pilar": "📣 Publicidad (Ads)",
       "fechaPublicacion": "05/11",
       "titulo": "Que diciembre no te agarre sin empaques",
       "guionLabel": "Guion / texto",
@@ -158,7 +158,7 @@
     },
     {
       "formato": "Reel",
-      "pilar": "",
+      "pilar": "📣 Publicidad (Ads)",
       "fechaPublicacion": "12/11",
       "titulo": "Estas bolsas han viajado más que nosotros",
       "guionLabel": "Guion / texto",
@@ -220,6 +220,21 @@
       "estado": "pendiente",
       "version": 1,
       "comentario": ""
+    },
+    {
+      "formato": "Reel",
+      "pilar": "",
+      "fechaPublicacion": "31/12",
+      "titulo": "La última entrega del año",
+      "guionLabel": "Guion / texto",
+      "guion": "ESCENA 1 · 0–3 s\nVisual: Un lote de varios pedidos embalados, listos para salir.\nTexto en pantalla: Última entrega:\n\nESCENA 2 · 3–6 s\nVisual: El mismo espacio, con el mismo encuadre, ya vacío: los pedidos se entregaron.\nTexto en pantalla: Lista ✅\n\nESCENA 3 · 6–9 s\nVisual: Una máquina trabajando.\nTexto en pantalla: Máquinas:\n\nESCENA 4 · 9–12 s\nVisual: La misma máquina, con el mismo encuadre, apagada.\nTexto en pantalla: apagadas ✅\n\nESCENA 5 · 12–15 s\nVisual: El equipo sentado, conversando.\nTexto en pantalla: Equipo:\n\nESCENA 6 · 15–19 s\nVisual: El equipo empieza a hablar como si estuviera cuadrando algo.\nTexto en pantalla: pensando en las hallacas ✅\n\nESCENA 7 · 19–25 s\nVisual: Lady y Reinaldo a cámara.\nVoz: Lady: \"Y a ti, que nos elegiste este año: gracias.\" Reinaldo: \"Nos vemos en enero.\"",
+      "copy": "Último día del año en Impreco ✅\nGracias por todo lo que hicimos juntos este 2026: cada bolsa, cada caja y cada pedido. Nos vemos en enero 📦",
+      "hashtags": "",
+      "referencias": [],
+      "id": "c15",
+      "estado": "pendiente",
+      "version": 1,
+      "comentario": ""
     }
   ],
   "url": "https://carlosuzc29-eng.github.io/tableros-de-contenido/impreco-930b38.html",
@@ -231,5 +246,5 @@
     "revisadoPor": "",
     "fecha": ""
   },
-  "resetAt": 1793298309881
+  "resetAt": 1793299605818
 }

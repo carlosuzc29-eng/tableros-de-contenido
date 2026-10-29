@@ -8031,6 +8031,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
       // Excluir tableros de pruebas locales o absorbidos por fusión
       if (absorbedBoardIds[t.id]) return false;
       if (t.url && t.url.indexOf('localhost') !== -1) return false;
+      if (t.cliente && /^(qa\b|test\b)/i.test(String(t.cliente).trim())) return false;
 
       // 1. Buscador por cliente
       var cName = String(t.cliente || '').toLowerCase();
@@ -8843,6 +8844,8 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
       snapshot.forEach(function(doc){
         var d = doc.data();
         if (!d.id) d.id = doc.id;
+        var clientStr = String(d.cliente || '').trim();
+        if (/^(qa\b|test\b)/i.test(clientStr)) return;
         docs.push(d);
       });
       allTableros = docs;

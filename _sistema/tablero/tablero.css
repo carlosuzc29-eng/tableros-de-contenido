@@ -1013,20 +1013,35 @@ footer .logo svg{height:76px;margin:0 auto 12px}
 }
 
 /* Estado Solo Lectura para Meses Anteriores (fuera de Modo Agencia) */
-body.is-closed-month:not(.agency-active) .dock {
+body.is-closed-month:not(.agency-active):not(.is-review-corregidos-closed) .dock {
   display: none !important;
 }
-body.is-closed-month:not(.agency-active) .seg {
+body.is-closed-month:not(.agency-active):not(.is-review-corregidos-closed) .seg {
   pointer-events: none !important;
   opacity: 0.55;
 }
-body.is-closed-month:not(.agency-active) .cm-form {
+body.is-closed-month:not(.agency-active):not(.is-review-corregidos-closed) .cm-form {
   display: none !important;
 }
-body.is-closed-month:not(.agency-active) .cm-del {
+body.is-closed-month:not(.agency-active):not(.is-review-corregidos-closed) .cm-del {
   display: none !important;
 }
-body.is-closed-month:not(.agency-active) .fmt-sel {
+body.is-closed-month:not(.agency-active):not(.is-review-corregidos-closed) .fmt-sel {
+  pointer-events: none !important;
+}
+
+/* En modo revisión de corregidos en mes cerrado: solo las piezas corregidas son editables */
+body.is-closed-month.is-review-corregidos-closed:not(.agency-active) .card:not(.is-corregido-editable) .seg {
+  pointer-events: none !important;
+  opacity: 0.55;
+}
+body.is-closed-month.is-review-corregidos-closed:not(.agency-active) .card:not(.is-corregido-editable) .cm-form {
+  display: none !important;
+}
+body.is-closed-month.is-review-corregidos-closed:not(.agency-active) .card:not(.is-corregido-editable) .cm-del {
+  display: none !important;
+}
+body.is-closed-month.is-review-corregidos-closed:not(.agency-active) .fmt-sel {
   pointer-events: none !important;
 }
 

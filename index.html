@@ -11152,9 +11152,16 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
     var nums = getSelectedShipmentNumbers();
     var baseUrl = getPublicBoardUrl(t.url) || window.location.href.split('?')[0].split('#')[0];
     var finalUrl = baseUrl;
+    var mesParam = (typeof getBoardMesParam === 'function') ? getBoardMesParam(t) : '';
+    var sep = finalUrl.indexOf('?') === -1 ? '?' : '&';
+    if (mesParam) {
+      finalUrl += sep + 'mes=' + encodeURIComponent(mesParam);
+      sep = '&';
+    }
     if (nums.length > 0) {
-      var sep = finalUrl.indexOf('?') === -1 ? '?' : '&';
       finalUrl += sep + 'piezas=' + nums.join(',') + '&review=corregidos';
+    } else {
+      finalUrl += sep + 'review=corregidos';
     }
     if (shipmentGeneratedUrl) shipmentGeneratedUrl.value = finalUrl;
     return finalUrl;

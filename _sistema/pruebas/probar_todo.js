@@ -111,7 +111,7 @@ async function getToastText(page) {
 // EJECUCIÓN PRINCIPAL DE LA SUITE
 // ─────────────────────────────────────────────────────────────────────────────
 (async () => {
-  console.log(`${C.bold}${C.cyan}Iniciando suite de pruebas automatizadas Nexo (26 casos: 13 ciclo de vida + 13 arquitectura v2)...${C.reset}\n`);
+  console.log(`${C.bold}${C.cyan}Iniciando suite de pruebas automatizadas Nexo (27 casos: 13 ciclo de vida + 14 arquitectura v2)...${C.reset}\n`);
 
   // Carpeta temporal aislada para pruebas
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'nexo-qa-suite-'));
@@ -1739,8 +1739,169 @@ async function getToastText(page) {
       pass('Índice viejo con actual=2026-10 corregido por mes embebido: noviembre editable, octubre cerrado, 0 escrituras');
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // CASO 27: Tableros v2 - Revisión de corregidos en mes cerrado
+    // ─────────────────────────────────────────────────────────────────────────
+    console.log(`\n${C.bold}27. Tableros v2 (Revisión de corregidos en mes cerrado):${C.reset} ?mes=2026-10&review=corregidos&piezas=1 → pieza 1 corregida editable, resto no editable, PATCH solo a octubre, noviembre intacto`);
+    {
+      // Preparar datos de octubre con pieza 1 en 'corregido' y pieza 2 en 'pendiente'
+      const octPath = path.join(tmpDir, 'datos', v2CodigoCliente, '2026-10.json');
+      const octData = JSON.parse(fs.readFileSync(octPath, 'utf8'));
+      octData.contenidos[0].estado = 'corregido';
+      octData.contenidos[0].version = 2;
+      octData.contenidos[1].estado = 'pendiente';
+      octData.contenidos[2].estado = 'aprobado';
+      fs.writeFileSync(octPath, JSON.stringify(octData, null, 2));
+
+      // Obtener IDs de Firestore para octubre y noviembre desde indice.json
+      const indPath = path.join(tmpDir, 'datos', v2CodigoCliente, 'indice.json');
+      const indData = JSON.parse(fs.readFileSync(indPath, 'utf8'));
+      const octEntry = indData.meses.find(m => m.mes === '2026-10');
+      const novEntry = indData.meses.find(m => m.mes === '2026-11');
+      const octId = octEntry ? octEntry.id : 'qa-cliente-v2-octubre';
+      const novId = novEntry ? novEntry.id : 'qa-cliente-v2-noviembre';
+
+      const st = new Stub({
+        id: octId,
+        cliente: 'QA Cliente V2',
+        mes: 'Octubre',
+        anio: 2026,
+        total: 3,
+        aprobados: 1,
+        cambios: 0,
+        pendientes: 2,
+        estado: 'En revisión',
+        contenidos: [
+          { id: 'c1', estado: 'corregido', version: 2, formato: 'Reel', titulo: 'Pieza Octubre 1' },
+          { id: 'c2', estado: 'pendiente', version: 1, formato: 'Post', titulo: 'Pieza Octubre 2' },
+          { id: 'c3', estado: 'aprobado', version: 1, formato: 'Story', titulo: 'Pieza Octubre 3' }
+        ]
+      });
+
+      // 1. Abrir con ?mes=2026-10&review=corregidos&piezas=1
+      const urlCorregidos = `file://${v2HtmlFile}?mes=2026-10&review=corregidos&piezas=1`;
+      const { ctx, page, pageErrors } = await abrirPagina(browser, st, urlCorregidos);
+
+      if (pageErrors.length > 0) {
+        fail(`Errores de página en revisión de corregidos en mes cerrado: ${pageErrors.join('; ')}`);
+      }
+
+      // Franja debe indicar: "Estás revisando los ajustes de Octubre 2026"
+      const bannerText = await page.evaluate(() => document.getElementById('closedMonthBanner')?.textContent || '');
+      if (!bannerText.includes('Estás revisando los ajustes') || !bannerText.includes('Octubre 2026')) {
+        fail(`Texto de franja no coincide con modo revisión de corregidos: '${bannerText}'`);
+      }
+
+      // La pieza 1 debe estar visible
+      const c1Visible = await page.evaluate(() => {
+        const c1 = document.querySelector('#c1');
+        return c1 && c1.style.display !== 'none';
+      });
+      if (!c1Visible) {
+        fail('Pieza 1 (corregida) debe estar visible en modo revisión de corregidos');
+      }
+
+      // Pieza 2 debe estar oculta
+      const c2Visible = await page.evaluate(() => {
+        const c2 = document.querySelector('#c2');
+        return c2 && c2.style.display !== 'none';
+      });
+      if (c2Visible) {
+        fail('Pieza 2 (no indicada en piezas) debe estar oculta');
+      }
+
+      // Intento sobre una pieza que no está en corregido (c2) debe ser no editable
+      const c2NoEditable = await page.evaluate(() => {
+        const c2 = document.querySelector('#c2');
+        if (!c2) return true;
+        const apBtn = c2.querySelector('button.approve');
+        const estadoAntes = c2.dataset.state;
+        if (apBtn) apBtn.click();
+        const estadoDespues = c2.dataset.state;
+        return estadoAntes === estadoDespues && estadoDespues !== 'aprobado';
+      });
+      if (!c2NoEditable) {
+        fail('Una pieza que no está en corregido no debe ser editable en mes cerrado');
+      }
+
+      // Aprobar pieza 1
+      await page.click('#c1 button.approve');
+      await page.waitForTimeout(300);
+
+      const c1State = await page.evaluate(() => document.querySelector('#c1')?.dataset.state);
+      if (c1State !== 'aprobado') {
+        fail(`Pieza 1 debe cambiar a 'aprobado', se obtuvo '${c1State}'`);
+      }
+
+      // Escribir nombre en dock y enviar
+      await page.fill('#who', 'Cliente QA Revisor');
+      st.log = [];
+      await page.click('#dl');
+      await page.waitForTimeout(1200);
+
+      const modalSuccess = await page.evaluate(() => {
+        const m = document.getElementById('modal');
+        return m && m.textContent.includes('¡Revisión enviada!');
+      });
+      if (!modalSuccess) {
+        fail('No apareció el modal de éxito ¡Revisión enviada!');
+      }
+
+      // Verificar que se hizo PATCH a octId y NINGUNA escritura a novId
+      const escrituras = st.log.filter(l => l.body || l.create);
+      if (escrituras.length === 0) {
+        fail('No se registró ninguna escritura en Firestore al enviar la revisión de corregidos');
+      }
+
+      const novWrites = escrituras.filter(l => l.url && l.url.includes(novId));
+      if (novWrites.length > 0) {
+        fail(`Se detectaron escrituras indebidas al mes de noviembre: ${JSON.stringify(novWrites)}`);
+      }
+
+      const octWrites = escrituras.filter(l => l.url && l.url.includes(octId));
+      if (octWrites.length === 0) {
+        fail(`No se detectó el PATCH dirigido al id de octubre (${octId})`);
+      }
+
+      // Verificar que getReviewCorregidosUrl agrega mes=
+      const urlGen = await page.evaluate(() => {
+        return typeof window.getReviewCorregidosUrl === 'function' ? window.getReviewCorregidosUrl() : '';
+      });
+      if (!urlGen.includes('mes=2026-10')) {
+        fail(`getReviewCorregidosUrl no incluye mes=2026-10: '${urlGen}'`);
+      }
+
+      await ctx.close();
+
+      // 2. Mes cerrado sin ?review sigue en solo lectura con 0 escrituras
+      const ctx2 = await browser.newContext({ viewport: { width: 390, height: 844 } });
+      const page2 = await ctx2.newPage();
+      await st.attach(page2);
+      st.log = [];
+
+      await page2.goto(`file://${v2HtmlFile}?mes=2026-10`, { waitUntil: 'domcontentloaded' });
+      await page2.waitForTimeout(600);
+
+      const isClosedPure = await page2.evaluate(() => document.body.classList.contains('is-closed-month'));
+      const dockHidden = await page2.evaluate(() => {
+        const d = document.getElementById('dock');
+        return !d || getComputedStyle(d).display === 'none';
+      });
+      if (!isClosedPure || !dockHidden) {
+        fail('Mes cerrado sin review debe mantener is-closed-month y dock oculto');
+      }
+
+      const pureWrites = st.log.filter(l => l.body || l.create);
+      if (pureWrites.length > 0) {
+        fail(`Se detectaron escrituras en mes cerrado sin review: ${JSON.stringify(pureWrites)}`);
+      }
+
+      await ctx2.close();
+      pass('Mes cerrado con review=corregidos: pieza 1 corregida aprobada, PATCH solo a octubre, noviembre intacto y mes cerrado sin review 100% solo lectura');
+    }
+
     console.log(`\n${C.bold}${C.green}================================================================${C.reset}`);
-    console.log(`${C.bold}${C.green}✓ TODOS LOS 26 CASOS DE PRUEBA PASARON EXITOSAMENTE (100% OK)${C.reset}`);
+    console.log(`${C.bold}${C.green}✓ TODOS LOS 27 CASOS DE PRUEBA PASARON EXITOSAMENTE (100% OK)${C.reset}`);
     console.log(`${C.bold}${C.green}================================================================${C.reset}\n`);
 
   } catch (err) {

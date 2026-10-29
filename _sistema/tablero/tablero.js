@@ -1373,6 +1373,9 @@
 
     var sep = base.indexOf('?') === -1 ? '?' : '&';
     var finalUrl = base + sep + 'review=corregidos';
+    if (activeMes) {
+      finalUrl += '&mes=' + encodeURIComponent(activeMes);
+    }
     if (corregidosNums.length > 0) {
       finalUrl += '&piezas=' + corregidosNums.join(',');
     }
@@ -1405,8 +1408,14 @@
         }
       }
       if (!label && DATA) label = (DATA.mes ? DATA.mes : '') + ' ' + (DATA.anio || '');
-      existing.innerHTML = '<span>Estás viendo la parrilla de <strong>' + escapeHtml(label) + '</strong>. Es un mes cerrado: solo lectura.</span> ' +
-        '<button type="button" class="btn-go-current-month" id="btnGoCurrentMonth">Ir al mes actual ↗</button>';
+      var isClosedReview = isClosedMonth && isReviewShipment;
+      if (isClosedReview) {
+        existing.innerHTML = '<span>Estás revisando los ajustes de <strong>' + escapeHtml(label) + '</strong>.</span> ' +
+          '<button type="button" class="btn-go-current-month" id="btnGoCurrentMonth">Ir al mes actual ↗</button>';
+      } else {
+        existing.innerHTML = '<span>Estás viendo la parrilla de <strong>' + escapeHtml(label) + '</strong>. Es un mes cerrado: solo lectura.</span> ' +
+          '<button type="button" class="btn-go-current-month" id="btnGoCurrentMonth">Ir al mes actual ↗</button>';
+      }
       var btn = existing.querySelector('#btnGoCurrentMonth');
       if (btn) {
         btn.onclick = function(){
@@ -1571,7 +1580,10 @@
   items.forEach(function(it, i){
     var pieceNum = i + 1;
     var num = pad(pieceNum);
-    var card = el('article', 'card'); card.id = it.id; card.dataset.state = it.estado;
+    it._estadoInicial = it._estadoInicial || it.estado;
+    var isIncludedInShipment = (!targetPieceNumbers || targetPieceNumbers.indexOf(pieceNum) !== -1);
+    var isCorregidoEditable = (!isClosedMonth || (isReviewShipment && it._estadoInicial === 'corregido' && isIncludedInShipment));
+    var card = el('article', 'card' + (isCorregidoEditable ? ' is-corregido-editable' : '')); card.id = it.id; card.dataset.state = it.estado;
     card.dataset.pieceNum = pieceNum;
 
     var top = el('div', 'c-top');
@@ -1742,6 +1754,11 @@
         delBtn.type = 'button';
         delBtn.title = 'Eliminar este comentario';
         delBtn.onclick = function(){
+          if (isClosedMonth && !agencyUser) {
+            if (!isReviewShipment || it._estadoInicial !== 'corregido' || (targetPieceNumbers && targetPieceNumbers.indexOf(pieceNum) === -1)) {
+              return;
+            }
+          }
           var origIdx = it.comentarios.indexOf(cm);
           if (origIdx >= 0) it.comentarios.splice(origIdx, 1);
           it.comentario = formatComentariosString(it.comentarios);
@@ -1785,7 +1802,14 @@
       return true;
     }
 
-    btnAdd.onclick = function(){ addCommentFromInput(); };
+    btnAdd.onclick = function(){
+      if (isClosedMonth && !agencyUser) {
+        if (!isReviewShipment || it._estadoInicial !== 'corregido' || (targetPieceNumbers && targetPieceNumbers.indexOf(pieceNum) === -1)) {
+          return;
+        }
+      }
+      addCommentFromInput();
+    };
     formFoot.appendChild(btnAdd);
     cmForm.appendChild(formFoot);
     cmBox.appendChild(cmForm);
@@ -1850,6 +1874,11 @@
     }
 
     function set(s){
+      if (isClosedMonth && !agencyUser) {
+        if (!isReviewShipment || it._estadoInicial !== 'corregido' || (targetPieceNumbers && targetPieceNumbers.indexOf(pieceNum) === -1)) {
+          return;
+        }
+      }
       if (s === 'cambios') {
         if (ta.value.trim()) addCommentFromInput();
         var hasComments = (it.comentarios && it.comentarios.length > 0 && it.comentarios.some(function(x){ return x.texto && x.texto.trim(); }));
@@ -2167,15 +2196,19 @@
   var f = 'all';
   function applyFilter(){
     var vis = 0;
-    cards.forEach(function(c){
-      var isIncludedInShipment = (!targetPieceNumbers || targetPieceNumbers.indexOf(parseInt(c.card.dataset.pieceNum, 10)) !== -1);
+    cards.forEach(function(c, cIdx){
+      var pieceNum = parseInt(c.card.dataset.pieceNum || (cIdx + 1), 10);
+      var isIncludedInShipment = (!targetPieceNumbers || targetPieceNumbers.indexOf(pieceNum) !== -1);
       var matchesFilter = (f === 'all') || (c.it.estado === f);
+      if (isClosedMonth && isReviewShipment) {
+        matchesFilter = (c.it._estadoInicial === 'corregido');
+      }
       var v = isIncludedInShipment && matchesFilter;
       c.card.style.display = v ? '' : 'none';
       c.nav.style.display = isIncludedInShipment ? (v ? '' : 'none') : 'none';
       if (v) vis++;
     });
-    $('empty').style.display = vis ? 'none' : 'block';
+    if ($('empty')) $('empty').style.display = vis ? 'none' : 'block';
 
     [].forEach.call(document.querySelectorAll('.chip'), function(x){
       x.classList.toggle('on', x.dataset.f === f);
@@ -2529,7 +2562,7 @@
       if (token) getHeaders['Authorization'] = 'Bearer ' + token;
       return fetch(docUrl, { headers: getHeaders }).then(function(res){
         if (!res.ok) {
-          if (res.status === 404 && !opciones._autoRegistrado) {
+          if (res.status === 404 && !opciones._autoRegistrado && !isClosedMonth) {
             var nowIso = new Date().toISOString();
             var initialFields = {
               id: { stringValue: String(DATA.id) },
@@ -2925,7 +2958,7 @@
 
   // Envío directo a Firebase Cloud Firestore
   function doSend(){
-    if (isClosedMonth) {
+    if (isClosedMonth && !isReviewShipment) {
       toast('Este es un mes cerrado (solo lectura). No se pueden enviar revisiones.');
       return;
     }
@@ -2968,6 +3001,10 @@
     var evaluatedItems = (targetPieceNumbers && targetPieceNumbers.length > 0)
       ? items.filter(function(it, idx){ return targetPieceNumbers.indexOf(idx + 1) !== -1; })
       : items;
+
+    if (isClosedMonth && isReviewShipment) {
+      evaluatedItems = evaluatedItems.filter(function(it){ return it._estadoInicial === 'corregido'; });
+    }
 
     var cambiosPorId = {};
     evaluatedItems.forEach(function(it){
@@ -3649,11 +3686,18 @@
     KEY = 'nexo-revision-' + (DATA.id || (DATA.cliente + '-' + DATA.mes + '-' + DATA.anio));
     if (DATA.firebase) FB = DATA.firebase;
     isClosedMonth = !!isClosed;
+    var isClosedReview = isClosedMonth && isReviewShipment;
 
     if (isClosedMonth) {
       document.body.classList.add('is-closed-month');
     } else {
       document.body.classList.remove('is-closed-month');
+    }
+
+    if (isClosedReview) {
+      document.body.classList.add('is-review-corregidos-closed');
+    } else {
+      document.body.classList.remove('is-review-corregidos-closed');
     }
 
     updateClosedMonthBanner();
@@ -3685,9 +3729,9 @@
       } catch(e) {}
     }
 
-    // Si viene ?review=corregidos en el mes actual
-    if (!isClosedMonth && isReviewShipment) {
-      applyFilter('corregidos');
+    // Si viene ?review=corregidos
+    if (isReviewShipment) {
+      applyFilter();
       var firstCorr = document.querySelector('.card.status-corregido');
       if (firstCorr) {
         setTimeout(function(){
@@ -3705,6 +3749,9 @@
     newUrl.searchParams.delete('review');
     newUrl.searchParams.delete('piezas');
     window.history.replaceState(null, '', newUrl.toString());
+    isReviewShipment = false;
+    targetPieceNumbers = null;
+    document.body.classList.remove('is-review-corregidos-closed');
 
     if (monthsCache[newMes]) {
       var isClosed = (indiceData && indiceData.actual) ? (newMes !== indiceData.actual) : false;
@@ -3858,5 +3905,6 @@
 
   if (typeof window !== 'undefined') {
     window.switchMonth = switchMonth;
+    window.getReviewCorregidosUrl = getReviewCorregidosUrl;
   }
 })();

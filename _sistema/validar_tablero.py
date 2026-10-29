@@ -34,6 +34,8 @@ def normalizar_mes(mes_raw):
     if not mes_raw:
         return None
     mes_str = str(mes_raw).strip().capitalize()
+    if mes_str.lower() in ('septiembre', 'setiembre'):
+        return 'Septiembre'
     for m in MESES_VALIDOS:
         if m.lower() == mes_str.lower():
             return m
@@ -72,7 +74,7 @@ def validar_datos_tablero(data, modo_estricto=True):
     mes = norm.get('mes')
     mes_norm = normalizar_mes(mes)
     if not mes_norm:
-        errores.append(f"Campo 'mes' ('{mes}') inválido. Debe ser uno de: {', '.join(MESES_VALIDOS)}.")
+        errores.append(f"Mes no reconocido: {mes}")
     else:
         norm['mes'] = mes_norm
 
@@ -284,7 +286,7 @@ def validar_tablero_publicado_v2(codigo_cliente, mes_key=None, repo_dir=None):
         else:
             try:
                 datos_mes = json.load(open(ruta_mes, 'r', encoding='utf-8'))
-                campos_prohibidos_raiz = {'archivo', 'clickupId', 'tipoOriginal', 'sincronizadoClickup', 'huellasClickup', 'tableroProduccion'}
+                campos_prohibidos_raiz = {'archivo', 'token', 'clickupId', 'tipoOriginal', 'sincronizadoClickup', 'huellasClickup', 'tableroProduccion'}
                 hallados_raiz = campos_prohibidos_raiz.intersection(datos_mes.keys())
                 if hallados_raiz:
                     errores.append(f"El archivo '{ruta_mes}' contiene campos internos prohibidos en la raíz: {hallados_raiz}")

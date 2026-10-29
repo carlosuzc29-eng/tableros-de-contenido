@@ -367,6 +367,13 @@ def main():
     n = len(data.get('contenidos', []))
     if not n: sys.exit('El JSON no tiene contenidos.')
 
+    archivo_previo_borrador = data.get('archivo')
+    if archivo_previo_borrador:
+        cod_prev = os.path.splitext(archivo_previo_borrador)[0]
+        ruta_ind_prev = os.path.join(REPO, 'datos', cod_prev, 'indice.json')
+        if not os.path.exists(ruta_ind_prev):
+            sys.exit(f"Falta datos/{cod_prev}/indice.json: construye dentro del repositorio completo, no en una carpeta suelta")
+
     # Un solo enlace por cliente: cada mes nuevo reutiliza el archivo del tablero anterior.
     previo = enlace_previo(ruta, data['cliente'])
     enlace_reutilizado = False
@@ -443,15 +450,17 @@ def main():
     meses_num_map = {
         'enero': '01', 'febrero': '02', 'marzo': '03', 'abril': '04',
         'mayo': '05', 'junio': '06', 'julio': '07', 'agosto': '08',
-        'septiembre': '09', 'octubre': '10', 'noviembre': '11', 'diciembre': '12'
+        'septiembre': '09', 'setiembre': '09', 'octubre': '10', 'noviembre': '11', 'diciembre': '12'
     }
     s_mes = slug(data.get('mes', '')).lower()
-    num_mes = meses_num_map.get(s_mes, '10')
+    num_mes = meses_num_map.get(s_mes)
+    if not num_mes:
+        sys.exit(f"Mes no reconocido: {data.get('mes', '')}")
     mes_key = f"{data.get('anio', '2026')}-{num_mes}"
     etiqueta_mes = f"{str(data.get('mes', '')).capitalize()} {data.get('anio', '')}".strip()
 
-    # Excluir archivo, clickupId, tipoOriginal, sincronizadoClickup, huellasClickup y tableroProduccion del JSON y HTML público
-    claves_excluir_tablero = {'archivo', 'clickupId', 'tipoOriginal', 'sincronizadoClickup', 'huellasClickup', 'tableroProduccion'}
+    # Excluir archivo, token, clickupId, tipoOriginal, sincronizadoClickup, huellasClickup y tableroProduccion del JSON y HTML público
+    claves_excluir_tablero = {'archivo', 'token', 'clickupId', 'tipoOriginal', 'sincronizadoClickup', 'huellasClickup', 'tableroProduccion'}
     datos = json.loads(json.dumps({k: v for k, v in data.items() if k not in claves_excluir_tablero}))
     for c in datos.get('contenidos', []):
         if isinstance(c, dict):
@@ -503,6 +512,10 @@ def main():
     print(f"✓ Actualizado datos/{codigo_cliente}/indice.json (actual: {indice['actual']})")
 
     # 3. Regenerar cáscara <archivo>.html con Chrome headless
+    ruta_tablero_js = os.path.join(REPO, '_sistema', 'tablero', 'tablero.js')
+    if not os.path.exists(ruta_tablero_js):
+        sys.exit(f"Error: no se encontró {ruta_tablero_js} para el pre-render")
+
     html = open(PLANTILLA, encoding='utf-8').read()
     html = html.replace('__CODIGO_CLIENTE__', codigo_cliente)
     html = html.replace('__DATA__', json.dumps(datos, ensure_ascii=False, indent=2).replace('</', '<\\/'))
@@ -517,6 +530,8 @@ def main():
             res = subprocess.run([chrome_bin, *extra, '--headless=new', '--disable-gpu', '--no-first-run',
                                   '--allow-file-access-from-files', '--virtual-time-budget=5000',
                                   '--dump-dom', 'file://' + tmp_path], capture_output=True, text=True, timeout=120)
+            if 'tablero.js' in (res.stderr or '') and ('ERR_FILE_NOT_FOUND' in res.stderr or '404' in res.stderr or 'Failed to load resource' in res.stderr):
+                sys.exit(f"Error: falló el pre-render porque no se encontró _sistema/tablero/tablero.js ({res.stderr.strip()})")
             out = res.stdout
             if 'class="js"' in out[:400]:
                 out = '<!DOCTYPE html>\n' + re.sub(r'^\s*<!DOCTYPE html>\s*', '', out, flags=re.I).replace('class="js"', 'class="no-js"', 1)
@@ -529,6 +544,8 @@ def main():
             else:
                 print('  ⚠️ Aviso: Chrome headless no devolvió el DOM esperado, usando renderizado base.')
         except Exception as e:
+            if 'tablero.js' in str(e):
+                sys.exit(f"Error: falló el pre-render con Chrome: {e}")
             print(f'  ⚠️ Aviso: fallo en Chrome headless ({e}), usando renderizado base.')
         finally:
             if os.path.exists(tmp_path):

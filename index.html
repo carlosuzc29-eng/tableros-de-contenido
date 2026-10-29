@@ -7928,13 +7928,14 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
 
   var MESES_MAP_BANCO = {
     enero:'01', febrero:'02', marzo:'03', abril:'04', mayo:'05', junio:'06',
-    julio:'07', agosto:'08', septiembre:'09', octubre:'10', noviembre:'11', diciembre:'12'
+    julio:'07', agosto:'08', septiembre:'09', setiembre:'09', octubre:'10', noviembre:'11', diciembre:'12'
   };
   function getBoardMesParam(t){
     if (!t) return '';
     var anio = t.anio || '2026';
     var m = String(t.mes || '').toLowerCase().trim();
-    var num = MESES_MAP_BANCO[m] || (m.length === 2 ? m : '10');
+    var num = MESES_MAP_BANCO[m] || (m.length === 2 ? m : '');
+    if (!num) return '';
     return anio + '-' + num;
   }
 

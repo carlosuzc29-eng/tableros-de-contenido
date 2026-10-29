@@ -1289,7 +1289,66 @@ async function getToastText(page) {
         fail('Los elementos de indice.meses deben contener el campo "id" de Firestore');
       }
 
-      pass('Dos meses seguidos construidos: mismo HTML, 2 JSON en datos/, índice ordenado con actual=2026-11');
+      // Validar mes reconocido ("Setiembre"), mes desconocido y falta de indice.json
+      const draftSetiembre = {
+        cliente: 'QA Cliente Setiembre',
+        cuenta: 'qacliente.setiembre',
+        mes: 'Setiembre',
+        anio: 2026,
+        intro: 'Parrilla de contenidos Setiembre 2026.',
+        contenidos: [{ id: 's1', formato: 'Post', pilar: 'Comunidad', titulo: 'Pieza Setiembre', guion: 'GS', copy: 'CS' }]
+      };
+      const pathDraftSet = path.join(borradoresDir, 'qa-cliente-setiembre-2026.json');
+      fs.writeFileSync(pathDraftSet, JSON.stringify(draftSetiembre, null, 2));
+      execSync(`python3 "${CONSTRUIR_PY}" "${pathDraftSet}"`, { env: envTest, stdio: 'pipe' });
+      const setActualizado = JSON.parse(fs.readFileSync(pathDraftSet, 'utf8'));
+      const codSet = setActualizado.archivo.replace(/\.html$/, '');
+      if (!fs.existsSync(path.join(tmpDir, 'datos', codSet, '2026-09.json'))) {
+        fail('No se generó datos/<cliente>/2026-09.json al usar "Setiembre"');
+      }
+
+      // Mes no reconocido debe fallar
+      const draftInvalido = {
+        cliente: 'QA Cliente V2',
+        cuenta: 'qacliente.v2',
+        mes: 'MesInexistente',
+        anio: 2026,
+        contenidos: [{ id: 'x1', formato: 'Post', titulo: 'Pieza X', guion: 'GX', copy: 'CX' }]
+      };
+      const pathDraftInv = path.join(borradoresDir, 'qa-cliente-inv.json');
+      fs.writeFileSync(pathDraftInv, JSON.stringify(draftInvalido, null, 2));
+      let errMes = '';
+      try {
+        execSync(`python3 "${CONSTRUIR_PY}" "${pathDraftInv}"`, { env: envTest, stdio: 'pipe' });
+      } catch (e) {
+        errMes = (e.stderr ? e.stderr.toString() : '') + (e.stdout ? e.stdout.toString() : '') + (e.message || '');
+      }
+      if (!errMes.includes('Mes no reconocido: MesInexistente')) {
+        fail(`construir.py no falló con 'Mes no reconocido: MesInexistente': ${errMes}`);
+      }
+
+      // Falta datos/<codigo>/indice.json si el borrador tiene archivo
+      const draftFaltaIndice = {
+        cliente: 'QA Cliente Sin Indice',
+        cuenta: 'qacliente.sinindice',
+        mes: 'Octubre',
+        anio: 2026,
+        archivo: 'cliente-inexistente-123456.html',
+        contenidos: [{ id: 'y1', formato: 'Post', titulo: 'Pieza Y', guion: 'GY', copy: 'CY' }]
+      };
+      const pathDraftFalta = path.join(borradoresDir, 'qa-cliente-falta-ind.json');
+      fs.writeFileSync(pathDraftFalta, JSON.stringify(draftFaltaIndice, null, 2));
+      let errIndice = '';
+      try {
+        execSync(`python3 "${CONSTRUIR_PY}" "${pathDraftFalta}"`, { env: envTest, stdio: 'pipe' });
+      } catch (e) {
+        errIndice = (e.stderr ? e.stderr.toString() : '') + (e.stdout ? e.stdout.toString() : '') + (e.message || '');
+      }
+      if (!errIndice.includes('Falta datos/cliente-inexistente-123456/indice.json: construye dentro del repositorio completo, no en una carpeta suelta')) {
+        fail(`construir.py no falló al faltar indice.json: ${errIndice}`);
+      }
+
+      pass('Dos meses seguidos construidos: mismo HTML, 2 JSON en datos/, índice ordenado con actual=2026-11, Setiembre reconocido, mes desconocido rechazado y verificación de índice previo');
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -1536,7 +1595,7 @@ async function getToastText(page) {
       const jsonNovContent = fs.readFileSync(path.join(datosClienteDir, '2026-11.json'), 'utf8');
       const htmlContent = fs.readFileSync(v2HtmlFile, 'utf8');
 
-      const camposProhibidos = ['clickupId', 'tipoOriginal', 'sincronizadoClickup', 'huellasClickup', 'tableroProduccion', '_sync'];
+      const camposProhibidos = ['token', 'clickupId', 'tipoOriginal', 'sincronizadoClickup', 'huellasClickup', 'tableroProduccion', '_sync'];
       for (const campo of camposProhibidos) {
         if (jsonNovContent.includes(`"${campo}"`)) {
           fail(`El JSON publicado en datos/ contiene el campo prohibido '${campo}'`);

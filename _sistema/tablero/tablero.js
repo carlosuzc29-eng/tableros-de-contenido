@@ -3776,12 +3776,13 @@
   // Carga inicial y respaldo offline
   var MESES_MAP = {
     enero:'01', febrero:'02', marzo:'03', abril:'04', mayo:'05', junio:'06',
-    julio:'07', agosto:'08', septiembre:'09', octubre:'10', noviembre:'11', diciembre:'12'
+    julio:'07', agosto:'08', septiembre:'09', setiembre:'09', octubre:'10', noviembre:'11', diciembre:'12'
   };
   function getMesKey(m, a){
     if (!m) return '';
     var s = String(m).toLowerCase().trim();
-    var num = MESES_MAP[s] || (s.length === 2 ? s : '10');
+    var num = MESES_MAP[s] || (s.length === 2 ? s : '');
+    if (!num) return '';
     return String(a || '2026') + '-' + num;
   }
 
@@ -3855,6 +3856,10 @@
                 });
               }
             }
+          }
+
+          if (requestedMes && indiceData.meses && !indiceData.meses.some(function(m){ return m.mes === requestedMes; })) {
+            return;
           }
 
           var targetMes = requestedMes || indiceData.actual || (indiceData.meses && indiceData.meses[0] ? indiceData.meses[0].mes : null);

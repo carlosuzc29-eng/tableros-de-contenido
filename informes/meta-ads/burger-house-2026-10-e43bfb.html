@@ -112,6 +112,7 @@
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{
   background:radial-gradient(ellipse at 50% 20%, #254059 0%, #152535 70%, #0d1722 100%);
+  background-attachment:fixed;
   color:#fff;
   font-family:var(--font-body);
   line-height:1.55;
@@ -2050,9 +2051,9 @@ h4{
                        (document.body && document.body.classList.contains('dark-theme')) ||
                        (!document.querySelector('.hero') && !document.querySelector('.kanban-area[data-theme="light"]'));
 
-      // Helper de parallax por capa
+      // Fondo infinito en toda la pantalla: sin desfase acumulativo por scroll
       function getParallaxY(layer){
-        return isStatic ? 0 : (layer === 0 ? scrollY * 0.04 : scrollY * 0.08);
+        return 0;
       }
 
       // 1. DIBUJAR CONEXIONES (con gradientes desvanecidos en extremos y doble trazo en acento)

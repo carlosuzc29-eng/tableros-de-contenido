@@ -208,6 +208,7 @@
 
     body {
       background: var(--bg-gradient);
+      background-attachment: fixed;
       font-family: var(--font-sans);
       color: var(--text-main);
       height: 100vh;
@@ -4241,9 +4242,9 @@
                        (document.body && document.body.classList.contains('dark-theme')) ||
                        (!document.querySelector('.hero') && !document.querySelector('.kanban-area[data-theme="light"]'));
 
-      // Helper de parallax por capa
+      // Fondo infinito en toda la pantalla: sin desfase acumulativo por scroll
       function getParallaxY(layer){
-        return isStatic ? 0 : (layer === 0 ? scrollY * 0.04 : scrollY * 0.08);
+        return 0;
       }
 
       // 1. DIBUJAR CONEXIONES (con gradientes desvanecidos en extremos y doble trazo en acento)

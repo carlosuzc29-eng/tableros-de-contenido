@@ -111,7 +111,7 @@ button{font:inherit;cursor:pointer}
 .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--verde)}
 .eyebrow::before{content:"";width:28px;height:2px;background:var(--verde)}
 .hero h1{font-family:var(--font-head);font-size:clamp(40px,7.5vw,92px);font-weight:800;line-height:.95;letter-spacing:-.035em;margin-top:18px}
-.hero h1 .out{color:transparent;-webkit-text-stroke:1.5px #fff}
+.hero h1 .out{font-family:'Poppins','Plus Jakarta Sans',system-ui,sans-serif;color:transparent;-webkit-text-stroke:1.5px #fff;letter-spacing:-.02em}
 .sub{color:#B9C6D2;font-size:17px;max-width:540px;margin-top:22px}
 .reviewed{display:none;margin-top:18px;font-size:14px;background:rgba(92,184,62,.16);border:1px solid rgba(92,184,62,.45);color:#DDF3D4;padding:9px 14px;border-radius:12px;width:fit-content;max-width:100%}
 .hero-grid>div{min-width:0}

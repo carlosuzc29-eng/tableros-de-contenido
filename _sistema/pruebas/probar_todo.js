@@ -111,7 +111,7 @@ async function getToastText(page) {
 // EJECUCIÓN PRINCIPAL DE LA SUITE
 // ─────────────────────────────────────────────────────────────────────────────
 (async () => {
-  console.log(`${C.bold}${C.cyan}Iniciando suite de pruebas automatizadas Nexo (27 casos: 13 ciclo de vida + 14 arquitectura v2)...${C.reset}\n`);
+  console.log(`${C.bold}${C.cyan}Iniciando suite de pruebas automatizadas Nexo (28 casos: 13 ciclo de vida + 15 arquitectura v2)...${C.reset}\n`);
 
   // Carpeta temporal aislada para pruebas
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'nexo-qa-suite-'));
@@ -125,7 +125,8 @@ async function getToastText(page) {
       apiKey: 'fake-qa-api-key',
       projectId: 'nexo-qa-inexistente'
     },
-    base_url: 'https://test.nexo.ejemplo/'
+    base_url: 'https://test.nexo.ejemplo/',
+    sinFirestore: true
   }, null, 2));
 
   const envTest = {
@@ -1959,8 +1960,57 @@ async function getToastText(page) {
       pass('Mes cerrado con review=corregidos: pieza 1 corregida aprobada, PATCH solo a octubre, noviembre intacto y mes cerrado sin review 100% solo lectura');
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // CASO 28: La sincronización periódica no borra evaluaciones sin enviar
+    // ─────────────────────────────────────────────────────────────────────────
+    console.log(`\n${C.bold}28. Sincronización con evaluaciones sin enviar:${C.reset} aprobar sin enviar sobrevive al volver a la pestaña; una versión nueva de Nexo la descarta`);
+    {
+      const novData = JSON.parse(fs.readFileSync(path.join(tmpDir, 'datos', v2CodigoCliente, '2026-11.json'), 'utf8'));
+      const contenidos = novData.contenidos.map((c, i) => Object.assign({}, c, {
+        n: i + 1,
+        id: c.id || ('c' + (i + 1)),
+        estado: i === 0 ? 'corregido' : 'cambios',
+        comentario: i === 0 ? '' : 'Ajustar el cierre',
+        version: i === 0 ? 2 : 1
+      }));
+      const st = new Stub({
+        id: 'qa-sync-sin-enviar', cliente: 'QA Cliente V2', mes: 'Noviembre', anio: 2026,
+        total: contenidos.length, aprobados: 0, cambios: contenidos.length - 1, pendientes: 0,
+        estado: 'Con cambios', revisadoPor: 'Cliente QA', ultimaRevision: '2026-11-02T10:00:00Z',
+        contenidos
+      });
+      const { ctx, page } = await abrirPagina(browser, st, `file://${v2HtmlFile}`);
+      const estadoC1 = () => page.evaluate(() => document.querySelector('#c1')?.dataset.state);
+      const volverAPestana = async () => {
+        await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+        await page.waitForTimeout(800);
+      };
+
+      if (await estadoC1() !== 'corregido') fail(`Pieza 1 debía cargar en 'corregido', se obtuvo '${await estadoC1()}'`);
+
+      await page.click('#c1 button.approve');
+      await page.waitForTimeout(200);
+      await volverAPestana();
+      if (await estadoC1() !== 'aprobado') {
+        fail(`La aprobación sin enviar se perdió al volver a la pestaña (estado '${await estadoC1()}')`);
+      }
+
+      // Nexo sube la v3 de la pieza 1: la aprobación local de la v2 ya no aplica
+      st.fields.contenidos[0].version = 3;
+      st.fields.contenidos[0].guion = 'Guion corregido v3';
+      st.bump();
+      await volverAPestana();
+      if (await estadoC1() !== 'corregido') {
+        fail(`Con una versión nueva de Nexo, la pieza 1 debía volver a 'corregido', se obtuvo '${await estadoC1()}'`);
+      }
+
+      if (st.log.some(l => l.body)) fail('La sincronización no debe escribir en Firestore');
+      await ctx.close();
+      pass('Evaluación sin enviar conservada al sincronizar y descartada solo cuando Nexo sube una versión nueva');
+    }
+
     console.log(`\n${C.bold}${C.green}================================================================${C.reset}`);
-    console.log(`${C.bold}${C.green}✓ TODOS LOS 27 CASOS DE PRUEBA PASARON EXITOSAMENTE (100% OK)${C.reset}`);
+    console.log(`${C.bold}${C.green}✓ TODOS LOS 28 CASOS DE PRUEBA PASARON EXITOSAMENTE (100% OK)${C.reset}`);
     console.log(`${C.bold}${C.green}================================================================${C.reset}\n`);
 
   } catch (err) {

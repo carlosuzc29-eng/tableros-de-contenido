@@ -91,6 +91,9 @@ def sincronizar_desde_firestore(cfg, data):
     doc_id = data.get('id')
     if not doc_id:
         return
+    if cfg.get('sinFirestore'):
+        print('  (Configuración de pruebas: se omite la sincronización con Firestore)')
+        return
     try:
         doc_url = (f'https://firestore.googleapis.com/v1/projects/{project_id}'
                    f'/databases/(default)/documents/tableros/{doc_id}?key={api_key}')
@@ -243,10 +246,19 @@ def sincronizar_desde_firestore(cfg, data):
 
         if cambios:
             print(f'  ↑ Sincronizados {cambios} cambio(s) desde Firestore al JSON (versiones, formatos, estados)')
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            return  # Tablero nuevo: todavía no existe en Firestore
+        sys.exit(f"❌ No se pudo leer Firestore para sincronizar (HTTP {e.code}): abortando para no publicar textos desactualizados.")
     except Exception as e:
-        print(f'  (No se pudo leer Firestore para sincronizar: {e})')
+        sys.exit(f"❌ No se pudo leer Firestore para sincronizar ({type(e).__name__}: {e}): abortando para no publicar textos desactualizados.")
 
 def registrar_en_firestore(cfg, data, total_contenidos):
+    if cfg.get('sinFirestore'):
+        return
+    cliente_s = str(data.get('cliente', '')).strip().lower()
+    if cliente_s.startswith(('qa', 'test', 'cliente prueba', 'cliente regresion')):
+        return
     fb = cfg.get('firebase', {})
     if not (fb.get('apiKey') and fb.get('projectId') and fb.get('email') and fb.get('password')):
         print('  Se registrará solo al abrirlo por primera vez')
@@ -362,7 +374,7 @@ def main():
             sys.exit(1)
         data = normalizado
     except Exception as e:
-        print(f"  (Advertencia: validador no disponible: {e})")
+        sys.exit(f"❌ El validador falló ({type(e).__name__}: {e}): no se construye sin validar.")
 
     n = len(data.get('contenidos', []))
     if not n: sys.exit('El JSON no tiene contenidos.')
@@ -577,7 +589,10 @@ def main():
         if diff_tablero.stdout.strip():
             subprocess.run(['git', '-C', REPO, 'add', '_sistema/tablero'], check=True)
         subprocess.run(['git', '-C', REPO, 'commit', '-m', f"Tablero {data['cliente']} {data['mes']} {data['anio']} (v2)"], check=False)
-        subprocess.run(['git', '-C', REPO, 'pull', '--rebase', 'origin', 'main'], check=False)
+        pull = subprocess.run(['git', '-C', REPO, 'pull', '--rebase', 'origin', 'main'])
+        if pull.returncode != 0:
+            subprocess.run(['git', '-C', REPO, 'rebase', '--abort'], capture_output=True)
+            sys.exit('❌ git pull --rebase falló (posible conflicto). El commit quedó local y sin publicar: revisa con git status.')
         subprocess.run(['git', '-C', REPO, 'push', 'origin', 'main'], check=True)
         print('✓ Publicado (GitHub tarda 1-2 minutos en actualizar)')
         print(f"Verifica en 2 minutos con: node _sistema/pruebas/verificar_publicado.js {data['archivo']}")

@@ -11232,10 +11232,18 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
       });
     }
 
-    // Si aún así no hay, mostrar todos los tableros del cliente o los primeros
     if (currentMergeCandidateBoards.length === 0) {
-      currentMergeCandidateBoards = allTableros.slice(0, 5);
+      toast('No hay tableros de ' + clientName + ' para unir.');
+      return;
     }
+
+    // Solo se unen tableros del mismo mes: piezas de meses distintos comparten números y se mezclarían
+    var claveMes = function(b){ return (parseInt(b.anio, 10) || 0) * 100 + parseMonthNum(b.mes); };
+    var refBoard = currentMergeCandidateBoards.find(function(b){ return b.id === currentWorkspaceBoardId; }) ||
+      currentMergeCandidateBoards.slice().sort(function(a, b){ return claveMes(b) - claveMes(a); })[0];
+    currentMergeCandidateBoards = currentMergeCandidateBoards.filter(function(b){
+      return claveMes(b) === claveMes(refBoard);
+    });
 
     // Inicializar selección: por defecto todos los tableros candidatos marcados
     currentMergeSelectedBoardIds = {};
@@ -11432,100 +11440,93 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
       return;
     }
 
-    var cliente = (mergeInputCliente ? mergeInputCliente.value.trim() : '') || currentMergeClient || 'Cliente';
-    var periodoRaw = (mergeInputPeriodo ? mergeInputPeriodo.value.trim() : '') || 'Periodo Definitivo';
-
-    // Generar un ID descriptivo y seguro para el nuevo tablero definitivo
-    var slugCliente = cliente.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-    var slugPeriodo = periodoRaw.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-    var randSuffix = Math.random().toString(36).substring(2, 6);
-    var unifiedBoardId = slugCliente + '-' + slugPeriodo + '-definitivo-' + randSuffix;
-
-    // Extraer mes y anio para indexación del nuevo tablero
-    var anioMatch = periodoRaw.match(/\b(202\d)\b/);
-    var anio = anioMatch ? anioMatch[1] : '2026';
-    var mes = periodoRaw.replace(anio, '').replace(/\[.*?\]/g, '').replace(/definitivo/gi, '').trim() || 'Definitivo';
-
-    // Preparar lista de contenidos 100% aprobados
-    var finalizedItems = currentMergeApprovedItems.map(function(it, idx){
-      var itemObj = Object.assign({}, it);
-      itemObj.n = idx + 1;
-      itemObj.id = itemObj.id || ('c' + (idx + 1));
-      itemObj.estado = 'aprobado'; // Garantizado 100% aprobado
-      if (!itemObj.fechaAprobacion) itemObj.fechaAprobacion = new Date().toISOString();
-      return itemObj;
-    });
-
-    var countOk = finalizedItems.length;
-
-    // Determinar el tablero principal que conservará el enlace público vigente
+    // Tablero principal: el que conserva el enlace público vigente
     var primaryBoard = currentMergeCandidateBoards.find(function(b){
-      return b.url && b.url.indexOf('localhost') === -1 && b.tipo !== 'unificado_definitivo';
+      return currentMergeSelectedBoardIds[b.id] && b.url && b.url.indexOf('localhost') === -1 && b.tipo !== 'unificado_definitivo';
     }) || currentMergeCandidateBoards.find(function(b){
-      return b.url && b.url.indexOf('localhost') === -1;
-    }) || currentMergeCandidateBoards[0];
+      return currentMergeSelectedBoardIds[b.id] && b.url && b.url.indexOf('localhost') === -1;
+    });
+    if (!primaryBoard) {
+      toast('Selecciona al menos un tablero publicado para unir.');
+      return;
+    }
 
-    var targetBoardId = (primaryBoard && primaryBoard.id) ? primaryBoard.id : unifiedBoardId;
-    var targetBoardUrl = (primaryBoard && primaryBoard.url) ? primaryBoard.url : '';
-
-    // Identificar todos los demás tableros candidatos que serán fusionados y eliminados
-    var candidateIds = currentMergeCandidateBoards.map(function(b){ return b.id; });
-    var idsToDelete = candidateIds.filter(function(id){ return id && id !== targetBoardId; });
-
-    var unifiedBoardDoc = {
-      id: targetBoardId,
-      cliente: cliente,
-      mes: mes,
-      anio: anio,
-      total: countOk,
-      aprobados: countOk,
-      cambios: 0,
-      pendientes: 0,
-      estado: 'Aprobado',
-      tipo: 'unificado_definitivo',
-      url: targetBoardUrl,
-      revisadoPor: 'Cliente & Agencia (Unificado)',
-      ultimaRevision: new Date().toISOString(),
-      actualizado: new Date().toISOString(),
-      registrado: (primaryBoard && primaryBoard.registrado) || new Date().toISOString(),
-      contenidos: finalizedItems,
-      tablerosOrigenIds: candidateIds
-    };
+    var targetBoardId = primaryBoard.id;
+    var origenIds = currentMergeCandidateBoards
+      .filter(function(b){ return currentMergeSelectedBoardIds[b.id]; })
+      .map(function(b){ return b.id; });
+    var aprobadas = currentMergeApprovedItems.slice();
+    var docRef = db.collection('tableros').doc(targetBoardId);
 
     if (btnExecuteMerge) {
       btnExecuteMerge.disabled = true;
       btnExecuteMerge.textContent = 'Unificando tableros…';
     }
 
-    toast('Unificando tableros: guardando ' + countOk + ' piezas aprobadas en un solo tablero…');
+    toast('Unificando: pasando ' + aprobadas.length + ' piezas aprobadas al tablero principal…');
 
-    // 1. Guardar el tablero definitivo único (sin eliminar tableros en Firestore)
-    db.collection('tableros').doc(targetBoardId).set(unifiedBoardDoc)
-    .then(function(){
-      // 3. Actualizar memoria local de inmediato
-      boardCache[targetBoardId] = {
-        cliente: cliente,
-        mes: mes,
-        anio: anio,
-        contenidos: finalizedItems,
-        revision: {
-          aprobados: countOk,
-          cambios: 0,
-          pendientes: 0,
-          revisadoPor: 'Cliente & Agencia (Unificado)',
-          fecha: new Date().toISOString()
-        }
-      };
+    // Se fusiona pieza por pieza dentro de una transacción: nunca se reemplaza el documento,
+    // no se quitan piezas no aprobadas y el total del tablero se mantiene.
+    db.runTransaction(function(transaction){
+      return transaction.get(docRef).then(function(doc){
+        if (!doc.exists) throw new Error('El tablero principal no existe en Firestore');
+        var data = doc.data() || {};
+        var items = JSON.parse(JSON.stringify(Array.isArray(data.contenidos) ? data.contenidos : []));
+        if (!items.length) throw new Error('El tablero principal todavía no tiene revisiones guardadas');
 
-      idsToDelete.forEach(function(delId){
-        delete boardCache[delId];
+        var nuevas = 0, sinPieza = [];
+        aprobadas.forEach(function(ap){
+          var idx = items.findIndex(function(x){ return ap.id && x.id && String(x.id) === String(ap.id); });
+          if (idx === -1) idx = items.findIndex(function(x, i){ return (+x.n || (i + 1)) === +ap.n; });
+          if (idx === -1) { sinPieza.push(ap.n); return; }
+
+          var pieza = items[idx];
+          var vAp = parseInt(ap.version, 10) || 1;
+          var vPieza = parseInt(pieza.version, 10) || 1;
+          if (pieza.estado === 'aprobado' && vPieza >= vAp) return;
+          if (vPieza > vAp) return; // El principal tiene una versión más nueva sin aprobar: no se pisa
+
+          var fecha = ap.fechaAprobacion || (ap.aprobacion && ap.aprobacion.fecha) || new Date().toISOString();
+          ['titulo', 'formato', 'guion', 'copy', 'hashtags'].forEach(function(k){
+            if (ap[k] != null) pieza[k] = ap[k];
+          });
+          pieza.version = vAp;
+          pieza.estado = 'aprobado';
+          pieza.fechaAprobacion = fecha;
+          pieza.aprobacion = ap.aprobacion && ap.aprobacion.guion != null ? ap.aprobacion : {
+            version: vAp,
+            usuario: (ap.aprobacion && ap.aprobacion.usuario) || ap.revisadoPor || 'Cliente',
+            fecha: fecha,
+            titulo: pieza.titulo || '',
+            formato: pieza.formato || '',
+            guion: pieza.guion || '',
+            copy: pieza.copy || '',
+            hashtags: pieza.hashtags || ''
+          };
+          pieza.historial = (pieza.historial || []).concat([{
+            version: vAp,
+            accion: 'Aprobación unificada desde ' + (ap.origenTableroId || 'otro tablero'),
+            usuario: 'Equipo Nexo',
+            fecha: new Date().toISOString()
+          }]);
+          nuevas++;
+        });
+
+        var resumen = calcularResumen(items);
+        transaction.update(docRef, {
+          contenidos: items,
+          aprobados: resumen.aprobados,
+          cambios: resumen.cambios,
+          pendientes: resumen.pendientes,
+          estado: resumen.estado,
+          actualizado: new Date().toISOString(),
+          tablerosOrigenIds: origenIds
+        });
+        return { items: items, resumen: resumen, nuevas: nuevas, sinPieza: sinPieza };
       });
-
-      // Filtrar allTableros para que quede exactamente uno
-      allTableros = allTableros.filter(function(x){
-        return idsToDelete.indexOf(x.id) === -1 && x.id !== targetBoardId;
-      });
-      allTableros.unshift(unifiedBoardDoc);
+    })
+    .then(function(res){
+      if (boardCache[targetBoardId]) boardCache[targetBoardId].contenidos = res.items;
 
       if (btnExecuteMerge) {
         btnExecuteMerge.disabled = false;
@@ -11533,12 +11534,12 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
       }
 
       closeMergeBoardsModal();
-      toast('🏆 ¡Tableros unificados con éxito! Queda solo 1 tablero definitivo con ' + countOk + ' piezas.');
+      toast('🏆 Tablero principal actualizado: ' + res.nuevas + ' aprobación(es) nueva(s), ' + res.resumen.aprobados + ' de ' + res.items.length + ' piezas aprobadas.' +
+        (res.sinPieza.length ? ' Sin pieza equivalente: ' + res.sinPieza.join(', ') + '.' : ''));
 
       applyFiltersAndRender();
       if (typeof updateGlobalMetrics === 'function') updateGlobalMetrics(allTableros);
 
-      // Abrir inmediatamente el tablero unificado en su pestaña 'Contenidos listos'
       setTimeout(function(){
         openBoardWorkspace(targetBoardId, 'listos');
       }, 350);
@@ -11549,7 +11550,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
         btnExecuteMerge.disabled = false;
         btnExecuteMerge.textContent = '✨ Unir y Crear Tablero Definitivo Aprobado';
       }
-      toast('Error al unificar tableros en Firestore');
+      toast('No se unificó: ' + (err && err.message ? err.message : 'error en Firestore'));
     });
   }
 

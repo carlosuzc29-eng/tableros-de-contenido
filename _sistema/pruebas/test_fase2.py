@@ -13,6 +13,15 @@ CONSTRUIR_SCRIPT = os.path.join(REPO, '_sistema/construir.py')
 class TestFase2(unittest.TestCase):
     def setUp(self):
         self.tmp_dir = tempfile.mkdtemp(prefix='nexo-test-fase2-')
+        # Repositorio y configuración aislados: la prueba nunca escribe en el repo real ni en Firestore
+        self.repo_tmp = os.path.join(self.tmp_dir, 'repo')
+        shutil.copytree(os.path.join(REPO, '_sistema'), os.path.join(self.repo_tmp, '_sistema'),
+                        ignore=shutil.ignore_patterns('node_modules'))
+        self.config_tmp = os.path.join(self.tmp_dir, 'nexo-config.json')
+        with open(self.config_tmp, 'w', encoding='utf-8') as f:
+            json.dump({'firebase': {'apiKey': 'fake-qa-api-key', 'projectId': 'nexo-qa-inexistente'},
+                       'base_url': 'https://test.nexo.ejemplo/', 'sinFirestore': True}, f)
+        self.env = dict(os.environ, NEXO_REPO=self.repo_tmp, NEXO_CONFIG=self.config_tmp)
 
     def tearDown(self):
         shutil.rmtree(self.tmp_dir, ignore_errors=True)
@@ -67,7 +76,7 @@ class TestFase2(unittest.TestCase):
         # Ejecutar construir.py (sin --publicar ni red real)
         proc = subprocess.run([
             'python3', CONSTRUIR_SCRIPT, json_path, '--nuevo-enlace'
-        ], capture_output=True, text=True)
+        ], capture_output=True, text=True, env=self.env)
 
         out = proc.stdout + proc.stderr
         # 1. Comprobar mensaje de limpieza
@@ -88,7 +97,7 @@ class TestFase2(unittest.TestCase):
 
         # 3. Comprobar que en el HTML generado no existan clickupId, tipoOriginal, sincronizadoClickup, huellasClickup, tableroProduccion
         archivo_html = data_guardada['archivo']
-        html_path = os.path.join(REPO, archivo_html)
+        html_path = os.path.join(self.repo_tmp, archivo_html)
         if os.path.exists(html_path):
             try:
                 with open(html_path, 'r', encoding='utf-8') as hf:

@@ -1046,6 +1046,9 @@
   var items = [];
   var cards = [];
   var KEY = '';
+  // Piezas que el cliente evaluó o comentó y aún no envió: { idPieza: versión evaluada }.
+  // La sincronización con Firestore no pisa su decisión ni sus comentarios mientras la versión no cambie.
+  var sinEnviar = {};
   var FB = {
     apiKey: "AIzaSyAsH9TxW0ld2aNQejJw6xxZW7fpZiw212Q",
     projectId: "nexo-tableros-app"
@@ -1303,7 +1306,7 @@
     try {
       var whoVal = getReviewerName();
       if (whoVal && whoVal.indexOf('Agencia (') === 0) whoVal = '';
-      var o = {who: whoVal, items: {}, resetAt: DATA.resetAt || 0};
+      var o = {who: whoVal, items: {}, resetAt: DATA.resetAt || 0, sinEnviar: sinEnviar};
       items.forEach(function(it){
         o.items[it.id] = {
           estado: it.estado,
@@ -1322,6 +1325,11 @@
         localStorage.setItem('nexo_reviewer_name_' + (DATA.id || 'board'), whoVal);
       }
     } catch (e) {}
+  }
+
+  function marcarSinEnviar(it){
+    if (agencyUser) return;
+    sinEnviar[it.id] = parseInt(it.version, 10) || 1;
   }
 
   function el(tag, cls, txt){ var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
@@ -1538,6 +1546,7 @@
         if ($('who')) $('who').value = '';
       }
       if (saved && saved.items) {
+        if (saved.sinEnviar && typeof saved.sinEnviar === 'object') sinEnviar = saved.sinEnviar;
         var hasCorr = items.some(function(x){ return x.estado === 'corregido'; });
         items.forEach(function(it){
           var s = saved.items[it.id];
@@ -1762,6 +1771,7 @@
           var origIdx = it.comentarios.indexOf(cm);
           if (origIdx >= 0) it.comentarios.splice(origIdx, 1);
           it.comentario = formatComentariosString(it.comentarios);
+          marcarSinEnviar(it);
           renderThread(); saveDraft();
         };
         topRow.appendChild(delBtn);
@@ -1796,6 +1806,7 @@
       if (auth) it.revisadoPor = auth;
       ta.value = '';
       card.classList.remove('warn');
+      marcarSinEnviar(it);
       renderThread(newCm);
       saveDraft();
       toast('✓ Comentario registrado');
@@ -1891,6 +1902,7 @@
         }
         delete it.aprobacion;
         it.estado = 'cambios';
+        marcarSinEnviar(it);
         card.classList.remove('warn');
         paint(); refresh(); updateApartadoCorregidos(); applyFilter(); saveDraft();
         toast('✎ Cambios solicitados para versión v' + (it.version || 1));
@@ -1913,6 +1925,7 @@
         it.revisadoPor = revWho;
         it.fechaAprobacion = nowIso;
         it.estado = 'aprobado';
+        marcarSinEnviar(it);
         card.classList.remove('warn');
         paint(); refresh(); updateApartadoCorregidos(); applyFilter(); saveDraft();
         toast('✓ Versión v' + (it.version || 1) + ' aprobada');
@@ -1923,6 +1936,7 @@
       }
 
       it.estado = s;
+      marcarSinEnviar(it);
       card.classList.remove('warn');
       paint(); refresh(); updateApartadoCorregidos(); applyFilter(); saveDraft();
       if (agencyUser && typeof saveAgencyDecisionChange === 'function') {
@@ -2789,6 +2803,7 @@
     }
 
     if (fsContenidos.length > 0) {
+      var piezasActualizadas = [];
       cards.forEach(function(cObj, idx){
         var it = cObj.it;
         var n = idx + 1;
@@ -2797,8 +2812,15 @@
         });
 
         if (fsItem) {
+          // Decisión y comentarios del cliente sin enviar: se conservan salvo que Nexo haya subido otra versión
+          var conservarLocal = !agencyUser && Object.prototype.hasOwnProperty.call(sinEnviar, it.id);
+          if (conservarLocal && sinEnviar[it.id] !== (parseInt(fsItem.version, 10) || 1)) {
+            delete sinEnviar[it.id];
+            conservarLocal = false;
+            piezasActualizadas.push(n);
+          }
           if (cObj.setUnsavedState) cObj.setUnsavedState(false);
-          if (fsItem.estado && ['borrador', 'en_revision', 'pendiente', 'cambios', 'en_correccion', 'corregido', 'aprobado'].indexOf(fsItem.estado) >= 0) {
+          if (!conservarLocal && fsItem.estado && ['borrador', 'en_revision', 'pendiente', 'cambios', 'en_correccion', 'corregido', 'aprobado'].indexOf(fsItem.estado) >= 0) {
             it.estado = (fsItem.estado === 'pendiente') ? 'en_revision' : fsItem.estado;
           }
           if (fsItem.version) {
@@ -2810,10 +2832,10 @@
               cObj.ctxTag.textContent = isCorr ? '🔄 Revisión de correcciones' : '✨ Primera revisión';
             }
           }
-          if (fsItem.aprobacion) {
+          if (!conservarLocal && fsItem.aprobacion) {
             it.aprobacion = fsItem.aprobacion;
           }
-          if (fsItem.comentario != null) {
+          if (!conservarLocal && fsItem.comentario != null) {
             it.comentario = fsItem.comentario;
             it.comentarios = parseComentarios(it.comentario, it.revisadoPor || revPor || 'Cliente');
           }
@@ -2862,14 +2884,20 @@
           if (fsItem.clickupId) it.clickupId = fsItem.clickupId;
 
           // Filtrar notas de corrección internas del comentario
-          var rawComment = it.comentario || '';
-          var filteredComments = parseComentarios(rawComment, it.revisadoPor || revPor || 'Cliente');
-          it.comentarios = filteredComments;
+          if (!conservarLocal) {
+            var rawComment = it.comentario || '';
+            var filteredComments = parseComentarios(rawComment, it.revisadoPor || revPor || 'Cliente');
+            it.comentarios = filteredComments;
+          }
 
           if (cObj.renderThread) cObj.renderThread();
           if (cObj.paint) cObj.paint();
         }
       });
+
+      if (piezasActualizadas.length) {
+        toast('Nexo actualizó ' + (piezasActualizadas.length === 1 ? 'la pieza ' : 'las piezas ') + piezasActualizadas.join(', ') + (piezasActualizadas.length === 1 ? ': revísala' : ': revísalas') + ' de nuevo antes de enviar.');
+      }
 
       refresh();
       updateApartadoCorregidos();
@@ -2970,6 +2998,7 @@
     btn.disabled = true; btn.textContent = 'Enviando…';
 
     function ok(){
+      evaluatedItems.forEach(function(it){ delete sinEnviar[it.id]; });
       btn.disabled = false; btn.textContent = 'Enviar revisión ✓'; saveDraft();
       var k = counts();
       modal({

@@ -1,0 +1,12 @@
+{
+  "cliente": "Impreco",
+  "cuenta": "impreco.ve",
+  "meses": [
+    {
+      "mes": "2026-11",
+      "etiqueta": "Noviembre 2026",
+      "id": "impreco-2026-noviembre-e86a2b4b"
+    }
+  ],
+  "actual": "2026-11"
+}

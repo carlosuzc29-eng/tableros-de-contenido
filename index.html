@@ -5382,7 +5382,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
         <span id="pieceEditorAutoSaveStatus" class="save-status-badge saved">✓ Guardado</span>
         <span id="pieceEditorStateBadge" class="badge">Estado</span>
-        <span id="pieceEditorVersionBadge" class="ws-pill version">v1</span>
+        <span id="pieceEditorVersionBadge" class="ws-pill version" style="display:none">v1</span>
         <button class="btn-modal-close" id="btnClosePieceEditor" aria-label="Cerrar editor">&times;</button>
       </div>
     </div>
@@ -9979,14 +9979,12 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
           '</div>' +
           '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">' +
             '<button type="button" class="btn-ws-open-floating btn-ws-open-piece" data-n="' + it.n + '" title="Abrir contenido completo en ventana flotante">⤢ Ventana flotante</button>' +
-            '<span class="ws-pill version">' + vNum + '</span>' +
             stBadge +
           '</div>' +
         '</div>' +
         '<div class="ws-card-meta">' +
           (it.formato ? '<span class="ws-pill">' + escapeHtml(it.formato) + '</span>' : '') +
           (it.pilar ? '<span class="ws-pill">' + escapeHtml(it.pilar) + '</span>' : '') +
-          ctxBadge +
           obsBadge +
           (it.fechaPublicacion ? '<span class="ws-pill">📅 ' + escapeHtml(it.fechaPublicacion) + '</span>' : '') +
         '</div>' +
@@ -10063,7 +10061,6 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
           (it.formato ? '<span class="ws-pill">' + escapeHtml(it.formato) + '</span>' : '') +
           (it.pilar ? '<span class="ws-pill">' + escapeHtml(it.pilar) + '</span>' : '') +
           (it.fechaPublicacion ? '<span class="ws-pill">📅 ' + escapeHtml(it.fechaPublicacion) + '</span>' : '') +
-          '<span class="ws-pill version">' + (it.version ? ('v' + it.version) : 'v1') + '</span>' +
         '</div>' +
         (it.guion ? ('<div class="ws-card-section ws-card-guion-section"><div class="ws-card-sec-label">🎬 Guion</div><div class="ws-card-text-block">' + escapeHtml(it.guion) + '</div></div>') : '') +
         (it.copy ? ('<div class="ws-card-section ws-card-copy-section"><div class="ws-card-sec-label">✍️ Copy</div><div class="ws-card-text-block">' + escapeHtml(it.copy) + (it.hashtags ? ('\n\n<span class="ws-card-hashtags">' + escapeHtml(it.hashtags) + '</span>') : '') + '</div></div>') : '') +
@@ -10217,7 +10214,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
     var vStr = 'v' + (it.version || 1);
     var lines = [];
     lines.push('========================================');
-    lines.push('#' + num + ' · ' + (it.titulo || 'Sin título') + ' (' + vStr + ')');
+    lines.push('#' + num + ' · ' + (it.titulo || 'Sin título'));
     lines.push('Estado: ' + (it.estado || 'en_revision'));
     if (it.formato) lines.push('Formato: ' + it.formato);
     if (it.pilar) lines.push('Pilar: ' + it.pilar);
@@ -10236,7 +10233,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
       lines.push('\n[REFERENCIAS / ARCHIVOS]:\n' + it.referencias.map(function(r){ return r.url || r.label || ''; }).filter(Boolean).join('\n'));
     }
     var fullText = lines.join('\n');
-    copyText(fullText, '✓ Contenido copiado (' + vStr + ')');
+    copyText(fullText, '✓ Contenido copiado');
   }
 
   // Transición directa: Cambios solicitados -> En corrección
@@ -10297,7 +10294,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
       piezaCopia.historial = Array.isArray(piezaOriginal.historial) ? piezaOriginal.historial.slice() : [];
       piezaCopia.historial.push({
         version: curV,
-        accion: 'Versión v' + curV + ' enviada a revisión del cliente',
+        accion: 'Enviada a revisión del cliente',
         usuario: 'Equipo Nexo',
         fecha: nowIso
       });
@@ -10308,7 +10305,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
       t.pendientes = res.pendientes;
       t.estado = res.estado;
       if (boardCache[t.id]) boardCache[t.id].contenidos = res.items;
-      toast('✓ Versión v' + curV + ' enviada a revisión del cliente');
+      toast('✓ Enviada a revisión del cliente');
       currentWorkspaceTab = 'en_revision';
       renderBoardWorkspace();
       applyFiltersAndRender();
@@ -10439,7 +10436,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
         '<div style="display:flex;align-items:center;gap:12px;">' +
           '<span class="psb-icon">✓</span>' +
           '<div>' +
-            '<div class="psb-title">Contenido formalmente Aprobado (Versión v' + vCur + ')</div>' +
+            '<div class="psb-title">Contenido formalmente Aprobado</div>' +
             '<div class="psb-sub">Aprobado por: <b>' + escapeHtml(approver) + '</b>' + (appDate ? ' el ' + appDate : '') + ' · Listo para producción y publicación</div>' +
           '</div>' +
         '</div>' +
@@ -10459,7 +10456,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
         '<div style="display:flex;align-items:center;gap:12px;">' +
           '<span class="psb-icon">👁️</span>' +
           '<div>' +
-            '<div class="psb-title">Versión v' + vCur + ' en revisión del cliente</div>' +
+            '<div class="psb-title">En revisión del cliente</div>' +
             '<div class="psb-sub">' + escapeHtml(envioStr) + ' · En espera de aprobación u observaciones</div>' +
           '</div>' +
         '</div>' +
@@ -10469,7 +10466,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
         '<div style="display:flex;align-items:center;gap:12px;">' +
           '<span class="psb-icon">💬</span>' +
           '<div>' +
-            '<div class="psb-title">Cambios solicitados por el cliente (v' + vCur + ')</div>' +
+            '<div class="psb-title">Cambios solicitados por el cliente</div>' +
             '<div class="psb-sub">Revisa las observaciones en el lateral derecho y ajusta el guion o copy</div>' +
           '</div>' +
         '</div>' +
@@ -10489,7 +10486,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
         '<div style="display:flex;align-items:center;gap:12px;">' +
           '<span class="psb-icon">🔄</span>' +
           '<div>' +
-            '<div class="psb-title">Contenido corregido (Versión v' + vCur + ')</div>' +
+            '<div class="psb-title">Contenido corregido</div>' +
             '<div class="psb-sub">Ajustes listos para enviar a revisión del cliente</div>' +
           '</div>' +
         '</div>' +
@@ -10544,9 +10541,9 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
     var curApprovedV = parseInt(it.version, 10) || 1;
     var nextV = curApprovedV + 1;
     var okFork = confirm(
-      'Esta pieza se encuentra formalmente APROBADA en su versión v' + curApprovedV + '.\n\n' +
-      'Al modificarla, se iniciará un nuevo borrador para la versión v' + nextV + ', conservando la versión v' + curApprovedV + ' aprobada en el historial.\n\n' +
-      '¿Deseas iniciar la corrección de la versión v' + nextV + '?'
+      'Esta pieza se encuentra formalmente APROBADA.\n\n' +
+      'Al modificarla, se iniciará un nuevo borrador, conservando la versión aprobada en el historial.\n\n' +
+      '¿Deseas iniciar la corrección?'
     );
     if (!okFork) return;
 
@@ -10572,14 +10569,14 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
       piezaCopia.historial = Array.isArray(piezaOriginal.historial) ? piezaOriginal.historial.slice() : [];
       piezaCopia.historial.push({
         version: nextV,
-        accion: 'Iniciada nueva versión v' + nextV + ' para ajustes tras aprobación de v' + vNum,
+        accion: 'Iniciada una nueva corrección tras la aprobación',
         usuario: 'Equipo Nexo',
         fecha: nowIso
       });
     }).then(function(res){
       t.contenidos = res.items;
       if (boardCache[t.id]) boardCache[t.id].contenidos = res.items;
-      toast('✓ Iniciada versión v' + nextV + ' para corrección');
+      toast('✓ Corrección iniciada');
       openPieceEditor(t.id, it.n);
       renderBoardWorkspace();
     }).catch(function(err){
@@ -10634,8 +10631,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
               (isAtendida ? '✓ Observación atendida' : '○ Pendiente de atender') +
             '</span>' +
           '</label>' +
-          '<span class="obs-tag" title="Esta marca es para control interno del equipo">' + (cm.version ? ('v' + cm.version) : 'v' + (it.version || 1)) + '</span>' +
-        '</div>' +
+                  '</div>' +
         '<div class="obs-text">“' + escapeHtml((cm.texto || '').trim()) + '”</div>' +
         '<div class="obs-meta">' +
           '<span>👤 ' + escapeHtml(author) + '</span>' +
@@ -10904,7 +10900,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
           version: nextV,
           fecha: nowIso,
           estadoAnterior: piezaOriginal.estado,
-          accion: 'Ajustes guardados como corregidos (v' + nextV + ')',
+          accion: 'Ajustes guardados como corregidos',
           usuario: 'Equipo Nexo'
         });
 
@@ -10938,7 +10934,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
           btnPieceFinalize.textContent = '✓ Guardar como corregido';
         }
         closePieceEditor(true);
-        toast('✓ ¡Contenido guardado como corregido (v' + nextV + ')! La tarjeta pasó a Corregidos.');
+        toast('✓ ¡Contenido guardado como corregido! La tarjeta pasó a Corregidos.');
         currentWorkspaceTab = 'corregidos';
         renderBoardWorkspace();
         applyFiltersAndRender();
@@ -11001,7 +10997,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
           version: nextV,
           fecha: nowIso,
           estadoAnterior: piezaOriginal.estado,
-          accion: 'Corrección finalizada y enviada directamente a revisión (v' + nextV + ')',
+          accion: 'Corrección finalizada y enviada directamente a revisión',
           usuario: 'Equipo Nexo'
         });
 
@@ -11035,7 +11031,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
           btnPieceFinalizeAndSend.textContent = '🚀 Finalizar y enviar a revisión';
         }
         closePieceEditor(true);
-        toast('✓ ¡Versión v' + nextV + ' guardada y enviada a revisión del cliente!');
+        toast('✓ ¡Corrección guardada y enviada a revisión del cliente!');
         currentWorkspaceTab = 'en_revision';
         renderBoardWorkspace();
         applyFiltersAndRender();
@@ -11413,7 +11409,6 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
               '<div style="font-size:11.5px;color:var(--ink-2);display:flex;gap:6px;align-items:center;margin-top:2px;">' +
                 (it.formato ? ('<span class="ws-pill">' + escapeHtml(it.formato) + '</span>') : '') +
                 (it.pilar ? ('<span class="ws-pill">' + escapeHtml(it.pilar) + '</span>') : '') +
-                '<span class="ws-pill version">' + (it.version ? ('v' + it.version) : 'v1') + '</span>' +
                 (it.origenTableroMes ? ('<span style="color:#BAE6FD;">• de ' + escapeHtml(it.origenTableroMes) + '</span>') : '') +
               '</div>' +
             '</div>' +

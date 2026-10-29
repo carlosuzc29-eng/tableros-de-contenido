@@ -1671,11 +1671,9 @@
 
     // Versión concreta y contexto de revisión
     var vNum = parseInt(it.version, 10) || 1;
-    var vTag = el('span', 'tag version', 'v' + vNum);
-    tags.appendChild(vTag);
+    var vTag = el('span', 'tag version', 'v' + vNum); // no se muestra
     var isCorrectionReview = vNum > 1;
-    var ctxTag = el('span', 'tag ' + (isCorrectionReview ? 'ctx-correction' : 'ctx-first'), isCorrectionReview ? '🔄 Revisión de correcciones' : '✨ Primera revisión');
-    tags.appendChild(ctxTag);
+    var ctxTag = el('span', 'tag ' + (isCorrectionReview ? 'ctx-correction' : 'ctx-first'), isCorrectionReview ? '🔄 Revisión de correcciones' : '✨ Primera revisión'); // no se muestra
     if (it.fechaCorreccion || it.fechaEnvio) {
       tags.appendChild(el('span', 'tag date', '🚀 ' + formatRelTime(it.fechaCorreccion || it.fechaEnvio)));
     }
@@ -1726,7 +1724,7 @@
       var lastH = Array.isArray(it.historial) && it.historial.length ? it.historial[it.historial.length - 1] : null;
       var hAction = (lastH && lastH.accion) ? lastH.accion : 'Ajustes realizados por el equipo según las observaciones de la versión anterior.';
       corrBox.innerHTML = '<div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#38BDF8;margin-bottom:4px;">' +
-        '<span>🔄 Versión corregida (v' + it.version + ')</span>' +
+        '<span>🔄 Versión corregida</span>' +
         (it.fechaCorreccion ? '<span style="font-weight:400;color:rgba(255,255,255,0.5);font-size:11px;">· ' + formatRelTime(it.fechaCorreccion) + '</span>' : '') +
       '</div>' +
       '<div style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.4;">' +
@@ -1858,9 +1856,9 @@
       if (curSt === 'pendiente') curSt = 'en_revision';
       var stLabel = LBL[curSt] || curSt;
       if (curSt === 'en_revision') {
-        stLabel = (it.version > 1) ? 'En revisión (v' + it.version + ')' : 'En revisión (v1)';
+        stLabel = 'En revisión';
       }
-      badge.textContent = (curSt === 'corregido' && !agencyUser) ? 'En revisión (v' + (it.version || 1) + ')' : stLabel;
+      badge.textContent = (curSt === 'corregido' && !agencyUser) ? 'En revisión' : stLabel;
       ap.classList.toggle('on', curSt === 'aprobado'); ch.classList.toggle('on', curSt === 'cambios');
       ap.setAttribute('aria-pressed', curSt === 'aprobado'); ch.setAttribute('aria-pressed', curSt === 'cambios');
 
@@ -1868,7 +1866,7 @@
         decStatus.className = 'dec-status ok';
         var revWho = (it.aprobacion && it.aprobacion.usuario) || it.revisadoPor || getReviewerName() || 'Cliente';
         var revWhen = (it.aprobacion && it.aprobacion.fecha) || DATA.revision.fecha || '';
-        decStatus.textContent = '✓ Versión v' + (it.version || 1) + ' aprobada' + (revWho ? ' por ' + revWho : '') + (revWhen ? ' el ' + formatRelTime(revWhen) : '');
+        decStatus.textContent = '✓ Aprobado' + (revWho ? ' por ' + revWho : '') + (revWhen ? ' el ' + formatRelTime(revWhen) : '');
       } else if (curSt === 'cambios') {
         decStatus.className = 'dec-status fix';
         decStatus.textContent = '✎ Marcado para Solicitar cambios (observaciones registradas)';
@@ -1877,7 +1875,7 @@
         decStatus.textContent = '⚙ En corrección por el equipo';
       } else if (curSt === 'corregido') {
         decStatus.className = 'dec-status ok';
-        decStatus.textContent = '🔄 Ajustes terminados (v' + (it.version || 1) + ') · Pendiente de envío';
+        decStatus.textContent = '🔄 Ajustes terminados · Pendiente de envío';
       } else {
         decStatus.className = 'dec-status';
         decStatus.textContent = '• Pendiente de evaluación (obligatorio)';
@@ -1905,7 +1903,7 @@
         marcarSinEnviar(it);
         card.classList.remove('warn');
         paint(); refresh(); updateApartadoCorregidos(); applyFilter(); saveDraft();
-        toast('✎ Cambios solicitados para versión v' + (it.version || 1));
+        toast('✎ Cambios solicitados');
         if (agencyUser && typeof saveAgencyDecisionChange === 'function') {
           saveAgencyDecisionChange(it, 'cambios');
         }
@@ -1928,7 +1926,7 @@
         marcarSinEnviar(it);
         card.classList.remove('warn');
         paint(); refresh(); updateApartadoCorregidos(); applyFilter(); saveDraft();
-        toast('✓ Versión v' + (it.version || 1) + ' aprobada');
+        toast('✓ Contenido aprobado');
         if (agencyUser && typeof saveAgencyDecisionChange === 'function') {
           saveAgencyDecisionChange(it, 'aprobado');
         }
@@ -2015,11 +2013,11 @@
     function updateAgencyBarText(){
       var nv = parseInt(it.version, 10) || 1;
       if (it.estado === 'aprobado') {
-        barInfo.textContent = '✓ Aprobado por agencia · v' + nv;
+        barInfo.textContent = '✓ Aprobado por agencia';
       } else if (it.estado === 'corregido') {
-        barInfo.textContent = '🔄 Versión corregida (v' + nv + ')';
+        barInfo.textContent = '🔄 Versión corregida';
       } else {
-        barInfo.textContent = '✎ Modo corrección agencia · v' + nv + ' actual';
+        barInfo.textContent = '✎ Modo corrección agencia';
       }
       if (cObj.vTag) cObj.vTag.textContent = 'v' + nv;
     }
@@ -2325,8 +2323,7 @@
           var a = el('a', 'pill-corregido');
           a.href = '#' + (it.id || ('c' + (pieceIdx + 1)));
           a.innerHTML = '<span style="color:#7c3aed;font-weight:800;">#' + num + '</span> ' +
-            '<span>' + (it.titulo || 'Contenido') + '</span> ' +
-            '<span class="pill-v">' + vStr + '</span>';
+            '<span>' + (it.titulo || 'Contenido') + '</span>';
           a.onclick = function(e){
             e.preventDefault();
             var targetCard = $('list').querySelector('#' + (it.id || ('c' + (pieceIdx + 1))));
@@ -3491,7 +3488,7 @@
         var it = items[n - 1];
         if (it) {
           var nStr = (n < 10 ? '0' : '') + n;
-          msg += '• #' + nStr + ' - ' + (it.titulo || 'Contenido') + ' (' + (it.formato || 'Post') + (it.version ? ' · v' + it.version : '') + ')\n';
+          msg += '• #' + nStr + ' - ' + (it.titulo || 'Contenido') + ' (' + (it.formato || 'Post') + ')\n';
         }
       });
 
@@ -3575,7 +3572,7 @@
       if (textoCambio || piezaFs.estado !== 'corregido') {
         hist.push({
           version: nextVersion,
-          accion: 'Corrección guardada (v' + nextVersion + ')',
+          accion: 'Corrección guardada',
           usuario: agencyUser ? ('Agencia (' + agencyUser + ')') : 'Equipo Nexo',
           fecha: nowIso
         });
@@ -3607,7 +3604,7 @@
       if (btnSave) { btnSave.disabled = false; btnSave.textContent = '💾 Guardar cambios'; }
       if (cObj && cObj.setUnsavedState) cObj.setUnsavedState(false);
       if ($('reviewed')) $('reviewed').classList.remove('show');
-      toast('✓ Corrección guardada (v' + it.version + ') y sincronizada en el tablero');
+      toast('✓ Corrección guardada y sincronizada en el tablero');
       if (cObj && cObj.updateAgencyBarText) cObj.updateAgencyBarText();
       return savedDoc;
     }).catch(function(err){

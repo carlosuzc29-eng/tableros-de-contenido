@@ -1058,3 +1058,6 @@ body.is-closed-month.is-review-corregidos-closed:not(.agency-active) .fmt-sel {
     font-size: 12px;
   }
 }
+
+/* Versiones y contexto de revisión ocultos en todos los tableros (pedido de Carlos) */
+.tag.version,.tag.ctx-first,.tag.ctx-correction,.pill-corregido .pill-v{display:none!important}

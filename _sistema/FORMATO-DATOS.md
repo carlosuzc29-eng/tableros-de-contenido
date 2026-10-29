@@ -69,7 +69,7 @@ Un archivo por tablero en `borradores/` (esa carpeta no se publica). Ejemplo: `b
 
 ## Reglas para pasar el documento del mes a este JSON
 
-- Un objeto por contenido, **en el mismo orden** del documento. La numeración 01, 02… la pone el tablero.
+- **Orden oficial** (lo revisa `validar_tablero.py` y lo aplica `python3 _sistema/orden_tablero.py <borrador> --ordenar`): primero todas las piezas Orgánicas y después todas las de Ads; dentro de cada bloque, por fecha de publicación; a igual fecha, por número de `CONTENIDO N` y luego por fecha de creación en ClickUp; sin fecha, al final del bloque. La numeración 01, 02… la pone el tablero.
 - Documentos de Nexo: `N. FORMATO — TÍTULO` → `formato` es lo de antes de la raya y `titulo` lo de después (en tipo oración, respetando nombres propios). `guion` es todo entre `GUION / TEXTO` y `CAPTION`. `copy` es todo después de `CAPTION`.
 - **Copiar literal: no resumir, corregir ni reescribir guiones ni copys.** Si hay errores de tipeo, se avisan aparte, no se corrigen.
 - Guion: un párrafo por línea (`\n`), con una línea en blanco antes de cada `Slide N`. Copy: párrafos separados con `\n\n`. Los hashtags del final del copy van en `hashtags`.

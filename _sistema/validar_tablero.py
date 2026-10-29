@@ -243,6 +243,14 @@ def validar_datos_tablero(data, modo_estricto=True):
             if 'hashtags' in c and c['hashtags'] is not None:
                 c['hashtags'] = sanitizar_texto(str(c['hashtags']))
 
+    # 4b. Orden oficial (Orgánicos primero, luego Ads; cada bloque por fecha)
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        from orden_tablero import revisar_orden
+        advertencias.extend(revisar_orden(norm))
+    except Exception as e:
+        advertencias.append(f"No se pudo revisar el orden de las piezas ({e}).")
+
     # 5. Validación de identificador del tablero si ya está presente
     b_id = norm.get('id')
     if b_id:

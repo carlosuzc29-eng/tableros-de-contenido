@@ -435,25 +435,88 @@ def main():
 
     json.dump(data, open(ruta, 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
 
-    html = open(PLANTILLA, encoding='utf-8').read()
-    # Excluir archivo, clickupId, tipoOriginal, sincronizadoClickup, huellasClickup y tableroProduccion del HTML público
+    # V2: Separar diseño de datos y selector de meses
+    codigo_cliente = os.path.splitext(data['archivo'])[0]
+    dir_cliente = os.path.join(REPO, 'datos', codigo_cliente)
+    os.makedirs(dir_cliente, exist_ok=True)
+
+    meses_num_map = {
+        'enero': '01', 'febrero': '02', 'marzo': '03', 'abril': '04',
+        'mayo': '05', 'junio': '06', 'julio': '07', 'agosto': '08',
+        'septiembre': '09', 'octubre': '10', 'noviembre': '11', 'diciembre': '12'
+    }
+    s_mes = slug(data.get('mes', '')).lower()
+    num_mes = meses_num_map.get(s_mes, '10')
+    mes_key = f"{data.get('anio', '2026')}-{num_mes}"
+    etiqueta_mes = f"{str(data.get('mes', '')).capitalize()} {data.get('anio', '')}".strip()
+
+    # Excluir archivo, clickupId, tipoOriginal, sincronizadoClickup, huellasClickup y tableroProduccion del JSON y HTML público
     claves_excluir_tablero = {'archivo', 'clickupId', 'tipoOriginal', 'sincronizadoClickup', 'huellasClickup', 'tableroProduccion'}
     datos = json.loads(json.dumps({k: v for k, v in data.items() if k not in claves_excluir_tablero}))
     for c in datos.get('contenidos', []):
         if isinstance(c, dict):
             for k in ('_sync', 'clickupId', 'tipoOriginal'):
                 c.pop(k, None)
+
+    # 1. Guardar datos/<codigo>/<aaaa-mm>.json
+    ruta_mes_json = os.path.join(dir_cliente, f"{mes_key}.json")
+    with open(ruta_mes_json, 'w', encoding='utf-8') as f:
+        json.dump(datos, f, ensure_ascii=False, indent=2)
+    print(f"✓ Guardado datos/{codigo_cliente}/{mes_key}.json ({n} contenidos)")
+
+    # 2. Crear o actualizar datos/<codigo>/indice.json
+    ruta_indice = os.path.join(dir_cliente, "indice.json")
+    if os.path.exists(ruta_indice):
+        try:
+            indice = json.load(open(ruta_indice, 'r', encoding='utf-8'))
+        except Exception:
+            indice = {}
+    else:
+        indice = {}
+
+    indice['cliente'] = data.get('cliente', '')
+    indice['cuenta'] = str(data.get('cuenta', '')).replace('@', '')
+    meses_indice = indice.get('meses', [])
+
+    nueva_entrada = {
+        "mes": mes_key,
+        "etiqueta": etiqueta_mes,
+        "id": data.get('id')
+    }
+    idx_existente = -1
+    for idx_m, m_obj in enumerate(meses_indice):
+        if m_obj.get('mes') == mes_key:
+            idx_existente = idx_m
+            break
+    if idx_existente >= 0:
+        meses_indice[idx_existente] = nueva_entrada
+    else:
+        meses_indice.append(nueva_entrada)
+
+    # Ordenar del más reciente al más antiguo
+    meses_indice.sort(key=lambda x: x.get('mes', ''), reverse=True)
+    indice['meses'] = meses_indice
+    indice['actual'] = meses_indice[0]['mes']
+
+    with open(ruta_indice, 'w', encoding='utf-8') as f:
+        json.dump(indice, f, ensure_ascii=False, indent=2)
+    print(f"✓ Actualizado datos/{codigo_cliente}/indice.json (actual: {indice['actual']})")
+
+    # 3. Regenerar cáscara <archivo>.html con Chrome headless
+    html = open(PLANTILLA, encoding='utf-8').read()
+    html = html.replace('__CODIGO_CLIENTE__', codigo_cliente)
     html = html.replace('__DATA__', json.dumps(datos, ensure_ascii=False, indent=2).replace('</', '<\\/'))
 
     chrome_bin = chrome()
     if chrome_bin:
-        tmp = tempfile.NamedTemporaryFile('w', suffix='.html', delete=False, encoding='utf-8')
-        tmp.write(html)
-        tmp.close()
+        tmp_path = os.path.join(REPO, f".tmp_prerender_{secrets.token_hex(4)}.html")
+        with open(tmp_path, 'w', encoding='utf-8') as f:
+            f.write(html)
         extra = ['--no-sandbox'] if os.environ.get('NEXO_NOSANDBOX') else []
         try:
-            res = subprocess.run([chrome_bin, *extra, '--headless=new', '--disable-gpu', '--no-first-run', '--virtual-time-budget=5000',
-                                  '--dump-dom', 'file://' + tmp.name], capture_output=True, text=True, timeout=120)
+            res = subprocess.run([chrome_bin, *extra, '--headless=new', '--disable-gpu', '--no-first-run',
+                                  '--allow-file-access-from-files', '--virtual-time-budget=5000',
+                                  '--dump-dom', 'file://' + tmp_path], capture_output=True, text=True, timeout=120)
             out = res.stdout
             if 'class="js"' in out[:400]:
                 out = '<!DOCTYPE html>\n' + re.sub(r'^\s*<!DOCTYPE html>\s*', '', out, flags=re.I).replace('class="js"', 'class="no-js"', 1)
@@ -462,26 +525,41 @@ def main():
                     html = out
                     print(f'✓ Pre-renderizado con Google Chrome exitoso ({tarjetas} tarjetas)')
                 else:
-                    print(f'  ⚠️ Aviso: discrepancia de tarjetas en Chrome ({tarjetas}/{n}), usando renderizado dinámico.')
+                    print(f'  ⚠️ Aviso: discrepancia de tarjetas en Chrome ({tarjetas}/{n}), usando renderizado base.')
             else:
-                print('  ⚠️ Aviso: Chrome headless no devolvió el DOM esperado, usando renderizado dinámico.')
+                print('  ⚠️ Aviso: Chrome headless no devolvió el DOM esperado, usando renderizado base.')
         except Exception as e:
-            print(f'  ⚠️ Aviso: fallo en Chrome headless ({e}), usando renderizado dinámico.')
+            print(f'  ⚠️ Aviso: fallo en Chrome headless ({e}), usando renderizado base.')
         finally:
-            if os.path.exists(tmp.name):
-                os.unlink(tmp.name)
+            if os.path.exists(tmp_path):
+                os.unlink(tmp_path)
     else:
         print('  ℹ Google Chrome no detectado en el entorno: tablero generado en modo dinámico de plantilla.')
 
     destino = os.path.join(REPO, data['archivo'])
     open(destino, 'w', encoding='utf-8').write(html)
-    print(f'✓ Tablero generado: {data["archivo"]} ({n} contenidos)')
+    print(f'✓ Cáscara generada: {data["archivo"]} ({n} contenidos)')
+
+    # Reporte explícito de archivos tocados
+    print('\nArchivos tocados:')
+    print(f'  - Cáscara: {data["archivo"]}')
+    print(f'  - Mes: datos/{codigo_cliente}/{mes_key}.json')
+    print(f'  - Índice: datos/{codigo_cliente}/indice.json')
 
     registrar_en_firestore(cfg, data, n)
 
     if '--publicar' in sys.argv:
-        subprocess.run(['git', '-C', REPO, 'add', data['archivo']], check=True)
-        subprocess.run(['git', '-C', REPO, 'commit', '-m', f"Tablero {data['cliente']} {data['mes']} {data['anio']}"], check=False)
+        archivos_add = [
+            data['archivo'],
+            os.path.join('datos', codigo_cliente, f"{mes_key}.json"),
+            os.path.join('datos', codigo_cliente, "indice.json")
+        ]
+        for a_add in archivos_add:
+            subprocess.run(['git', '-C', REPO, 'add', a_add], check=True)
+        diff_tablero = subprocess.run(['git', '-C', REPO, 'status', '--porcelain', '_sistema/tablero'], capture_output=True, text=True)
+        if diff_tablero.stdout.strip():
+            subprocess.run(['git', '-C', REPO, 'add', '_sistema/tablero'], check=True)
+        subprocess.run(['git', '-C', REPO, 'commit', '-m', f"Tablero {data['cliente']} {data['mes']} {data['anio']} (v2)"], check=False)
         subprocess.run(['git', '-C', REPO, 'pull', '--rebase', 'origin', 'main'], check=False)
         subprocess.run(['git', '-C', REPO, 'push', 'origin', 'main'], check=True)
         print('✓ Publicado (GitHub tarda 1-2 minutos en actualizar)')

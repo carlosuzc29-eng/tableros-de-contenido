@@ -57,13 +57,27 @@ Si Carlos pide **reiniciar un tablero**:
 
 ## Archivos clave
 
-- `_sistema/plantilla-tablero.html`: plantilla maestra del tablero (envía revisiones directamente a Cloud Firestore vía REST).
+- `_sistema/tablero/tablero.css`: CSS unificado y centralizado compartido por todos los tableros.
+- `_sistema/tablero/tablero.js`: JavaScript unificado con el motor de fondo de red Canvas 2D, gestión de selector multi-mes, modo cliente y Modo Agencia.
+- `_sistema/plantilla-tablero.html`: cáscara liviana del tablero (referencia `tablero.css` y `tablero.js`, e incluye el respaldo embebido `board-data`).
+- `datos/<codigo-cliente>/indice.json`: índice de meses publicados para cada cliente (ordenado descendente, fija `actual` al mes más reciente).
+- `datos/<codigo-cliente>/<aaaa-mm>.json`: datos de cada mes publicados sin campos internos.
 - `_sistema/fondo-red.js`: motor de la red de conexiones animada multi-escala.
-- `_sistema/construir.py`: motor que genera, pre-renderiza con Chrome, asigna identificador con token impredecible (`<cliente>-<anio>-<mes>-<token>`), registra en Cloud Firestore y publica en git.
+- `_sistema/construir.py`: motor que genera el JSON del mes en `datos/`, actualiza el `indice.json`, pre-renderiza la cáscara liviana con Chrome headless, registra en Cloud Firestore y publica en git.
+- `_sistema/migrar_v2.py`: script de migración para convertir tableros legados a la arquitectura v2 sin tocar Firestore.
 - `index.html`: Banco de trabajo interno de Nexo conectado a Firebase en tiempo real.
-- `panel-1c5877.html`: redirección automática hacia `index.html` (panel legado retirado).
 - `borradores/`: borradores JSON de trabajo (privados, ignorados en git).
 - La configuración privada (`../.nexo-config.json`) vive **fuera** del repositorio con credenciales de Firebase. Nunca la copies al repositorio público.
+
+## Reglas de Arquitectura v2 (Selector Multi-Mes)
+1. **Un solo enlace por cliente**: el nombre del archivo HTML (ej. `milkarf-octubre-2026-f01f.html`) se mantiene mes a mes. La carpeta de datos `datos/<codigo-cliente>/` utiliza ese mismo código aleatorio para proteger la privacidad.
+2. **Mes actual**: el cliente puede evaluar (aprobar, pedir cambios, añadir comentarios, cambiar formato y enviar revisión). El autorregistro en Firestore está habilitado.
+3. **Meses anteriores (`?mes=aaaa-mm`)**: modo **solo lectura** para el cliente.
+   - Muestra una franja superior: *"Estás viendo la parrilla de [Mes Año]. Es un mes cerrado: solo lectura."* con un botón para volver al mes actual.
+   - Todos los controles de evaluación, input de revisor y dock de envío se ocultan o desactivan.
+   - **NUNCA escribir en Firestore desde un mes cerrado**: ni autorregistro ni revisiones de cliente.
+   - **Modo Agencia**: Carlos y Andrea con sesión autenticada sí pueden editar y guardar correcciones en meses cerrados.
+4. **Respaldo sin JavaScript**: la cáscara lleva el HTML pre-renderizado del mes actual (Chrome headless) y el `<script id="board-data">` de respaldo. Si falla `fetch('datos/...')` o no hay conexión, el tablero funciona de forma idéntica con el respaldo.
 
 ## Banco de trabajo (index.html)
 

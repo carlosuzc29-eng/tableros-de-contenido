@@ -1,0 +1,164 @@
+{
+  "cliente": "Moffyns",
+  "cuenta": "moffyns_cafe",
+  "mes": "Octubre",
+  "anio": 2026,
+  "intro": "",
+  "contenidos": [
+    {
+      "formato": "Reel",
+      "pilar": "Antojo y producto",
+      "fechaPublicacion": "09/10",
+      "titulo": "Nuestras pizzas más pedidas",
+      "guionLabel": "Guion / texto",
+      "guion": "Hay demasiadas buenas opciones como para elegir rápido.\nAsí que, si hoy no sabes qué pizza pedir, te dejamos tres opciones deliciosas para ponértelo más fácil:\nProsciutto\nSalsa napolitana, mozzarella, jamón serrano y pesto.\n\nCamarones\nSalsa napolitana, mozzarella y camarones salteados en salsa pesto.\n\n4 Quesos\nSalsa blanca, mozzarella, queso azul, queso amarillo y queso parmesano.\n\nTres pizzas, tres antojos completamente distintos.\nAhora sí: ¿cuál deseas en tu mesa?",
+      "copy": "",
+      "hashtags": "",
+      "referencias": [],
+      "id": "c1",
+      "estado": "aprobado",
+      "comentario": "[Gregor Parper]: Tres pizzas, tres antojos completamente distintos. Ahora si: ¿cuál deseas en tu mesa?",
+      "version": 2,
+      "revisadoPor": "Gregor Parper",
+      "fechaCorreccion": "2026-10-06T17:58:00.170Z",
+      "aprobacion": {
+        "usuario": "Agencia (Carlos)",
+        "fecha": "2026-10-06T19:15:45.225Z",
+        "version": 2
+      }
+    },
+    {
+      "formato": "Carrusel",
+      "pilar": "Antojo y producto",
+      "fechaPublicacion": "13/10",
+      "titulo": "Tamaños de tortas disponibles",
+      "guionLabel": "Guion / texto",
+      "guion": "SLIDE 1 — Portada\nCONOCE NUESTRAS TORTAS\nPerfectas para compartir, celebrar o simplemente darte un gusto.\n\nSLIDE 2 TORTA DE CHOCOLATE\nDisponible en mini, mediana y grande\nMINI · 13 cm\nMEDIANA · 16 cm\nGRANDE · 24 cm\n\nSLIDE 3 — Torta Red Velvet\nDisponible en mini, mediana y grande\nMINI · 13 cm\nMEDIANA · 16 cm\nGRANDE · 24 cm\nLA IDEA DE ESTE SERA RECREAR ESTA PUBLICACION CON RED VELVET Y CHOCOLATE",
+      "copy": "",
+      "hashtags": "",
+      "referencias": [],
+      "id": "c2",
+      "estado": "aprobado",
+      "comentario": "",
+      "version": 1,
+      "revisadoPor": "Gregor Parper"
+    },
+    {
+      "formato": "Reel",
+      "pilar": "Experiencia Moffyns",
+      "fechaPublicacion": "16/10",
+      "titulo": "Desde el primer café hasta la cena",
+      "guionLabel": "Guion / texto",
+      "guion": "Hay días que empiezan con un café…\nsiguen con algo para desayunar\nse alargan con un almuerzo,\npiden algo dulce por la tarde…\ny terminan como deberían:\ncon una pizza al centro de la mesa.\nEn Moffyns hay algo para acompañarte en distintos momentos del día.\nDesde el primer café hasta la cena.\n¿Cuál es tu momento favorito?",
+      "copy": "",
+      "hashtags": "",
+      "referencias": [],
+      "id": "c3",
+      "estado": "aprobado",
+      "comentario": "",
+      "version": 1,
+      "revisadoPor": "Gregor Parper"
+    },
+    {
+      "formato": "Reel",
+      "pilar": "Momentos de consumo",
+      "fechaPublicacion": "20/10",
+      "titulo": "Platos de pollo nuevos",
+      "guionLabel": "Guion / texto",
+      "guion": "Nuestro menú sigue creciendo.\nY esta vez se suman tres nuevas presentaciones de platos de pollo:\nPollo en salsa de camarones.\nPollo en salsa 4 quesos.\nY pollo en salsa Udinese.\nTres nuevas opciones que llegan para ampliar todavía más las formas de disfrutar Moffyns.\nCTA\nAhora la parte difícil es decidir con cuál probar primero",
+      "copy": "",
+      "hashtags": "",
+      "referencias": [],
+      "id": "c4",
+      "estado": "aprobado",
+      "comentario": "[Gregor Parper]: Con el de camarones",
+      "version": 1,
+      "revisadoPor": "Gregor Parper"
+    },
+    {
+      "formato": "Reel",
+      "pilar": "Momentos de consumo",
+      "fechaPublicacion": "22/10",
+      "titulo": "Bucle café en máquina",
+      "guionLabel": "Guion / texto",
+      "guion": "VIDEO HACIENDO UN CAFE INSPO",
+      "copy": "",
+      "hashtags": "",
+      "referencias": [
+        {
+          "label": "Referencia Pinterest",
+          "url": "https://www.pinterest.com/pin/2533343539231685/"
+        },
+        {
+          "label": "Reel de referencia",
+          "url": "https://www.instagram.com/reel/DV3ZncQimjM/?stkn=MWd5N2drbnB2eGtlcw=="
+        }
+      ],
+      "id": "c5",
+      "estado": "aprobado",
+      "comentario": "[Gregor Parper]: Recuerden en las Américas",
+      "version": 1,
+      "revisadoPor": "Gregor Parper"
+    },
+    {
+      "formato": "Reel",
+      "pilar": "Momentos de consumo",
+      "fechaPublicacion": "25/10",
+      "titulo": "Antojo de pizzas",
+      "guionLabel": "Guion / texto",
+      "guion": "Si hoy se te antoja una buena pizza en Mérida, hay un lugar que tienes que probar.\nEn Moffyns hacemos nuestras pizzas con masa biga.\n¿La diferencia? La biga es un prefermento que preparamos antes de hacer la masa final y es parte de lo que hace especial nuestro proceso.\nDe ahí salen estas pizzas: listas para pedir tu favorita o, mejor todavía, poner varias al centro y probar un poco de todo.\nAsí que para tu próxima salida por pizza en Mérida, ya tienes una opción.\nMoffyns.\nVen, prueba nuestras pizzas y elige tu favorita.",
+      "copy": "",
+      "hashtags": "",
+      "referencias": [],
+      "id": "c6",
+      "estado": "aprobado",
+      "comentario": "",
+      "version": 1,
+      "revisadoPor": "Gregor Parper"
+    },
+    {
+      "formato": "Carrusel con video",
+      "pilar": "Momentos de consumo",
+      "fechaPublicacion": "28/10",
+      "titulo": "El mejor review siempre será",
+      "guionLabel": "Guion / texto",
+      "guion": "FOTO DE UNA NEW YORK COOKIE CON HELADO EN EL MEDIO SUPER CENTRADO, DECORADO BELLO, CON HELADO,\n\nEL MEJOR REVIEW SIEMPRE SERA ESTE\n\nSEGUNDO SLIDE EL PLATO VACIO, MANCHADO COMO SI SE LO HUBIERAN COMIDO Y LES ENCANTO, SYRUP CHORREADO",
+      "copy": "",
+      "hashtags": "",
+      "referencias": [],
+      "id": "c7",
+      "estado": "aprobado",
+      "comentario": "",
+      "version": 1,
+      "revisadoPor": "Gregor Parper"
+    },
+    {
+      "formato": "Carrusel con video",
+      "pilar": "Momentos de consumo",
+      "fechaPublicacion": "",
+      "titulo": "Platos que no sabías que vendemos en Moffyns",
+      "guionLabel": "Guion / texto",
+      "guion": "HOOK\nPlatos que probablemente no sabías que vendemos en Moffyns.\nCUERPO\nUna ensalada César con camarones, una versión fresca de la clásica César acompañada con camarones.\nUna hamburguesa hawaiana, con proteína, mozzarella, tocineta y piña.\nNuestro calzone, relleno de salsa napolitana, mozzarella, jamón, pepperoni, champiñón, cebolla y pimentón.\nY sí, también tenemos Burger Pizza: salsa napolitana, mozzarella, carne de 180 g, jamón, pepperoni, champiñón y salsa BBQ.\nAsí que la próxima vez que veas el menú, quizás sea momento de probar algo que todavía no habías descubierto.",
+      "copy": "",
+      "hashtags": "",
+      "referencias": [],
+      "id": "c8",
+      "estado": "aprobado",
+      "comentario": "",
+      "version": 1,
+      "revisadoPor": "Gregor Parper"
+    }
+  ],
+  "token": "dc459144",
+  "id": "moffyns-2026-octubre-dc459144",
+  "revision": {
+    "revisadoPor": "Gregor Parper",
+    "fecha": "2026-10-06T16:17:18.277Z"
+  },
+  "url": "https://carlosuzc29-eng.github.io/tableros-de-contenido/moffyns-a8733d.html",
+  "firebase": {
+    "apiKey": "AIzaSyAsH9TxW0ld2aNQejJw6xxZW7fpZiw212Q",
+    "projectId": "nexo-tableros-app"
+  },
+  "resetAt": 1791307370037
+}

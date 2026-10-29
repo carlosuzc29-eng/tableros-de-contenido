@@ -235,20 +235,121 @@ def validar_datos_tablero(data, modo_estricto=True):
     es_valido = len(errores) == 0
     return es_valido, errores, advertencias, norm
 
+def validar_tablero_publicado_v2(codigo_cliente, mes_key=None, repo_dir=None):
+    """
+    Valida la estructura publicada v2 de un tablero:
+      1. datos/<codigo>/indice.json existe y tiene 'cliente', 'actual' y 'meses'.
+      2. El mes_key existe en el índice y tiene su archivo datos/<codigo>/<mes_key>.json.
+      3. El JSON publicado no tiene campos internos prohibidos.
+      4. La cáscara HTML <codigo>.html referencia tablero.css y tablero.js.
+    Retorna: (es_valido, errores, advertencias)
+    """
+    repo = repo_dir or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    dir_datos = os.path.join(repo, 'datos', codigo_cliente)
+    ruta_indice = os.path.join(dir_datos, 'indice.json')
+    errores = []
+    advertencias = []
+
+    if not os.path.exists(ruta_indice):
+        errores.append(f"No existe el archivo de índice '{ruta_indice}'.")
+        return False, errores, advertencias
+
+    try:
+        indice = json.load(open(ruta_indice, 'r', encoding='utf-8'))
+    except Exception as e:
+        errores.append(f"Error al parsear '{ruta_indice}': {e}")
+        return False, errores, advertencias
+
+    for campo in ('cliente', 'actual', 'meses'):
+        if campo not in indice:
+            errores.append(f"El índice '{ruta_indice}' carece del campo obligatorio '{campo}'.")
+
+    meses = indice.get('meses', [])
+    if not isinstance(meses, list) or len(meses) == 0:
+        errores.append(f"El índice '{ruta_indice}' debe tener una lista 'meses' no vacía.")
+
+    mes_a_validar = mes_key or indice.get('actual')
+    mes_encontrado = None
+    for m in meses:
+        if m.get('mes') == mes_a_validar:
+            mes_encontrado = m
+            break
+
+    if not mes_encontrado:
+        errores.append(f"El mes '{mes_a_validar}' no está registrado en el índice '{ruta_indice}'.")
+    else:
+        ruta_mes = os.path.join(dir_datos, f"{mes_a_validar}.json")
+        if not os.path.exists(ruta_mes):
+            errores.append(f"No existe el archivo de datos del mes '{ruta_mes}'.")
+        else:
+            try:
+                datos_mes = json.load(open(ruta_mes, 'r', encoding='utf-8'))
+                campos_prohibidos_raiz = {'archivo', 'clickupId', 'tipoOriginal', 'sincronizadoClickup', 'huellasClickup', 'tableroProduccion'}
+                hallados_raiz = campos_prohibidos_raiz.intersection(datos_mes.keys())
+                if hallados_raiz:
+                    errores.append(f"El archivo '{ruta_mes}' contiene campos internos prohibidos en la raíz: {hallados_raiz}")
+
+                for idx, c in enumerate(datos_mes.get('contenidos', [])):
+                    if isinstance(c, dict):
+                        campos_prohibidos_pieza = {'_sync', 'clickupId', 'tipoOriginal'}
+                        hallados_pieza = campos_prohibidos_pieza.intersection(c.keys())
+                        if hallados_pieza:
+                            errores.append(f"Pieza #{idx+1} en '{ruta_mes}' contiene campos internos prohibidos: {hallados_pieza}")
+            except Exception as e:
+                errores.append(f"Error al leer '{ruta_mes}': {e}")
+
+    # Validar cáscara HTML
+    archivo_html = f"{codigo_cliente}.html"
+    ruta_html = os.path.join(repo, archivo_html)
+    if not os.path.exists(ruta_html):
+        advertencias.append(f"No se encontró la cáscara HTML '{ruta_html}'.")
+    else:
+        try:
+            html = open(ruta_html, 'r', encoding='utf-8').read()
+            if 'tablero.css' not in html:
+                errores.append(f"La cáscara '{archivo_html}' no referencia 'tablero.css'.")
+            if 'tablero.js' not in html:
+                errores.append(f"La cáscara '{archivo_html}' no referencia 'tablero.js'.")
+            if f'content="{codigo_cliente}"' not in html and f'content=\'{codigo_cliente}\'' not in html:
+                errores.append(f"La cáscara '{archivo_html}' no tiene la meta nexo-tablero con el código '{codigo_cliente}'.")
+            for proh in ('clickupId', 'sincronizadoClickup', 'huellasClickup', 'tableroProduccion'):
+                if proh in html:
+                    errores.append(f"La cáscara '{archivo_html}' contiene el campo interno prohibido '{proh}'.")
+        except Exception as e:
+            errores.append(f"Error al leer '{ruta_html}': {e}")
+
+    return len(errores) == 0, errores, advertencias
+
 def main():
     if len(sys.argv) < 2:
-        print("Uso: python3 _sistema/validar_tablero.py <ruta/al/borrador.json>")
+        print("Uso: python3 _sistema/validar_tablero.py <ruta/al/borrador.json o codigo-cliente>")
         sys.exit(1)
 
-    ruta = sys.argv[1]
-    if not os.path.exists(ruta):
-        print(f"Error: No se encontró el archivo '{ruta}'")
+    arg = sys.argv[1]
+    repo = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+    # Si es un código de cliente directo o archivo HTML
+    if not os.path.exists(arg) and os.path.exists(os.path.join(repo, 'datos', arg)):
+        codigo = arg
+        valido_v2, errs_v2, advs_v2 = validar_tablero_publicado_v2(codigo, repo_dir=repo)
+        if advs_v2:
+            print("⚠️ Advertencias v2:")
+            for w in advs_v2: print(f"  - {w}")
+        if not valido_v2:
+            print("❌ Errores v2 encontrados:")
+            for err in errs_v2: print(f"  - {err}")
+            sys.exit(1)
+        print(f"✓ Tablero v2 '{codigo}' validado exitosamente.")
+        sys.exit(0)
+
+    if not os.path.exists(arg):
+        print(f"Error: No se encontró el archivo '{arg}'")
         sys.exit(1)
 
     try:
-        data = json.load(open(ruta, encoding='utf-8'))
+        data = json.load(open(arg, encoding='utf-8'))
     except Exception as e:
-        print(f"Error al parsear JSON en '{ruta}': {e}")
+        print(f"Error al parsear JSON en '{arg}': {e}")
         sys.exit(1)
 
     valido, errores, advertencias, normalizado = validar_datos_tablero(data)
@@ -264,8 +365,22 @@ def main():
             print(f"  - {err}")
         sys.exit(1)
 
-    print(f"✓ Validación exitosa: '{ruta}' cumple con el esquema oficial de NEXO.")
+    print(f"✓ Validación exitosa: '{arg}' cumple con el esquema oficial de NEXO.")
     print(f"  Cliente: {normalizado['cliente']} | Periodo: {normalizado['mes']} {normalizado['anio']} | Piezas: {len(normalizado['contenidos'])}")
+
+    # Si el borrador ya tiene archivo generado, validar también la estructura v2
+    if normalizado.get('archivo'):
+        codigo = os.path.splitext(normalizado['archivo'])[0]
+        dir_cliente = os.path.join(repo, 'datos', codigo)
+        if os.path.exists(dir_cliente):
+            valido_v2, errs_v2, advs_v2 = validar_tablero_publicado_v2(codigo, repo_dir=repo)
+            if advs_v2:
+                for w in advs_v2: print(f"  ⚠️ v2: {w}")
+            if not valido_v2:
+                print("❌ Errores en estructura v2 publicada:")
+                for err in errs_v2: print(f"  - {err}")
+                sys.exit(1)
+            print(f"✓ Estructura v2 publicada para '{codigo}' validada exitosamente.")
 
 if __name__ == '__main__':
     main()

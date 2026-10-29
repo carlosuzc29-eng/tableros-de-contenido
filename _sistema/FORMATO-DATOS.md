@@ -25,9 +25,19 @@ Un archivo por tablero en `borradores/` (esa carpeta no se publica). Ejemplo: `b
 }
 ```
 
-**Un enlace por cliente.** El JSON de un mes nuevo se crea sin `archivo`: `construir.py` toma el del mes anterior del mismo cliente (buscándolo en `borradores/`), así el cliente siempre usa el mismo enlace y ve el mes nuevo al recargar. Si el JSON se copió de otro mes, el script limpia la revisión anterior. Para forzar un enlace distinto: `--nuevo-enlace`.
+**Un enlace por cliente y selector multi-mes (v2).** El enlace de cada cliente no cambia nunca (ej. `milkarf-octubre-2026-f01f.html`). El diseño está desacoplado de los datos:
+- `_sistema/tablero/tablero.css`: estilos CSS compartidos por todos los tableros.
+- `_sistema/tablero/tablero.js`: motor JS unificado (modo cliente + Modo Agencia).
+- `_sistema/plantilla-tablero.html`: cáscara liviana pre-renderizada con Chrome headless del mes actual como respaldo offline.
+- `datos/<codigo-cliente>/indice.json`: índice de meses del cliente (ordenado de más reciente a más antiguo, con `actual` fijado al mes en curso).
+- `datos/<codigo-cliente>/<aaaa-mm>.json`: datos de cada mes publicados sin campos internos.
 
-`construir.py` agrega solo: `archivo` (nombre con código aleatorio, uno por cliente), `id`, `url`, `endpoint`, `estado`, `comentario` y `revision`.
+### Selector de meses y reglas de solo lectura:
+- **Mes actual:** el cliente evalúa (aprueba, pide cambios, comenta, cambia formato, envía revisión). Autorregistro en Firestore habilitado.
+- **Meses anteriores (`?mes=aaaa-mm`):** modo **solo lectura** para el cliente. Muestra una franja superior: *"Estás viendo la parrilla de [Mes Año]. Es un mes cerrado: solo lectura."* con botón para ir al mes actual. Se ocultan y bloquean los controles de evaluación, nombre y envío. **Nunca se escribe en Firestore desde un mes cerrado**.
+- **Modo Agencia en meses anteriores:** Carlos y Andrea con sesión activa sí pueden ver y editar textos/correcciones en meses cerrados.
+
+`construir.py` agrega: `archivo` (nombre con código aleatorio, uno por cliente), `id`, `url`, `endpoint`, `estado`, `comentario` y `revision`.
 
 ## Campos opcionales y extendidos del flujo de aprobación
 - `aprobacion`: Objeto con la instantánea congelada del texto en el momento exacto en que fue aprobado:

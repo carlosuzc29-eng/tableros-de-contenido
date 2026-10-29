@@ -7926,6 +7926,18 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
     return 'https://carlosuzc29-eng.github.io/tableros-de-contenido/' + fn;
   }
 
+  var MESES_MAP_BANCO = {
+    enero:'01', febrero:'02', marzo:'03', abril:'04', mayo:'05', junio:'06',
+    julio:'07', agosto:'08', septiembre:'09', octubre:'10', noviembre:'11', diciembre:'12'
+  };
+  function getBoardMesParam(t){
+    if (!t) return '';
+    var anio = t.anio || '2026';
+    var m = String(t.mes || '').toLowerCase().trim();
+    var num = MESES_MAP_BANCO[m] || (m.length === 2 ? m : '10');
+    return anio + '-' + num;
+  }
+
   function resolveOpenUrl(u){
     if (!u) return '';
     if (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
@@ -7955,7 +7967,11 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
       revHtml = '<span>Sin revisiones registradas</span>';
     }
 
+    var mesParam = getBoardMesParam(t);
     var baseTargetUrl = resolveOpenUrl(t.url);
+    if (baseTargetUrl && mesParam) {
+      baseTargetUrl += (baseTargetUrl.indexOf('?') === -1 ? '?' : '&') + 'mes=' + encodeURIComponent(mesParam);
+    }
     var targetOpenUrl = baseTargetUrl ? (baseTargetUrl + (baseTargetUrl.indexOf('?') === -1 ? '?agencia=1' : '&agencia=1')) : '';
     var workspaceBtn = '<button class="btn-card pri btn-open-board-ws" data-id="' + escapeAttr(t.id) + '" title="Abrir espacio de trabajo amplio para correcciones y aprobación">Ver detalles ↗</button>';
     var openBtn = targetOpenUrl ? '<a href="' + escapeAttr(targetOpenUrl) + '" target="_blank" rel="noopener" class="btn-card sec btn-ver-respuesta" title="Ver enlace enviado al cliente">Público ↗</a>' : '';
@@ -9637,14 +9653,18 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
     if (wsBoardClient) wsBoardClient.textContent = t.cliente || 'Tablero de contenido';
     if (wsBoardPeriod) wsBoardPeriod.textContent = (t.mes || '') + ' ' + (t.anio || '');
     if (wsBtnOpenClientView) {
+      var mesParam = getBoardMesParam(t);
       var targetUrl = resolveOpenUrl(t.url);
+      if (targetUrl && mesParam) {
+        targetUrl += (targetUrl.indexOf('?') === -1 ? '?' : '&') + 'mes=' + encodeURIComponent(mesParam);
+      }
       wsBtnOpenClientView.onclick = function(){
         if (targetUrl) window.open(targetUrl, '_blank');
       };
       wsBtnOpenClientView.style.display = targetUrl ? 'inline-flex' : 'none';
       if (wsBtnOpenAgencyView) {
         wsBtnOpenAgencyView.onclick = function(){
-          if (targetUrl) window.open(targetUrl + '#agencia', '_blank');
+          if (targetUrl) window.open(targetUrl + (targetUrl.indexOf('?') === -1 ? '?agencia=1' : '&agencia=1') + '#agencia', '_blank');
         };
         wsBtnOpenAgencyView.style.display = targetUrl ? 'inline-flex' : 'none';
       }

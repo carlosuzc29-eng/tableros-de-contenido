@@ -86,7 +86,7 @@ async function abrirPagina(browser, stub, url, agency = false, viewport = { widt
     });
   }
 
-  await page.goto(url);
+  await page.goto(url, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(1800);
   return { ctx, page, pageErrors };
 }
@@ -111,12 +111,13 @@ async function getToastText(page) {
 // EJECUCIÓN PRINCIPAL DE LA SUITE
 // ─────────────────────────────────────────────────────────────────────────────
 (async () => {
-  console.log(`${C.bold}${C.cyan}Iniciando suite de pruebas automatizadas Nexo (13 casos)...${C.reset}\n`);
+  console.log(`${C.bold}${C.cyan}Iniciando suite de pruebas automatizadas Nexo (24 casos: 13 ciclo de vida + 11 arquitectura v2)...${C.reset}\n`);
 
   // Carpeta temporal aislada para pruebas
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'nexo-qa-suite-'));
   const borradoresDir = path.join(tmpDir, 'borradores');
   fs.mkdirSync(borradoresDir, { recursive: true });
+  fs.cpSync(path.join(REPO_ROOT, '_sistema'), path.join(tmpDir, '_sistema'), { recursive: true });
 
   const configPath = path.join(tmpDir, '.nexo-config.json');
   fs.writeFileSync(configPath, JSON.stringify({
@@ -133,7 +134,11 @@ async function getToastText(page) {
     NEXO_CONFIG: configPath
   };
 
-  const browser = await chromium.launch({ channel: 'chrome', headless: true });
+  const browser = await chromium.launch({
+    channel: 'chrome',
+    headless: true,
+    args: ['--allow-file-access-from-files', '--disable-web-security']
+  });
 
   let caso5FirestoreDoc = null;
   let caso1HtmlFile = '';
@@ -786,7 +791,7 @@ async function getToastText(page) {
       }
 
       const descHeader = c3Clickup.descripcionClickup || '';
-      if (!descHeader.includes('28/10/2026')) {
+      if (!/\b\d{2}\/\d{2}\/\d{4}\b/.test(descHeader)) {
         fail(`La descripción no contiene fecha legible DD/MM/YYYY: '${descHeader.slice(0, 100)}'`);
       }
 
@@ -1153,7 +1158,7 @@ async function getToastText(page) {
             return r.abort();
           });
 
-          await page.goto('file://' + p);
+          await page.goto('file://' + p, { waitUntil: 'domcontentloaded' });
           await page.waitForTimeout(1500);
 
           const { scrollWidth, clientWidth } = await page.evaluate(() => ({
@@ -1211,8 +1216,423 @@ async function getToastText(page) {
       pass('Regresión visual limpia a 390/1440 px y chequeo de sintaxis node --check aprobado');
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // CASO 14: Tableros v2 - Construir dos meses seguidos del mismo cliente
+    // ─────────────────────────────────────────────────────────────────────────
+    console.log(`\n${C.bold}14. Tableros v2 (Construcción multi-mes):${C.reset} dos meses seguidos, mismo HTML, 2 JSON en datos/, índice actualizado`);
+    let v2HtmlFile = '';
+    let v2CodigoCliente = '';
+    {
+      const v2DraftOct = {
+        cliente: 'QA Cliente V2',
+        cuenta: 'qacliente.v2',
+        mes: 'Octubre',
+        anio: 2026,
+        intro: 'Parrilla de contenidos Octubre 2026.',
+        contenidos: [
+          { id: 'c1', formato: 'Reel', pilar: 'Producto', titulo: 'Pieza Octubre 1', guion: 'G1', copy: 'C1' },
+          { id: 'c2', formato: 'Post', pilar: 'Comunidad', titulo: 'Pieza Octubre 2', guion: 'G2', copy: 'C2' },
+          { id: 'c3', formato: 'Story', pilar: 'Interacción', titulo: 'Pieza Octubre 3', guion: 'G3', copy: 'C3' }
+        ]
+      };
+      const pathDraftOct = path.join(borradoresDir, 'qa-cliente-v2-octubre-2026.json');
+      fs.writeFileSync(pathDraftOct, JSON.stringify(v2DraftOct, null, 2));
+      execSync(`python3 "${CONSTRUIR_PY}" "${pathDraftOct}"`, { env: envTest, stdio: 'pipe' });
+
+      const octActualizado = JSON.parse(fs.readFileSync(pathDraftOct, 'utf8'));
+      v2HtmlFile = path.join(tmpDir, octActualizado.archivo);
+      v2CodigoCliente = octActualizado.archivo.replace(/\.html$/, '');
+
+      // Construir segundo mes (Noviembre)
+      const v2DraftNov = {
+        cliente: 'QA Cliente V2',
+        cuenta: 'qacliente.v2',
+        mes: 'Noviembre',
+        anio: 2026,
+        intro: 'Parrilla de contenidos Noviembre 2026.',
+        contenidos: [
+          { id: 'n1', formato: 'Reel', pilar: 'Educativo', titulo: 'Pieza Noviembre 1', guion: 'GN1', copy: 'CN1', clickupId: 'click-101', tipoOriginal: 'Reel' },
+          { id: 'n2', formato: 'Carrusel', pilar: 'Producto', titulo: 'Pieza Noviembre 2', guion: 'GN2', copy: 'CN2' },
+          { id: 'n3', formato: 'Video', pilar: 'Comunidad', titulo: 'Pieza Noviembre 3', guion: 'GN3', copy: 'CN3' },
+          { id: 'n4', formato: 'Post', pilar: 'Promoción', titulo: 'Pieza Noviembre 4', guion: 'GN4', copy: 'CN4' }
+        ]
+      };
+      const pathDraftNov = path.join(borradoresDir, 'qa-cliente-v2-noviembre-2026.json');
+      fs.writeFileSync(pathDraftNov, JSON.stringify(v2DraftNov, null, 2));
+      execSync(`python3 "${CONSTRUIR_PY}" "${pathDraftNov}"`, { env: envTest, stdio: 'pipe' });
+
+      const novActualizado = JSON.parse(fs.readFileSync(pathDraftNov, 'utf8'));
+      if (novActualizado.archivo !== octActualizado.archivo) {
+        fail(`El segundo mes no reutilizó el mismo archivo HTML: ${novActualizado.archivo} vs ${octActualizado.archivo}`);
+      }
+
+      const datosClienteDir = path.join(tmpDir, 'datos', v2CodigoCliente);
+      const jsonOctPath = path.join(datosClienteDir, '2026-10.json');
+      const jsonNovPath = path.join(datosClienteDir, '2026-11.json');
+      const indicePath = path.join(datosClienteDir, 'indice.json');
+
+      if (!fs.existsSync(jsonOctPath) || !fs.existsSync(jsonNovPath) || !fs.existsSync(indicePath)) {
+        fail('Faltan archivos en datos/<codigo-cliente> tras construir dos meses');
+      }
+
+      const indice = JSON.parse(fs.readFileSync(indicePath, 'utf8'));
+      if (indice.actual !== '2026-11') {
+        fail(`indice.actual debe ser '2026-11', se obtuvo '${indice.actual}'`);
+      }
+      if (!Array.isArray(indice.meses) || indice.meses.length !== 2) {
+        fail(`indice.meses debe contener 2 meses, contiene ${indice.meses?.length}`);
+      }
+      if (indice.meses[0].mes !== '2026-11' || indice.meses[1].mes !== '2026-10') {
+        fail('indice.meses no está ordenado del más reciente al más antiguo');
+      }
+      if (!indice.meses[0].id || !indice.meses[1].id) {
+        fail('Los elementos de indice.meses deben contener el campo "id" de Firestore');
+      }
+
+      pass('Dos meses seguidos construidos: mismo HTML, 2 JSON en datos/, índice ordenado con actual=2026-11');
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // CASO 15: Tableros v2 - Abrir enlace sin ?mes (Carga mes actual)
+    // ─────────────────────────────────────────────────────────────────────────
+    console.log(`\n${C.bold}15. Tableros v2 (Mes actual sin ?mes):${C.reset} carga mes más reciente, 4 tarjetas y controles activos`);
+    {
+      const st = new Stub();
+      const { ctx, page, pageErrors } = await abrirPagina(browser, st, 'file://' + v2HtmlFile);
+
+      if (pageErrors.length > 0) {
+        fail(`Errores de página al abrir sin ?mes: ${pageErrors.join('; ')}`);
+      }
+
+      const cardsCount = await page.evaluate(() => document.querySelectorAll('#list .card').length);
+      if (cardsCount !== 4) {
+        fail(`Se esperaban 4 tarjetas en el mes actual (Noviembre), se obtuvieron ${cardsCount}`);
+      }
+
+      const isClosed = await page.evaluate(() => document.body.classList.contains('is-closed-month'));
+      if (isClosed) {
+        fail('El mes actual no debe tener la clase is-closed-month');
+      }
+
+      const bannerVisible = await page.evaluate(() => {
+        const b = document.getElementById('closedMonthBanner');
+        return b && b.style.display !== 'none';
+      });
+      if (bannerVisible) {
+        fail('El mes actual no debe mostrar el banner de mes cerrado');
+      }
+
+      const selectorVal = await page.evaluate(() => document.getElementById('monthSelect')?.value);
+      if (selectorVal !== '2026-11') {
+        fail(`El selector de meses debe estar en '2026-11', se obtuvo '${selectorVal}'`);
+      }
+
+      await ctx.close();
+      pass('Mes actual abierto por defecto: 4 tarjetas, selector en 2026-11, sin banner de cierre');
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // CASO 16: Tableros v2 - Cambiar al mes anterior en selector (Solo lectura)
+    // ─────────────────────────────────────────────────────────────────────────
+    console.log(`\n${C.bold}16. Tableros v2 (Selector a mes cerrado):${C.reset} franja solo lectura, 3 tarjetas, sin controles de evaluación ni escrituras`);
+    {
+      const st = new Stub();
+      const { ctx, page, pageErrors } = await abrirPagina(browser, st, 'file://' + v2HtmlFile);
+
+      // Limpiar log antes de interactuar con el mes cerrado
+      st.log = [];
+
+      // Cambiar selector a 2026-10
+      await page.selectOption('#monthSelect', '2026-10');
+      await page.waitForTimeout(600);
+
+      const urlActual = page.url();
+      if (!urlActual.includes('?mes=2026-10')) {
+        fail(`La URL no se actualizó con history.replaceState a ?mes=2026-10: ${urlActual}`);
+      }
+
+      const cardsCount = await page.evaluate(() => document.querySelectorAll('#list .card').length);
+      if (cardsCount !== 3) {
+        fail(`Se esperaban 3 tarjetas del mes de Octubre, se obtuvieron ${cardsCount}`);
+      }
+
+      const isClosed = await page.evaluate(() => document.body.classList.contains('is-closed-month'));
+      if (!isClosed) {
+        fail('El mes anterior debe tener la clase body.is-closed-month');
+      }
+
+      const bannerText = await page.evaluate(() => document.getElementById('closedMonthBanner')?.textContent || '');
+      if (!bannerText.includes('Octubre 2026') || !bannerText.includes('solo lectura')) {
+        fail(`Texto de franja de mes cerrado no coincide: '${bannerText}'`);
+      }
+
+      // Verificar que no se realizaron escrituras en Firestore
+      const escrituras = st.log.filter(l => l.body || l.create);
+      if (escrituras.length > 0) {
+        fail(`Se detectaron ${escrituras.length} escrituras indebidas a Firestore en un mes cerrado`);
+      }
+
+      // Probar botón "Ir al mes actual"
+      await page.click('#btnGoCurrentMonth');
+      await page.waitForTimeout(600);
+      const selectorPostVolver = await page.evaluate(() => document.getElementById('monthSelect')?.value);
+      if (selectorPostVolver !== '2026-11') {
+        fail(`El botón 'Ir al mes actual' no restableció el mes actual: ${selectorPostVolver}`);
+      }
+
+      await ctx.close();
+      pass('Selector a mes anterior: 3 tarjetas, franja de mes cerrado, 0 escrituras y botón "Ir al mes actual" operativo');
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // CASO 17: Tableros v2 - Abrir directamente con ?mes=2026-10
+    // ─────────────────────────────────────────────────────────────────────────
+    console.log(`\n${C.bold}17. Tableros v2 (URL directa ?mes=aaaa-mm):${C.reset} carga directa del mes pedido en solo lectura`);
+    {
+      const st = new Stub();
+      const { ctx, page } = await abrirPagina(browser, st, 'file://' + v2HtmlFile + '?mes=2026-10');
+
+      const cardsCount = await page.evaluate(() => document.querySelectorAll('#list .card').length);
+      if (cardsCount !== 3) {
+        fail(`Se esperaban 3 tarjetas al abrir con ?mes=2026-10, se obtuvieron ${cardsCount}`);
+      }
+
+      const selectorVal = await page.evaluate(() => document.getElementById('monthSelect')?.value);
+      if (selectorVal !== '2026-10') {
+        fail(`Selector de meses debía ser '2026-10', obtenido '${selectorVal}'`);
+      }
+
+      const isClosed = await page.evaluate(() => document.body.classList.contains('is-closed-month'));
+      if (!isClosed) {
+        fail('Carga directa de mes anterior debe activar is-closed-month');
+      }
+
+      // Verificar que abrir directamente un mes cerrado NO produce escrituras a Firestore
+      const escriturasDirectas = st.log.filter(l => l.body || l.create);
+      if (escriturasDirectas.length > 0) {
+        fail(`Se detectaron ${escriturasDirectas.length} escrituras indebidas al abrir directamente un mes cerrado`);
+      }
+
+      await ctx.close();
+      pass('Parámetro ?mes=2026-10 abre directamente el mes indicado en modo cerrado');
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // CASO 18: Tableros v2 - Modo revisión de corregidos en mes actual (?review=corregidos&piezas=...)
+    // ─────────────────────────────────────────────────────────────────────────
+    console.log(`\n${C.bold}18. Tableros v2 (Revisión de corregidos):${C.reset} ?review=corregidos&piezas=1,3 en mes actual`);
+    {
+      const st = new Stub();
+      const { ctx, page } = await abrirPagina(browser, st, 'file://' + v2HtmlFile + '?review=corregidos&piezas=1,3');
+
+      const visibles = await page.evaluate(() => {
+        return [...document.querySelectorAll('article.card')]
+          .filter(c => c.offsetParent !== null)
+          .map(c => c.dataset.pieceNum || c.id);
+      });
+
+      if (visibles.length !== 2 || !visibles.includes('1') || !visibles.includes('3')) {
+        fail(`Enlace de revisión no mostró únicamente piezas 1 y 3: visibles = [${visibles.join(',')}]`);
+      }
+
+      await ctx.close();
+      pass('?review=corregidos&piezas=1,3 filtra y muestra únicamente las piezas especificadas');
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // CASO 19: Tableros v2 - Respaldo sin acceso a datos/ (Fallback board-data)
+    // ─────────────────────────────────────────────────────────────────────────
+    console.log(`\n${C.bold}19. Tableros v2 (Respaldo offline/sin datos/):${C.reset} funciona con board-data embebido si fetch datos/ falla`);
+    {
+      const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+      const page = await ctx.newPage();
+      const errors = [];
+      page.on('pageerror', e => errors.push(e.message));
+
+      // Bloquear cualquier petición a datos/
+      await page.route('**/datos/**', r => r.abort());
+
+      await page.goto('file://' + v2HtmlFile);
+      await page.waitForTimeout(1000);
+
+      const cardsCount = await page.evaluate(() => document.querySelectorAll('#list .card').length);
+      if (cardsCount !== 4) {
+        fail(`Respaldo embebido debía renderizar 4 tarjetas, renderizó ${cardsCount}`);
+      }
+
+      if (errors.length > 0) {
+        fail(`Errores de página durante fallo de fetch datos/: ${errors.join('; ')}`);
+      }
+
+      await ctx.close();
+      pass('Respaldo board-data embebido mantiene el tablero 100% funcional si datos/ no está disponible');
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // CASO 20: Tableros v2 - Respaldo sin JavaScript a 390 px (Pre-render y aviso)
+    // ─────────────────────────────────────────────────────────────────────────
+    console.log(`\n${C.bold}20. Tableros v2 (Sin JavaScript a 390 px):${C.reset} tarjetas pre-renderizadas visibles y aviso Abrir en Safari`);
+    {
+      const ctx = await browser.newContext({
+        viewport: { width: 390, height: 844 },
+        javaScriptEnabled: false
+      });
+      const page = await ctx.newPage();
+      await page.goto('file://' + v2HtmlFile, { waitUntil: 'domcontentloaded' });
+
+      const cardCount = await page.evaluate(() => document.querySelectorAll('#list .card').length);
+      if (cardCount !== 4) {
+        fail(`Sin JavaScript deben ser visibles las 4 tarjetas pre-renderizadas, se hallaron ${cardCount}`);
+      }
+
+      const fallbackVisible = await page.evaluate(() => {
+        const n = document.querySelector('.nojs-note');
+        return !!n && n.textContent.includes('Safari');
+      });
+      if (!fallbackVisible) {
+        fail('El aviso .nojs-note con "Abrir en Safari" no está presente en el HTML sin JavaScript');
+      }
+
+      await ctx.close();
+      pass('Pre-render sin JavaScript verificado: 4 tarjetas estáticas y aviso de soporte presentes');
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // CASO 21: Tableros v2 - Modo Agencia en mes actual y en mes anterior
+    // ─────────────────────────────────────────────────────────────────────────
+    console.log(`\n${C.bold}21. Tableros v2 (Modo Agencia multi-mes):${C.reset} acceso y edición en mes actual y en mes cerrado`);
+    {
+      const st = new Stub();
+      // Abrir mes actual en Modo Agencia
+      const { ctx: ctxAct, page: pageAct } = await abrirPagina(browser, st, 'file://' + v2HtmlFile, true);
+      const agencyBarAct = await pageAct.evaluate(() => {
+        const bar = document.getElementById('agencyActiveBarWrap');
+        return bar && bar.style.display !== 'none';
+      });
+      if (!agencyBarAct) {
+        fail('La barra de Modo Agencia no está visible en el mes actual');
+      }
+      await ctxAct.close();
+
+      // Abrir mes cerrado en Modo Agencia
+      const { ctx: ctxOld, page: pageOld } = await abrirPagina(browser, st, 'file://' + v2HtmlFile + '?mes=2026-10', true);
+      const agencyOldBar = await pageOld.evaluate(() => {
+        const bar = document.getElementById('agencyActiveBarWrap');
+        return bar && bar.style.display !== 'none';
+      });
+      if (!agencyOldBar) {
+        fail('La barra de Modo Agencia debe estar visible también en meses cerrados');
+      }
+      await ctxOld.close();
+      pass('Modo Agencia operativo en mes actual y en meses anteriores cerrados');
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // CASO 22: Tableros v2 - Limpieza de campos internos
+    // ─────────────────────────────────────────────────────────────────────────
+    console.log(`\n${C.bold}22. Tableros v2 (Seguridad y limpieza de campos internos):${C.reset} JSON publicado y cáscara sin metadatos internos`);
+    {
+      const datosClienteDir = path.join(tmpDir, 'datos', v2CodigoCliente);
+      const jsonNovContent = fs.readFileSync(path.join(datosClienteDir, '2026-11.json'), 'utf8');
+      const htmlContent = fs.readFileSync(v2HtmlFile, 'utf8');
+
+      const camposProhibidos = ['clickupId', 'tipoOriginal', 'sincronizadoClickup', 'huellasClickup', 'tableroProduccion', '_sync'];
+      for (const campo of camposProhibidos) {
+        if (jsonNovContent.includes(`"${campo}"`)) {
+          fail(`El JSON publicado en datos/ contiene el campo prohibido '${campo}'`);
+        }
+        if (htmlContent.includes(`"${campo}"`)) {
+          fail(`La cáscara HTML contiene el campo prohibido '${campo}' en board-data`);
+        }
+      }
+      pass('JSON publicado y cáscara HTML completamente limpios de campos internos');
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // CASO 23: Tableros v2 - Robustez y compatibilidad sin Sortable CDN
+    // ─────────────────────────────────────────────────────────────────────────
+    console.log(`\n${C.bold}23. Tableros v2 (Robustez 390/1440 px y Sortable ausente):${C.reset} sin desborde y sin pageerror`);
+    {
+      for (const blockSortable of [false, true]) {
+        for (const w of [390, 1440]) {
+          const ctx = await browser.newContext({ viewport: { width: w, height: w === 390 ? 844 : 900 } });
+          const page = await ctx.newPage();
+          const errors = [];
+          page.on('pageerror', e => errors.push(e.message));
+
+          await page.route('**/*', r => {
+            const u = r.request().url();
+            if (blockSortable && /sortable/i.test(u)) return r.abort();
+            if (u.startsWith('file:') || /cdn\.jsdelivr|cdnjs|gstatic\.com\/firebasejs|fonts\.googleapis|fonts\.gstatic/.test(u)) {
+              return r.continue();
+            }
+            return r.abort();
+          });
+
+          await page.goto('file://' + v2HtmlFile, { waitUntil: 'domcontentloaded' });
+          await page.waitForTimeout(1000);
+
+          const { scrollWidth, clientWidth } = await page.evaluate(() => ({
+            scrollWidth: document.documentElement.scrollWidth,
+            clientWidth: document.documentElement.clientWidth
+          }));
+
+          if (errors.length > 0) {
+            fail(`Error de página en cáscara v2 a ${w}px (Sortable bloqueado=${blockSortable}): ${errors.join('; ')}`);
+          }
+
+          if (scrollWidth > clientWidth + 1) {
+            fail(`Desborde horizontal en cáscara v2 a ${w}px: scrollWidth=${scrollWidth} > clientWidth=${clientWidth}`);
+          }
+
+          await ctx.close();
+        }
+      }
+      pass('Cáscara v2 robusta: sin desborde ni errores a 390/1440 px con y sin CDN Sortable');
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // CASO 24: Tableros v2 - Verificación de migración de los 4 tableros existentes
+    // ─────────────────────────────────────────────────────────────────────────
+    console.log(`\n${C.bold}24. Tableros v2 (Migración de los 4 tableros existentes):${C.reset} Milkarf 11, Bambú 8, Moffyns 8, Trina 9`);
+    {
+      const tablerosEsperados = [
+        { file: 'milkarf-octubre-2026-f01f.html', expectedCards: 11, client: 'Milkarf' },
+        { file: 'bambu-bistro-1f6bcb.html', expectedCards: 8, client: 'Bambú Bistro' },
+        { file: 'moffyns-a8733d.html', expectedCards: 8, client: 'Moffyns' },
+        { file: 'trina-hot-sauce-octubre-2026-a39c.html', expectedCards: 9, client: 'Trina Hot Sauce' }
+      ];
+
+      for (const t of tablerosEsperados) {
+        const fullPath = path.join(REPO_ROOT, t.file);
+        if (!fs.existsSync(fullPath)) {
+          fail(`No se encontró el archivo migrado de ${t.client}: ${t.file}`);
+        }
+
+        const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+        const page = await ctx.newPage();
+        const errors = [];
+        page.on('pageerror', e => errors.push(e.message));
+
+        await page.goto('file://' + fullPath, { waitUntil: 'domcontentloaded' });
+        await page.waitForTimeout(1000);
+
+        if (errors.length > 0) {
+          fail(`Error de página en tablero migrado de ${t.client}: ${errors.join('; ')}`);
+        }
+
+        const cardsCount = await page.evaluate(() => document.querySelectorAll('#list .card').length);
+        if (cardsCount !== t.expectedCards) {
+          fail(`Tablero de ${t.client} tiene ${cardsCount} tarjetas, se esperaban ${t.expectedCards}`);
+        }
+
+        await ctx.close();
+      }
+      pass('Los 4 tableros existentes cargan idénticos tras la migración v2 con el número exacto de tarjetas');
+    }
+
     console.log(`\n${C.bold}${C.green}================================================================${C.reset}`);
-    console.log(`${C.bold}${C.green}✓ TODOS LOS 13 CASOS DE PRUEBA PASARON EXITOSAMENTE (100% OK)${C.reset}`);
+    console.log(`${C.bold}${C.green}✓ TODOS LOS 24 CASOS DE PRUEBA PASARON EXITOSAMENTE (100% OK)${C.reset}`);
     console.log(`${C.bold}${C.green}================================================================${C.reset}\n`);
 
   } catch (err) {

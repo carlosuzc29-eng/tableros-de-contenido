@@ -111,7 +111,7 @@ async function getToastText(page) {
 // EJECUCIÓN PRINCIPAL DE LA SUITE
 // ─────────────────────────────────────────────────────────────────────────────
 (async () => {
-  console.log(`${C.bold}${C.cyan}Iniciando suite de pruebas automatizadas Nexo (25 casos: 13 ciclo de vida + 12 arquitectura v2)...${C.reset}\n`);
+  console.log(`${C.bold}${C.cyan}Iniciando suite de pruebas automatizadas Nexo (26 casos: 13 ciclo de vida + 13 arquitectura v2)...${C.reset}\n`);
 
   // Carpeta temporal aislada para pruebas
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'nexo-qa-suite-'));
@@ -1643,8 +1643,104 @@ async function getToastText(page) {
       pass('Archivo .nojekyll verificado en la raíz del repositorio');
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // CASO 26: Tableros v2 - Caché defensivo de indice.json
+    // ─────────────────────────────────────────────────────────────────────────
+    console.log(`\n${C.bold}26. Tableros v2 (Caché defensivo de indice.json):${C.reset} índice viejo con actual=2026-10 y página de noviembre → noviembre editable, octubre en selector cerrado, 0 escrituras`);
+    {
+      const st = new Stub();
+      const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+      const page = await ctx.newPage();
+      const pageErrors = [];
+      page.on('pageerror', e => pageErrors.push(e.message));
+
+      await st.attach(page);
+
+      // Simular que el navegador/red devuelve un indice.json viejo con actual=2026-10
+      await page.route('**/datos/**/indice.json', route => {
+        route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            cliente: 'QA Cliente V2',
+            cuenta: 'qacliente.v2',
+            actual: '2026-10',
+            meses: [
+              { mes: '2026-10', etiqueta: 'Octubre 2026', id: 'qa-cliente-v2-octubre' }
+            ]
+          })
+        });
+      });
+
+      await page.goto('file://' + v2HtmlFile, { waitUntil: 'domcontentloaded' });
+      await page.waitForTimeout(1000);
+
+      if (pageErrors.length > 0) {
+        fail(`Errores de página con índice en caché: ${pageErrors.join('; ')}`);
+      }
+
+      // 1. Noviembre debe ser el mes visible y editable
+      const cardsCount = await page.evaluate(() => document.querySelectorAll('#list .card').length);
+      if (cardsCount !== 4) {
+        fail(`Se esperaban 4 tarjetas del mes de Noviembre embebido, se obtuvieron ${cardsCount}`);
+      }
+
+      const isClosed = await page.evaluate(() => document.body.classList.contains('is-closed-month'));
+      if (isClosed) {
+        fail('Noviembre debe ser editable y no tener is-closed-month a pesar del índice viejo');
+      }
+
+      const bannerVisible = await page.evaluate(() => {
+        const b = document.getElementById('closedMonthBanner');
+        return b && b.style.display !== 'none';
+      });
+      if (bannerVisible) {
+        fail('Noviembre no debe mostrar banner de mes cerrado');
+      }
+
+      // 2. El selector de meses debe incluir 2026-11 como seleccionado y 2026-10
+      const selectorOptions = await page.evaluate(() => {
+        const sel = document.getElementById('monthSelect');
+        if (!sel) return [];
+        return Array.from(sel.options).map(o => ({ value: o.value, selected: o.selected }));
+      });
+
+      const novOpt = selectorOptions.find(o => o.value === '2026-11');
+      const octOpt = selectorOptions.find(o => o.value === '2026-10');
+      if (!novOpt || !novOpt.selected) {
+        fail(`2026-11 no está seleccionado en el selector: ${JSON.stringify(selectorOptions)}`);
+      }
+      if (!octOpt) {
+        fail(`2026-10 no aparece en el selector: ${JSON.stringify(selectorOptions)}`);
+      }
+
+      // 3. Cambiar a octubre y verificar que aparece cerrado
+      st.log = [];
+      await page.selectOption('#monthSelect', '2026-10');
+      await page.waitForTimeout(600);
+
+      const octCards = await page.evaluate(() => document.querySelectorAll('#list .card').length);
+      if (octCards !== 3) {
+        fail(`Se esperaban 3 tarjetas en Octubre tras cambiar selector, se obtuvieron ${octCards}`);
+      }
+
+      const isOctClosed = await page.evaluate(() => document.body.classList.contains('is-closed-month'));
+      if (!isOctClosed) {
+        fail('Octubre debe aparecer con is-closed-month porque actual corregido es Noviembre');
+      }
+
+      // 4. Confirmar 0 escrituras a Firestore durante toda la navegación
+      const escrituras = st.log.filter(l => l.body || l.create);
+      if (escrituras.length > 0) {
+        fail(`Se detectaron ${escrituras.length} escrituras indebidas a Firestore: ${JSON.stringify(escrituras)}`);
+      }
+
+      await ctx.close();
+      pass('Índice viejo con actual=2026-10 corregido por mes embebido: noviembre editable, octubre cerrado, 0 escrituras');
+    }
+
     console.log(`\n${C.bold}${C.green}================================================================${C.reset}`);
-    console.log(`${C.bold}${C.green}✓ TODOS LOS 25 CASOS DE PRUEBA PASARON EXITOSAMENTE (100% OK)${C.reset}`);
+    console.log(`${C.bold}${C.green}✓ TODOS LOS 26 CASOS DE PRUEBA PASARON EXITOSAMENTE (100% OK)${C.reset}`);
     console.log(`${C.bold}${C.green}================================================================${C.reset}\n`);
 
   } catch (err) {

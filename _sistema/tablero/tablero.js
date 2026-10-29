@@ -3710,7 +3710,7 @@
       var isClosed = (indiceData && indiceData.actual) ? (newMes !== indiceData.actual) : false;
       renderActiveMonth(monthsCache[newMes], isClosed);
     } else if (codigoCliente) {
-      fetch('datos/' + encodeURIComponent(codigoCliente) + '/' + encodeURIComponent(newMes) + '.json')
+      fetch('datos/' + encodeURIComponent(codigoCliente) + '/' + encodeURIComponent(newMes) + '.json', { cache: 'no-cache' })
         .then(function(res){
           if (!res.ok) throw new Error('HTTP ' + res.status);
           return res.json();
@@ -3764,10 +3764,10 @@
         embeddedData = JSON.parse(boardDataScript.textContent);
       }
     } catch(e) {}
+    var embMesKey = embeddedData ? getMesKey(embeddedData.mes, embeddedData.anio) : '';
 
     // 1. Renderizado síncrono inicial con respaldo si existe (pre-renderizado inmediato para Chrome headless y LCP rápido)
     if (embeddedData) {
-      var embMesKey = getMesKey(embeddedData.mes, embeddedData.anio);
       var isReqAnotherMonth = !!(requestedMes && requestedMes !== embMesKey);
       indiceData = {
         cliente: embeddedData.cliente,
@@ -3786,19 +3786,36 @@
 
     // 2. Carga asíncrona de datos multi-mes si hay codigoCliente
     if (codigoCliente) {
-      fetch('datos/' + encodeURIComponent(codigoCliente) + '/indice.json')
+      fetch('datos/' + encodeURIComponent(codigoCliente) + '/indice.json', { cache: 'no-cache' })
         .then(function(res){
           if (!res.ok) throw new Error('Error al leer indice');
           return res.json();
         })
         .then(function(ind){
-          indiceData = ind;
+          indiceData = ind || {};
+
+          // Si hay board-data embebido y el mes embebido es más nuevo que indice.actual, manda el embebido
+          if (embeddedData && embMesKey) {
+            if (!indiceData.actual || embMesKey > indiceData.actual) {
+              indiceData.actual = embMesKey;
+              if (!indiceData.meses) indiceData.meses = [];
+              var found = indiceData.meses.some(function(m){ return m.mes === embMesKey; });
+              if (!found) {
+                indiceData.meses.unshift({
+                  mes: embMesKey,
+                  etiqueta: [embeddedData.mes, embeddedData.anio].filter(Boolean).join(' '),
+                  id: embeddedData.id
+                });
+              }
+            }
+          }
+
           var targetMes = requestedMes || indiceData.actual || (indiceData.meses && indiceData.meses[0] ? indiceData.meses[0].mes : null);
           var isClosed = (targetMes !== indiceData.actual);
 
           // Si el mes pedido es diferente al que ya se pintó, o si aún no se había pintado
           if (targetMes !== activeMes || !embeddedData) {
-            return fetch('datos/' + encodeURIComponent(codigoCliente) + '/' + encodeURIComponent(targetMes) + '.json')
+            return fetch('datos/' + encodeURIComponent(codigoCliente) + '/' + encodeURIComponent(targetMes) + '.json', { cache: 'no-cache' })
               .then(function(res){
                 if (!res.ok) throw new Error('Error al leer mes');
                 return res.json();
@@ -3837,5 +3854,9 @@
     document.addEventListener('DOMContentLoaded', initTablero);
   } else {
     initTablero();
+  }
+
+  if (typeof window !== 'undefined') {
+    window.switchMonth = switchMonth;
   }
 })();

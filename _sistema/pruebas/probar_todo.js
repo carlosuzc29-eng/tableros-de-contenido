@@ -111,7 +111,7 @@ async function getToastText(page) {
 // EJECUCIÓN PRINCIPAL DE LA SUITE
 // ─────────────────────────────────────────────────────────────────────────────
 (async () => {
-  console.log(`${C.bold}${C.cyan}Iniciando suite de pruebas automatizadas Nexo (24 casos: 13 ciclo de vida + 11 arquitectura v2)...${C.reset}\n`);
+  console.log(`${C.bold}${C.cyan}Iniciando suite de pruebas automatizadas Nexo (25 casos: 13 ciclo de vida + 12 arquitectura v2)...${C.reset}\n`);
 
   // Carpeta temporal aislada para pruebas
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'nexo-qa-suite-'));
@@ -1631,8 +1631,20 @@ async function getToastText(page) {
       pass('Los 4 tableros existentes cargan idénticos tras la migración v2 con el número exacto de tarjetas');
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // CASO 25: Despliegue en GitHub Pages (.nojekyll)
+    // ─────────────────────────────────────────────────────────────────────────
+    console.log(`\n${C.bold}25. Despliegue en GitHub Pages (.nojekyll):${C.reset} presencia obligatoria en la raíz para servir carpeta _sistema`);
+    {
+      const nojekyllPath = path.join(REPO_ROOT, '.nojekyll');
+      if (!fs.existsSync(nojekyllPath)) {
+        fail('Falta el archivo .nojekyll en la raíz del repositorio. GitHub Pages no publicará la carpeta _sistema sin este archivo.');
+      }
+      pass('Archivo .nojekyll verificado en la raíz del repositorio');
+    }
+
     console.log(`\n${C.bold}${C.green}================================================================${C.reset}`);
-    console.log(`${C.bold}${C.green}✓ TODOS LOS 24 CASOS DE PRUEBA PASARON EXITOSAMENTE (100% OK)${C.reset}`);
+    console.log(`${C.bold}${C.green}✓ TODOS LOS 25 CASOS DE PRUEBA PASARON EXITOSAMENTE (100% OK)${C.reset}`);
     console.log(`${C.bold}${C.green}================================================================${C.reset}\n`);
 
   } catch (err) {

@@ -27,10 +27,11 @@ Responde siempre en español latinoamericano neutro, con "tú". Sé breve, rigur
    python3 _sistema/construir.py borradores/<cliente>-<mes>-<año>.json --publicar
    ```
 5. **Verificar que no existan errores**:
+   - **Después de publicar, ejecutar `verificar_publicado.js`. Si falla, avisar a Carlos de inmediato.**
    - Tablero con 0 revisiones previas (estado inicial limpio: 0 aprobados, 0 con cambios, todos pendientes).
    - En móviles: desplazamiento vertical completamente fluido sin rebotes ni saltos a la parte superior.
    - Sincronizado en tiempo real en el Banco de trabajo (`index.html`).
-5. **Entregar al usuario**:
+6. **Entregar al usuario**:
    - Enlace final de GitHub Pages.
    - Mensaje listo para WhatsApp formateado.
 

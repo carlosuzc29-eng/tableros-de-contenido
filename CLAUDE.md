@@ -114,5 +114,6 @@ El script imprime la URL de GitHub Pages y el mensaje listo para enviar al clien
 
 1. El archivo HTML fue generado en la raíz o carpeta correspondiente.
 2. Git muestra el commit y push completados hacia `origin/main`.
-3. El documento de Firestore (`tableros/{id}`) está registrado o actualizado.
-4. Los contadores en el Banco de Trabajo (`index.html`) reflejan exactamente un único tablero activo para este cliente y mes.
+3. **Después de publicar, ejecutar `verificar_publicado.js`. Si falla, avisar a Carlos de inmediato.**
+4. El documento de Firestore (`tableros/{id}`) está registrado o actualizado.
+5. Los contadores en el Banco de Trabajo (`index.html`) reflejan exactamente un único tablero activo para este cliente y mes.

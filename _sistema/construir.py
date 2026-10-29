@@ -563,6 +563,7 @@ def main():
         subprocess.run(['git', '-C', REPO, 'pull', '--rebase', 'origin', 'main'], check=False)
         subprocess.run(['git', '-C', REPO, 'push', 'origin', 'main'], check=True)
         print('✓ Publicado (GitHub tarda 1-2 minutos en actualizar)')
+        print(f"Verifica en 2 minutos con: node _sistema/pruebas/verificar_publicado.js {data['archivo']}")
 
     print('\nEnlace:', data['url'])
     variante_enlace = f"en el mismo enlace de siempre: {data['url']}" if enlace_reutilizado else f"{data['url']}"

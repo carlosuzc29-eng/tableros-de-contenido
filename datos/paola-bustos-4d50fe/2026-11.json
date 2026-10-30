@@ -1,0 +1,73 @@
+{
+  "id": "paola-bustos-2026-noviembre-ad697188",
+  "cliente": "Paola Bustos",
+  "cuenta": "paolafisiofit",
+  "mes": "Noviembre",
+  "anio": 2026,
+  "intro": "",
+  "contenidos": [
+    {
+      "formato": "Reel",
+      "pilar": "",
+      "canal": "Orgánico",
+      "fechaPublicacion": "09/11",
+      "titulo": "Y si tu espalda",
+      "guionLabel": "Guion / texto",
+      "guion": "Todo empezó con un tirón.\nTrabajas sentado todo el día. Un día te agachas… y ¡zas! Decides que lo mejor es no moverte.\nAdiós fútbol. Adiós caminatas. Hasta las escaleras te dan miedo.\nPasan tres meses… y te duele más que el primer día.\n¿Por qué? Porque nos enseñaron que lo que duele se deja quieto. Pero si dejas de moverte, los músculos que protegen tu columna se debilitan. Tu espalda no pedía reposo: pedía volver a moverse bien, poco a poco.\nComenta ESPALDA y te digo por dónde empezar.",
+      "copy": "",
+      "hashtags": "",
+      "referencias": [],
+      "id": "c1",
+      "estado": "pendiente",
+      "version": 1,
+      "comentario": ""
+    },
+    {
+      "formato": "Reel",
+      "pilar": "",
+      "canal": "Orgánico",
+      "fechaPublicacion": "12/11",
+      "titulo": "Cuando mi paciente",
+      "guionLabel": "Guion / texto",
+      "guion": "\"Cuando mi paciente espera un profesional con 26 años de experiencia y aparezco yo con 26 años de vida y 175 cm de mucho conocimiento\"",
+      "copy": "",
+      "hashtags": "",
+      "referencias": [
+        {
+          "label": "Video de referencia",
+          "url": "https://www.instagram.com/reels/DdC7xzjtTdC/"
+        }
+      ],
+      "id": "c2",
+      "estado": "pendiente",
+      "version": 1,
+      "comentario": ""
+    },
+    {
+      "formato": "Reel",
+      "pilar": "",
+      "canal": "Orgánico",
+      "fechaPublicacion": "19/11",
+      "titulo": "Chicos, tenemos que hablar",
+      "guionLabel": "Guion / texto",
+      "guion": "Chicos… tenemos que hablar. Hay algo que llevo un tiempo queriendo contarles\n\nEste lugar ha sido testigo de muchísimas historias. De primeras consultas, de retos, de pequeños avances que terminaron convirtiéndose en grandes logros.\n\nY hoy solo puedo sentir agradecimiento. Gracias a cada persona que confió en mí, que me permitió acompañarla en su recuperación y que hizo de este espacio algo tan especial.\n\nPero hay momentos en los que crecer también significa despedirse de lugares que queremos mucho…\n\nAsí que sí… nos despedimos de este consultorio, pero no de nuestra historia. Porque lo que viene… me emociona muchísimo.\n\nUn nuevo capítulo está por comenzar. ✨\n\nMuy pronto descubrirán dónde nos vemos.",
+      "copy": "",
+      "hashtags": "",
+      "referencias": [],
+      "id": "c3",
+      "estado": "pendiente",
+      "version": 1,
+      "comentario": ""
+    }
+  ],
+  "url": "https://carlosuzc29-eng.github.io/tableros-de-contenido/paola-bustos-4d50fe.html",
+  "firebase": {
+    "apiKey": "AIzaSyAsH9TxW0ld2aNQejJw6xxZW7fpZiw212Q",
+    "projectId": "nexo-tableros-app"
+  },
+  "revision": {
+    "revisadoPor": "",
+    "fecha": ""
+  },
+  "resetAt": 1793403516747
+}

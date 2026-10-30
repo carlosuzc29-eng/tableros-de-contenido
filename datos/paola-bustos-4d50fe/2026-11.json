@@ -58,6 +58,38 @@
       "estado": "pendiente",
       "version": 1,
       "comentario": ""
+    },
+    {
+      "formato": "Reel",
+      "pilar": "",
+      "canal": "Orgánico",
+      "fechaPublicacion": "19/11",
+      "titulo": "Aún no puedo mostrarles todo",
+      "guionLabel": "Guion / texto",
+      "guion": "Todavía no puedo mostrarles mi nuevo consultorio, pero sí puedo darles tres pequeñas pistas…\nMostrar detalles muy cerrados de elementos reales del nuevo lugar, sin revelar el espacio completo.\n¿Se imaginan cómo va a quedar? Los leo en los comentarios.",
+      "copy": "",
+      "hashtags": "",
+      "referencias": [],
+      "id": "c4",
+      "estado": "pendiente",
+      "version": 1,
+      "comentario": ""
+    },
+    {
+      "formato": "Carrusel con video",
+      "pilar": "",
+      "canal": "Orgánico",
+      "fechaPublicacion": "25/11",
+      "titulo": "Antes y después del nuevo espacio",
+      "guionLabel": "Guion / texto",
+      "guion": "TOMAS DE ANTES Y DESPUES DE EL NUEVO ESPACIO, TOMAS DE LAS CAMILLAS ENTRANDO, LAS MAQUINAS DEL GIMNASIO, LOS ESCRITORIOS, LA GENTE PINTANDO, PAOLA PINTANDO PAREDES...",
+      "copy": "",
+      "hashtags": "",
+      "referencias": [],
+      "id": "c5",
+      "estado": "pendiente",
+      "version": 1,
+      "comentario": ""
     }
   ],
   "url": "https://carlosuzc29-eng.github.io/tableros-de-contenido/paola-bustos-4d50fe.html",
@@ -69,5 +101,5 @@
     "revisadoPor": "",
     "fecha": ""
   },
-  "resetAt": 1793403516747
+  "resetAt": 1793404281893
 }

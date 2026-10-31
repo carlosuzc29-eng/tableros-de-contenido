@@ -1260,6 +1260,36 @@
   function isValidHttpUrl(u){
     return /^https?:\/\/\S+/i.test(String(u || '').trim());
   }
+
+  // Fecha de publicación: acepta 9/11, 09-11, 9.11, 9/11/2026 o 9/11/26 y la devuelve como DD/MM.
+  // Vacía es válida (quita la fecha). Rechaza días o meses que no existen (31/11, 30/02...).
+  var MESES_FECHA_PUB = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  function dos(nv){ return (nv < 10 ? '0' : '') + nv; }
+  function normalizarFechaPub(valor){
+    var s = String(valor == null ? '' : valor).trim();
+    if (!s) return { ok: true, valor: '' };
+    var m = s.match(/^(\d{1,2})\s*[\/\-.]\s*(\d{1,2})(?:\s*[\/\-.]\s*(\d{2}|\d{4}))?$/);
+    if (!m) return { ok: false, motivo: 'usa el formato DD/MM (ej: 09/11)' };
+    var dia = parseInt(m[1], 10);
+    var mes = parseInt(m[2], 10);
+    if (mes < 1 || mes > 12) return { ok: false, motivo: 'el mes debe estar entre 01 y 12' };
+    var anio;
+    if (m[3]) {
+      anio = parseInt(m[3], 10);
+      if (anio < 100) anio += 2000;
+    } else {
+      anio = parseInt(DATA && DATA.anio, 10) || new Date().getFullYear();
+      var mesTxt = String((DATA && DATA.mes) || '').toLowerCase().trim().replace('setiembre', 'septiembre');
+      var mesTablero = MESES_FECHA_PUB.indexOf(mesTxt) + 1;
+      // Igual que orden_tablero.py: un mes anterior al del tablero pertenece al año siguiente
+      if (mesTablero && mes < mesTablero) anio += 1;
+    }
+    var diasMes = new Date(anio, mes, 0).getDate();
+    if (dia < 1 || dia > diasMes) {
+      return { ok: false, motivo: MESES_FECHA_PUB[mes - 1] + ' de ' + anio + ' tiene ' + diasMes + ' días' };
+    }
+    return { ok: true, valor: dos(dia) + '/' + dos(mes) };
+  }
   function normalizeReferencias(refs){
     if (!Array.isArray(refs)) return [];
     return refs.filter(function(r){
@@ -2295,6 +2325,18 @@
     var fechaInp = el('input', 'agency-fecha-inp');
     fechaInp.type = 'text'; fechaInp.placeholder = 'DD/MM'; fechaInp.maxLength = 10;
     fechaInp.value = it.fechaPublicacion || '';
+    fechaInp.setAttribute('autocomplete', 'off');
+    fechaInp.title = 'Fecha de publicación en formato DD/MM (ej: 09/11). Déjala vacía para quitarla.';
+    fechaInp.addEventListener('input', function(){ fechaInp.classList.remove('err'); });
+    fechaInp.addEventListener('blur', function(){
+      var chk = normalizarFechaPub(fechaInp.value);
+      if (chk.ok) {
+        fechaInp.value = chk.valor;
+        fechaInp.classList.remove('err');
+      } else {
+        fechaInp.classList.add('err');
+      }
+    });
     fechaLbl.appendChild(fechaInp);
     var pilarLbl = el('label', 'agency-meta-field agency-free-only');
     pilarLbl.style.display = 'none';
@@ -2373,9 +2415,20 @@
       var curHash = (it.hashtags || '').trim();
       var curFmt = normalizeFormato(it.formato);
 
+      // Fecha de publicación: se valida y normaliza a DD/MM antes de guardar
+      var fechaCheck = normalizarFechaPub(fechaInp.value);
+      if (!fechaCheck.ok) {
+        fechaInp.classList.add('err');
+        fechaInp.focus();
+        toast('⚠️ Fecha de publicación no válida: ' + fechaCheck.motivo);
+        return null;
+      }
+      fechaInp.classList.remove('err');
+      fechaInp.value = fechaCheck.valor;
+
       var meta = {
         canal: canalSel.value,
-        fechaPublicacion: fechaInp.value.trim(),
+        fechaPublicacion: fechaCheck.valor,
         formato: newFmt
       };
       var metaCambio = (normalizeCanal(meta.canal) !== normalizeCanal(it.canal)) ||
@@ -2517,30 +2570,28 @@
     btnApprove.dataset.origLabel = '✓ Aprobar versión';
     btnApprove.title = 'Aprobar esta versión y sincronizarla directamente en Firestore';
     btnApprove.onclick = function(){
-      var newTitle = cObj.h2Title ? leerTextoEditable(cObj.h2Title).replace(/[\r\n]+/g, ' ').trim() : (it.titulo || '').trim();
-      var newGuion = cObj.guionParagraph ? leerTextoEditable(cObj.guionParagraph) : (it.guion || '');
-      var newCopy = cObj.copyParagraph ? leerTextoEditable(cObj.copyParagraph) : (it.copy || '');
-      var newHash = cObj.hashParagraph ? leerTextoEditable(cObj.hashParagraph).replace(/[\r\n]+/g, ' ').trim() : (it.hashtags || '').trim();
+      // Lee todos los campos (texto, formato, canal y fecha) para no aprobar dejando cambios sin guardar
+      var form = readCardFormValues(isFreeEditActive());
+      if (!form) return;
+      var newTitle = form.newTitle;
+      var newGuion = form.newGuion;
+      var newCopy = form.newCopy;
+      var newHash = form.newHash;
 
-      var curTitle = (it.titulo || '').trim();
-      var curGuion = (it.guion || '').trim();
-      var curCopy = (it.copy || '').trim();
-      var curHash = (it.hashtags || '').trim();
-
-      var hasUnsaved = (newTitle.trim() !== curTitle) || (newGuion.trim() !== curGuion) || (newCopy.trim() !== curCopy) || (newHash.trim() !== curHash);
-
-      if (hasUnsaved) {
+      if (form.hayCambios) {
         modal({
           kind: 'warn',
           icon: '!',
           title: 'Tienes cambios sin guardar',
-          text: '¿Guardar la corrección y aprobar?',
+          text: form.textoCambio ? '¿Guardar la corrección y aprobar?' : '¿Guardar los cambios (fecha, canal o formato) y aprobar?',
           buttons: [
             {
               label: 'Guardar y aprobar',
               primary: true,
               fn: function(){
-                var approveMeta = isFreeEditActive() ? { modo: 'libre' } : undefined;
+                var approveMeta = form.meta;
+                // Solo un cambio de texto fuera de Edición libre cuenta como corrección; fecha/canal/formato no suben versión
+                approveMeta.modo = (isFreeEditActive() || !form.textoCambio) ? 'libre' : undefined;
                 saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnApprove, newHash, approveMeta).then(function(){
                   saveAgencyDecisionChange(it, 'aprobado', btnApprove);
                 }).catch(function(){});
@@ -3350,9 +3401,11 @@
         if (agencyUser && cObj.editando === true) return;
         var it = cObj.it;
         var n = idx + 1;
-        var fsItem = fsContenidos.find(function(x){
-          return (+x.n === n) || (x.id && x.id === it.id) || (x.titulo && x.titulo === it.titulo);
-        });
+        // Buscar primero por id: si el orden de las piezas cambió (p. ej. al reordenar por fecha),
+        // la posición n ya no identifica la misma pieza. n y título solo como respaldo para piezas sin id.
+        var fsItem = (it.id && fsContenidos.find(function(x){ return x.id && x.id === it.id; })) ||
+          fsContenidos.find(function(x){ return !x.id && +x.n === n; }) ||
+          fsContenidos.find(function(x){ return !x.id && x.titulo && x.titulo === it.titulo; });
 
         if (fsItem) {
           // Decisión y comentarios del cliente sin enviar: se conservan salvo que Nexo haya subido otra versión

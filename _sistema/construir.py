@@ -19,6 +19,18 @@ No usa IA: no gasta créditos.
 """
 import json, os, re, sys, secrets, subprocess, time, unicodedata, urllib.request, urllib.error, tempfile, shutil, hashlib
 
+def copiar_fecha_publicacion(fs_item, contenido):
+    """Copia al JSON la fecha de publicación guardada en Firestore, incluso vacía (fecha quitada en el tablero).
+    Solo actúa si Firestore tiene el campo; si no lo tiene, conserva la del JSON. Devuelve 1 si hubo cambio."""
+    if 'fechaPublicacion' not in fs_item or fs_item.get('fechaPublicacion') is None:
+        return 0
+    fs_fecha = str(fs_item.get('fechaPublicacion') or '').strip()
+    if fs_fecha != str(contenido.get('fechaPublicacion') or '').strip():
+        contenido['fechaPublicacion'] = fs_fecha
+        return 1
+    return 0
+
+
 def calc_sha1(val):
     if val is None:
         val = ''
@@ -132,7 +144,13 @@ def sincronizar_desde_firestore(cfg, data):
         for i, contenido in enumerate(data.get('contenidos', [])):
             n = i + 1
             cid = contenido.get('id') or f'c{n}'
-            fs_item = fs_map.get(n) or fs_map.get(cid)
+            # Primero por id: si las piezas se reordenan (p. ej. por fecha), la posición n ya no
+            # identifica la misma pieza. La posición solo se usa para piezas de Firestore sin id.
+            fs_item = fs_map.get(str(cid))
+            if not fs_item:
+                por_n = fs_map.get(n)
+                if por_n and not por_n.get('id'):
+                    fs_item = por_n
             if not fs_item:
                 contenido['_sync'] = {
                     'guion': calc_sha1(contenido.get('guion')),
@@ -178,10 +196,10 @@ def sincronizar_desde_firestore(cfg, data):
                 if fs_item.get('hashtags') is not None and fs_item.get('hashtags') != contenido.get('hashtags'):
                     contenido['hashtags'] = fs_item['hashtags']
                     cambios += 1
-                for campo_meta in ('canal', 'fechaPublicacion'):
-                    if fs_item.get(campo_meta) and fs_item.get(campo_meta) != contenido.get(campo_meta):
-                        contenido[campo_meta] = fs_item[campo_meta]
-                        cambios += 1
+                if fs_item.get('canal') and fs_item.get('canal') != contenido.get('canal'):
+                    contenido['canal'] = fs_item['canal']
+                    cambios += 1
+                cambios += copiar_fecha_publicacion(fs_item, contenido)
                 if fs_item.get('referencias') is not None and fs_item.get('referencias') != contenido.get('referencias'):
                     contenido['referencias'] = fs_item['referencias']
                     cambios += 1
@@ -209,6 +227,8 @@ def sincronizar_desde_firestore(cfg, data):
             else:
                 # Solo si el JSON cambió después de la última sincronización (huella distinta de _sync)
                 # y la pieza está 'aprobado' en Firestore -> aplica la lógica de archivar en versiones y subir a v+1 corregido
+                # La fecha de publicación editada en el tablero se respeta igual (no depende del texto local).
+                cambios += copiar_fecha_publicacion(fs_item, contenido)
                 if fs_estado == 'aprobado':
                     contenido.setdefault('versiones', {})
                     contenido['versiones'][f'v{fs_version}'] = {

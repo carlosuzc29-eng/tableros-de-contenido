@@ -16,6 +16,36 @@ MESES_VALIDOS = [
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
 ]
 
+def normalizar_fecha_publicacion(valor, mes_tablero=None, anio_tablero=None):
+    """Devuelve (fecha 'DD/MM', None) si es válida o (None, motivo) si no.
+    Acepta 9/11, 09-11, 9.11, 9/11/2026 o 9/11/26. Misma regla que tablero.js."""
+    import calendar
+    s = str(valor or '').strip()
+    m = re.match(r'^(\d{1,2})\s*[/\-.]\s*(\d{1,2})(?:\s*[/\-.]\s*(\d{2}|\d{4}))?$', s)
+    if not m:
+        return None, 'usa el formato DD/MM, ej: 09/11'
+    dia, mes = int(m.group(1)), int(m.group(2))
+    if not 1 <= mes <= 12:
+        return None, 'el mes debe estar entre 01 y 12'
+    if m.group(3):
+        anio = int(m.group(3))
+        if anio < 100:
+            anio += 2000
+    else:
+        try:
+            anio = int(str(anio_tablero).strip())
+        except (TypeError, ValueError):
+            anio = 2026
+        mes_txt = str(mes_tablero or '').strip().capitalize().replace('Setiembre', 'Septiembre')
+        mes_base = MESES_VALIDOS.index(mes_txt) + 1 if mes_txt in MESES_VALIDOS else None
+        if mes_base and mes < mes_base:
+            anio += 1
+    dias_mes = calendar.monthrange(anio, mes)[1]
+    if not 1 <= dia <= dias_mes:
+        return None, f'{MESES_VALIDOS[mes - 1].lower()} de {anio} tiene {dias_mes} días'
+    return f'{dia:02d}/{mes:02d}', None
+
+
 FORMATOS_CANONICOS = {
     'reel': 'Reel',
     'carrusel': 'Carrusel',
@@ -178,6 +208,17 @@ def validar_datos_tablero(data, modo_estricto=True):
                     c['canal'] = 'Orgánico'
                 else:
                     advertencias.append(f"Contenido #{num}: canal '{canal}' no reconocido (usa 'Ads' u 'Orgánico').")
+
+            # Fecha de publicación: vacía o DD/MM con un día que exista (se normaliza 9/11 -> 09/11)
+            fecha_pub = c.get('fechaPublicacion')
+            if fecha_pub is not None and str(fecha_pub).strip():
+                fecha_norm, motivo = normalizar_fecha_publicacion(fecha_pub, norm.get('mes'), norm.get('anio'))
+                if fecha_norm is None:
+                    errores.append(f"Contenido #{num} ({c_id}): fechaPublicacion '{fecha_pub}' no es válida ({motivo}).")
+                else:
+                    c['fechaPublicacion'] = fecha_norm
+            elif fecha_pub is not None:
+                c['fechaPublicacion'] = ''
 
             # Guion y Copy
             c['guion'] = sanitizar_texto(str(c.get('guion') or ''))

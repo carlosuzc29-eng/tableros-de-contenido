@@ -2054,8 +2054,21 @@ async function getToastText(page) {
       pass('Modo edición libre verificado (test_fase6.js)');
     }
 
+    // ============================================================
+    // CASO 30: Edición de la fecha de publicación (test_fase7.js)
+    // ============================================================
+    console.log(`\n${C.bold}30. Fecha de publicación editable:${C.reset} validación DD/MM, quitar fecha, aprobar con fecha pendiente, búsqueda por id y construir.py`);
+    {
+      try {
+        execSync(`node "${path.join(__dirname, 'test_fase7.js')}"`, { stdio: 'pipe' });
+      } catch (e7) {
+        fail('test_fase7.js (fecha de publicación) falló:\n' + String((e7.stdout || '') + (e7.stderr || '')), e7);
+      }
+      pass('Edición de la fecha de publicación verificada (test_fase7.js)');
+    }
+
     console.log(`\n${C.bold}${C.green}================================================================${C.reset}`);
-    console.log(`${C.bold}${C.green}✓ TODOS LOS 29 CASOS DE PRUEBA PASARON EXITOSAMENTE (100% OK)${C.reset}`);
+    console.log(`${C.bold}${C.green}✓ TODOS LOS 30 CASOS DE PRUEBA PASARON EXITOSAMENTE (100% OK)${C.reset}`);
     console.log(`${C.bold}${C.green}================================================================${C.reset}\n`);
 
   } catch (err) {

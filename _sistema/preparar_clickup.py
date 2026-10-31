@@ -202,7 +202,11 @@ def procesar(borrador_path, firestore_path=None):
     for i, c_borrador in enumerate(borrador_contenidos):
         n = i + 1
         cid = str(c_borrador.get('id') or f'c{n}')
-        c_fs = fs_map.get(cid) or fs_map.get(n) or {}
+        # Primero por id; la posición n solo para piezas de Firestore sin id (si se reordenó, n apunta a otra pieza)
+        c_fs = fs_map.get(cid)
+        if not c_fs:
+            por_n = fs_map.get(n) or {}
+            c_fs = por_n if not por_n.get('id') else {}
 
         estado_pieza = c_fs.get('estado') or c_borrador.get('estado') or 'pendiente'
         titulo_pieza = c_borrador.get('titulo') or c_fs.get('titulo') or f'Pieza #{n}'
@@ -389,7 +393,8 @@ def procesar(borrador_path, firestore_path=None):
             'titulo': titulo_pieza,
             'formato': formato,
             'tipoOriginal': c_borrador.get('tipoOriginal') or formato,
-            'fechaPublicacion': c_borrador.get('fechaPublicacion') or '',
+            # La fecha editada en el tablero (Firestore) manda sobre la del borrador, incluso si se quitó
+            'fechaPublicacion': (c_fs.get('fechaPublicacion') if c_fs.get('fechaPublicacion') is not None else c_borrador.get('fechaPublicacion')) or '',
             'version': version,
             'guion': guion,
             'copy': copy,

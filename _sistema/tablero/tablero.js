@@ -1095,8 +1095,11 @@
   // Autenticación de Agencia (Carlos y Andrea)
   var AGENCY_ALLOWED = ['carlosuzc29@gmail.com', 'andrevmuedit@gmail.com'];
   var AGENCY_SESSION_KEY = 'nexo_agency_session';
+  var FREE_EDIT_SESSION_KEY = 'nexo_agency_free_edit';
   var agencySession = null;
   var agencyUser = null;
+  var freeEditMode = false;
+  var guardadosEnCurso = 0;
 
   // Limpiar claves legadas inseguras
   try {
@@ -1105,11 +1108,37 @@
     localStorage.removeItem('nexo_reviewer_name');
   } catch(e) {}
 
+  try {
+    freeEditMode = sessionStorage.getItem(FREE_EDIT_SESSION_KEY) === '1';
+  } catch(e) {
+    freeEditMode = false;
+  }
+
+  function isFreeEditActive(){
+    return !!(agencyUser && freeEditMode);
+  }
+
+  function setFreeEditMode(on){
+    freeEditMode = !!on;
+    try {
+      sessionStorage.setItem(FREE_EDIT_SESSION_KEY, freeEditMode ? '1' : '0');
+    } catch(e) {}
+    if (typeof updateAgencyUI === 'function') updateAgencyUI();
+  }
+
   function clearAgencySession(){
     agencySession = null;
     agencyUser = null;
+    freeEditMode = false;
+    if (Array.isArray(cards)) {
+      cards.forEach(function(c){
+        if (c && c.setEditingState) c.setEditingState(false);
+        else if (c) c.editando = false;
+      });
+    }
     try {
       sessionStorage.removeItem(AGENCY_SESSION_KEY);
+      sessionStorage.removeItem(FREE_EDIT_SESSION_KEY);
       localStorage.removeItem('nexo_agency_logged_user');
       sessionStorage.removeItem('nexo_agency_logged_user');
     } catch(e) {}
@@ -1227,6 +1256,45 @@
   }
   function canalLabel(c) { return c === 'Ads' ? '📣 Ads' : (c === 'Orgánico' ? '🌱 Orgánico' : ''); }
   var fc = 'all'; // filtro por canal
+
+  function isValidHttpUrl(u){
+    return /^https?:\/\/\S+/i.test(String(u || '').trim());
+  }
+  function normalizeReferencias(refs){
+    if (!Array.isArray(refs)) return [];
+    return refs.filter(function(r){
+      return r && typeof r === 'object' && isValidHttpUrl(r.url);
+    }).map(function(r){
+      return {
+        label: String(r.label || '').trim() || 'Referencia',
+        url: String(r.url || '').trim()
+      };
+    });
+  }
+  function hasFocusedCardField(){
+    if (typeof document === 'undefined') return false;
+    var ae = document.activeElement;
+    if (!ae || ae === document.body || ae === document.documentElement) return false;
+    var inCard = ae.closest ? ae.closest('.card') : null;
+    if (!inCard) return false;
+    if (ae.isContentEditable) return true;
+    var ce = ae.getAttribute ? ae.getAttribute('contenteditable') : null;
+    if (ce && ce !== 'false') return true;
+    var tag = (ae.tagName || '').toUpperCase();
+    return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
+  }
+  function hasAnyCardEditing(){
+    return Array.isArray(cards) && cards.some(function(c){ return !!(c && c.editando === true); });
+  }
+  if (typeof window !== 'undefined' && window.addEventListener) {
+    window.addEventListener('beforeunload', function(e){
+      if (hasAnyCardEditing()) {
+        e.preventDefault();
+        e.returnValue = '';
+        return '';
+      }
+    });
+  }
 
   function esSinEvaluar(estado) {
     return !estado || estado === 'pendiente' || estado === 'en_revision' || estado === 'borrador';
@@ -1540,6 +1608,8 @@
       if (it.estado === 'pendiente') it.estado = 'en_revision';
       it.formato = normalizeFormato(it.formato || it.formatoOriginal);
       it.formatoOriginal = it.formato;
+      if (typeof it.pilar !== 'string') it.pilar = it.pilar ? String(it.pilar) : '';
+      it.referencias = normalizeReferencias(it.referencias);
       if (typeof it.comentario !== 'string') it.comentario = '';
       if (!Array.isArray(it.comentarios)) it.comentarios = [];
       if (it.comentario && !it.comentarios.length) {
@@ -1613,6 +1683,11 @@
     var isCorregidoEditable = (!isClosedMonth || (isReviewShipment && it._estadoInicial === 'corregido' && isIncludedInShipment));
     var card = el('article', 'card' + (isCorregidoEditable ? ' is-corregido-editable' : '')); card.id = it.id; card.dataset.state = it.estado;
     card.dataset.pieceNum = pieceNum;
+    var cardObjRef = null;
+
+    var freeEditStrip = el('div', 'card-free-edit-strip', '✎ Edición libre');
+    freeEditStrip.style.display = 'none';
+    card.appendChild(freeEditStrip);
 
     var top = el('div', 'c-top');
     top.appendChild(el('div', 'big', num));
@@ -1620,23 +1695,29 @@
 
     // Formato de contenido:
     // Para el cliente: etiqueta estática
-    // Para la agencia: la etiqueta misma es clickeable y abre un popover con los 4 formatos
+    // Para la agencia: la etiqueta misma es clickeable y abre un popover con los formatos
     var fmtWrap = el('div', null); fmtWrap.style.cssText = 'position:relative;display:inline-block';
     var fmtTag = el('span', 'tag fmt', it.formato || 'Post');
     var fmtPopover = el('div', 'fmt-popover');
 
     function buildPopover() {
       fmtPopover.innerHTML = '';
+      var activeFmt = (isFreeEditActive() && fs && fs.value) ? fs.value : it.formato;
       FORMATOS.forEach(function(x){
-        var opt = el('div', 'fmt-popover-opt' + (x === it.formato ? ' active' : ''), x);
+        var opt = el('div', 'fmt-popover-opt' + (x === activeFmt ? ' active' : ''), x);
         opt.addEventListener('mousedown', function(e){
           e.preventDefault();
           var newFmt = x;
-          it.formato = newFmt;
-          it.formatoOriginal = newFmt;
           fmtTag.textContent = newFmt;
           fs.value = newFmt;
           closeFmtPopover();
+          if (isFreeEditActive()) {
+            if (cardObjRef && cardObjRef.markEditing) cardObjRef.markEditing();
+            toast('Formato "' + newFmt + '" listo para guardar');
+            return;
+          }
+          it.formato = newFmt;
+          it.formatoOriginal = newFmt;
           saveDraft();
           toast('Guardando tipo de contenido (' + newFmt + ')…');
           saveAgencyFormatoChange(it, newFmt);
@@ -1657,6 +1738,10 @@
       fmtPopoverOpen = false;
       document.removeEventListener('click', closeFmtOnOutside);
     }
+    function toggleFmtPopover(){
+      if (fmtPopoverOpen) closeFmtPopover();
+      else openFmtPopover();
+    }
     function closeFmtOnOutside(e){
       if (!fmtWrap.contains(e.target)) closeFmtPopover();
     }
@@ -1675,15 +1760,23 @@
       fs.appendChild(o);
     });
     fs.value = it.formato || 'Post';
+    fs.addEventListener('change', function(){
+      var nf = normalizeFormato(fs.value);
+      fs.value = nf;
+      fmtTag.textContent = nf;
+      if (agencyUser && cardObjRef && cardObjRef.markEditing) cardObjRef.markEditing();
+    });
     fw.appendChild(fs);
     tags.appendChild(fw);
 
+    fmtTag._agencyClickBound = true;
+    fmtTag.addEventListener('click', function(e){
+      if (!agencyUser) return;
+      e.stopPropagation();
+      toggleFmtPopover();
+    });
     if (agencyUser) {
       fmtTag.classList.add('agency-editable');
-      fmtTag.addEventListener('click', function(e){
-        e.stopPropagation();
-        if (fmtPopoverOpen) { closeFmtPopover(); } else { openFmtPopover(); }
-      });
     }
 
     it.canal = normalizeCanal(it.canal);
@@ -1691,7 +1784,9 @@
     var canalTag = el('span', 'tag canal ' + (it.canal === 'Ads' ? 'canal-ads' : 'canal-org'), canalLabel(it.canal));
     if (!it.canal) canalTag.style.display = 'none';
     tags.appendChild(canalTag);
-    if (it.pilar) tags.appendChild(el('span', 'tag', it.pilar));
+    var pilarTag = el('span', 'tag tag-pilar', it.pilar || '');
+    if (!it.pilar) pilarTag.style.display = 'none';
+    tags.appendChild(pilarTag);
     var dateTag = el('span', 'tag date', '📅 ' + (it.fechaPublicacion || ''));
     if (!it.fechaPublicacion) dateTag.style.display = 'none';
     tags.appendChild(dateTag);
@@ -1717,15 +1812,25 @@
     var g = el('div', 'guion');
     g.appendChild(el('span', 'lbl', it.guionLabel || 'Guion / descripción'));
     var pGuion = el('p', 'p-guion', it.guion || '');
+    pGuion.setAttribute('data-placeholder', 'Haz clic para escribir el guion…');
     if (!it.guion) pGuion.style.display = agencyUser ? 'block' : 'none';
     g.appendChild(pGuion);
 
-    var refs = (it.referencias || []).filter(function(r){ return safeUrl(r.url); });
-    if (refs.length) {
-      var rw = el('div', 'refs');
-      refs.forEach(function(r){ var a = el('a', null, r.label || 'Referencia'); a.href = r.url; a.target = '_blank'; a.rel = 'noopener'; rw.appendChild(a); });
-      g.appendChild(rw);
+    var rw = el('div', 'refs');
+    function renderRefsView(){
+      rw.innerHTML = '';
+      var validRefs = normalizeReferencias(it.referencias);
+      validRefs.forEach(function(r){
+        var aRef = el('a', null, r.label || 'Referencia');
+        aRef.href = r.url;
+        aRef.target = '_blank';
+        aRef.rel = 'noopener';
+        rw.appendChild(aRef);
+      });
+      rw.style.display = (validRefs.length && !isFreeEditActive()) ? '' : 'none';
     }
+    renderRefsView();
+    g.appendChild(rw);
     body.appendChild(g);
 
     var cw = el('div', 'copy-wrap');
@@ -1735,8 +1840,10 @@
     var pn = el('div'); pn.appendChild(el('b', null, handle || 'tu cuenta')); pn.appendChild(el('small', null, 'Vista previa del copy'));
     ph.appendChild(pn); post.appendChild(ph);
     var pCopy = el('p', 'p-copy', it.copy || '');
+    pCopy.setAttribute('data-placeholder', 'Haz clic para escribir el copy…');
     if (!it.copy) pCopy.style.display = agencyUser ? 'block' : 'none';
     var pHash = el('p', 'hash', it.hashtags || '');
+    pHash.setAttribute('data-placeholder', '#hashtags');
     if (!it.hashtags) pHash.style.display = agencyUser ? 'block' : 'none';
     if (!hasCopy) cw.style.display = agencyUser ? 'block' : 'none';
     post.appendChild(pCopy); post.appendChild(pHash); cw.appendChild(post); body.appendChild(cw);
@@ -1997,10 +2104,13 @@
     }
 
     paint();
-    cards.push({
+    cardObjRef = {
       card: card,
       nav: a,
       it: it,
+      pieceNum: pieceNum,
+      editando: false,
+      freeEditStrip: freeEditStrip,
       setDecision: set,
       setUnsavedState: setUnsavedState,
       commitComment: addCommentFromInput,
@@ -2009,19 +2119,27 @@
       fmtTag: fmtTag,
       openFmtPopover: openFmtPopover,
       closeFmtPopover: closeFmtPopover,
+      toggleFmtPopover: toggleFmtPopover,
       fw: fw,
       fs: fs,
       h2Title: h2Title,
       tagsEl: tags,
       canalTag: canalTag,
+      pilarTag: pilarTag,
       dateTag: dateTag,
       vTag: vTag,
       ctxTag: ctxTag,
+      bodyEl: body,
+      guionWrap: g,
+      refsView: rw,
+      renderRefsView: renderRefsView,
       guionParagraph: pGuion,
       copyParagraph: pCopy,
       hashParagraph: pHash,
       copyContainer: cw
-    });
+    };
+    card.__cObj = cardObjRef;
+    cards.push(cardObjRef);
   });
 
 
@@ -2029,6 +2147,37 @@
   cards.forEach(function(cObj){
     var it = cObj.it;
     var card = cObj.card;
+    var btnDiscard = null;
+
+    function setEditingState(isEditing){
+      cObj.editando = !!isEditing;
+      card.classList.toggle('card-editing', !!isEditing);
+      if (btnDiscard) {
+        btnDiscard.style.display = (agencyUser && cObj.editando) ? 'inline-flex' : 'none';
+      }
+    }
+    cObj.setEditingState = setEditingState;
+    cObj.markEditing = function(){
+      if (!agencyUser) return;
+      setEditingState(true);
+    };
+
+    function isAgencyEditableTarget(target){
+      if (!target || !agencyUser) return false;
+      if (target.classList && target.classList.contains('cm-textarea')) return false;
+      if (target.closest && target.closest('.comment-box')) return false;
+      if (target.isContentEditable) return true;
+      var ce = target.getAttribute ? target.getAttribute('contenteditable') : null;
+      if (ce && ce !== 'false') return true;
+      var tag = (target.tagName || '').toUpperCase();
+      return tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA';
+    }
+    card.addEventListener('input', function(e){
+      if (isAgencyEditableTarget(e.target)) setEditingState(true);
+    });
+    card.addEventListener('change', function(e){
+      if (isAgencyEditableTarget(e.target)) setEditingState(true);
+    });
 
     // Añadir etiqueta de ayuda sobre el guion
     if (cObj.guionParagraph && cObj.guionParagraph.parentNode) {
@@ -2046,11 +2195,92 @@
       cObj.hashParagraph.parentNode.insertBefore(hHint, cObj.hashParagraph);
     }
 
+    // Editor de referencias ({label, url}) exclusivo para Modo edición libre
+    var refsEditor = el('div', 'agency-refs-editor');
+    refsEditor.style.display = 'none';
+    var refsHead = el('div', 'agency-refs-head');
+    refsHead.appendChild(el('span', null, '🔗 Referencias'));
+    var btnRefAdd = el('button', 'btn-agency-ref-add', '+ Agregar');
+    btnRefAdd.type = 'button';
+    refsHead.appendChild(btnRefAdd);
+    refsEditor.appendChild(refsHead);
+    var refsListEl = el('div', 'agency-refs-list');
+    refsEditor.appendChild(refsListEl);
+    if (cObj.guionWrap) cObj.guionWrap.appendChild(refsEditor);
+
+    function addRefRow(refObj, markDirty){
+      var row = el('div', 'agency-ref-row');
+      var lblInp = el('input', 'agency-ref-label');
+      lblInp.type = 'text';
+      lblInp.placeholder = 'Etiqueta (ej: Reel)';
+      lblInp.value = (refObj && refObj.label) ? String(refObj.label) : '';
+      var urlInp = el('input', 'agency-ref-url');
+      urlInp.type = 'url';
+      urlInp.placeholder = 'https://...';
+      urlInp.value = (refObj && refObj.url) ? String(refObj.url) : '';
+      urlInp.addEventListener('input', function(){ urlInp.classList.remove('err'); });
+      var btnRem = el('button', 'btn-agency-ref-remove', '✕ Quitar');
+      btnRem.type = 'button';
+      btnRem.onclick = function(){
+        if (row.parentNode) row.parentNode.removeChild(row);
+        if (agencyUser) setEditingState(true);
+      };
+      row.appendChild(lblInp);
+      row.appendChild(urlInp);
+      row.appendChild(btnRem);
+      refsListEl.appendChild(row);
+      if (markDirty && agencyUser) {
+        setEditingState(true);
+        lblInp.focus();
+      }
+      return row;
+    }
+
+    function renderRefsEditor(refsArr){
+      refsListEl.innerHTML = '';
+      var listToRender = normalizeReferencias(refsArr !== undefined ? refsArr : it.referencias);
+      listToRender.forEach(function(r){ addRefRow(r, false); });
+    }
+    renderRefsEditor(it.referencias);
+
+    btnRefAdd.onclick = function(){
+      if (!isFreeEditActive()) return;
+      addRefRow({ label: '', url: '' }, true);
+    };
+
+    function collectAndValidateRefs(){
+      var rows = refsListEl.querySelectorAll('.agency-ref-row');
+      var out = [];
+      var invalidInput = null;
+      for (var ri = 0; ri < rows.length; ri++) {
+        var lEl = rows[ri].querySelector('.agency-ref-label');
+        var uEl = rows[ri].querySelector('.agency-ref-url');
+        var lbl = lEl ? lEl.value.trim() : '';
+        var url = uEl ? uEl.value.trim() : '';
+        if (uEl) uEl.classList.remove('err');
+        if (!isValidHttpUrl(url)) {
+          if (uEl) uEl.classList.add('err');
+          if (!invalidInput) invalidInput = uEl;
+        } else {
+          out.push({ label: lbl || 'Referencia', url: url });
+        }
+      }
+      if (invalidInput) {
+        invalidInput.focus();
+        toast('⚠️ La URL de cada referencia debe empezar con http:// o https://');
+        return { ok: false, refs: null };
+      }
+      return { ok: true, refs: out };
+    }
+    cObj.refsEditor = refsEditor;
+    cObj.renderRefsEditor = renderRefsEditor;
+    cObj.collectAndValidateRefs = collectAndValidateRefs;
+
     // Barra inferior de acciones de agencia con botones Guardar y Aprobar
     var agencyBar = el('div', 'card-agency-bar');
     agencyBar.style.display = 'none';
 
-    // Canal y fecha: etiquetas visibles + editores del Modo Agencia
+    // Canal, fecha y pilar: etiquetas visibles + editores del Modo Agencia
     var agencyMeta = el('div', 'card-agency-meta');
     var canalLbl = el('label', 'agency-meta-field');
     canalLbl.appendChild(el('span', null, 'Canal'));
@@ -2066,10 +2296,21 @@
     fechaInp.type = 'text'; fechaInp.placeholder = 'DD/MM'; fechaInp.maxLength = 10;
     fechaInp.value = it.fechaPublicacion || '';
     fechaLbl.appendChild(fechaInp);
+    var pilarLbl = el('label', 'agency-meta-field agency-free-only');
+    pilarLbl.style.display = 'none';
+    pilarLbl.appendChild(el('span', null, 'Pilar'));
+    var pilarInp = el('input', 'agency-pilar-inp');
+    pilarInp.type = 'text'; pilarInp.placeholder = 'Ej: Educativo';
+    pilarInp.value = it.pilar || '';
+    pilarLbl.appendChild(pilarInp);
+
     agencyMeta.appendChild(canalLbl);
     agencyMeta.appendChild(fechaLbl);
+    agencyMeta.appendChild(pilarLbl);
     cObj.canalSel = canalSel;
     cObj.fechaInp = fechaInp;
+    cObj.pilarLbl = pilarLbl;
+    cObj.pilarInp = pilarInp;
 
     cObj.refreshMeta = function(){
       var cn = normalizeCanal(it.canal);
@@ -2080,19 +2321,30 @@
         cObj.canalTag.className = 'tag canal ' + (cn === 'Ads' ? 'canal-ads' : 'canal-org');
         cObj.canalTag.style.display = cn ? '' : 'none';
       }
+      if (cObj.pilarTag) {
+        cObj.pilarTag.textContent = it.pilar || '';
+        cObj.pilarTag.style.display = it.pilar ? '' : 'none';
+      }
       if (cObj.dateTag) {
         cObj.dateTag.textContent = '📅 ' + (it.fechaPublicacion || '');
         cObj.dateTag.style.display = it.fechaPublicacion ? '' : 'none';
       }
-      if (document.activeElement !== canalSel) canalSel.value = cn;
-      if (document.activeElement !== fechaInp) fechaInp.value = it.fechaPublicacion || '';
+      if (!cObj.editando) {
+        if (document.activeElement !== canalSel) canalSel.value = cn;
+        if (document.activeElement !== fechaInp) fechaInp.value = it.fechaPublicacion || '';
+        if (document.activeElement !== pilarInp) pilarInp.value = it.pilar || '';
+        renderRefsEditor(it.referencias);
+      }
+      if (cObj.renderRefsView) cObj.renderRefsView();
     };
 
     var vNum = parseInt(it.version, 10) || 1;
     var barInfo = el('span', 'agency-bar-info');
     function updateAgencyBarText(){
       var nv = parseInt(it.version, 10) || 1;
-      if (it.estado === 'aprobado') {
+      if (isFreeEditActive()) {
+        barInfo.textContent = '✎ Edición libre activa (no cambia estado ni versión)';
+      } else if (it.estado === 'aprobado') {
         barInfo.textContent = '✓ Aprobado por agencia';
       } else if (it.estado === 'corregido') {
         barInfo.textContent = '🔄 Versión corregida';
@@ -2108,41 +2360,84 @@
 
     var agencyBtns = el('div', 'card-agency-actions');
 
-    var btnSave = el('button', 'btn-agency-save');
-    btnSave.type = 'button';
-    btnSave.textContent = '💾 Guardar cambios';
-    btnSave.title = 'Guarda el guion y copy corregidos en Firestore';
-    btnSave.onclick = function(){
+    function readCardFormValues(includeFreeFields){
       var newTitle = cObj.h2Title ? leerTextoEditable(cObj.h2Title).replace(/[\r\n]+/g, ' ').trim() : (it.titulo || '').trim();
       var newGuion = cObj.guionParagraph ? leerTextoEditable(cObj.guionParagraph) : (it.guion || '');
       var newCopy = cObj.copyParagraph ? leerTextoEditable(cObj.copyParagraph) : (it.copy || '');
       var newHash = cObj.hashParagraph ? leerTextoEditable(cObj.hashParagraph).replace(/[\r\n]+/g, ' ').trim() : (it.hashtags || '').trim();
+      var newFmt = normalizeFormato((cObj.fs && cObj.fs.value) ? cObj.fs.value : it.formato);
 
       var curTitle = (it.titulo || '').trim();
       var curGuion = (it.guion || '').trim();
       var curCopy = (it.copy || '').trim();
       var curHash = (it.hashtags || '').trim();
-      var meta = { canal: canalSel.value, fechaPublicacion: fechaInp.value.trim() };
-      var metaCambio = (meta.canal !== normalizeCanal(it.canal)) || (meta.fechaPublicacion !== (it.fechaPublicacion || ''));
-      var textoCambio = !(newTitle.trim() === curTitle && newGuion.trim() === curGuion && newCopy.trim() === curCopy && newHash.trim() === curHash);
+      var curFmt = normalizeFormato(it.formato);
 
-      if (!textoCambio && !metaCambio) {
+      var meta = {
+        canal: canalSel.value,
+        fechaPublicacion: fechaInp.value.trim(),
+        formato: newFmt
+      };
+      var metaCambio = (normalizeCanal(meta.canal) !== normalizeCanal(it.canal)) ||
+                       (meta.fechaPublicacion !== (it.fechaPublicacion || '')) ||
+                       (newFmt !== curFmt);
+
+      if (includeFreeFields) {
+        var refsCheck = collectAndValidateRefs();
+        if (!refsCheck.ok) return null;
+        meta.pilar = pilarInp.value.trim();
+        meta.referencias = refsCheck.refs;
+        if (meta.pilar !== (it.pilar || '')) metaCambio = true;
+        if (JSON.stringify(normalizeReferencias(meta.referencias)) !== JSON.stringify(normalizeReferencias(it.referencias))) {
+          metaCambio = true;
+        }
+      }
+
+      var textoCambio = !(newTitle === curTitle && newGuion.trim() === curGuion && newCopy.trim() === curCopy && newHash === curHash);
+      return {
+        newTitle: newTitle,
+        newGuion: newGuion,
+        newCopy: newCopy,
+        newHash: newHash,
+        meta: meta,
+        textoCambio: textoCambio,
+        metaCambio: metaCambio,
+        hayCambios: textoCambio || metaCambio
+      };
+    }
+
+    var btnSave = el('button', 'btn-agency-save');
+    btnSave.type = 'button';
+    btnSave.textContent = '💾 Guardar cambios';
+    btnSave.dataset.origLabel = '💾 Guardar cambios';
+    btnSave.title = 'Guarda el guion y copy corregidos en Firestore';
+    btnSave.onclick = function(){
+      var freeActive = isFreeEditActive();
+      var form = readCardFormValues(freeActive);
+      if (!form) return;
+
+      if (!form.hayCambios) {
         toast('Sin cambios para guardar');
         return;
       }
 
-      if (REGEX_FRASES_PEGADAS.test(newGuion) || REGEX_FRASES_PEGADAS.test(newCopy)) {
+      if (REGEX_FRASES_PEGADAS.test(form.newGuion) || REGEX_FRASES_PEGADAS.test(form.newCopy)) {
         toast('⚠️ Parece que faltan saltos de línea: revisa antes de guardar');
       }
 
       function guardar(opts){
-        meta.modo = opts.modo;
-        saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnSave, newHash, meta);
+        form.meta.modo = opts.modo;
+        saveCardCorrection(it, cObj, form.newGuion, form.newCopy, form.newTitle, btnSave, form.newHash, form.meta).catch(function(){});
         setTimeout(function(){ updateAgencyBarText(); }, 300);
       }
 
+      if (freeActive) {
+        guardar({ modo: 'libre' });
+        return;
+      }
+
       // Cambios de texto en una pieza ya aprobada: el administrador decide
-      if (textoCambio && it.estado === 'aprobado') {
+      if (form.textoCambio && it.estado === 'aprobado') {
         modal({
           kind: 'warn',
           icon: '✎',
@@ -2157,14 +2452,69 @@
         return;
       }
       // Piezas con cambios pedidos por el cliente: el guardado es una corrección
-      var esCorreccion = textoCambio && (it.estado === 'cambios' || it.estado === 'en_correccion' || it.estado === 'corregido');
+      var esCorreccion = form.textoCambio && (it.estado === 'cambios' || it.estado === 'en_correccion' || it.estado === 'corregido');
       guardar({ modo: esCorreccion ? 'correccion' : 'libre' });
     };
     agencyBtns.appendChild(btnSave);
 
+    var btnSendCorr = el('button', 'btn-agency-send-correction');
+    btnSendCorr.type = 'button';
+    btnSendCorr.textContent = 'Enviar al cliente como corrección';
+    btnSendCorr.dataset.origLabel = 'Enviar al cliente como corrección';
+    btnSendCorr.style.display = 'none';
+    btnSendCorr.title = 'Guarda como nueva versión corregida para que el cliente la revise';
+    btnSendCorr.onclick = function(){
+      if (!isFreeEditActive()) return;
+      var form = readCardFormValues(true);
+      if (!form) return;
+      if (!form.hayCambios && it.estado === 'corregido') {
+        toast('Sin cambios para guardar');
+        return;
+      }
+      if (REGEX_FRASES_PEGADAS.test(form.newGuion) || REGEX_FRASES_PEGADAS.test(form.newCopy)) {
+        toast('⚠️ Parece que faltan saltos de línea: revisa antes de guardar');
+      }
+      form.meta.modo = 'correccion';
+      form.meta.forzarCorreccion = true;
+      saveCardCorrection(it, cObj, form.newGuion, form.newCopy, form.newTitle, btnSendCorr, form.newHash, form.meta).catch(function(){});
+      setTimeout(function(){ updateAgencyBarText(); }, 300);
+    };
+    agencyBtns.appendChild(btnSendCorr);
+
+    btnDiscard = el('button', 'btn-agency-discard');
+    btnDiscard.type = 'button';
+    btnDiscard.textContent = 'Descartar cambios';
+    btnDiscard.style.display = 'none';
+    btnDiscard.title = 'Restaurar todos los campos de esta tarjeta a los últimos valores guardados';
+    function discardCardChanges(){
+      var fallbackTitle = it.titulo || ('Contenido ' + pad(cObj.pieceNum || 1));
+      if (cObj.h2Title) cObj.h2Title.textContent = fallbackTitle;
+      if (cObj.guionParagraph) cObj.guionParagraph.textContent = it.guion || '';
+      if (cObj.copyParagraph) cObj.copyParagraph.textContent = it.copy || '';
+      if (cObj.hashParagraph) {
+        cObj.hashParagraph.textContent = it.hashtags || '';
+        cObj.hashParagraph.style.display = (it.hashtags || agencyUser) ? 'block' : 'none';
+      }
+      var normFmt = normalizeFormato(it.formato || 'Post');
+      if (cObj.fs) cObj.fs.value = normFmt;
+      if (cObj.fmtTag) cObj.fmtTag.textContent = normFmt;
+      canalSel.value = normalizeCanal(it.canal);
+      fechaInp.value = it.fechaPublicacion || '';
+      pilarInp.value = it.pilar || '';
+      renderRefsEditor(it.referencias);
+      if (cObj.renderRefsView) cObj.renderRefsView();
+      if (cObj.setUnsavedState) cObj.setUnsavedState(false);
+      setEditingState(false);
+      toast('Cambios descartados');
+    }
+    btnDiscard.onclick = discardCardChanges;
+    cObj.discardChanges = discardCardChanges;
+    agencyBtns.appendChild(btnDiscard);
+
     var btnApprove = el('button', 'btn-agency-approve');
     btnApprove.type = 'button';
     btnApprove.textContent = '✓ Aprobar versión';
+    btnApprove.dataset.origLabel = '✓ Aprobar versión';
     btnApprove.title = 'Aprobar esta versión y sincronizarla directamente en Firestore';
     btnApprove.onclick = function(){
       var newTitle = cObj.h2Title ? leerTextoEditable(cObj.h2Title).replace(/[\r\n]+/g, ' ').trim() : (it.titulo || '').trim();
@@ -2190,9 +2540,10 @@
               label: 'Guardar y aprobar',
               primary: true,
               fn: function(){
-                saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnApprove, newHash).then(function(){
+                var approveMeta = isFreeEditActive() ? { modo: 'libre' } : undefined;
+                saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnApprove, newHash, approveMeta).then(function(){
                   saveAgencyDecisionChange(it, 'aprobado', btnApprove);
-                });
+                }).catch(function(){});
               }
             },
             { label: 'Cancelar' }
@@ -2213,19 +2564,38 @@
     card.appendChild(agencyBar);
 
     cObj.updateAgencyActions = function(active){
+      var freeActive = !!(active && freeEditMode);
+      card.classList.toggle('card-free-edit-mode', freeActive);
+      if (cObj.freeEditStrip) cObj.freeEditStrip.style.display = freeActive ? 'flex' : 'none';
+      if (pilarLbl) pilarLbl.style.display = freeActive ? 'inline-flex' : 'none';
+      if (refsEditor) refsEditor.style.display = freeActive ? 'grid' : 'none';
+      if (btnSendCorr) btnSendCorr.style.display = freeActive ? 'inline-flex' : 'none';
+      if (btnDiscard) btnDiscard.style.display = (active && cObj.editando) ? 'inline-flex' : 'none';
+      if (cObj.renderRefsView) cObj.renderRefsView();
+
       if (active) {
         card.classList.add('card-agency-edit-mode');
         agencyBar.style.display = 'flex';
         updateAgencyBarText();
+        if (cObj.bodyEl) {
+          if (freeActive) cObj.bodyEl.classList.remove('single');
+          else cObj.bodyEl.classList.toggle('single', !(it.copy || it.hashtags));
+        }
         if (cObj.guionParagraph) cObj.guionParagraph.style.display = 'block';
+        if (cObj.copyParagraph) cObj.copyParagraph.style.display = 'block';
         if (cObj.copyContainer) cObj.copyContainer.style.display = 'block';
+        if (!cObj.editando) {
+          pilarInp.value = it.pilar || '';
+          renderRefsEditor(it.referencias);
+        }
         if (cObj.fmtTag) {
           cObj.fmtTag.classList.add('agency-editable');
           if (!cObj.fmtTag._agencyClickBound) {
             cObj.fmtTag._agencyClickBound = true;
             cObj.fmtTag.addEventListener('click', function(e){
+              if (!agencyUser) return;
               e.stopPropagation();
-              if (cObj.openFmtPopover) cObj.openFmtPopover();
+              if (cObj.toggleFmtPopover) cObj.toggleFmtPopover();
             });
           }
         }
@@ -2245,7 +2615,9 @@
         }
       } else {
         card.classList.remove('card-agency-edit-mode');
+        card.classList.remove('card-free-edit-mode');
         agencyBar.style.display = 'none';
+        if (cObj.bodyEl) cObj.bodyEl.classList.toggle('single', !(it.copy || it.hashtags));
         if (cObj.fmtTag) {
           cObj.fmtTag.classList.remove('agency-editable');
           if (cObj.closeFmtPopover) cObj.closeFmtPopover();
@@ -2253,14 +2625,20 @@
         if (cObj.h2Title) {
           cObj.h2Title.removeAttribute('contenteditable');
           cObj.h2Title.removeAttribute('spellcheck');
+          cObj.h2Title.removeAttribute('title');
         }
         if (cObj.guionParagraph) {
           cObj.guionParagraph.removeAttribute('contenteditable');
           cObj.guionParagraph.removeAttribute('spellcheck');
+          if (!it.guion) cObj.guionParagraph.style.display = 'none';
         }
         if (cObj.copyParagraph) {
           cObj.copyParagraph.removeAttribute('contenteditable');
           cObj.copyParagraph.removeAttribute('spellcheck');
+          if (!it.copy) cObj.copyParagraph.style.display = 'none';
+        }
+        if (cObj.copyContainer && !(it.copy || it.hashtags)) {
+          cObj.copyContainer.style.display = 'none';
         }
         if (cObj.hashParagraph) {
           cObj.hashParagraph.removeAttribute('contenteditable');
@@ -2562,8 +2940,14 @@
     for (var i = 0; i < liveTa.length; i++) cloneTa[i].textContent = liveTa[i].value;
     var liveSel = document.querySelectorAll('#list select'), cloneSel = root.querySelectorAll('#list select');
     for (var j = 0; j < liveSel.length; j++) { var v = liveSel[j].value; [].forEach.call(cloneSel[j].options, function(o){ if (o.value === v) o.setAttribute('selected', ''); else o.removeAttribute('selected'); }); }
-    [].forEach.call(root.querySelectorAll('.card, #nav a'), function(n){ n.removeAttribute('style'); n.classList.remove('warn'); });
+    [].forEach.call(root.querySelectorAll('.card, #nav a'), function(n){ n.removeAttribute('style'); n.classList.remove('warn', 'card-agency-edit-mode', 'card-free-edit-mode', 'card-editing', 'card-unsaved'); });
     [].forEach.call(root.querySelectorAll('.card'), function(n){ n.classList.add('in'); });
+    var cloneBody = root.querySelector('body');
+    if (cloneBody) cloneBody.classList.remove('agency-active', 'free-edit-active');
+    var cloneFreeBtn = root.querySelector('#btnFreeEditMode');
+    if (cloneFreeBtn && cloneFreeBtn.parentNode) cloneFreeBtn.parentNode.removeChild(cloneFreeBtn);
+    [].forEach.call(root.querySelectorAll('.card-agency-bar, .card-free-edit-strip, .agency-refs-editor, .card-unsaved-badge, #agencyActiveBarWrap'), function(n){ n.style.display = 'none'; });
+    [].forEach.call(root.querySelectorAll('[contenteditable]'), function(n){ n.removeAttribute('contenteditable'); n.removeAttribute('spellcheck'); });
     root.querySelector('#empty').removeAttribute('style');
     root.querySelector('#modal').classList.remove('show');
     var tc = root.querySelector('#toast'); tc.classList.remove('show'); tc.textContent = '';
@@ -2706,6 +3090,15 @@
       return Promise.reject(new Error('Firebase no está configurado en este tablero.'));
     }
 
+    var trackInFlight = !opciones._inFlightTracked;
+    if (trackInFlight) {
+      guardadosEnCurso++;
+      opciones = Object.assign({}, opciones, { _inFlightTracked: true });
+    }
+    function finishInFlight(){
+      if (trackInFlight) guardadosEnCurso = Math.max(0, guardadosEnCurso - 1);
+    }
+
     var docUrl = 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(FB.projectId) +
       '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
       '?key=' + encodeURIComponent(FB.apiKey);
@@ -2790,6 +3183,8 @@
       baseContenidos.forEach(function(pieza, idx){
         var n = pieza.n || (idx + 1);
         var id = pieza.id || ('c' + n);
+        pieza.n = n;
+        pieza.id = id;
         var rawCambio = (cambiosPorId && (cambiosPorId[id] || cambiosPorId[n] || cambiosPorId[String(n)])) || null;
 
         if (rawCambio) {
@@ -2901,9 +3296,17 @@
         }
         return patchRes.json();
       }).then(function(savedDoc){
-        syncBoardWithFirestore(savedDoc);
+        if (!opciones.skipAutoSync) {
+          syncBoardWithFirestore(savedDoc);
+        }
         return savedDoc;
       });
+    }).then(function(res){
+      finishInFlight();
+      return res;
+    }, function(err){
+      finishInFlight();
+      throw err;
     });
   }
 
@@ -2944,6 +3347,7 @@
     if (fsContenidos.length > 0) {
       var piezasActualizadas = [];
       cards.forEach(function(cObj, idx){
+        if (agencyUser && cObj.editando === true) return;
         var it = cObj.it;
         var n = idx + 1;
         var fsItem = fsContenidos.find(function(x){
@@ -3016,9 +3420,9 @@
           if (fsItem.historial) it.historial = fsItem.historial;
           if (fsItem.versiones) it.versiones = fsItem.versiones;
           if (fsItem.borrador) it.borrador = fsItem.borrador;
-          if (fsItem.referencias) it.referencias = fsItem.referencias;
-          if (fsItem.pilar) it.pilar = fsItem.pilar;
-          if (fsItem.fechaPublicacion) it.fechaPublicacion = fsItem.fechaPublicacion;
+          if (Array.isArray(fsItem.referencias)) it.referencias = normalizeReferencias(fsItem.referencias);
+          if (fsItem.pilar !== undefined && fsItem.pilar !== null) it.pilar = String(fsItem.pilar);
+          if (fsItem.fechaPublicacion !== undefined && fsItem.fechaPublicacion !== null) it.fechaPublicacion = String(fsItem.fechaPublicacion);
           if (fsItem.canal !== undefined && fsItem.canal !== null) it.canal = normalizeCanal(fsItem.canal);
           if (cObj.refreshMeta) cObj.refreshMeta();
           if (fsItem.tipoOriginal) it.tipoOriginal = fsItem.tipoOriginal;
@@ -3051,6 +3455,7 @@
 
   function syncAndRegisterBoard(){
     if (!DATA || !DATA.id || !FB || !FB.projectId || !FB.apiKey) return;
+    if (guardadosEnCurso > 0 || hasFocusedCardField()) return;
     try {
       var checkUrl = 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(FB.projectId) +
         '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
@@ -3060,6 +3465,7 @@
         .then(function(res){
           if (res.status === 200) {
             return res.json().then(function(doc){
+              if (guardadosEnCurso > 0 || hasFocusedCardField()) return;
               syncBoardWithFirestore(doc);
             });
           } else if (res.status === 404) {
@@ -3370,15 +3776,46 @@
   // ==============================================================
   function updateAgencyUI(){
     var isAgency = !!agencyUser;
+    var freeActive = !!(isAgency && freeEditMode);
     var accessBtn = $('btnAgencyAccess');
     var accessBtnFooter = $('btnAgencyAccessFooter');
     var activeBar = $('agencyActiveBarWrap');
     var userLbl = $('agencyUserLabel');
 
+    document.body.classList.toggle('agency-active', isAgency);
+    document.body.classList.toggle('free-edit-active', freeActive);
+
     if (accessBtn) {
       accessBtn.classList.toggle('active', isAgency);
       accessBtn.textContent = isAgency ? '✓ Modo Administrador activo' : '🔒 Acceso Administrador';
     }
+
+    var freeBtn = $('btnFreeEditMode');
+    if (isAgency) {
+      if (!freeBtn && accessBtn && accessBtn.parentNode) {
+        freeBtn = el('button', 'btn-topbar-free-edit');
+        freeBtn.type = 'button';
+        freeBtn.id = 'btnFreeEditMode';
+        freeBtn.title = 'Activar o desactivar el Modo edición libre del administrador';
+        freeBtn.onclick = function(){
+          if (!agencyUser) return;
+          setFreeEditMode(!freeEditMode);
+          toast(freeEditMode ? '✎ Edición libre activada' : 'Edición libre desactivada');
+        };
+        accessBtn.parentNode.insertBefore(freeBtn, accessBtn.nextSibling);
+      }
+      if (freeBtn) {
+        freeBtn.style.display = 'inline-flex';
+        freeBtn.classList.toggle('on', freeActive);
+        freeBtn.setAttribute('aria-pressed', freeActive ? 'true' : 'false');
+        freeBtn.textContent = freeActive ? '✎ Edición libre: ON' : '✎ Edición libre: OFF';
+      }
+    } else if (freeBtn) {
+      freeBtn.style.display = 'none';
+      freeBtn.classList.remove('on');
+      freeBtn.setAttribute('aria-pressed', 'false');
+    }
+
     if (accessBtnFooter) {
       accessBtnFooter.classList.toggle('active', isAgency);
       accessBtnFooter.textContent = isAgency ? '✓ Modo Agencia activo' : 'Acceso equipo Nexo';
@@ -3703,37 +4140,64 @@
 
   // Guardar corrección directa en Firestore y actualizar tarjeta
   function saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnSave, newHash, meta){
-    if (btnSave) { btnSave.disabled = true; btnSave.textContent = 'Guardando…'; }
+    var origBtnLabel = btnSave ? (btnSave.dataset.origLabel || btnSave.textContent || '💾 Guardar cambios') : '';
+    if (btnSave) {
+      if (!btnSave.dataset.origLabel) btnSave.dataset.origLabel = origBtnLabel;
+      btnSave.disabled = true;
+      btnSave.textContent = 'Guardando…';
+    }
 
     var nowIso = new Date().toISOString();
     var cambiosPorId = {};
     meta = meta || {};
+    var fmtTarget = normalizeFormato(
+      (meta.formato !== undefined && meta.formato !== null && meta.formato !== '')
+        ? meta.formato
+        : ((cObj && cObj.fs && cObj.fs.value) ? cObj.fs.value : (it.formato || 'Post'))
+    );
+
     cambiosPorId[it.id] = function(piezaFs){
       var metaFields = {};
       if (meta.canal !== undefined) metaFields.canal = normalizeCanal(meta.canal);
-      if (meta.fechaPublicacion !== undefined) metaFields.fechaPublicacion = meta.fechaPublicacion;
-      var fmtActual = (cObj && cObj.fs && cObj.fs.value) ? cObj.fs.value : (piezaFs.formato || it.formato);
+      if (meta.fechaPublicacion !== undefined) metaFields.fechaPublicacion = String(meta.fechaPublicacion);
+      if (meta.pilar !== undefined) metaFields.pilar = String(meta.pilar);
+      if (meta.referencias !== undefined) metaFields.referencias = normalizeReferencias(meta.referencias);
+      var fmtActual = fmtTarget || normalizeFormato(piezaFs.formato || it.formato);
 
-      // Edición libre del administrador: no cambia estado ni versión
+      // Edición libre del administrador: no cambia estado, version, fechaCorreccion, revisadoPor ni ultimaRevision
       if (meta.modo === 'libre') {
+        var valHashLibre = (newHash !== undefined) ? newHash : (piezaFs.hashtags || '');
+        var camposCambiados = [];
+        if (String(newTitle || '').trim() !== String(piezaFs.titulo || '').trim()) camposCambiados.push('titulo');
+        if (String(newGuion || '') !== String(piezaFs.guion || '')) camposCambiados.push('guion');
+        if (String(newCopy || '') !== String(piezaFs.copy || '')) camposCambiados.push('copy');
+        if (String(valHashLibre || '') !== String(piezaFs.hashtags || '')) camposCambiados.push('hashtags');
+        if (normalizeFormato(fmtActual) !== normalizeFormato(piezaFs.formato)) camposCambiados.push('formato');
+        if (meta.canal !== undefined && normalizeCanal(meta.canal) !== normalizeCanal(piezaFs.canal)) camposCambiados.push('canal');
+        if (meta.fechaPublicacion !== undefined && String(meta.fechaPublicacion) !== String(piezaFs.fechaPublicacion || '')) camposCambiados.push('fechaPublicacion');
+        if (meta.pilar !== undefined && String(meta.pilar) !== String(piezaFs.pilar || '')) camposCambiados.push('pilar');
+        if (meta.referencias !== undefined && JSON.stringify(normalizeReferencias(meta.referencias)) !== JSON.stringify(normalizeReferencias(piezaFs.referencias))) {
+          camposCambiados.push('referencias');
+        }
+
         var histL = Array.isArray(piezaFs.historial) ? piezaFs.historial.slice() : [];
         histL.push({
-          version: parseInt(piezaFs.version, 10) || 1,
-          accion: 'Edición del equipo',
+          accion: 'Edición libre del equipo',
           usuario: agencyUser ? ('Agencia (' + agencyUser + ')') : 'Equipo Nexo',
-          fecha: nowIso
+          fecha: nowIso,
+          campos: camposCambiados
         });
         var libre = Object.assign({
           titulo: newTitle,
           guion: newGuion,
           copy: newCopy,
-          hashtags: (newHash !== undefined) ? newHash : (piezaFs.hashtags || ''),
+          hashtags: valHashLibre,
           formato: fmtActual,
           formatoOriginal: fmtActual,
           historial: histL
         }, metaFields);
-        if (piezaFs.estado === 'aprobado' && piezaFs.aprobacion) {
-          libre.aprobacion = Object.assign({}, piezaFs.aprobacion, {
+        if (piezaFs.estado === 'aprobado') {
+          libre.aprobacion = Object.assign({}, piezaFs.aprobacion || {}, {
             titulo: newTitle, guion: newGuion, copy: newCopy, hashtags: libre.hashtags, formato: fmtActual,
             editadoPor: agencyUser ? ('Agencia (' + agencyUser + ')') : 'Equipo Nexo', fechaEdicion: nowIso
           });
@@ -3749,10 +4213,10 @@
 
       var valHash = (newHash !== undefined) ? newHash : curHash;
       var textoCambio = (newGuion.trim() !== curGuion.trim()) || (newCopy.trim() !== curCopy.trim()) || (newTitle.trim() !== curTitle.trim()) || (valHash.trim() !== curHash.trim());
-      var nextVersion = (textoCambio && piezaFs.estado !== 'corregido') ? (curV + 1) : curV;
+      var nextVersion = ((textoCambio || meta.forzarCorreccion) && piezaFs.estado !== 'corregido') ? (curV + 1) : curV;
 
       var hist = Array.isArray(piezaFs.historial) ? piezaFs.historial.slice() : [];
-      if (textoCambio || piezaFs.estado !== 'corregido') {
+      if (textoCambio || meta.forzarCorreccion || piezaFs.estado !== 'corregido') {
         hist.push({
           version: nextVersion,
           accion: 'Corrección guardada',
@@ -3776,18 +4240,56 @@
       }, metaFields);
     };
 
-    var opciones = (meta.modo === 'libre') ? {} : {
-      tableroFields: {
-        revisadoPor: '',
-        ultimaRevision: ''
-      }
-    };
+    var opciones = (meta.modo === 'libre')
+      ? { skipAutoSync: true }
+      : {
+          skipAutoSync: true,
+          tableroFields: {
+            revisadoPor: '',
+            ultimaRevision: ''
+          }
+        };
 
     return guardarPiezas(cambiosPorId, opciones).then(function(savedDoc){
-      if (btnSave) { btnSave.disabled = false; btnSave.textContent = '💾 Guardar cambios'; }
+      // Comprobar en savedDoc (buscando la pieza por id) que los campos guardados coincidan
+      var savedFields = {};
+      if (savedDoc && savedDoc.fields) {
+        for (var sk in savedDoc.fields) savedFields[sk] = unpackFsValue(savedDoc.fields[sk]);
+      }
+      var savedContenidos = Array.isArray(savedFields.contenidos) ? savedFields.contenidos : [];
+      var savedPiece = savedContenidos.find(function(x){
+        return x && String(x.id || '') === String(it.id || '');
+      });
+
+      var verificacionOk = !!savedPiece &&
+        String(savedPiece.titulo || '') === String(newTitle || '') &&
+        String(savedPiece.guion || '') === String(newGuion || '') &&
+        String(savedPiece.copy || '') === String(newCopy || '') &&
+        normalizeFormato(savedPiece.formato) === fmtTarget &&
+        (newHash === undefined || String(savedPiece.hashtags || '') === String(newHash || '')) &&
+        (meta.canal === undefined || normalizeCanal(savedPiece.canal) === normalizeCanal(meta.canal)) &&
+        (meta.fechaPublicacion === undefined || String(savedPiece.fechaPublicacion || '') === String(meta.fechaPublicacion || '')) &&
+        (meta.pilar === undefined || String(savedPiece.pilar || '') === String(meta.pilar || '')) &&
+        (meta.referencias === undefined || JSON.stringify(normalizeReferencias(savedPiece.referencias)) === JSON.stringify(normalizeReferencias(meta.referencias))) &&
+        (meta.modo !== 'correccion' || savedPiece.estado === 'corregido');
+
+      if (!verificacionOk) {
+        throw new Error('Error de verificación: los campos guardados en Firestore no coinciden con los enviados');
+      }
+
+      if (cObj && cObj.setEditingState) cObj.setEditingState(false);
+      else if (cObj) cObj.editando = false;
+
+      syncBoardWithFirestore(savedDoc);
+
+      if (btnSave) { btnSave.disabled = false; btnSave.textContent = origBtnLabel; }
       if (cObj && cObj.setUnsavedState) cObj.setUnsavedState(false);
       if (meta.canal !== undefined) it.canal = normalizeCanal(meta.canal);
-      if (meta.fechaPublicacion !== undefined) it.fechaPublicacion = meta.fechaPublicacion;
+      if (meta.fechaPublicacion !== undefined) it.fechaPublicacion = String(meta.fechaPublicacion);
+      if (meta.pilar !== undefined) it.pilar = String(meta.pilar);
+      if (meta.referencias !== undefined) it.referencias = normalizeReferencias(meta.referencias);
+      it.formato = fmtTarget;
+      it.formatoOriginal = fmtTarget;
       if (meta.modo === 'libre') {
         it.titulo = newTitle; it.guion = newGuion; it.copy = newCopy;
         if (newHash !== undefined) it.hashtags = newHash;
@@ -3800,7 +4302,7 @@
       return savedDoc;
     }).catch(function(err){
       console.error('Error guardando corrección en Firestore:', err);
-      if (btnSave) { btnSave.disabled = false; btnSave.textContent = '💾 Guardar cambios'; }
+      if (btnSave) { btnSave.disabled = false; btnSave.textContent = origBtnLabel; }
       if (cObj && cObj.setUnsavedState) cObj.setUnsavedState(true);
       modal({
         kind: 'warn',
@@ -3812,7 +4314,7 @@
             label: 'Reintentar',
             primary: true,
             fn: function(){
-              saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnSave, newHash);
+              saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnSave, newHash, meta).catch(function(){});
             }
           },
           { label: 'Cerrar' }

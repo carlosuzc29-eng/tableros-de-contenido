@@ -16,11 +16,20 @@
       "copy": "",
       "hashtags": "",
       "referencias": [],
-      "estado": "pendiente",
+      "estado": "cambios",
       "version": 1,
-      "comentario": "",
+      "comentario": "[LadyDi]: 1- Donde dice “cuéntanos qué tipo de empaques necesitas” agregar también para qué producto lo requieren porque muchas veces envían referencias de cajas, pero realmente es para un producto que amerita otro tipo de empaque entonces bueno, conocer para qué producto y también la referencia que quieren (ambas)",
       "canal": "Orgánico",
-      "id": "c1"
+      "id": "c1",
+      "revisadoPor": "LadyDi",
+      "comentarios": [
+        {
+          "autor": "LadyDi",
+          "texto": "1- Donde dice “cuéntanos qué tipo de empaques necesitas” agregar también para qué producto lo requieren porque muchas veces envían referencias de cajas, pero realmente es para un producto que amerita otro tipo de empaque entonces bueno, conocer para qué producto y también la referencia que quieren (ambas)",
+          "fecha": "2026-10-30T00:21:11.329Z",
+          "version": 1
+        }
+      ]
     },
     {
       "formato": "Historia",
@@ -32,11 +41,26 @@
       "copy": "",
       "hashtags": "",
       "referencias": [],
-      "estado": "pendiente",
+      "estado": "cambios",
       "version": 1,
-      "comentario": "",
+      "comentario": "[LadyDi]: Me gustaría aplicarlo también a los clientes actuales, no solo para clientes nuevos. \nPorque son los que siempre andan de corre corre… Entonces que vaya dirigido a ellos principalmente también por fis\n\n[LadyDi]: Y otra cosa muchachos, conversando vamos a cambiar la fecha hasta el 16, porque con el tema de la luz nos estamos retrasando full",
       "canal": "Orgánico",
-      "id": "c2"
+      "id": "c2",
+      "revisadoPor": "LadyDi",
+      "comentarios": [
+        {
+          "autor": "LadyDi",
+          "texto": "Me gustaría aplicarlo también a los clientes actuales, no solo para clientes nuevos. \nPorque son los que siempre andan de corre corre… Entonces que vaya dirigido a ellos principalmente también por fis",
+          "fecha": "2026-10-30T00:24:42.612Z",
+          "version": 1
+        },
+        {
+          "autor": "LadyDi",
+          "texto": "Y otra cosa muchachos, conversando vamos a cambiar la fecha hasta el 16, porque con el tema de la luz nos estamos retrasando full",
+          "fecha": "2026-10-30T00:30:20.518Z",
+          "version": 1
+        }
+      ]
     },
     {
       "formato": "Reel",
@@ -48,11 +72,22 @@
       "copy": "",
       "hashtags": "",
       "referencias": [],
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
       "comentario": "",
       "canal": "Orgánico",
-      "id": "c3"
+      "id": "c3",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "LadyDi",
+        "fecha": "2026-10-30T00:55:14.347Z",
+        "titulo": "Frases que solo se dicen en una imprenta",
+        "formato": "Reel",
+        "guion": "Pilar: Detrás del taller\nEtapa del embudo: TOFU\nÁngulo: Humor / situación cotidiana\n\nTEXTO TENTATIVO EN PANTALLA:\n\"Frases que más decimos en impreco!\"\n\nConcepto:\nCada miembro del equipo dice a cámara una frase típica del oficio de la imprenta, una toma por persona, con cortes rápidos y humor. Y al final Lady debe decir estilo gritando como si llamara a alguien ¡REINAAAAAAALDO!",
+        "copy": "",
+        "hashtags": ""
+      },
+      "revisadoPor": "Cliente"
     },
     {
       "formato": "Reel",
@@ -64,11 +99,30 @@
       "copy": "Diciembre se acerca y la planta ya lo sabe 👀\nSi tu negocio vende fuerte en diciembre, tus bolsas y cajas se piden ahora: recibimos pedidos para diciembre hasta el 20 de noviembre.\nEscríbenos por WhatsApp, el enlace está en la bio.",
       "hashtags": "",
       "referencias": [],
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
-      "comentario": "",
+      "comentario": "[LadyDi]: Considero este reels debe salir primero, en la fecha del otro el 09.",
       "canal": "Orgánico",
-      "id": "c4"
+      "id": "c4",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "LadyDi",
+        "fecha": "2026-10-30T00:55:14.347Z",
+        "titulo": "Tus empaques de diciembre se piden ahora",
+        "formato": "Reel",
+        "guion": "ESCENA 1 · 0–3 s\nVisual: Lady en su puesto, anotando pedidos.\nVoz: Fuera de cámara: \"Lady, ¿qué haces?\"\nTexto en pantalla: Cuando le preguntas a Lady qué está haciendo en noviembre\n\nESCENA 2 · 3–7 s\nVisual: Lady sigue anotando, sin levantar la mirada.\nVoz: Lady: \"Anotando los pedidos navideños… porque recibimos hasta el 20 de noviembre.\"\nTexto en pantalla: Pedidos navideños: hasta el 20 de noviembre\n\nESCENA 3 · 7–9 s\nVisual: Zoom rápido a la cara de Lady.\nVoz: Fuera de cámara: \"¿¡QUÉ!?\"\nTexto en pantalla: ¿¡QUÉ!? 😱\n\nESCENA 4 · 9–12 s\nVisual: Lady levanta la mirada, se para y camina; la cámara la sigue.\nVoz: Lady: \"Sí. Ven, mira.\"\n\nESCENA 5 · 12–16 s\nVisual: Pedidos de diciembre a la vista en planta.\nVoz: Lady: \"Estos ya son pedidos de diciembre…\"\nTexto en pantalla: Pedidos de diciembre 📦\n\nESCENA 6 · 16–20 s\nVisual: Máquinas trabajando; Reinaldo y el equipo de planta en movimiento.\nVoz: Lady: \"…las máquinas ya están trabajando en ellos…\"\n\nESCENA 7 · 20–23 s\nVisual: Despachos saliendo.\nVoz: Lady: \"…y estos ya van saliendo.\"\n\nESCENA 8 · 23–27 s\nVisual: Lady de frente a cámara.\nVoz: Lady: \"Así que si no quieres quedarte por fuera, escríbenos por WhatsApp antes del 20 de noviembre.\"\nTexto en pantalla: Escríbenos por WhatsApp antes del 20 de noviembre 👉 enlace en la bio\n\nESCENA 9 · 27–30 s\nVisual: Lady vuelve a su puesto y retoma la libreta.\nVoz: Lady: \"Ahora déjame seguir, que esto no se anota solo.\"",
+        "copy": "Diciembre se acerca y la planta ya lo sabe 👀\nSi tu negocio vende fuerte en diciembre, tus bolsas y cajas se piden ahora: recibimos pedidos para diciembre hasta el 20 de noviembre.\nEscríbenos por WhatsApp, el enlace está en la bio.",
+        "hashtags": ""
+      },
+      "revisadoPor": "LadyDi",
+      "comentarios": [
+        {
+          "autor": "LadyDi",
+          "texto": "Considero este reels debe salir primero, en la fecha del otro el 09.",
+          "fecha": "2026-10-30T00:31:04.737Z",
+          "version": 1
+        }
+      ]
     },
     {
       "formato": "Reel",
@@ -80,11 +134,22 @@
       "copy": "",
       "hashtags": "",
       "referencias": [],
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
       "comentario": "",
       "canal": "Orgánico",
-      "id": "c5"
+      "id": "c5",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "LadyDi",
+        "fecha": "2026-10-30T00:55:14.347Z",
+        "titulo": "Cómo hacerle creer a tus jefes que estás ocupado",
+        "formato": "Reel",
+        "guion": "ESCENA 1 · 0–3 s\nVisual: sale Geral caminando\nTexto en pantalla: ¿Tutorial para hacer creer que estás ocupado en el trabajo?\n\nESCENA 2 · 3–5 s\nVisual: Geral arranca a caminar rapidísimo y con cara de preocupación\nTexto en pantalla: Paso 1 y único: camina apurado y con cara de preocupación por todos lados.\n\nESCENA 3 · 5–8 s\nVisual: Dos compañeros levantan la vista y lo siguen con la cabeza.\nHacen señas: ¿Qué pasa? ¿Qué pasa?\n\nESCENA 4 · 8–11 s\nVisual: Geral baja la escalera y vuelve a subir sin motivo.\n\nESCENA 5 · 11–14 s\nVisual: Revuelve una pila de empaques, saca uno, lo mira muy serio y lo devuelve.\n\nESCENA 6 · 14–17 s\nVisual: Se sienta en una silla, se para, se sienta, se para.\n\nESCENA 7 · 17–20 s\nVisual: Pasa al lado de un compañero y, en cámara lenta, al compañero se le levanta el cabello como en un ventarrón.\n\nESCENA 8 · 20–24 s\nVisual: Lady lo detiene con el teléfono en la mano. Geral se congela\nDiálogo (Lady): Geral, quieren 5.000 bolsas más\n\nESCENA 9 · 24–28 s\nVisual: Geral sale corriendo, esta vez de verdad.\nhabla a cámara Advertencia: en temporada alta, el tutorial dura poco.",
+        "copy": "",
+        "hashtags": ""
+      },
+      "revisadoPor": "Cliente"
     },
     {
       "formato": "Reel",
@@ -101,11 +166,22 @@
           "url": "https://www.tiktok.com/@paulycol/video/7678315802457623826?q=quiero%20todas%20las%20maquinas%20funcionando&t=1793284932021"
         }
       ],
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
       "comentario": "",
       "canal": "Orgánico",
-      "id": "c6"
+      "id": "c6",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "LadyDi",
+        "fecha": "2026-10-30T00:55:14.347Z",
+        "titulo": "Todas las máquinas trabajando",
+        "formato": "Reel",
+        "guion": "pov: es el ultimo dia que agendamos trabajos para diciembre",
+        "copy": "Hoy es el último día que agendamos trabajos para diciembre… y aquí nadie está quieto 😅\nNo lo dejes pasar: escríbenos hoy por WhatsApp y agenda el tuyo. El enlace está en la bio.",
+        "hashtags": ""
+      },
+      "revisadoPor": "Cliente"
     },
     {
       "formato": "Reel",
@@ -117,11 +193,20 @@
       "copy": "Le preguntamos al equipo cuál fue su pedido de Navidad favorito 🎄\nPero la verdad es que nos gustaron todos. Cada caja y cada bolsa que sale de aquí lleva un pedacito de nosotros ❤️",
       "hashtags": "",
       "referencias": [],
-      "estado": "pendiente",
+      "estado": "cambios",
       "version": 1,
-      "comentario": "",
+      "comentario": "[LadyDi]: Me gusta, pero creo que lo podemos hacer en general… no solo los de motivo navideño, sino en general cuál ha sido su empaque favorito del mes o del los últimos meses",
       "canal": "Orgánico",
-      "id": "c7"
+      "id": "c7",
+      "revisadoPor": "LadyDi",
+      "comentarios": [
+        {
+          "autor": "LadyDi",
+          "texto": "Me gusta, pero creo que lo podemos hacer en general… no solo los de motivo navideño, sino en general cuál ha sido su empaque favorito del mes o del los últimos meses",
+          "fecha": "2026-10-30T00:34:07.385Z",
+          "version": 1
+        }
+      ]
     },
     {
       "formato": "Reel",
@@ -133,11 +218,30 @@
       "copy": "Último día del año en Impreco ✅\nGracias por todo lo que hicimos juntos este 2026: cada bolsa, cada caja y cada pedido. Nos vemos en enero 📦",
       "hashtags": "",
       "referencias": [],
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
-      "comentario": "",
+      "comentario": "[LadyDi]: Me encantó! Hasta se me erizo la piel",
       "canal": "Orgánico",
-      "id": "c8"
+      "id": "c8",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "LadyDi",
+        "fecha": "2026-10-30T00:55:14.347Z",
+        "titulo": "La última entrega del año",
+        "formato": "Reel",
+        "guion": "ESCENA 1 · 0–3 s\nVisual: Un lote de varios pedidos embalados, listos para salir.\nTexto en pantalla: Última entrega:\n\nESCENA 2 · 3–6 s\nVisual: El mismo espacio, con el mismo encuadre, ya vacío: los pedidos se entregaron.\nTexto en pantalla: Lista ✅\n\nESCENA 3 · 6–9 s\nVisual: Una máquina trabajando.\nTexto en pantalla: Máquinas:\n\nESCENA 4 · 9–12 s\nVisual: La misma máquina, con el mismo encuadre, apagada.\nTexto en pantalla: apagadas ✅\n\nESCENA 5 · 12–15 s\nVisual: El equipo sentado, conversando.\nTexto en pantalla: Equipo:\n\nESCENA 6 · 15–19 s\nVisual: El equipo empieza a hablar como si estuviera cuadrando algo.\nTexto en pantalla: pensando en las hallacas ✅\n\nESCENA 7 · 19–25 s\nVisual: Lady y Reinaldo a cámara.\nVoz: Lady: \"Y a ti, que nos elegiste este año: gracias.\" Reinaldo: \"Nos vemos en enero.\"",
+        "copy": "Último día del año en Impreco ✅\nGracias por todo lo que hicimos juntos este 2026: cada bolsa, cada caja y cada pedido. Nos vemos en enero 📦",
+        "hashtags": ""
+      },
+      "revisadoPor": "LadyDi",
+      "comentarios": [
+        {
+          "autor": "LadyDi",
+          "texto": "Me encantó! Hasta se me erizo la piel",
+          "fecha": "2026-10-30T00:35:00.808Z",
+          "version": 1
+        }
+      ]
     },
     {
       "formato": "Post",
@@ -149,11 +253,22 @@
       "copy": "🎄✨ Esta Navidad, haz que tu marca destaque desde el empaque.\nLa temporada más especial del año se acerca y es momento de preparar cada detalle para sorprender a tus clientes. 🎁\nEn Impreco hacemos realidad tus empaques navideños personalizados. Nos encargamos de asesorarte, diseñar y producir bolsas y cajas que lleven la esencia de tu marca a cada entrega. 🛍️\n📅 ¡Atención! Recibimos pedidos para diciembre hasta el 20 de noviembre.\n📲 Escríbenos por WhatsApp, cuéntanos qué necesitas y solicita tu cotización.\nTú tienes la marca, nosotros hacemos que destaque esta Navidad. ❤️\n\nPreguntas:\nHola, ¿cuál es la cantidad mínima para solicitar empaques personalizados?\n¡Hola! 👋📦 Bienvenido a Impreco.\nLa cantidad mínima de pedido puede variar según el tipo de empaque que desees personalizar.\nPara brindarte información precisa, cuéntanos:\n🛍️ ¿Te interesan bolsas, cajas o ambos?\n🏷️ ¿A qué se dedica tu negocio?\n📍 ¿En qué ciudad estás ubicado?\nCon gusto te indicaremos las cantidades mínimas disponibles y prepararemos una cotización según tus necesidades.\n🇻🇪 ¡Y recuerda que todos nuestros precios ya incluyen envío GRATIS a toda Venezuela! ❤️\n\nHola, quiero empaques navideños para mi negocio. ¿Me ayudan con el diseño y la cotización?\n¡Hola! 👋🎄 Bienvenido a Impreco. Nos encanta que quieras darle un toque especial a tu marca con nuestros empaques personalizados. 🎁\nPara poder asesorarte y preparar tu cotización, necesitamos conocer algunos detalles:\n✨ ¿A qué se dedica tu marca o negocio?\n📍 ¿En qué ciudad estás ubicado?\n🛍️ ¿Qué te gustaría personalizar: bolsas, cajas o ambos?\nCon esta información podremos orientarte y comenzar a darle forma a tus empaques. ¡Estamos atentos a tu respuesta! ❤️\n\n3)¿Cuánto cuesta el envío de los empaques personalizados?\n¡Buenas noticias! 📦🇻🇪\nEn Impreco, todos nuestros precios incluyen ENVÍO GRATIS a cualquier parte de Venezuela. 🎉\nAsí que no tendrás que preocuparte por costos adicionales de envío.\n🛍️ Cuéntanos, ¿necesitas bolsas, cajas o ambos para tu negocio? ¡Con gusto te ayudamos a cotizar!",
       "hashtags": "",
       "referencias": [],
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
       "comentario": "",
       "canal": "Ads",
-      "id": "c9"
+      "id": "c9",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "LadyDi",
+        "fecha": "2026-10-30T00:55:14.347Z",
+        "titulo": "Tu empaque navideño, de principio a fin",
+        "formato": "Post",
+        "guion": "ANTETÍTULO: Prepara tu marca para diciembre 🎄\nTITULAR PRINCIPAL1: Tus empaques navideños, listos para destacar.\nTITULAR PRINCIPAL 2: «¿Ya tienes los empaques de tu negocio para Navidad?».\n(Hacer ambos diseños, dejar el que mejor funcione en pauta)\nTEXTO DE APOYO: Te asesoramos, diseñamos y producimos tus empaques personalizados.\nURGENCIA Pedidos para diciembre hasta el 20 de noviembre.\nCTA: Cotiza ya\nObjetivo Interaccion\nBoton: Click al boton de whatsapp",
+        "copy": "🎄✨ Esta Navidad, haz que tu marca destaque desde el empaque.\nLa temporada más especial del año se acerca y es momento de preparar cada detalle para sorprender a tus clientes. 🎁\nEn Impreco hacemos realidad tus empaques navideños personalizados. Nos encargamos de asesorarte, diseñar y producir bolsas y cajas que lleven la esencia de tu marca a cada entrega. 🛍️\n📅 ¡Atención! Recibimos pedidos para diciembre hasta el 20 de noviembre.\n📲 Escríbenos por WhatsApp, cuéntanos qué necesitas y solicita tu cotización.\nTú tienes la marca, nosotros hacemos que destaque esta Navidad. ❤️\n\nPreguntas:\nHola, ¿cuál es la cantidad mínima para solicitar empaques personalizados?\n¡Hola! 👋📦 Bienvenido a Impreco.\nLa cantidad mínima de pedido puede variar según el tipo de empaque que desees personalizar.\nPara brindarte información precisa, cuéntanos:\n🛍️ ¿Te interesan bolsas, cajas o ambos?\n🏷️ ¿A qué se dedica tu negocio?\n📍 ¿En qué ciudad estás ubicado?\nCon gusto te indicaremos las cantidades mínimas disponibles y prepararemos una cotización según tus necesidades.\n🇻🇪 ¡Y recuerda que todos nuestros precios ya incluyen envío GRATIS a toda Venezuela! ❤️\n\nHola, quiero empaques navideños para mi negocio. ¿Me ayudan con el diseño y la cotización?\n¡Hola! 👋🎄 Bienvenido a Impreco. Nos encanta que quieras darle un toque especial a tu marca con nuestros empaques personalizados. 🎁\nPara poder asesorarte y preparar tu cotización, necesitamos conocer algunos detalles:\n✨ ¿A qué se dedica tu marca o negocio?\n📍 ¿En qué ciudad estás ubicado?\n🛍️ ¿Qué te gustaría personalizar: bolsas, cajas o ambos?\nCon esta información podremos orientarte y comenzar a darle forma a tus empaques. ¡Estamos atentos a tu respuesta! ❤️\n\n3)¿Cuánto cuesta el envío de los empaques personalizados?\n¡Buenas noticias! 📦🇻🇪\nEn Impreco, todos nuestros precios incluyen ENVÍO GRATIS a cualquier parte de Venezuela. 🎉\nAsí que no tendrás que preocuparte por costos adicionales de envío.\n🛍️ Cuéntanos, ¿necesitas bolsas, cajas o ambos para tu negocio? ¡Con gusto te ayudamos a cotizar!",
+        "hashtags": ""
+      },
+      "revisadoPor": "Cliente"
     },
     {
       "formato": "Post",
@@ -165,11 +280,20 @@
       "copy": "📦🇻🇪 ¿Tu negocio está fuera de Mérida? ¡Tus empaques personalizados también pueden llegar hasta ti!\nNo importa en qué parte de Venezuela esté tu negocio, en Impreco hacemos posible que tus productos lleven una presentación única esta Navidad. 🎄✨\n📅 Recibimos pedidos para diciembre hasta el 20 de noviembre.\n📲 Escríbenos por WhatsApp, dinos en qué ciudad te encuentras y solicita tu cotización.\n¡La distancia no es un límite para hacer destacar tu marca! ❤️\n\npreguntas automaticas\n1)Hola, quisiera cotizar bolsas y cajas navideñas personalizadas con envío a mi ciudad.\n¡Hola! 👋🎄 Bienvenido a Impreco.\n¡Nos encantaría ayudarte a crear los empaques navideños para tu negocio! 🎁\nPara preparar tu cotización, necesitamos conocer algunos detalles:\n🏷️ ¿A qué se dedica tu marca o negocio?\n📍 ¿En qué ciudad estás ubicado?\n🛍️ ¿Necesitas bolsas, cajas o ambos?\n📦 ¿Qué cantidad aproximada necesitas?\nRecuerda que todos nuestros precios incluyen envío GRATIS a cualquier parte de Venezuela. 🇻🇪\n¡Estamos atentos para ayudarte! ❤️\n\nHola, ¿cuál es la cantidad mínima para pedir empaques navideños personalizados?\n¡Hola! 👋❤️ Bienvenido a Impreco.\nNuestro pedido mínimo es de 500 unidades de empaques personalizados. 📦✨\nAdemás:\n🎨 ¡El diseño navideño está incluido!\n🇻🇪 ¡Envío GRATIS a cualquier parte de Venezuela!\nPara ayudarte con tu cotización, cuéntanos:\n🏷️ ¿A qué se dedica tu negocio?\n🛍️ ¿Te interesan bolsas, cajas o ambos?\n📍 ¿En qué ciudad estás ubicado?\n¡Con gusto te ayudaremos a preparar tus empaques navideños! 🎄\n\n3)¿Cuánto cuesta el envío de los empaques personalizados?\n¡Buenas noticias! 📦🇻🇪\nEn Impreco, todos nuestros precios incluyen ENVÍO GRATIS a cualquier parte de Venezuela. 🎉\nAsí que no tendrás que preocuparte por costos adicionales de envío.\n🛍️ Cuéntanos, ¿necesitas bolsas, cajas o ambos para tu negocio? ¡Con gusto te ayudamos a cotizar!",
       "hashtags": "",
       "referencias": [],
-      "estado": "pendiente",
+      "estado": "cambios",
       "version": 1,
-      "comentario": "",
+      "comentario": "[LadyDi]: Muchachos, creo que podemos cambiar esta promocionando productos que no necesariamente sean navideños, con promocionar 1 video me parece más que suficiente, son trabajos que se van a entregar a mediados de diciembre y ya no les es funcional al cliente, ellos los van a querer usar desde finales de noviembre y nosotros no podremos ofrecer eso ahora.",
       "canal": "Ads",
-      "id": "c10"
+      "id": "c10",
+      "revisadoPor": "LadyDi",
+      "comentarios": [
+        {
+          "autor": "LadyDi",
+          "texto": "Muchachos, creo que podemos cambiar esta promocionando productos que no necesariamente sean navideños, con promocionar 1 video me parece más que suficiente, son trabajos que se van a entregar a mediados de diciembre y ya no les es funcional al cliente, ellos los van a querer usar desde finales de noviembre y nosotros no podremos ofrecer eso ahora.",
+          "fecha": "2026-10-30T00:40:05.329Z",
+          "version": 1
+        }
+      ]
     },
     {
       "formato": "Carrusel",
@@ -181,11 +305,20 @@
       "copy": "🎄📦 ¿Quieres empaques navideños personalizados, pero no sabes por dónde empezar?\n¡En Impreco lo hacemos fácil para ti! ❤️\nNo necesitas tener un diseño listo ni conocer todo el proceso. Nosotros te acompañamos desde el primer mensaje hasta que tus empaques estén camino a tu negocio.\n📲 Nos cuentas qué necesitas.\n🎨 Te asesoramos y diseñamos tus empaques navideños.\n🏭 Los producimos y revisamos su calidad.\n🚚 Los enviamos hasta tu ciudad.\n✨ Diseño navideño incluido.\n🇻🇪 Envío GRATIS a toda Venezuela.\n📦 Pedidos a partir de 500 unidades.\n📅 ¡Recibimos pedidos para diciembre hasta el 20 de noviembre!\nEscríbenos por WhatsApp y comienza tu cotización. ¡Nosotros nos encargamos del resto! ❤️\n\nPreguntas:\nHola, ¿cuál es la cantidad mínima para solicitar empaques personalizados?\n¡Hola! 👋📦 Bienvenido a Impreco.\nLa cantidad mínima de pedido puede variar según el tipo de empaque que desees personalizar.\nPara brindarte información precisa, cuéntanos:\n🛍️ ¿Te interesan bolsas, cajas o ambos?\n🏷️ ¿A qué se dedica tu negocio?\n📍 ¿En qué ciudad estás ubicado?\nCon gusto te indicaremos las cantidades mínimas disponibles y prepararemos una cotización según tus necesidades.\n🇻🇪 ¡Y recuerda que todos nuestros precios ya incluyen envío GRATIS a toda Venezuela! ❤️\n\nHola, quiero empaques navideños para mi negocio. ¿Me ayudan con el diseño y la cotización?\n¡Hola! 👋🎄 Bienvenido a Impreco. Nos encanta que quieras darle un toque especial a tu marca con nuestros empaques personalizados. 🎁\nPara poder asesorarte y preparar tu cotización, necesitamos conocer algunos detalles:\n✨ ¿A qué se dedica tu marca o negocio?\n📍 ¿En qué ciudad estás ubicado?\n🛍️ ¿Qué te gustaría personalizar: bolsas, cajas o ambos?\nCon esta información podremos orientarte y comenzar a darle forma a tus empaques. ¡Estamos atentos a tu respuesta! ❤️\n\n3)¿Cuánto cuesta el envío de los empaques personalizados?\n¡Buenas noticias! 📦🇻🇪\nEn Impreco, todos nuestros precios incluyen ENVÍO GRATIS a cualquier parte de Venezuela. 🎉\nAsí que no tendrás que preocuparte por costos adicionales de envío.\n🛍️ Cuéntanos, ¿necesitas bolsas, cajas o ambos para tu negocio? ¡Con gusto te ayudamos a cotizar!",
       "hashtags": "",
       "referencias": [],
-      "estado": "pendiente",
+      "estado": "cambios",
       "version": 1,
-      "comentario": "",
+      "comentario": "[LadyDi]: Con este igual… creo que podemos cambiar lo “navideño”",
       "canal": "Ads",
-      "id": "c11"
+      "id": "c11",
+      "revisadoPor": "LadyDi",
+      "comentarios": [
+        {
+          "autor": "LadyDi",
+          "texto": "Con este igual… creo que podemos cambiar lo “navideño”",
+          "fecha": "2026-10-30T00:40:50.868Z",
+          "version": 1
+        }
+      ]
     },
     {
       "formato": "Carrusel",
@@ -197,11 +330,20 @@
       "copy": "🎄📦 Cada negocio es diferente, ¡y sus empaques también deberían serlo!\n¿Tienes una panadería, hamburguesería, repostería, tienda de skincare o bisutería? 🛍️\nEn Impreco diseñamos y fabricamos bolsas y cajas navideñas personalizadas que se adaptan a tu tipo de negocio, tus productos y la identidad de tu marca. ✨\n¿Tu negocio es de otro rubro? ¡También tenemos opciones para ti!\n🎨 Diseño navideño incluido.\n🇻🇪 Envío GRATIS a toda Venezuela.\n📅 Pedidos para diciembre hasta el 20 de noviembre.\n📲 Escríbenos por WhatsApp, cuéntanos a qué se dedica tu negocio y te asesoramos para encontrar el empaque ideal. ❤️\n\nPREGUNTAS:\nHola, quiero cotizar empaques navideños personalizados para mi negocio.\n¡Hola! 👋❤️ Bienvenido a Impreco.\n¡Nos encantará ayudarte a preparar tus empaques para esta Navidad! 🎄\nPara elaborar tu cotización, necesitamos conocer algunos detalles:\n🏷️ ¿A qué se dedica tu negocio?\n🛍️ ¿Necesitas bolsas, cajas o ambos?\n📦 ¿Qué cantidad aproximada deseas solicitar?\n📍 ¿En qué ciudad estás ubicado?\n✨ Recuerda que el diseño navideño está incluido y nuestros precios ya contemplan envío GRATIS a toda Venezuela. 🇻🇪\n¡Estamos atentos para ayudarte con tu cotización! ❤️\n\nHola, ¿cuál es la cantidad mínima para pedir empaques navideños personalizados?\n¡Hola! 👋❤️ Bienvenido a Impreco.\nNuestro pedido mínimo es de 500 unidades de empaques personalizados. 📦✨\nAdemás:\n🎨 ¡El diseño navideño está incluido!\n🇻🇪 ¡Envío GRATIS a cualquier parte de Venezuela!\nPara ayudarte con tu cotización, cuéntanos:\n🏷️ ¿A qué se dedica tu negocio?\n🛍️ ¿Te interesan bolsas, cajas o ambos?\n📍 ¿En qué ciudad estás ubicado?\n¡Con gusto te ayudaremos a preparar tus empaques navideños! 🎄\n\nHola, mi negocio es de un rubro diferente a los que muestran. ¿También pueden hacer empaques navideños personalizados para mí?\n¡Hola! 👋🎄 Bienvenido a Impreco.\n¡Por supuesto! ❤️ Trabajamos con diferentes tipos de negocios y podemos asesorarte para crear empaques navideños personalizados según tus necesidades.\nPara ayudarte, cuéntanos:\n🏷️ ¿A qué se dedica tu negocio?\n🛍️ ¿Qué productos necesitas empacar?\n📦 ¿Te interesan bolsas, cajas o ambos?\n📍 ¿En qué ciudad estás ubicado?\nCon esta información podremos recomendarte las opciones más adecuadas y preparar tu cotización. ✨",
       "hashtags": "",
       "referencias": [],
-      "estado": "pendiente",
+      "estado": "cambios",
       "version": 1,
-      "comentario": "",
+      "comentario": "[LadyDi]: Empaques que fabricamos por rubros…",
       "canal": "Ads",
-      "id": "c12"
+      "id": "c12",
+      "revisadoPor": "LadyDi",
+      "comentarios": [
+        {
+          "autor": "LadyDi",
+          "texto": "Empaques que fabricamos por rubros…",
+          "fecha": "2026-10-30T00:52:46.544Z",
+          "version": 1
+        }
+      ]
     },
     {
       "formato": "Historia",
@@ -213,11 +355,20 @@
       "copy": "🎄🛍️ ¿Buscando empaques navideños personalizados para tu negocio? ¡Hablemos!\nEn Impreco queremos que preparar tus empaques para Navidad sea mucho más fácil.\n✨ Personalizamos tus bolsas y cajas con la identidad de tu marca.\n🎨 ¡El diseño navideño está incluido!\n📲 Escríbenos por WhatsApp y recibe una respuesta inmediata para comenzar tu cotización.\n📦 Además, nuestros precios incluyen envío GRATIS a toda Venezuela. 🇻🇪\n📅 Pedidos para diciembre hasta el 20 de noviembre.\n¡No dejes tus empaques para última hora! Escríbenos hoy. ❤️\n\nHola, ¿cuál es la cantidad mínima para pedir empaques navideños personalizados?\n¡Hola! 👋❤️ Bienvenido a Impreco.\nNuestro pedido mínimo es de 500 unidades de empaques personalizados. 📦✨\nAdemás:\n🎨 ¡El diseño navideño está incluido!\n🇻🇪 ¡Envío GRATIS a cualquier parte de Venezuela!\nPara ayudarte con tu cotización, cuéntanos:\n🏷️ ¿A qué se dedica tu negocio?\n🛍️ ¿Te interesan bolsas, cajas o ambos?\n📍 ¿En qué ciudad estás ubicado?\n¡Con gusto te ayudaremos a preparar tus empaques navideños! 🎄\n\n¿Cuánto cuesta el envío de los empaques personalizados?\n¡Buenas noticias! 📦🇻🇪\nEn Impreco, todos nuestros precios incluyen ENVÍO GRATIS a cualquier parte de Venezuela. 🎉\nAsí que no tendrás que preocuparte por costos adicionales de envío.\n🛍️ Cuéntanos, ¿necesitas bolsas, cajas o ambos para tu negocio? ¡Con gusto te ayudamos a cotizar!\n\nHola, ¿el diseño navideño está incluido en el precio de los empaques?\n¡Hola! 👋🎄 Bienvenido a Impreco.\n¡Sí! 🎨✨ El diseño navideño está incluido en nuestros empaques personalizados, para que tu negocio tenga una presentación especial esta temporada.\nPara asesorarte mejor, cuéntanos:\n🏷️ ¿A qué se dedica tu marca?\n🛍️ ¿Deseas personalizar bolsas, cajas o ambos?\n📦 ¿Qué cantidad necesitas?\n📍 ¿En qué ciudad estás ubicado?\n¡Con gusto te ayudaremos a darle ese toque navideño a tu marca! ❤️\n\nD",
       "hashtags": "",
       "referencias": [],
-      "estado": "pendiente",
+      "estado": "cambios",
       "version": 1,
-      "comentario": "",
+      "comentario": "[LadyDi]: Podemos hablar de los productos en general",
       "canal": "Ads",
-      "id": "c13"
+      "id": "c13",
+      "revisadoPor": "LadyDi",
+      "comentarios": [
+        {
+          "autor": "LadyDi",
+          "texto": "Podemos hablar de los productos en general",
+          "fecha": "2026-10-30T00:53:41.964Z",
+          "version": 1
+        }
+      ]
     },
     {
       "formato": "Historia",
@@ -229,11 +380,22 @@
       "copy": "🎄📦 ¡Que diciembre no te agarre sin los empaques de tu negocio!\nLa temporada de más movimiento comercial se acerca, y tus bolsas y cajas personalizadas también deben estar listas para recibirla. ✨\nNo dejes la presentación de tus productos para última hora. En Impreco te ayudamos a preparar los empaques navideños que tu marca necesita para esta temporada.\n📅 ¡Tienes hasta el 20 de noviembre para realizar tus pedidos de diciembre!\n🇻🇪 Y lo mejor: nuestros precios ya incluyen envío GRATIS a toda Venezuela.\n📲 Escríbenos por WhatsApp, cuéntanos qué empaques necesitas y solicita tu cotización.\n¡Prepárate desde ahora para una Navidad con tu marca como protagonista! ❤️\n\nPreguntas:\n1) Hola, quiero cotizar empaques navideños personalizados para mi negocio.\n¡Hola! 👋🎄 Bienvenido a Impreco.\n¡Qué bueno que quieras preparar tu negocio para esta Navidad! 🎁\nPara ayudarte con tu cotización, necesitamos conocer algunos detalles:\n🏷️ ¿A qué se dedica tu marca o negocio?\n🛍️ ¿Necesitas bolsas, cajas o ambos?\n📦 ¿Qué cantidad aproximada necesitas?\n📍 ¿En qué ciudad estás ubicado?\nCon esta información podremos asesorarte y preparar tu cotización. ❤️\n\nHola, ¿cuál es la cantidad mínima para pedir empaques navideños personalizados?\n¡Hola! 👋❤️ Bienvenido a Impreco.\nNuestro pedido mínimo es de 500 unidades de empaques personalizados. 📦✨\nAdemás:\n🎨 ¡El diseño navideño está incluido!\n🇻🇪 ¡Envío GRATIS a cualquier parte de Venezuela!\nPara ayudarte con tu cotización, cuéntanos:\n🏷️ ¿A qué se dedica tu negocio?\n🛍️ ¿Te interesan bolsas, cajas o ambos?\n📍 ¿En qué ciudad estás ubicado?\n¡Con gusto te ayudaremos a preparar tus empaques navideños! 🎄\n\n2) Hola, ¿pueden ayudarme con el diseño de mis empaques navideños?\n¡Hola! 👋❤️ Bienvenido a Impreco.\n¡Por supuesto! 🎄 No necesitas tener un diseño listo para comenzar.\nNuestro equipo puede asesorarte y ayudarte a crear bolsas y cajas navideñas personalizadas con la identidad de tu negocio. ✨\nPara comenzar, cuéntanos:\n🏷️ ¿A qué se dedica tu marca?\n🛍️ ¿Qué te gustaría personalizar: bolsas, cajas o ambos?\n📍 ¿En qué ciudad estás ubicado?\n📦 ¿Qué cantidad aproximada necesitas?\n¡Estamos aquí para ayudarte a preparar tus empaques para Navidad! 🎁",
       "hashtags": "",
       "referencias": [],
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
       "comentario": "",
       "canal": "Ads",
-      "id": "c14"
+      "id": "c14",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "LadyDi",
+        "fecha": "2026-10-30T00:55:14.347Z",
+        "titulo": "Que diciembre no te agarre sin empaques",
+        "formato": "Historia",
+        "guion": "ANTETÍTULO La temporada navideña está a la vuelta de la esquina. 🎄\nTITULAR PRINCIPAL ¡QUE DICIEMBRE NO TE AGARRE SIN EMPAQUES!\nTEXTO DE APOYO\nAnticipa tu pedido de bolsas y cajas navideñas personalizadas para tu negocio. Con envío gratis a TODA Venezuela\nRecibimos pedidos hasta el 20 de noviembre.\n¡Cotiza ahora!",
+        "copy": "🎄📦 ¡Que diciembre no te agarre sin los empaques de tu negocio!\nLa temporada de más movimiento comercial se acerca, y tus bolsas y cajas personalizadas también deben estar listas para recibirla. ✨\nNo dejes la presentación de tus productos para última hora. En Impreco te ayudamos a preparar los empaques navideños que tu marca necesita para esta temporada.\n📅 ¡Tienes hasta el 20 de noviembre para realizar tus pedidos de diciembre!\n🇻🇪 Y lo mejor: nuestros precios ya incluyen envío GRATIS a toda Venezuela.\n📲 Escríbenos por WhatsApp, cuéntanos qué empaques necesitas y solicita tu cotización.\n¡Prepárate desde ahora para una Navidad con tu marca como protagonista! ❤️\n\nPreguntas:\n1) Hola, quiero cotizar empaques navideños personalizados para mi negocio.\n¡Hola! 👋🎄 Bienvenido a Impreco.\n¡Qué bueno que quieras preparar tu negocio para esta Navidad! 🎁\nPara ayudarte con tu cotización, necesitamos conocer algunos detalles:\n🏷️ ¿A qué se dedica tu marca o negocio?\n🛍️ ¿Necesitas bolsas, cajas o ambos?\n📦 ¿Qué cantidad aproximada necesitas?\n📍 ¿En qué ciudad estás ubicado?\nCon esta información podremos asesorarte y preparar tu cotización. ❤️\n\nHola, ¿cuál es la cantidad mínima para pedir empaques navideños personalizados?\n¡Hola! 👋❤️ Bienvenido a Impreco.\nNuestro pedido mínimo es de 500 unidades de empaques personalizados. 📦✨\nAdemás:\n🎨 ¡El diseño navideño está incluido!\n🇻🇪 ¡Envío GRATIS a cualquier parte de Venezuela!\nPara ayudarte con tu cotización, cuéntanos:\n🏷️ ¿A qué se dedica tu negocio?\n🛍️ ¿Te interesan bolsas, cajas o ambos?\n📍 ¿En qué ciudad estás ubicado?\n¡Con gusto te ayudaremos a preparar tus empaques navideños! 🎄\n\n2) Hola, ¿pueden ayudarme con el diseño de mis empaques navideños?\n¡Hola! 👋❤️ Bienvenido a Impreco.\n¡Por supuesto! 🎄 No necesitas tener un diseño listo para comenzar.\nNuestro equipo puede asesorarte y ayudarte a crear bolsas y cajas navideñas personalizadas con la identidad de tu negocio. ✨\nPara comenzar, cuéntanos:\n🏷️ ¿A qué se dedica tu marca?\n🛍️ ¿Qué te gustaría personalizar: bolsas, cajas o ambos?\n📍 ¿En qué ciudad estás ubicado?\n📦 ¿Qué cantidad aproximada necesitas?\n¡Estamos aquí para ayudarte a preparar tus empaques para Navidad! 🎁",
+        "hashtags": ""
+      },
+      "revisadoPor": "Cliente"
     },
     {
       "formato": "Reel",
@@ -245,11 +407,30 @@
       "copy": "Hay bolsas que han viajado más que nosotros 😅\n[nombre de la clienta] está en [ciudad] y lleva 6 años pidiéndonos sus empaques desde allá. Le hemos hecho [trabajos que le han hecho], y cada pedido le ha llegado. Este diciembre, también.\nNo tienes que estar en Mérida para tener los empaques de tu marca: despachamos a todo el país.\nEscríbenos por WhatsApp y cuéntanos qué necesitas.",
       "hashtags": "",
       "referencias": [],
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
-      "comentario": "",
+      "comentario": "[LadyDi]: Con Ariseb se puede hacer este video",
       "canal": "Ads",
-      "id": "c15"
+      "id": "c15",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "LadyDi",
+        "fecha": "2026-10-30T00:55:14.347Z",
+        "titulo": "Estas bolsas han viajado más que nosotros",
+        "formato": "Reel",
+        "guion": "ESCENA 1 · 0–3 s\nVisual: Lady sostiene una bolsa del pedido, lista para empacar.\nVoz: Lady: \"Esta bolsa ha viajado más que todo el equipo de impreco, junto\"\n\nESCENA 2 · 3–7 s\nVisual: Lady camina por la planta con el pedido.\nVoz: Lady: \"Es de [nombre de la clienta], en [ciudad]. Lleva 6 años pidiéndonos sus empaques.\"\n\nESCENA 3 · 7–12 s\nVisual: Cortes rápidos de trabajos anteriores para ella.\nVoz: Lady: \"Le hemos hecho [trabajos que le han hecho] y todos le han llegado.\"\n\nESCENA 4 · 12–16 s\nVisual: El equipo empacando el pedido de diciembre.\nVoz: Lady: \"Y el de este diciembre ya va saliendo.\"\n\nESCENA 5 · 16–19 s\nVisual: Lady entrega el paquete para el despacho y lo despide con la mano.\nVoz: Lady: \"Nosotros seguimos aquí… y las bolsas, de viaje.\"\n\nESCENA 6 · 19–25 s\nVisual: Lady de frente a cámara.\nVoz: Lady: \"Si estás fuera de Mérida y quieres tus empaques, escríbenos por WhatsApp: despachamos a todo el país.\"",
+        "copy": "Hay bolsas que han viajado más que nosotros 😅\n[nombre de la clienta] está en [ciudad] y lleva 6 años pidiéndonos sus empaques desde allá. Le hemos hecho [trabajos que le han hecho], y cada pedido le ha llegado. Este diciembre, también.\nNo tienes que estar en Mérida para tener los empaques de tu marca: despachamos a todo el país.\nEscríbenos por WhatsApp y cuéntanos qué necesitas.",
+        "hashtags": ""
+      },
+      "revisadoPor": "LadyDi",
+      "comentarios": [
+        {
+          "autor": "LadyDi",
+          "texto": "Con Ariseb se puede hacer este video",
+          "fecha": "2026-10-30T00:48:43.462Z",
+          "version": 1
+        }
+      ]
     }
   ],
   "url": "https://carlosuzc29-eng.github.io/tableros-de-contenido/impreco-930b38.html",
@@ -258,8 +439,8 @@
     "projectId": "nexo-tableros-app"
   },
   "revision": {
-    "revisadoPor": "",
-    "fecha": ""
+    "revisadoPor": "LadyDi",
+    "fecha": "2026-10-30T00:55:14.347Z"
   },
   "resetAt": 1793303779804
 }

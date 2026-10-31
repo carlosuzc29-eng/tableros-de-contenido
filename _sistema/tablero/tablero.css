@@ -902,7 +902,7 @@ footer .logo svg{height:76px;margin:0 auto 12px}
 }
 
 @media (prefers-reduced-motion:reduce){.card{opacity:1;transform:none;transition:none}}
-@media print{.agency-shipment-overlay,.dock,.index,.modal,.toast,.page-network-canvas,.shipment-banner,.btn-agency-access,.agency-active-bar,.card-agency-bar,.card-agency-edit-hint{display:none!important}.layout{grid-template-columns:1fr}.card{opacity:1;transform:none;break-inside:avoid}}
+@media print{.agency-shipment-overlay,.dock,.index,.modal,.toast,.page-network-canvas,.shipment-banner,.btn-agency-access,.btn-topbar-free-edit,.agency-active-bar,.card-agency-bar,.card-agency-edit-hint,.card-free-edit-strip,.agency-refs-editor{display:none!important}.layout{grid-template-columns:1fr}.card{opacity:1;transform:none;break-inside:avoid}}
 
 /* ===============================================================
    NEXO TABLERO v2 · Selector de Meses y Franja de Mes Cerrado
@@ -1113,4 +1113,183 @@ body.is-closed-month.is-review-corregidos-closed:not(.agency-active) .fmt-sel {
   .agency-active-bar > div:last-child{flex-wrap:wrap}
   .agency-active-bar > div:last-child > span{display:none}
   .agency-active-badge{white-space:nowrap}
+}
+
+/* ── Modo Edición Libre del Administrador ── */
+.topbar .shell > div[style*="display:flex"]{flex-wrap:wrap;justify-content:flex-end}
+.btn-topbar-free-edit{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:rgba(31,53,73,.06);
+  border:1.5px solid rgba(31,53,73,.18);
+  color:var(--ink-2);
+  font-size:12px;
+  font-weight:600;
+  cursor:pointer;
+  padding:6px 12px;
+  border-radius:20px;
+  transition:all .2s var(--ease);
+  font-family:inherit;
+  white-space:nowrap;
+}
+.btn-topbar-free-edit:hover{
+  background:rgba(31,53,73,.11);
+  color:var(--ink);
+  border-color:rgba(31,53,73,.3);
+}
+.btn-topbar-free-edit.on{
+  background:var(--verde);
+  border-color:var(--verde-dk);
+  color:#fff;
+  box-shadow:0 3px 10px rgba(92,184,62,.32);
+}
+.btn-topbar-free-edit.on:hover{
+  background:var(--verde-dk);
+  color:#fff;
+}
+.card-free-edit-strip{
+  display:none;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin:-4px 0 14px;
+  padding:7px 14px;
+  border-radius:12px;
+  background:linear-gradient(90deg,rgba(92,184,62,.16),rgba(31,53,73,.06));
+  border:1px solid rgba(92,184,62,.42);
+  color:var(--verde-dk);
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+.card.card-free-edit-mode .card-free-edit-strip{display:flex}
+[contenteditable][data-placeholder]:empty::before{
+  content:attr(data-placeholder);
+  color:var(--gris);
+  font-style:italic;
+  pointer-events:none;
+}
+.agency-meta-field.agency-free-only{display:none}
+.card.card-free-edit-mode .agency-meta-field.agency-free-only{display:inline-flex}
+.agency-meta-field input.agency-pilar-inp{width:140px;max-width:100%}
+.agency-refs-editor{
+  display:none;
+  gap:8px;
+  margin-top:14px;
+  padding:12px;
+  border-radius:12px;
+  background:rgba(31,53,73,.035);
+  border:1px dashed rgba(31,53,73,.22);
+  max-width:100%;
+}
+.card.card-free-edit-mode .agency-refs-editor{display:grid}
+.card.card-free-edit-mode .guion > .refs{display:none!important}
+.agency-refs-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.agency-refs-head span{
+  font-size:11px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:var(--ink-2);
+}
+.btn-agency-ref-add{
+  background:rgba(92,184,62,.14);
+  color:var(--verde-dk);
+  border:1px solid rgba(92,184,62,.4);
+  border-radius:8px;
+  padding:4px 10px;
+  font-size:12px;
+  font-weight:600;
+  cursor:pointer;
+  transition:background .2s;
+}
+.btn-agency-ref-add:hover{background:rgba(92,184,62,.24)}
+.agency-refs-list{display:grid;gap:8px;min-width:0}
+.agency-ref-row{
+  display:flex;
+  gap:6px;
+  align-items:center;
+  flex-wrap:wrap;
+  min-width:0;
+}
+.agency-ref-row input{
+  font:inherit;
+  font-size:13px;
+  color:var(--ink);
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:6px 9px;
+  min-width:0;
+  max-width:100%;
+  box-sizing:border-box;
+}
+.agency-ref-row input.agency-ref-label{flex:1 1 110px}
+.agency-ref-row input.agency-ref-url{flex:2 1 180px}
+.agency-ref-row input.agency-ref-url.err{
+  border-color:var(--naranja);
+  background:rgba(230,74,0,.06);
+  outline:2px solid rgba(230,74,0,.22);
+}
+.btn-agency-ref-remove{
+  background:rgba(230,74,0,.1);
+  color:var(--naranja);
+  border:1px solid rgba(230,74,0,.28);
+  border-radius:8px;
+  padding:6px 10px;
+  font-size:12px;
+  font-weight:600;
+  cursor:pointer;
+  white-space:nowrap;
+  flex:none;
+}
+.btn-agency-ref-remove:hover{background:rgba(230,74,0,.18)}
+.btn-agency-send-correction{
+  display:none;
+  align-items:center;
+  gap:6px;
+  background:var(--paper);
+  color:var(--azul);
+  border:1.5px solid rgba(31,53,73,.28);
+  padding:8px 14px;
+  border-radius:10px;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+  transition:all .2s;
+}
+.card.card-free-edit-mode .btn-agency-send-correction{display:inline-flex}
+.btn-agency-send-correction:hover{
+  background:var(--azul-soft);
+  border-color:var(--azul);
+}
+.btn-agency-discard{
+  display:none;
+  align-items:center;
+  gap:5px;
+  background:transparent;
+  color:var(--naranja);
+  border:1px solid rgba(230,74,0,.35);
+  padding:8px 13px;
+  border-radius:10px;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+  transition:all .2s;
+}
+.card.card-agency-edit-mode.card-editing .btn-agency-discard{display:inline-flex}
+.btn-agency-discard:hover{background:rgba(230,74,0,.08)}
+.no-js .btn-topbar-free-edit,.no-js .card-free-edit-strip,.no-js .agency-refs-editor{display:none!important}
+@media (max-width:640px){
+  .btn-topbar-free-edit{padding:4px 10px;font-size:11px}
+  .agency-meta-field input.agency-pilar-inp{width:115px}
+  .agency-ref-row input.agency-ref-label,.agency-ref-row input.agency-ref-url{flex:1 1 100%;width:100%}
 }

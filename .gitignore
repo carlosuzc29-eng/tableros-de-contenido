@@ -8,3 +8,4 @@ borradores/
 _sistema/herramientas-iniciales/
 _preview/
 node_modules/
+__pycache__/

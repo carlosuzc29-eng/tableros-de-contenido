@@ -18,9 +18,28 @@
       "hashtags": "",
       "referencias": [],
       "id": "c1",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
-      "comentario": ""
+      "comentario": "[Paola]: Podríamos cambiar tirón, por pinchazo y nice",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "Agencia (andrevmuedit@gmail.com)",
+        "fecha": "2026-10-31T01:28:00.536Z",
+        "titulo": "Y si tu espalda",
+        "formato": "Reel",
+        "guion": "Todo empezó con un tirón.\nTrabajas sentado todo el día. Un día te agachas… y ¡zas! Decides que lo mejor es no moverte.\nAdiós fútbol. Adiós caminatas. Hasta las escaleras te dan miedo.\nPasan tres meses… y te duele más que el primer día.\n¿Por qué? Porque nos enseñaron que lo que duele se deja quieto. Pero si dejas de moverte, los músculos que protegen tu columna se debilitan. Tu espalda no pedía reposo: pedía volver a moverse bien, poco a poco.\nComenta ESPALDA y te digo por dónde empezar.",
+        "copy": "",
+        "hashtags": ""
+      },
+      "revisadoPor": "Agencia (andrevmuedit@gmail.com)",
+      "comentarios": [
+        {
+          "autor": "Paola",
+          "texto": "Podríamos cambiar tirón, por pinchazo y nice",
+          "fecha": "2026-10-31T01:21:49.117Z",
+          "version": 1
+        }
+      ]
     },
     {
       "formato": "Reel",
@@ -39,9 +58,20 @@
         }
       ],
       "id": "c2",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
-      "comentario": ""
+      "comentario": "",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "Paola",
+        "fecha": "2026-10-31T01:25:10.469Z",
+        "titulo": "Cuando mi paciente",
+        "formato": "Reel",
+        "guion": "\"Cuando mi paciente espera un profesional con 26 años de experiencia y aparezco yo con 26 años de vida y 175 cm de mucho conocimiento\"",
+        "copy": "",
+        "hashtags": ""
+      },
+      "revisadoPor": "Cliente"
     },
     {
       "formato": "Reel",
@@ -55,9 +85,28 @@
       "hashtags": "",
       "referencias": [],
       "id": "c3",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
-      "comentario": ""
+      "comentario": "[Paola]: Me van hacer llorar, tema sensible",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "Paola",
+        "fecha": "2026-10-31T01:25:10.469Z",
+        "titulo": "Chicos, tenemos que hablar",
+        "formato": "Reel",
+        "guion": "Chicos… tenemos que hablar. Hay algo que llevo un tiempo queriendo contarles\n\nEste lugar ha sido testigo de muchísimas historias. De primeras consultas, de retos, de pequeños avances que terminaron convirtiéndose en grandes logros.\n\nY hoy solo puedo sentir agradecimiento. Gracias a cada persona que confió en mí, que me permitió acompañarla en su recuperación y que hizo de este espacio algo tan especial.\n\nPero hay momentos en los que crecer también significa despedirse de lugares que queremos mucho…\n\nAsí que sí… nos despedimos de este consultorio, pero no de nuestra historia. Porque lo que viene… me emociona muchísimo.\n\nUn nuevo capítulo está por comenzar. ✨\n\nMuy pronto descubrirán dónde nos vemos.",
+        "copy": "",
+        "hashtags": ""
+      },
+      "revisadoPor": "Paola",
+      "comentarios": [
+        {
+          "autor": "Paola",
+          "texto": "Me van hacer llorar, tema sensible",
+          "fecha": "2026-10-31T01:22:55.331Z",
+          "version": 1
+        }
+      ]
     },
     {
       "formato": "Reel",
@@ -71,9 +120,20 @@
       "hashtags": "",
       "referencias": [],
       "id": "c4",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
-      "comentario": ""
+      "comentario": "",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "Paola",
+        "fecha": "2026-10-31T01:25:10.469Z",
+        "titulo": "Aún no puedo mostrarles todo",
+        "formato": "Reel",
+        "guion": "Todavía no puedo mostrarles mi nuevo consultorio, pero sí puedo darles tres pequeñas pistas…\nMostrar detalles muy cerrados de elementos reales del nuevo lugar, sin revelar el espacio completo.\n¿Se imaginan cómo va a quedar? Los leo en los comentarios.",
+        "copy": "",
+        "hashtags": ""
+      },
+      "revisadoPor": "Cliente"
     },
     {
       "formato": "Carrusel con video",
@@ -87,9 +147,20 @@
       "hashtags": "",
       "referencias": [],
       "id": "c5",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
-      "comentario": ""
+      "comentario": "",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "Paola",
+        "fecha": "2026-10-31T01:25:10.469Z",
+        "titulo": "Antes y después del nuevo espacio",
+        "formato": "Carrusel con video",
+        "guion": "TOMAS DE ANTES Y DESPUES DE EL NUEVO ESPACIO, TOMAS DE LAS CAMILLAS ENTRANDO, LAS MAQUINAS DEL GIMNASIO, LOS ESCRITORIOS, LA GENTE PINTANDO, PAOLA PINTANDO PAREDES...",
+        "copy": "",
+        "hashtags": ""
+      },
+      "revisadoPor": "Cliente"
     }
   ],
   "url": "https://carlosuzc29-eng.github.io/tableros-de-contenido/paola-bustos-4d50fe.html",
@@ -98,8 +169,8 @@
     "projectId": "nexo-tableros-app"
   },
   "revision": {
-    "revisadoPor": "",
-    "fecha": ""
+    "revisadoPor": "Paola",
+    "fecha": "2026-10-31T01:25:10.469Z"
   },
   "resetAt": 1793407892760
 }

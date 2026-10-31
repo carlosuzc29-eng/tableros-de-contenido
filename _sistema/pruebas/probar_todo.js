@@ -2041,8 +2041,21 @@ async function getToastText(page) {
       pass('Evaluación sin enviar conservada al sincronizar y descartada solo cuando Nexo sube una versión nueva');
     }
 
+    // ============================================================
+    // CASO 29: Modo edición libre (test_fase6.js)
+    // ============================================================
+    console.log(`\n${C.bold}29. Modo edición libre del administrador:${C.reset} guardado sin cambiar estado/versión, sync no pisa ediciones, envío como corrección y verificación`);
+    {
+      try {
+        execSync(`node "${path.join(__dirname, 'test_fase6.js')}"`, { stdio: 'pipe' });
+      } catch (e6) {
+        fail('test_fase6.js (Modo edición libre) falló:\n' + String((e6.stdout || '') + (e6.stderr || '')), e6);
+      }
+      pass('Modo edición libre verificado (test_fase6.js)');
+    }
+
     console.log(`\n${C.bold}${C.green}================================================================${C.reset}`);
-    console.log(`${C.bold}${C.green}✓ TODOS LOS 28 CASOS DE PRUEBA PASARON EXITOSAMENTE (100% OK)${C.reset}`);
+    console.log(`${C.bold}${C.green}✓ TODOS LOS 29 CASOS DE PRUEBA PASARON EXITOSAMENTE (100% OK)${C.reset}`);
     console.log(`${C.bold}${C.green}================================================================${C.reset}\n`);
 
   } catch (err) {

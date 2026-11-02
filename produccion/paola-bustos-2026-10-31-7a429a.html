@@ -2103,6 +2103,851 @@
         animation-delay: 0ms !important;
       }
     }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       NEXO PRODUCCIÓN v3 · tarjetas limpias + ficha centrada
+       Capa añadida sobre el diseño base: mismos tokens, colores y tipografías.
+       ═══════════════════════════════════════════════════════════════════ */
+
+    /* ── TARJETA ───────────────────────────────────────────────────────── */
+    body .card.pc,
+    body .card.pc[data-card-status] {
+      --pc-accent: rgba(148, 163, 184, 0.45);
+      padding: 14px 15px 12px 17px;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      background: var(--surface-card);
+      box-shadow: var(--shadow-card);
+      transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms var(--ease-out), background-color 160ms ease;
+    }
+    body .card.pc[data-card-status="grabando"] { --pc-accent: var(--nexo-orange); }
+    body .card.pc[data-card-status="listo"] { --pc-accent: var(--nexo-green); }
+    .card.pc::before {
+      content: '';
+      position: absolute;
+      left: -1px;
+      top: 14px;
+      bottom: 14px;
+      width: 3px;
+      border-radius: 0 3px 3px 0;
+      background: var(--pc-accent);
+    }
+    .card.pc:hover { transform: none; }
+    @media (hover: hover) and (pointer: fine) {
+      .card.pc:hover {
+        transform: translateY(-1px);
+        border-color: var(--border-hover);
+        box-shadow: var(--shadow-card-hover);
+      }
+    }
+    .card.pc:active { transform: scale(0.985); }
+    .card.pc:focus-visible { outline: 2px solid var(--nexo-green); outline-offset: 2px; }
+    .card.pc.is-active-drawer {
+      border-color: var(--nexo-green);
+      box-shadow: 0 0 0 3px rgba(92, 184, 62, 0.18), var(--shadow-card);
+    }
+
+    .card.pc .pc-top {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 0 0 9px;
+      min-width: 0;
+      flex-wrap: wrap;
+    }
+    .pc-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-light);
+      letter-spacing: 0.02em;
+      min-width: 18px;
+    }
+    body .card.pc .pc-type {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 6px;
+      line-height: 1.5;
+    }
+    .pc-chip, .ps-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--chip-bg);
+      border: 1px solid var(--pill-border);
+      border-radius: 6px;
+      padding: 2px 7px;
+      line-height: 1.5;
+      white-space: nowrap;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .pc-chip svg, .ps-chip svg { width: 11px; height: 11px; flex-shrink: 0; }
+    .pc-chip-ads, .ps-chip-ads {
+      color: #C4B5FD;
+      background: rgba(124, 58, 237, 0.18);
+      border-color: rgba(124, 58, 237, 0.38);
+      letter-spacing: 0.08em;
+      font-weight: 800;
+    }
+    [data-theme="light"] .pc-chip-ads, [data-theme="light"] .ps-chip-ads { color: #6D28D9; background: rgba(124, 58, 237, 0.1); }
+    .pc-spacer { flex: 1 1 auto; }
+    .pc-state {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .pc-state svg { width: 12px; height: 12px; }
+    .pc-state-rec { color: var(--nexo-orange); }
+    .pc-state-ok { color: var(--nexo-green); }
+    .pc-rec-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--nexo-orange);
+      box-shadow: 0 0 0 3px rgba(230, 74, 0, 0.18);
+      animation: pcRec 1.6s ease-in-out infinite;
+    }
+    @keyframes pcRec { 50% { opacity: 0.35; } }
+    .card.pc .card-actions { margin-left: 2px; }
+
+    body .card.pc .pc-title {
+      font-family: var(--font-head);
+      font-size: 15.5px;
+      font-weight: 700;
+      line-height: 1.28;
+      letter-spacing: -0.005em;
+      color: var(--text-main);
+      margin: 0 0 6px;
+      text-wrap: balance;
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+    body .card.pc[data-card-status="listo"] .pc-title { color: var(--text-muted); }
+    body .card.pc .pc-preview {
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: var(--text-muted);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin: 0;
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+    .pc-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      margin-top: 9px;
+      padding: 7px 9px;
+      border-radius: 9px;
+      background: rgba(92, 184, 62, 0.08);
+      border: 1px solid rgba(92, 184, 62, 0.22);
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--text-main);
+    }
+    .pc-note svg { width: 13px; height: 13px; color: var(--nexo-green); flex-shrink: 0; margin-top: 2px; }
+    .pc-note span {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      white-space: pre-line;
+    }
+    body .card.pc .pc-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 11px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-subtle);
+    }
+    .pc-metas { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; min-width: 0; }
+    .pc-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .pc-meta svg { width: 12px; height: 12px; opacity: 0.85; }
+    .pc-bar {
+      display: inline-block;
+      width: 30px;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--chip-bg);
+      overflow: hidden;
+      margin-left: 2px;
+    }
+    .pc-bar span { display: block; height: 100%; background: var(--nexo-green); border-radius: 2px; }
+    .card.pc .card-drag-indicator { opacity: 0.35; margin-left: auto; }
+
+    body.density-compact .card.pc { padding: 10px 12px 9px 14px; }
+    body.density-compact .card.pc .pc-preview { display: none; }
+    body.density-compact .card.pc .pc-title { font-size: 14px; margin-bottom: 0; }
+    body.density-compact .card.pc .pc-foot { margin-top: 8px; padding-top: 7px; }
+
+    /* ── FICHA CENTRADA ────────────────────────────────────────────────── */
+    .ps-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(4, 9, 14, 0.62);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 220ms ease;
+    }
+    [data-theme="light"] .ps-backdrop { background: rgba(15, 23, 42, 0.34); }
+    .ps-backdrop.show { opacity: 1; pointer-events: auto; }
+    .ps-backdrop.is-closing { transition-duration: 180ms; }
+
+    .ps {
+      --ps-accent: rgba(148, 163, 184, 0.55);
+      position: fixed;
+      inset: 0;
+      z-index: 210;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      pointer-events: none;
+      visibility: hidden;
+    }
+    .ps[data-status="grabando"] { --ps-accent: var(--nexo-orange); }
+    .ps[data-status="listo"] { --ps-accent: var(--nexo-green); }
+    .ps.show, .ps.is-closing { visibility: visible; }
+
+    .ps-panel {
+      position: relative;
+      width: min(1080px, 100%);
+      height: min(880px, 100%);
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      box-shadow: 0 40px 90px -24px rgba(0, 0, 0, 0.65), var(--glass-border-subtle);
+      overflow: hidden;
+      outline: none;
+      opacity: 0;
+      transform: translateY(14px) scale(0.97);
+      transition: opacity 200ms var(--ease-out), transform 280ms var(--ease-out);
+    }
+    .ps.show .ps-panel { opacity: 1; transform: none; pointer-events: auto; }
+    .ps.is-closing .ps-panel { transition-duration: 150ms, 180ms; }
+    .ps-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 3px;
+      background: var(--ps-accent);
+      transition: background-color 200ms ease;
+      z-index: 2;
+    }
+    .ps-grabber { display: none; }
+
+    .ps-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 20px 14px 24px;
+      border-bottom: 1px solid var(--border-color);
+      flex-shrink: 0;
+    }
+    .ps-head-left, .ps-head-right { display: flex; align-items: center; gap: 6px; min-width: 0; }
+    .ps-head-left { flex-wrap: wrap; }
+    .ps-num {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-light);
+      margin-right: 4px;
+    }
+    .ps .ps-type {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+    .ps .ps-chip { font-size: 11.5px; padding: 3px 8px; }
+    .ps-pos {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--text-light);
+      margin-right: 2px;
+      white-space: nowrap;
+    }
+    .ps-icon, .ps-close {
+      width: 34px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background-color 140ms ease, color 140ms ease, border-color 140ms ease, transform 140ms var(--ease-out);
+    }
+    .ps-icon svg, .ps-close svg { width: 16px; height: 16px; }
+    .ps-icon:disabled { opacity: 0.35; cursor: default; }
+    .ps-close { background: var(--chip-bg); color: var(--text-main); }
+    @media (hover: hover) and (pointer: fine) {
+      .ps-icon:not(:disabled):hover, .ps-close:hover { background: var(--chip-bg); color: var(--text-main); border-color: var(--pill-border); }
+      .ps-danger:hover { color: #EF4444 !important; border-color: rgba(239, 68, 68, 0.4) !important; }
+    }
+    .ps-icon:not(:disabled):active, .ps-close:active { transform: scale(0.94); }
+    .ps-divider { width: 1px; height: 20px; background: var(--border-color); margin: 0 4px; }
+
+    .ps-body {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(300px, 1fr);
+    }
+    .ps-main, .ps-side {
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      display: flex;
+      flex-direction: column;
+    }
+    .ps-main > *, .ps-side > *, .ps-body > * { flex-shrink: 0; }
+    .ps-main { padding: 22px 28px 32px; gap: 18px; }
+    .ps-side {
+      padding: 22px 24px 32px;
+      gap: 24px;
+      border-left: 1px solid var(--border-color);
+      background: var(--empty-bg);
+    }
+    .ps-main::-webkit-scrollbar, .ps-side::-webkit-scrollbar, .ps-body::-webkit-scrollbar { width: 6px; }
+    .ps-main::-webkit-scrollbar-thumb, .ps-side::-webkit-scrollbar-thumb, .ps-body::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
+
+    .ps-title {
+      display: block;
+      width: calc(100% + 16px);
+      margin: -4px -8px;
+      padding: 4px 8px;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--text-main);
+      font-family: var(--font-head);
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.015em;
+      resize: none;
+      overflow: hidden;
+      transition: background-color 160ms ease, box-shadow 160ms ease;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .ps-title:hover { background: var(--chip-bg); }
+    }
+    .ps-title:focus { outline: none; background: var(--input-bg); box-shadow: inset 0 0 0 1px var(--border-hover); }
+
+    .ps .ps-status {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 4px;
+      padding: 4px;
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 13px;
+    }
+    .ps .status-seg-btn {
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      border: 0;
+      border-radius: 9px;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 160ms ease, color 160ms ease, transform 140ms var(--ease-out);
+    }
+    .ps .status-seg-btn svg { width: 15px; height: 15px; }
+    @media (hover: hover) and (pointer: fine) {
+      .ps .status-seg-btn:not(.active):hover { background: var(--chip-bg); color: var(--text-main); }
+    }
+    .ps .status-seg-btn:active { transform: scale(0.97); }
+    .ps .status-seg-btn.active[data-status="todo"] { background: var(--surface-card); color: var(--text-main); box-shadow: var(--shadow-card); }
+    .ps .status-seg-btn.active[data-status="grabando"] { background: var(--nexo-orange); color: #FFFFFF; box-shadow: 0 6px 18px -6px rgba(230, 74, 0, 0.65); }
+    .ps .status-seg-btn.active[data-status="listo"] { background: var(--nexo-green); color: #FFFFFF; box-shadow: 0 6px 18px -6px rgba(92, 184, 62, 0.6); }
+
+    .ps-sec { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+    .ps-sec-head { display: flex; align-items: center; gap: 8px; min-height: 28px; }
+    .ps-sec-label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin: 0;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .ps-sec-label svg { width: 14px; height: 14px; }
+    .ps-sec-meta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-light);
+      background: var(--chip-bg);
+      border-radius: 6px;
+      padding: 2px 7px;
+    }
+    .ps-sec-meta:empty { display: none; }
+    .ps-sec-actions { margin-left: auto; display: flex; gap: 6px; }
+    .ps-btn-ghost {
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 0 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: transparent;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 140ms ease, color 140ms ease, border-color 140ms ease, transform 140ms var(--ease-out);
+    }
+    .ps-btn-ghost svg { width: 13px; height: 13px; }
+    @media (hover: hover) and (pointer: fine) {
+      .ps-btn-ghost:hover { background: var(--chip-bg); color: var(--text-main); }
+    }
+    .ps-btn-ghost:active { transform: scale(0.96); }
+    .ps-btn-ghost.is-on, .ps-btn-ghost.is-ok { color: var(--nexo-green); border-color: rgba(92, 184, 62, 0.45); background: var(--nexo-green-soft); }
+
+    /* Guion legible por escenas */
+    .ps-script {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-main);
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+    .ps-script .sc {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      padding: 12px 14px 13px;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      background: var(--surface-card);
+    }
+    .sc-head { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .sc-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--nexo-green);
+    }
+    .sc-time {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--chip-bg);
+      border-radius: 6px;
+      padding: 1px 7px;
+    }
+    .sc-head-rest { font-family: var(--font-head); font-size: 14.5px; font-weight: 600; color: var(--text-main); }
+    .sc-line {
+      display: grid;
+      grid-template-columns: 138px minmax(0, 1fr);
+      gap: 12px;
+      align-items: baseline;
+    }
+    .sc-label {
+      justify-self: start;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      line-height: 1.4;
+      padding: 2px 7px;
+      border-radius: 6px;
+      color: var(--text-muted);
+      background: var(--chip-bg);
+      max-width: 100%;
+    }
+    .sc-cyan { color: var(--nexo-cyan); background: var(--nexo-cyan-soft); }
+    .sc-orange { color: #FF7A3D; background: var(--nexo-orange-soft); }
+    [data-theme="light"] .sc-orange { color: var(--nexo-orange); }
+    .sc-green { color: var(--nexo-green); background: var(--nexo-green-soft); }
+    .sc-val { min-width: 0; }
+    .sc-sub {
+      margin-top: 4px;
+      font-family: var(--font-head);
+      font-size: 13.5px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      color: var(--text-main);
+    }
+    .sc-p { margin: 0; }
+    .ps-script-editor {
+      width: 100%;
+      min-height: 260px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border-hover);
+      background: var(--input-bg);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      line-height: 1.6;
+      resize: none;
+      overflow: hidden;
+      box-shadow: 0 0 0 3px rgba(92, 184, 62, 0.1);
+    }
+    .ps-script-editor:focus { outline: none; }
+    .ps-empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      min-height: 88px;
+      border: 1px dashed var(--border-color);
+      border-radius: 12px;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 13.5px;
+      cursor: pointer;
+    }
+    .ps-empty svg { width: 15px; height: 15px; }
+
+    /* Notas en vivo */
+    .ps-save {
+      margin-left: auto;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-light);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+    }
+    .ps-save.is-pending { color: var(--text-muted); }
+    .ps-save.is-saved { color: var(--nexo-green); }
+    .ps-save.is-local { color: #FF9A5C; }
+    .ps-notes {
+      display: block;
+      width: 100%;
+      min-height: 104px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(92, 184, 62, 0.24);
+      background: rgba(92, 184, 62, 0.06);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      line-height: 1.55;
+      resize: none;
+      overflow: hidden;
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+    .ps-notes::placeholder, .ps-check-add input::placeholder { color: var(--text-light); }
+    .ps-notes:focus { outline: none; border-color: var(--nexo-green); box-shadow: 0 0 0 3px rgba(92, 184, 62, 0.16); }
+
+    /* Checklist */
+    .ps-check-track { height: 4px; border-radius: 2px; background: var(--chip-bg); overflow: hidden; }
+    .ps-check-fill { height: 100%; width: 0; background: var(--nexo-green); border-radius: 2px; transition: width 260ms var(--ease-out); }
+    .ps-checklist { display: flex; flex-direction: column; gap: 6px; }
+    .ps-check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+      width: 100%;
+      min-height: 44px;
+      padding: 11px 12px;
+      text-align: left;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      background: var(--surface-card);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 14px;
+      line-height: 1.4;
+      cursor: pointer;
+      transition: background-color 140ms ease, border-color 140ms ease, transform 120ms var(--ease-out);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .ps-check-item:hover { border-color: var(--border-hover); }
+    }
+    .ps-check-item:active { transform: scale(0.985); }
+    .ps-check-box {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      border: 1.5px solid var(--text-light);
+      transition: background-color 140ms ease, border-color 140ms ease;
+    }
+    .ps-check-box svg { width: 13px; height: 13px; color: #FFFFFF; opacity: 0; transform: scale(0.6); transition: opacity 140ms ease, transform 160ms var(--ease-out); }
+    .ps-check-item.done { background: transparent; }
+    .ps-check-item.done .ps-check-box { background: var(--nexo-green); border-color: var(--nexo-green); }
+    .ps-check-item.done .ps-check-box svg { opacity: 1; transform: none; }
+    .ps-check-item.done .ps-check-text { color: var(--text-muted); text-decoration: line-through; text-decoration-color: var(--text-light); }
+    .ps-check-text { min-width: 0; overflow-wrap: break-word; word-break: break-word; padding-top: 1px; }
+    .ps-check-row { display: flex; gap: 6px; }
+    .ps-check-edit {
+      flex: 1 1 auto;
+      min-width: 0;
+      height: 42px;
+      padding: 0 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      background: var(--input-bg);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 14px;
+    }
+    .ps-check-edit:focus { outline: none; border-color: var(--nexo-green); }
+    .ps-check-del {
+      width: 42px;
+      height: 42px;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .ps-check-del svg { width: 15px; height: 15px; }
+    .ps-check-del:active { transform: scale(0.94); }
+    .ps-check-empty { font-size: 13px; color: var(--text-light); padding: 2px 0; }
+    .ps-check-add {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 4px 4px 12px;
+      border-radius: 11px;
+      border: 1px dashed var(--border-color);
+      transition: border-color 140ms ease;
+    }
+    .ps-check-add:focus-within { border-style: solid; border-color: var(--nexo-green); }
+    .ps-check-add > svg { width: 15px; height: 15px; color: var(--text-light); flex-shrink: 0; }
+    .ps-check-add input {
+      flex: 1 1 auto;
+      min-width: 0;
+      height: 36px;
+      border: 0;
+      background: transparent;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 14px;
+    }
+    .ps-check-add input:focus { outline: none; }
+    .ps-check-add-btn {
+      height: 32px;
+      padding: 0 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--chip-bg);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Referencias */
+    .ps-media { display: flex; flex-direction: column; gap: 6px; }
+    .ps-media-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px 9px 9px;
+      border-radius: 11px;
+      border: 1px solid var(--border-color);
+      background: var(--surface-card);
+      color: var(--text-main);
+      text-decoration: none;
+      min-width: 0;
+      transition: border-color 140ms ease, transform 140ms var(--ease-out);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .ps-media-link:hover { border-color: var(--border-hover); }
+    }
+    .ps-media-link:active { transform: scale(0.985); }
+    .ps-media-ico {
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      background: var(--nexo-cyan-soft);
+      color: var(--nexo-cyan);
+    }
+    .ps-media-ico svg { width: 15px; height: 15px; }
+    .ps-media-txt { display: flex; flex-direction: column; min-width: 0; }
+    .ps-media-txt b { font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .ps-media-txt small { font-size: 11.5px; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .ps-media-go { width: 15px; height: 15px; margin-left: auto; color: var(--text-light); flex-shrink: 0; }
+
+    /* Pie con la acción principal */
+    .ps-foot {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 12px 20px calc(12px + env(safe-area-inset-bottom, 0px));
+      border-top: 1px solid var(--border-color);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+    .ps-advance {
+      min-width: 260px;
+      height: 50px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0 22px 0 12px;
+      border: 0;
+      border-radius: 13px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      color: #FFFFFF;
+      background: var(--nexo-orange);
+      box-shadow: 0 10px 26px -10px rgba(230, 74, 0, 0.7);
+      cursor: pointer;
+      transition: background-color 180ms ease, box-shadow 180ms ease, transform 140ms var(--ease-out);
+    }
+    .ps-advance[data-next="listo"] { background: var(--nexo-green); box-shadow: 0 10px 26px -10px rgba(92, 184, 62, 0.7); }
+    .ps-advance[data-next="todo"] { background: var(--chip-bg); color: var(--text-main); box-shadow: inset 0 0 0 1px var(--border-color); }
+    .ps-advance:active { transform: scale(0.97); }
+    .ps-advance-icon {
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+    }
+    .ps-advance[data-next="todo"] .ps-advance-icon { background: var(--chip-bg); }
+    .ps-advance-icon svg { width: 15px; height: 15px; }
+
+    /* ── FICHA EN CELULAR: hoja desde abajo, una sola columna ─────────── */
+    @media (max-width: 768px) {
+      .ps { padding: 0; align-items: flex-end; }
+      .ps-panel {
+        width: 100%;
+        height: calc(100dvh - 8px);
+        max-height: calc(100dvh - 8px);
+        border-radius: 20px 20px 0 0;
+        border-bottom: 0;
+        opacity: 1;
+        transform: translateY(100%);
+        transition: transform 340ms var(--ease-drawer);
+      }
+      .ps.show .ps-panel { transform: none; }
+      .ps.is-closing .ps-panel { transition-duration: 240ms; }
+      .ps-grabber {
+        display: block;
+        width: 38px;
+        height: 4px;
+        border-radius: 2px;
+        background: var(--pill-border);
+        margin: 8px auto 0;
+        flex-shrink: 0;
+      }
+      .ps-head {
+        flex-direction: column-reverse;
+        align-items: stretch;
+        gap: 10px;
+        padding: 8px 14px 12px;
+      }
+      .ps-head-right { width: 100%; }
+      .ps-pos { margin-right: auto; }
+      .ps-body {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding: 16px 16px 28px;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+      }
+      .ps-main, .ps-side { display: contents; }
+      .ps-title { order: 1; font-size: 21px; }
+      .ps .ps-status { order: 2; }
+      #drawer-check-section { order: 3; }
+      #ps-notes-section { order: 4; }
+      #drawer-desc-section { order: 5; }
+      #drawer-media-section { order: 6; }
+      .ps-script { font-size: 16px; }
+      .sc-line { grid-template-columns: minmax(0, 1fr); gap: 3px; }
+      .ps-notes { font-size: 16px; }
+      .ps-check-add input, .ps-check-edit { font-size: 16px; }
+      .ps-foot { padding: 10px 14px calc(10px + env(safe-area-inset-bottom, 0px)); }
+      .ps-advance { width: 100%; min-width: 0; }
+    }
+    @media (max-width: 380px) {
+      .ps-divider { display: none; }
+      .ps-icon, .ps-close { width: 32px; height: 32px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ps-panel, .ps.show .ps-panel { transform: none !important; }
+      .ps.is-closing .ps-panel { opacity: 0 !important; }
+      .pc-rec-dot { animation: none; }
+    }
+    @media (prefers-reduced-transparency: reduce) {
+      .ps-backdrop { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(4, 9, 14, 0.78); }
+    }
   </style>
 </head>
 <body class="density-comfortable is-entering">
@@ -2259,82 +3104,107 @@
     </section>
   </main>
 
-  <!-- ── PANEL LATERAL DE DETALLE (SIDE DRAWER) ────────────────────────── -->
-  <aside id="side-drawer" class="side-drawer" aria-label="Detalle de tarjeta">
-    <div class="drawer-header">
-      <div class="drawer-header-left">
-        <span id="drawer-type-badge" class="card-type-badge"></span>
-        <span id="drawer-sede-pill" class="card-sede-pill" style="display:none;"></span>
-      </div>
-      <div class="drawer-header-actions">
-        <button class="drawer-btn-icon" onclick="editFromDrawer()" title="Editar tarjeta">
-          <i data-lucide="edit-3"></i>
-        </button>
-        <button class="drawer-btn-icon" onclick="deleteFromDrawer()" title="Eliminar tarjeta">
-          <i data-lucide="trash-2" style="color:#ef4444;"></i>
-        </button>
-        <button class="drawer-btn-close" onclick="closeDrawer()" title="Cerrar panel">
-          <i data-lucide="x"></i> <span>Volver</span>
-        </button>
-      </div>
-    </div>
+  <!-- ── FICHA CENTRADA DE LA TARJETA (v3) ─────────────────────────────
+       Conserva los id del panel anterior (side-drawer, drawer-*) para no romper la lógica existente -->
+  <div id="drawer-backdrop" class="ps-backdrop" onclick="closeDrawer()"></div>
+  <aside id="side-drawer" class="ps" role="dialog" aria-modal="true" aria-labelledby="drawer-title" aria-hidden="true">
+    <div class="ps-panel" tabindex="-1">
+      <div class="ps-grabber" aria-hidden="true"></div>
+      <header class="ps-head">
+        <div class="ps-head-left">
+          <span class="ps-num" id="ps-num">01</span>
+          <span id="drawer-type-badge" class="card-type-badge ps-type"></span>
+          <span id="ps-ads" class="ps-chip ps-chip-ads" style="display:none;">ADS</span>
+          <span id="ps-hora" class="ps-chip" style="display:none;"></span>
+          <span id="drawer-sede-pill" class="ps-chip" style="display:none;"></span>
+        </div>
+        <div class="ps-head-right">
+          <span class="ps-pos" id="ps-pos"></span>
+          <button type="button" class="ps-icon" id="ps-prev" onclick="navigateSheet(-1)" title="Tarjeta anterior (←)" aria-label="Tarjeta anterior"><i data-lucide="chevron-left"></i></button>
+          <button type="button" class="ps-icon" id="ps-next" onclick="navigateSheet(1)" title="Tarjeta siguiente (→)" aria-label="Tarjeta siguiente"><i data-lucide="chevron-right"></i></button>
+          <span class="ps-divider" aria-hidden="true"></span>
+          <button type="button" class="ps-icon" onclick="editFromDrawer()" title="Editar formato, sede y referencias" aria-label="Editar formato, sede y referencias"><i data-lucide="sliders-horizontal"></i></button>
+          <button type="button" class="ps-icon ps-danger" onclick="deleteFromDrawer()" title="Eliminar tarjeta" aria-label="Eliminar tarjeta"><i data-lucide="trash-2"></i></button>
+          <button type="button" class="ps-close" id="ps-close" onclick="closeDrawer()" title="Cerrar (Esc)" aria-label="Cerrar"><i data-lucide="x"></i></button>
+        </div>
+      </header>
 
-    <div class="drawer-body">
-      <!-- Título de la tarjeta -->
-      <h2 id="drawer-title" class="drawer-card-title"></h2>
+      <div class="ps-body">
+        <div class="ps-main">
+          <textarea id="drawer-title" class="ps-title" rows="1" spellcheck="false" aria-label="Título de la tarjeta" placeholder="Título del contenido"></textarea>
 
-      <!-- Selector directo de estado en rodaje -->
-      <div class="drawer-section">
-        <div class="drawer-section-label"><i data-lucide="sliders"></i> Estado de producción</div>
-        <div class="status-segmented-control" role="group" aria-label="Cambiar estado">
-          <button class="status-seg-btn" data-status="todo" onclick="setCardStatusFromDrawer('todo')">
-            <i data-lucide="circle-dashed"></i> Por hacer
-          </button>
-          <button class="status-seg-btn" data-status="grabando" onclick="setCardStatusFromDrawer('grabando')">
-            <i data-lucide="play-circle"></i> Grabando
-          </button>
-          <button class="status-seg-btn" data-status="listo" onclick="setCardStatusFromDrawer('listo')">
-            <i data-lucide="check-circle-2"></i> Listo
-          </button>
+          <div class="ps-status status-segmented-control" role="group" aria-label="Estado de producción">
+            <button type="button" class="status-seg-btn" data-status="todo" onclick="setCardStatusFromDrawer('todo')">
+              <i data-lucide="circle-dashed"></i> Por hacer
+            </button>
+            <button type="button" class="status-seg-btn" data-status="grabando" onclick="setCardStatusFromDrawer('grabando')">
+              <i data-lucide="video"></i> Grabando
+            </button>
+            <button type="button" class="status-seg-btn" data-status="listo" onclick="setCardStatusFromDrawer('listo')">
+              <i data-lucide="check-circle-2"></i> Listo
+            </button>
+          </div>
+
+          <section class="ps-sec ps-sec-script" id="drawer-desc-section">
+            <div class="ps-sec-head">
+              <h3 class="ps-sec-label"><i data-lucide="file-text"></i> Guion</h3>
+              <span class="ps-sec-meta" id="ps-script-meta"></span>
+              <div class="ps-sec-actions">
+                <button type="button" class="ps-btn-ghost" id="btn-edit-script" onclick="toggleScriptEdit()"><i data-lucide="pencil"></i> <span>Editar</span></button>
+                <button type="button" class="ps-btn-ghost" id="btn-copy-script" onclick="copyDrawerScript()"><i data-lucide="copy"></i> <span>Copiar</span></button>
+              </div>
+            </div>
+            <div id="drawer-desc" class="ps-script"></div>
+            <textarea id="ps-script-editor" class="ps-script-editor" spellcheck="false" aria-label="Editar guion" style="display:none;"></textarea>
+            <button type="button" class="ps-empty" id="ps-script-empty" onclick="toggleScriptEdit(true)" style="display:none;">
+              <i data-lucide="pen-line"></i> Sin guion todavía. Toca para escribirlo.
+            </button>
+          </section>
+        </div>
+
+        <div class="ps-side">
+          <section class="ps-sec ps-sec-notes" id="ps-notes-section">
+            <div class="ps-sec-head">
+              <h3 class="ps-sec-label"><i data-lucide="notebook-pen"></i> Notas en vivo</h3>
+              <span class="ps-save" id="ps-notes-status" aria-live="polite"></span>
+            </div>
+            <textarea id="ps-notes" class="ps-notes" rows="3" aria-label="Notas de rodaje" placeholder="Escribe lo que pase en el set: tomas buenas, cambios, pendientes… Se guarda solo y se ve en todos los teléfonos."></textarea>
+          </section>
+
+          <section class="ps-sec" id="drawer-check-section">
+            <div class="ps-sec-head">
+              <h3 class="ps-sec-label"><i data-lucide="list-checks"></i> Checklist</h3>
+              <span id="drawer-check-count" class="ps-sec-meta">0/0</span>
+              <div class="ps-sec-actions">
+                <button type="button" class="ps-btn-ghost" id="btn-edit-checklist" onclick="toggleChecklistEdit()"><i data-lucide="pencil"></i> <span>Editar</span></button>
+              </div>
+            </div>
+            <div class="ps-check-track" aria-hidden="true"><div class="ps-check-fill" id="ps-check-fill"></div></div>
+            <div id="drawer-checklist" class="ps-checklist"></div>
+            <form class="ps-check-add" onsubmit="addSubtaskFromSheet(event)">
+              <i data-lucide="plus"></i>
+              <input type="text" id="ps-check-input" autocomplete="off" placeholder="Agregar paso o toma…" aria-label="Agregar paso al checklist">
+              <button type="submit" class="ps-check-add-btn">Agregar</button>
+            </form>
+          </section>
+
+          <section class="ps-sec" id="drawer-media-section" style="display:none;">
+            <div class="ps-sec-head">
+              <h3 class="ps-sec-label"><i data-lucide="paperclip"></i> Referencias</h3>
+            </div>
+            <div id="drawer-media-grid" class="ps-media"></div>
+          </section>
         </div>
       </div>
 
-      <!-- Guión / Contenido con botón copiar -->
-      <div class="drawer-section" id="drawer-desc-section">
-        <div class="drawer-section-header">
-          <div class="drawer-section-label"><i data-lucide="file-text"></i> Guión / Contenido a producir</div>
-          <button class="btn-copy-script" id="btn-copy-script" onclick="copyDrawerScript()">
-            <i data-lucide="copy"></i> <span>Copiar</span>
-          </button>
-        </div>
-        <div id="drawer-desc" class="drawer-desc-box"></div>
-      </div>
-
-      <!-- Checklist de producción interactivo -->
-      <div class="drawer-section" id="drawer-check-section">
-        <div class="drawer-section-header">
-          <div class="drawer-section-label"><i data-lucide="check-square"></i> Checklist de rodaje</div>
-          <span id="drawer-check-count" class="card-meta-item">0/0</span>
-        </div>
-        <div id="drawer-checklist" class="drawer-check-list"></div>
-      </div>
-
-      <!-- Referencias multimedia -->
-      <div class="drawer-section" id="drawer-media-section" style="display:none;">
-        <div class="drawer-section-label"><i data-lucide="paperclip"></i> Referencias y materiales</div>
-        <div id="drawer-media-grid" class="drawer-media-grid"></div>
-      </div>
-    </div>
-
-    <div class="drawer-footer">
-      <button class="btn-drawer-action-main" id="btn-drawer-next-step" onclick="advanceCardFromDrawer()">
-        <i data-lucide="arrow-right"></i> <span id="drawer-next-label">Comenzar rodaje</span>
-      </button>
+      <footer class="ps-foot">
+        <button type="button" class="ps-advance" id="btn-drawer-next-step" onclick="advanceCardFromDrawer()">
+          <span class="ps-advance-icon" id="ps-advance-icon"><i data-lucide="play"></i></span>
+          <span id="drawer-next-label">Comenzar rodaje</span>
+        </button>
+      </footer>
     </div>
   </aside>
-
-  <!-- TELÓN DEL DRAWER -->
-  <div id="drawer-backdrop" class="drawer-backdrop" onclick="closeDrawer()"></div>
 
   <!-- ── MODAL DE CREACIÓN / EDICIÓN ───────────────────────────────────── -->
   <div id="modal-card" class="modal-overlay" onclick="handleModalOverlayClick(event)">
@@ -2685,6 +3555,8 @@
       if (!remote || !remote.tarjetas || typeof remote.tarjetas !== 'object') return;
       const eliminadasSet = new Set(Array.isArray(remote.eliminadas) ? remote.eliminadas : []);
       const remoteTarjetas = remote.tarjetas;
+      remoteCardIds = new Set(Object.keys(remoteTarjetas).filter(id => remoteTarjetas[id]));
+      remoteTarjetasCache = remoteTarjetas;
       const orden = Array.isArray(remote.orden) ? remote.orden : Object.keys(remoteTarjetas);
       const remoteList = [];
       orden.forEach(id => { if (remoteTarjetas[id]) remoteList.push(remoteTarjetas[id]); });
@@ -2701,21 +3573,45 @@
             local.estado = rCard.estado;
             changed = true;
           }
-          if (rCard.subtareas && Array.isArray(rCard.subtareas)) {
-            rCard.subtareas.forEach(rSub => {
-              const lSub = (local.subtareas || []).find(s => s.id === rSub.id);
-              if (lSub && lSub.done !== rSub.done) {
-                lSub.done = rSub.done;
-                changed = true;
-              }
-            });
+          if (rCard.subtareas && Array.isArray(rCard.subtareas) && !isFieldLocked(local.id, 'subtareas')) {
+            // Si cambió la lista (pasos agregados, renombrados o quitados en otro teléfono) se toma la remota;
+            // si solo cambiaron las marcas, se copian una por una como antes
+            const firma = arr => JSON.stringify((arr || []).map(s => [String(s.id || ''), String(s.texto || '')]));
+            if (firma(rCard.subtareas) !== firma(local.subtareas)) {
+              local.subtareas = rCard.subtareas.map(s => ({ id: String(s.id || ''), texto: String(s.texto || ''), done: Boolean(s.done) }));
+              changed = true;
+            } else {
+              rCard.subtareas.forEach(rSub => {
+                const lSub = (local.subtareas || []).find(s => s.id === rSub.id);
+                if (lSub && lSub.done !== rSub.done) {
+                  lSub.done = rSub.done;
+                  changed = true;
+                }
+              });
+            }
           }
-          if (rCard.descripcion && local.descripcion !== rCard.descripcion) {
+          if (typeof rCard.descripcion === 'string' && local.descripcion !== rCard.descripcion && !isFieldLocked(local.id, 'descripcion')) {
             local.descripcion = rCard.descripcion;
             changed = true;
           }
-          if (rCard.titulo && local.titulo !== rCard.titulo) {
+          if (rCard.titulo && local.titulo !== rCard.titulo && !isFieldLocked(local.id, 'titulo')) {
             local.titulo = rCard.titulo;
+            changed = true;
+          }
+          if (typeof rCard.notas === 'string' && (local.notas || '') !== rCard.notas && !isFieldLocked(local.id, 'notas')) {
+            local.notas = rCard.notas;
+            changed = true;
+          }
+          if (typeof rCard.sede === 'string' && (local.sede || '') !== rCard.sede) {
+            local.sede = rCard.sede;
+            changed = true;
+          }
+          if (rCard.tipo && local.tipo !== rCard.tipo) {
+            local.tipo = rCard.tipo;
+            changed = true;
+          }
+          if (Array.isArray(rCard.mediaLinks) && JSON.stringify(rCard.mediaLinks) !== JSON.stringify(local.mediaLinks || [])) {
+            local.mediaLinks = rCard.mediaLinks.map(m => ({ label: String(m.label || ''), url: String(m.url || '') }));
             changed = true;
           }
         } else {
@@ -2813,78 +3709,144 @@
       }
     }
 
-    // ── RENDER DE TARJETAS KANBAN ──────────────────────────────────────────
+    // ── LECTURA DEL GUION (v3) ─────────────────────────────────────────────
+    // Solo presentación: el texto original nunca se modifica ni se pierde.
+    const RE_ESCENA = /^((?:ESCENA|ESC\.?|SLIDE|PLANO|TOMA|PARTE)\s*\d+)\s*(?:[·•\-–—:|.]\s*)?(.*)$/i;
+    const RE_TIEMPO = /^(\d+(?:[.,]\d+)?\s*[–\-]\s*\d+(?:[.,]\d+)?\s*s(?:eg)?\.?)\s*(?:[·•\-–—:|]\s*)?(.*)$/i;
+    const RE_ETIQUETA = /^([A-Za-zÁÉÍÓÚÑÜáéíóúñü][A-Za-zÁÉÍÓÚÑÜáéíóúñü0-9 /().]{0,27}):\s+(\S.*)$/;
+    const TONO_ETIQUETA = {
+      'visual': 'cyan', 'plano': 'cyan', 'toma': 'cyan', 'imagen': 'cyan', 'video': 'cyan',
+      'voz': 'orange', 'voz en off': 'orange', 'audio': 'orange', 'diálogo': 'orange', 'dialogo': 'orange', 'locución': 'orange', 'locucion': 'orange',
+      'texto en pantalla': 'green', 'texto': 'green', 'copy': 'green', 'cta': 'green'
+    };
+
+    function esEncabezadoMayus(line) {
+      const letras = line.replace(/[^A-Za-zÁÉÍÓÚÑÜáéíóúñü]/g, '');
+      return letras.length >= 4 && line.length <= 64 && letras === letras.toUpperCase() && !/[.?!]$/.test(line);
+    }
+
+    function analizarGuion(texto) {
+      const lines = String(texto || '').replace(/\r\n?/g, '\n').split('\n');
+      let html = '';
+      let escenas = 0;
+      let enEscena = false;
+      let parrafo = [];
+      const cerrarParrafo = () => {
+        if (parrafo.length) {
+          html += `<p class="sc-p">${parrafo.map(escapeHTML).join('<br>')}</p>`;
+          parrafo = [];
+        }
+      };
+      const cerrarEscena = () => {
+        cerrarParrafo();
+        if (enEscena) { html += '</div>'; enEscena = false; }
+      };
+
+      lines.forEach(raw => {
+        const line = raw.trim();
+        if (!line) { cerrarParrafo(); return; }
+        const mEsc = line.match(RE_ESCENA);
+        if (mEsc && line.length <= 90) {
+          cerrarEscena();
+          escenas++;
+          let resto = (mEsc[2] || '').trim();
+          let tiempo = '';
+          const mT = resto.match(RE_TIEMPO);
+          if (mT) { tiempo = mT[1]; resto = (mT[2] || '').trim(); }
+          html += `<div class="sc"><div class="sc-head"><span class="sc-tag">${escapeHTML(mEsc[1].toUpperCase())}</span>` +
+            (tiempo ? `<span class="sc-time">${escapeHTML(tiempo)}</span>` : '') +
+            (resto ? `<span class="sc-head-rest">${escapeHTML(resto)}</span>` : '') + '</div>';
+          enEscena = true;
+          return;
+        }
+        const mEt = line.match(RE_ETIQUETA);
+        if (mEt && mEt[1].trim().split(/\s+/).length <= 4) {
+          cerrarParrafo();
+          const etiqueta = mEt[1].trim();
+          const tono = TONO_ETIQUETA[etiqueta.toLowerCase()] || 'neutral';
+          html += `<div class="sc-line"><span class="sc-label sc-${tono}">${escapeHTML(etiqueta)}</span><span class="sc-val">${escapeHTML(mEt[2])}</span></div>`;
+          return;
+        }
+        if (esEncabezadoMayus(line)) {
+          cerrarParrafo();
+          html += `<div class="sc-sub">${escapeHTML(line)}</div>`;
+          return;
+        }
+        parrafo.push(line);
+      });
+      cerrarEscena();
+      return { html, escenas };
+    }
+
+    // Hora de pauta ("Pauta: 02/11 · 2:00 pm") y "Sube a Ads: DD/MM" escritas en la descripción
+    function extraerPauta(texto) {
+      const m = String(texto || '').match(/^\s*Pauta:\s*(.+)$/im);
+      if (!m) return '';
+      const partes = m[1].split('·').map(x => x.trim()).filter(Boolean);
+      return partes.length > 1 ? partes[partes.length - 1] : partes[0] || '';
+    }
+    function esAds(c) {
+      return c.ads === true || /^\s*ADS\s*[·•\-–—:|]/i.test(c.titulo || '') || /(^|\s)ADS(\s|$)/.test(c.titulo || '');
+    }
+    function tituloVisible(c) {
+      return String(c.titulo || '').replace(/^\s*ADS\s*[·•\-–—:|]\s*/i, '');
+    }
+    function vistaPreviaGuion(texto) {
+      return String(texto || '').split('\n')
+        .map(l => l.trim())
+        .filter(l => l && !/^pauta:/i.test(l) && !(RE_ESCENA.test(l) && l.length <= 90))
+        .join(' · ');
+    }
+
+    // ── RENDER DE TARJETAS KANBAN (v3) ─────────────────────────────────────
     function createCardElement(c, index) {
       const el = document.createElement('article');
-      el.className = 'card' + (c.id === currentDrawerCardId ? ' is-active-drawer' : '');
+      el.className = 'card pc' + (c.id === currentDrawerCardId ? ' is-active-drawer' : '');
       el.dataset.id = escapeHTML(c.id);
       el.dataset.cardStatus = escapeHTML(c.estado || 'todo');
+      el.tabIndex = 0;
+      el.setAttribute('role', 'button');
+      el.setAttribute('aria-label', 'Abrir ' + tituloVisible(c));
 
       const tipoCfg = TIPOS[c.tipo] || TIPOS['otro'];
       const total = c.subtareas ? c.subtareas.length : 0;
       const done = c.subtareas ? c.subtareas.filter(s => s.done).length : 0;
       const pct = total ? Math.round((done / total) * 100) : 0;
-      const hasRefs = c.mediaLinks && c.mediaLinks.length > 0;
-      const hasSubtasks = total > 0;
-      const seqNum = '#' + String(index + 1).padStart(2, '0');
+      const refs = c.mediaLinks ? c.mediaLinks.length : 0;
+      const seqNum = String(index + 1).padStart(2, '0');
+      const hora = extraerPauta(c.descripcion);
+      const escenas = analizarGuion(c.descripcion).escenas;
+      const preview = vistaPreviaGuion(c.descripcion);
+      const nota = String(c.notas || '').trim();
 
-      let sedeHtml = '';
-      if (c.sede && c.sede.trim() !== '') {
-        sedeHtml = `<div class="card-sede-pill"><i data-lucide="map-pin"></i>${escapeHTML(c.sede)}</div>`;
-      }
+      const estadoHtml = c.estado === 'grabando'
+        ? `<span class="pc-state pc-state-rec"><span class="pc-rec-dot"></span>Grabando</span>`
+        : (c.estado === 'listo' ? `<span class="pc-state pc-state-ok"><i data-lucide="check"></i>Listo</span>` : '');
 
-      // Meta items inferiores (SOLO si existen)
-      let metaItemsHtml = '';
-      if (hasRefs) {
-        metaItemsHtml += `
-          <span class="card-meta-item" title="${c.mediaLinks.length} referencia(s) multimedia">
-            <i data-lucide="link"></i> ${c.mediaLinks.length} ref${c.mediaLinks.length > 1 ? 's' : ''}
-          </span>
-        `;
-      }
-      if (hasSubtasks) {
-        metaItemsHtml += `
-          <div class="card-mini-progress" title="${done} de ${total} subtareas completadas">
-            <span class="card-meta-item"><i data-lucide="check-square"></i> ${done}/${total}</span>
-            <div class="card-mini-bar"><div class="card-mini-fill" style="width:${pct}%"></div></div>
-          </div>
-        `;
-      }
-
-      const bottomRowHtml = (hasRefs || hasSubtasks) ? `
-        <div class="card-bottom-row">
-          <div class="card-meta-tags">${metaItemsHtml}</div>
-          <div class="card-drag-indicator" title="Arrastrar para mover">
-            <i data-lucide="grip-vertical"></i>
-          </div>
-        </div>
-      ` : `
-        <div class="card-bottom-row" style="border-top:none; margin-top:2px; padding-top:0; justify-content:flex-end;">
-          <div class="card-drag-indicator" title="Arrastrar para mover">
-            <i data-lucide="grip-vertical"></i>
-          </div>
-        </div>
-      `;
+      let meta = '';
+      if (hora) meta += `<span class="pc-meta"><i data-lucide="clock"></i>${escapeHTML(hora)}</span>`;
+      if (escenas) meta += `<span class="pc-meta"><i data-lucide="clapperboard"></i>${escenas} escena${escenas > 1 ? 's' : ''}</span>`;
+      if (refs) meta += `<span class="pc-meta" title="${refs} referencia(s)"><i data-lucide="link"></i>${refs}</span>`;
+      if (total) meta += `<span class="pc-meta pc-progress" title="${done} de ${total} pasos"><i data-lucide="list-checks"></i>${done}/${total}<span class="pc-bar"><span style="width:${pct}%"></span></span></span>`;
 
       el.innerHTML = `
-        <div class="card-top">
-          <div class="card-badges">
-            <span class="card-seq-num">${seqNum}</span>
-            <span class="card-type-badge" style="background:${tipoCfg.bg}; color:${tipoCfg.color}; border:1px solid ${tipoCfg.border}">
-              ${escapeHTML(tipoCfg.label)}
-            </span>
-            ${sedeHtml}
-          </div>
+        <div class="card-top pc-top">
+          <span class="pc-num">${seqNum}</span>
+          <span class="card-type-badge pc-type" style="background:${tipoCfg.bg}; color:${tipoCfg.color}; border:1px solid ${tipoCfg.border}">${escapeHTML(tipoCfg.label)}</span>
+          ${esAds(c) ? '<span class="pc-chip pc-chip-ads">ADS</span>' : ''}
+          ${c.sede && c.sede.trim() ? `<span class="pc-chip"><i data-lucide="map-pin"></i>${escapeHTML(c.sede)}</span>` : ''}
+          <span class="pc-spacer"></span>
+          ${estadoHtml}
           <div class="card-actions">
-            <button class="btn-card-action" onclick="toggleCardMenu(event, '${escapeHTML(c.id)}')" title="Opciones">
+            <button class="btn-card-action" onclick="toggleCardMenu(event, '${escapeHTML(c.id)}')" title="Opciones" aria-label="Opciones">
               <i data-lucide="more-horizontal"></i>
             </button>
             <div class="card-popover-menu" id="menu-${escapeHTML(c.id)}">
               <button class="popover-item" onclick="openDrawer('${escapeHTML(c.id)}')">
-                <i data-lucide="maximize-2"></i> Ver detalle
+                <i data-lucide="maximize-2"></i> Abrir ficha
               </button>
               <button class="popover-item" onclick="openModal('${escapeHTML(c.id)}')">
-                <i data-lucide="edit-3"></i> Editar
+                <i data-lucide="sliders-horizontal"></i> Editar todo
               </button>
               <div class="popover-divider"></div>
               ${c.estado !== 'todo' ? `
@@ -2893,7 +3855,7 @@
                 </button>` : ''}
               ${c.estado !== 'grabando' ? `
                 <button class="popover-item" onclick="quickMoveCard('${escapeHTML(c.id)}', 'grabando')">
-                  <i data-lucide="play-circle" style="color:var(--nexo-orange);"></i> Mover a Grabando
+                  <i data-lucide="video" style="color:var(--nexo-orange);"></i> Mover a Grabando
                 </button>` : ''}
               ${c.estado !== 'listo' ? `
                 <button class="popover-item" onclick="quickMoveCard('${escapeHTML(c.id)}', 'listo')">
@@ -2906,16 +3868,26 @@
             </div>
           </div>
         </div>
-        <div class="card-title">${escapeHTML(c.titulo)}</div>
-        ${c.descripcion ? `<div class="card-desc-preview">${escapeHTML(c.descripcion)}</div>` : ''}
-        ${bottomRowHtml}
+        <div class="card-title pc-title">${escapeHTML(tituloVisible(c))}</div>
+        ${preview ? `<div class="card-desc-preview pc-preview">${escapeHTML(preview)}</div>` : ''}
+        ${nota ? `<div class="pc-note"><i data-lucide="notebook-pen"></i><span>${escapeHTML(nota)}</span></div>` : ''}
+        <div class="card-bottom-row pc-foot">
+          <div class="pc-metas">${meta}</div>
+          <div class="card-drag-indicator" title="Arrastrar para mover"><i data-lucide="grip-vertical"></i></div>
+        </div>
       `;
 
-      // Clic para abrir el panel lateral de detalle (distinguiendo de arrastre)
+      // Clic o Enter para abrir la ficha (distinguiendo de arrastre)
       el.addEventListener('click', (e) => {
         if (isDragging) return;
         if (e.target.closest('.card-actions') || e.target.closest('.card-popover-menu')) return;
         openDrawer(c.id);
+      });
+      el.addEventListener('keydown', (e) => {
+        if ((e.key === 'Enter' || e.key === ' ') && e.target === el) {
+          e.preventDefault();
+          openDrawer(c.id);
+        }
       });
 
       return el;
@@ -3055,131 +4027,473 @@
       saveState();
     }
 
-    // ── PANEL LATERAL DE DETALLE (SIDE DRAWER) ──────────────────────────
+    // ── FICHA CENTRADA DE LA TARJETA (v3) ───────────────────────────────
+    // Reemplaza al panel lateral. Mantiene openDrawer / closeDrawer / updateDrawerContent
+    // y los id drawer-* para no romper la lógica ni los enlaces #card-<id>.
+    let sheetCloseTimer = null;
+    let sheetReturnFocus = null;
+    let scriptEditMode = false;
+    let checklistEditMode = false;
+    const pendingEdits = {};            // 'cardId|campo' -> { timer, run }
+    let remoteCardIds = new Set();      // tarjetas que ya existen en Firestore
+    let remoteTarjetasCache = {};       // última versión remota conocida de cada tarjeta
+
+    const $id = (x) => document.getElementById(x);
+
+    function autoGrow(el) {
+      if (!el) return;
+      el.style.height = 'auto';
+      el.style.height = el.scrollHeight + 'px';
+    }
+
+    function sheetOrder() {
+      const ids = Array.from(document.querySelectorAll('#col-todo .card, #col-grabando .card, #col-listo .card'))
+        .map(e => e.dataset.id).filter(Boolean);
+      if (currentDrawerCardId && !ids.includes(currentDrawerCardId)) return state.contenidos.map(c => c.id);
+      return ids.length ? ids : state.contenidos.map(c => c.id);
+    }
+
+    // ── Guardado por campo con espera corta (escritura en tiempo real) ──
+    function hasPending(cardId, campo) {
+      return Boolean(pendingEdits[cardId + '|' + campo]);
+    }
+    function scheduleFieldSave(cardId, campo, getter, delay) {
+      const key = cardId + '|' + campo;
+      if (pendingEdits[key]) clearTimeout(pendingEdits[key].timer);
+      const run = () => {
+        if (pendingEdits[key]) clearTimeout(pendingEdits[key].timer);
+        delete pendingEdits[key];
+        commitField(cardId, campo, getter());
+      };
+      pendingEdits[key] = { timer: setTimeout(run, delay), run };
+    }
+    function flushPendingEdits(cardId, campo) {
+      Object.keys(pendingEdits).forEach(key => {
+        const [kId, kCampo] = key.split('|');
+        if ((cardId && kId !== cardId) || (campo && kCampo !== campo)) return;
+        const p = pendingEdits[key];
+        if (p) p.run();
+      });
+    }
+    function campoEnFoco() {
+      const ae = document.activeElement;
+      if (!ae) return '';
+      if (ae.id === 'drawer-title') return 'titulo';
+      if (ae.id === 'ps-notes') return 'notas';
+      if (ae.id === 'ps-script-editor') return 'descripcion';
+      const list = $id('drawer-checklist');
+      if (list && list.contains(ae) && ae.tagName === 'INPUT') return 'subtareas';
+      return '';
+    }
+    function isFieldLocked(cardId, campo) {
+      return hasPending(cardId, campo) || (currentDrawerCardId === cardId && campoEnFoco() === campo);
+    }
+
+    function commitField(cardId, campo, valor) {
+      const card = state.contenidos.find(c => c.id === cardId);
+      if (!card) return;
+      if (campo === 'titulo') {
+        valor = String(valor || '').replace(/\s+/g, ' ').trim();
+        if (!valor) return; // el título es obligatorio: se conserva el anterior
+      }
+      const remoto = remoteTarjetasCache[cardId];
+      const igualLocal = card[campo] === valor;
+      const igualRemoto = !prodDocRef || (remoto && remoto[campo] === valor);
+      if (igualLocal && igualRemoto) {
+        if (campo === 'notas') setNotesStatus('saved');
+        return;
+      }
+      card[campo] = valor;
+      saveState();
+      renderCards();
+      syncCardFieldsToFirestore(cardId, [campo]);
+      if (campo === 'notas') setNotesStatus('saved');
+    }
+
+    // Escribe solo los campos indicados (tarjetas.<id>.<campo>) para no pisar
+    // cambios que otro teléfono hizo en otros campos de la misma tarjeta.
+    function syncCardFieldsToFirestore(cardId, campos) {
+      if (!prodDocRef) return;
+      if (!remoteCardIds.has(cardId)) { syncCardToFirestore(cardId); return; }
+      const card = state.contenidos.find(c => c.id === cardId);
+      if (!card) return;
+      const clean = cleanCard(card);
+      const updateData = { actualizado: new Date().toISOString() };
+      campos.forEach(campo => { updateData['tarjetas.' + cardId + '.' + campo] = clean[campo]; });
+      prodDocRef.update(updateData).catch(err => {
+        console.warn('Sync de campo en cola/offline:', err);
+      });
+    }
+
+    function setNotesStatus(kind) {
+      const el = $id('ps-notes-status');
+      if (!el) return;
+      el.classList.remove('is-pending', 'is-saved', 'is-local');
+      if (kind === 'pending') {
+        el.textContent = 'Escribiendo…';
+        el.classList.add('is-pending');
+      } else if (kind === 'saved') {
+        if (!prodDocRef) { el.textContent = '✓ Guardado en este dispositivo'; el.classList.add('is-local'); }
+        else if (!isFirestoreOnline || !navigator.onLine) { el.textContent = 'Guardado en este teléfono · se sube al reconectar'; el.classList.add('is-local'); }
+        else { el.textContent = '✓ Guardado en vivo'; el.classList.add('is-saved'); }
+      } else {
+        el.textContent = prodDocRef ? 'Se ve en todos los teléfonos' : '';
+      }
+    }
+
+    // ── Abrir / cerrar ──
     function openDrawer(cardId) {
       closeAllCardMenus();
       const card = state.contenidos.find(c => c.id === cardId);
       if (!card) return;
+      const sheet = $id('side-drawer');
+      const back = $id('drawer-backdrop');
+      const wasOpen = Boolean(currentDrawerCardId);
+      if (wasOpen && currentDrawerCardId !== cardId) flushPendingEdits(currentDrawerCardId);
+
       currentDrawerCardId = cardId;
+      scriptEditMode = false;
+      checklistEditMode = false;
 
       document.querySelectorAll('.card').forEach(el => {
         el.classList.toggle('is-active-drawer', el.dataset.id === cardId);
       });
 
-      updateDrawerContent(card);
+      clearTimeout(sheetCloseTimer);
+      sheet.classList.remove('is-closing');
+      back.classList.remove('is-closing');
+      if (!wasOpen) {
+        sheetReturnFocus = document.activeElement;
+        sheet.classList.add('show');
+        back.classList.add('show');
+        sheet.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('ps-open');
+      }
 
-      document.getElementById('side-drawer').classList.add('show');
-      document.getElementById('drawer-backdrop').classList.add('show');
+      updateDrawerContent(card, true);
+      setNotesStatus('');
+      ['.ps-body', '.ps-main', '.ps-side'].forEach(sel => {
+        const n = sheet.querySelector(sel);
+        if (n) n.scrollTop = 0;
+      });
+      if (!wasOpen) {
+        requestAnimationFrame(() => {
+          const panel = sheet.querySelector('.ps-panel');
+          if (panel) panel.focus({ preventScroll: true });
+        });
+      }
+      try { history.replaceState(null, '', '#card-' + cardId); } catch (e) {}
     }
 
-    function updateDrawerContent(card) {
+    function closeDrawer() {
+      const sheet = $id('side-drawer');
+      const back = $id('drawer-backdrop');
+      if (!sheet || !back) return;
+      if (!currentDrawerCardId) return;
+      flushPendingEdits();
+      const id = currentDrawerCardId;
+      currentDrawerCardId = null;
+      scriptEditMode = false;
+      checklistEditMode = false;
+
+      sheet.classList.add('is-closing');
+      back.classList.add('is-closing');
+      sheet.classList.remove('show');
+      back.classList.remove('show');
+      sheet.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('ps-open');
+      clearTimeout(sheetCloseTimer);
+      sheetCloseTimer = setTimeout(() => {
+        sheet.classList.remove('is-closing');
+        back.classList.remove('is-closing');
+      }, 280);
+
+      document.querySelectorAll('.card.is-active-drawer').forEach(c => c.classList.remove('is-active-drawer'));
+      try {
+        if (window.location.hash.indexOf('#card-') === 0) history.replaceState(null, '', window.location.pathname + window.location.search);
+      } catch (e) {}
+
+      const back2 = (sheetReturnFocus && document.contains(sheetReturnFocus) && sheetReturnFocus !== document.body)
+        ? sheetReturnFocus
+        : document.querySelector('.card[data-id="' + id + '"]');
+      sheetReturnFocus = null;
+      if (back2 && back2.focus) {
+        try { back2.focus({ preventScroll: true }); } catch (e) {}
+      }
+    }
+
+    function navigateSheet(dir) {
+      if (!currentDrawerCardId) return;
+      const orden = sheetOrder();
+      if (orden.length < 2) return;
+      const i = orden.indexOf(currentDrawerCardId);
+      const next = orden[((i < 0 ? 0 : i) + dir + orden.length) % orden.length];
+      if (next) openDrawer(next);
+    }
+
+    // ── Contenido de la ficha ──
+    function updateDrawerContent(card, fresh) {
+      if (!card) return;
+      const sheet = $id('side-drawer');
+      if (sheet) sheet.dataset.status = card.estado || 'todo';
+
+      const idx = state.contenidos.indexOf(card);
+      const num = $id('ps-num');
+      if (num) num.textContent = String((idx < 0 ? 0 : idx) + 1).padStart(2, '0');
+
       const tipoCfg = TIPOS[card.tipo] || TIPOS['otro'];
-      const badge = document.getElementById('drawer-type-badge');
+      const badge = $id('drawer-type-badge');
       if (badge) {
         badge.textContent = tipoCfg.label;
         badge.style.background = tipoCfg.bg;
         badge.style.color = tipoCfg.color;
         badge.style.border = '1px solid ' + tipoCfg.border;
       }
-
-      const sedePill = document.getElementById('drawer-sede-pill');
+      const ads = $id('ps-ads');
+      if (ads) ads.style.display = esAds(card) ? 'inline-flex' : 'none';
+      const hora = $id('ps-hora');
+      const horaTxt = extraerPauta(card.descripcion);
+      if (hora) {
+        hora.innerHTML = horaTxt ? `<i data-lucide="clock"></i>${escapeHTML(horaTxt)}` : '';
+        hora.style.display = horaTxt ? 'inline-flex' : 'none';
+      }
+      const sedePill = $id('drawer-sede-pill');
       if (sedePill) {
         if (card.sede && card.sede.trim()) {
-          sedePill.innerHTML = `<i data-lucide="map-pin"></i> ${escapeHTML(card.sede)}`;
+          sedePill.innerHTML = `<i data-lucide="map-pin"></i>${escapeHTML(card.sede)}`;
           sedePill.style.display = 'inline-flex';
         } else {
           sedePill.style.display = 'none';
         }
       }
 
-      const title = document.getElementById('drawer-title');
-      if (title) title.textContent = card.titulo;
+      const orden = sheetOrder();
+      const pos = orden.indexOf(card.id);
+      const posEl = $id('ps-pos');
+      if (posEl) posEl.textContent = pos >= 0 ? `${pos + 1} de ${orden.length}` : '';
+      ['ps-prev', 'ps-next'].forEach(b => { const n = $id(b); if (n) n.disabled = orden.length < 2; });
 
-      // Botones segmentados de estado
+      // Título (no se pisa mientras se escribe)
+      const t = $id('drawer-title');
+      if (t && (fresh || (document.activeElement !== t && !hasPending(card.id, 'titulo')))) {
+        t.value = card.titulo || '';
+        autoGrow(t);
+      }
+
+      // Estado
       document.querySelectorAll('.status-seg-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.status === card.estado);
+        const on = btn.dataset.status === card.estado;
+        btn.classList.toggle('active', on);
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
       });
 
-      // Guión / Descripción
-      const descSection = document.getElementById('drawer-desc-section');
-      const descBox = document.getElementById('drawer-desc');
-      if (card.descripcion && card.descripcion.trim()) {
-        descBox.textContent = card.descripcion;
-        descSection.style.display = 'flex';
-      } else {
-        descSection.style.display = 'none';
+      renderScriptSection(card, fresh);
+
+      // Notas en vivo
+      const n = $id('ps-notes');
+      if (n && (fresh || (document.activeElement !== n && !hasPending(card.id, 'notas')))) {
+        n.value = card.notas || '';
+        autoGrow(n);
       }
 
-      // Checklist de subtareas
-      const checkSection = document.getElementById('drawer-check-section');
-      const checkList = document.getElementById('drawer-checklist');
-      const checkCount = document.getElementById('drawer-check-count');
-      checkList.innerHTML = '';
-
+      // Checklist (no se reconstruye mientras se edita un paso)
+      const list = $id('drawer-checklist');
+      const ae = document.activeElement;
+      const editandoPaso = list && list.contains(ae) && ae.tagName === 'INPUT';
+      if (fresh || !editandoPaso) renderChecklist(card);
       const subs = card.subtareas || [];
       const doneCount = subs.filter(s => s.done).length;
-      checkCount.textContent = `${doneCount}/${subs.length}`;
+      const cc = $id('drawer-check-count');
+      if (cc) cc.textContent = subs.length ? `${doneCount}/${subs.length}` : '';
+      const fill = $id('ps-check-fill');
+      if (fill) fill.style.width = (subs.length ? Math.round(doneCount / subs.length * 100) : 0) + '%';
+      if (fill && fill.parentElement) fill.parentElement.style.display = subs.length ? '' : 'none';
 
-      if (subs.length > 0) {
-        checkSection.style.display = 'flex';
-        subs.forEach(sub => {
-          const item = document.createElement('div');
-          item.className = 'drawer-check-item' + (sub.done ? ' done' : '');
-          item.innerHTML = `
-            <div class="drawer-check-box"><i data-lucide="check"></i></div>
-            <div class="drawer-check-text">${escapeHTML(sub.texto)}</div>
-          `;
-          item.onclick = () => toggleSubtask(card.id, sub.id);
-          checkList.appendChild(item);
-        });
-      } else {
-        checkSection.style.display = 'none';
-      }
-
-      // Referencias multimedia
-      const mediaSection = document.getElementById('drawer-media-section');
-      const mediaGrid = document.getElementById('drawer-media-grid');
-      mediaGrid.innerHTML = '';
-      const links = card.mediaLinks || [];
-      if (links.length > 0) {
-        mediaSection.style.display = 'flex';
+      // Referencias
+      const mediaSection = $id('drawer-media-section');
+      const mediaGrid = $id('drawer-media-grid');
+      if (mediaGrid) {
+        mediaGrid.innerHTML = '';
+        const links = card.mediaLinks || [];
+        mediaSection.style.display = links.length ? 'flex' : 'none';
         links.forEach(l => {
           const a = document.createElement('a');
-          a.className = 'drawer-media-link';
+          a.className = 'ps-media-link';
           a.href = l.url;
           a.target = '_blank';
           a.rel = 'noopener noreferrer';
+          let host = '';
+          try { host = new URL(l.url).hostname.replace(/^www\./, ''); } catch (e) {}
           a.innerHTML = `
-            <div class="drawer-media-link-left">
-              <i data-lucide="external-link"></i>
-              <span>${escapeHTML(l.label || l.url)}</span>
-            </div>
-            <div class="drawer-media-link-ext"><i data-lucide="arrow-up-right"></i></div>
-          `;
+            <span class="ps-media-ico"><i data-lucide="external-link"></i></span>
+            <span class="ps-media-txt"><b>${escapeHTML(l.label || 'Referencia')}</b><small>${escapeHTML(host || l.url)}</small></span>
+            <i data-lucide="arrow-up-right" class="ps-media-go"></i>`;
           mediaGrid.appendChild(a);
         });
-      } else {
-        mediaSection.style.display = 'none';
       }
 
-      // Botón principal de avance de etapa
-      const nextLabel = document.getElementById('drawer-next-label');
-      if (card.estado === 'todo') {
-        nextLabel.textContent = 'Comenzar rodaje';
-      } else if (card.estado === 'grabando') {
-        nextLabel.textContent = 'Marcar como listo';
-      } else {
-        nextLabel.textContent = 'Reiniciar rodaje';
-      }
+      // Botón de avance
+      const nextLabel = $id('drawer-next-label');
+      const advIcon = $id('ps-advance-icon');
+      const adv = $id('btn-drawer-next-step');
+      let icono = 'play';
+      if (card.estado === 'todo') { nextLabel.textContent = 'Comenzar rodaje'; icono = 'play'; }
+      else if (card.estado === 'grabando') { nextLabel.textContent = 'Marcar como listo'; icono = 'check'; }
+      else { nextLabel.textContent = 'Reiniciar rodaje'; icono = 'rotate-ccw'; }
+      if (adv) adv.dataset.next = card.estado === 'todo' ? 'grabando' : (card.estado === 'grabando' ? 'listo' : 'todo');
+      if (advIcon) advIcon.innerHTML = `<i data-lucide="${icono}"></i>`;
 
       if (window.lucide) lucide.createIcons();
     }
 
-    function closeDrawer() {
-      currentDrawerCardId = null;
-      document.getElementById('side-drawer').classList.remove('show');
-      document.getElementById('drawer-backdrop').classList.remove('show');
-      document.querySelectorAll('.card.is-active-drawer').forEach(c => c.classList.remove('is-active-drawer'));
+    function renderScriptSection(card, fresh) {
+      const view = $id('drawer-desc');
+      const editor = $id('ps-script-editor');
+      const empty = $id('ps-script-empty');
+      const meta = $id('ps-script-meta');
+      const btn = $id('btn-edit-script');
+      if (!view || !editor) return;
+      const texto = card.descripcion || '';
+      const r = analizarGuion(texto);
+      if (meta) meta.textContent = r.escenas ? `${r.escenas} escena${r.escenas > 1 ? 's' : ''}` : '';
+      if (scriptEditMode) {
+        view.style.display = 'none';
+        empty.style.display = 'none';
+        editor.style.display = 'block';
+        if (fresh || (document.activeElement !== editor && !hasPending(card.id, 'descripcion'))) {
+          editor.value = texto;
+        }
+        autoGrow(editor);
+        if (btn) btn.innerHTML = '<i data-lucide="check"></i> <span>Listo</span>';
+        if (btn) btn.classList.add('is-on');
+      } else {
+        editor.style.display = 'none';
+        if (texto.trim()) {
+          view.innerHTML = r.html;
+          view.style.display = '';
+          empty.style.display = 'none';
+        } else {
+          view.innerHTML = '';
+          view.style.display = 'none';
+          empty.style.display = 'flex';
+        }
+        if (btn) btn.innerHTML = '<i data-lucide="pencil"></i> <span>Editar</span>';
+        if (btn) btn.classList.remove('is-on');
+      }
+    }
+
+    function toggleScriptEdit(force) {
+      const card = state.contenidos.find(c => c.id === currentDrawerCardId);
+      if (!card) return;
+      const next = (typeof force === 'boolean') ? force : !scriptEditMode;
+      if (!next) flushPendingEdits(card.id, 'descripcion');
+      scriptEditMode = next;
+      renderScriptSection(card, true);
+      if (window.lucide) lucide.createIcons();
+      if (next) {
+        const ed = $id('ps-script-editor');
+        if (ed) { ed.focus({ preventScroll: true }); autoGrow(ed); }
+      }
+    }
+
+    function renderChecklist(card) {
+      const list = $id('drawer-checklist');
+      const editBtn = $id('btn-edit-checklist');
+      if (!list) return;
+      list.innerHTML = '';
+      list.classList.toggle('is-editing', checklistEditMode);
+      const subs = card.subtareas || [];
+      if (editBtn) {
+        editBtn.style.display = subs.length ? 'inline-flex' : 'none';
+        editBtn.innerHTML = checklistEditMode ? '<i data-lucide="check"></i> <span>Listo</span>' : '<i data-lucide="pencil"></i> <span>Editar</span>';
+        editBtn.classList.toggle('is-on', checklistEditMode);
+      }
+      if (!subs.length) {
+        const vacio = document.createElement('div');
+        vacio.className = 'ps-check-empty';
+        vacio.textContent = 'Sin pasos todavía. Agrega tomas o tareas aquí abajo.';
+        list.appendChild(vacio);
+        return;
+      }
+      subs.forEach(sub => {
+        if (checklistEditMode) {
+          const row = document.createElement('div');
+          row.className = 'ps-check-row';
+          const inp = document.createElement('input');
+          inp.type = 'text';
+          inp.className = 'ps-check-edit';
+          inp.value = sub.texto;
+          inp.setAttribute('aria-label', 'Editar paso');
+          inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); inp.blur(); } });
+          inp.addEventListener('change', () => renameSubtask(card.id, sub.id, inp.value));
+          const del = document.createElement('button');
+          del.type = 'button';
+          del.className = 'ps-check-del';
+          del.title = 'Quitar paso';
+          del.setAttribute('aria-label', 'Quitar paso');
+          del.innerHTML = '<i data-lucide="x"></i>';
+          del.onclick = () => removeSubtask(card.id, sub.id);
+          row.appendChild(inp);
+          row.appendChild(del);
+          list.appendChild(row);
+        } else {
+          const item = document.createElement('button');
+          item.type = 'button';
+          item.className = 'ps-check-item' + (sub.done ? ' done' : '');
+          item.setAttribute('aria-pressed', sub.done ? 'true' : 'false');
+          item.innerHTML = `<span class="ps-check-box"><i data-lucide="check"></i></span><span class="ps-check-text">${escapeHTML(sub.texto)}</span>`;
+          item.onclick = () => toggleSubtask(card.id, sub.id);
+          list.appendChild(item);
+        }
+      });
+    }
+
+    function toggleChecklistEdit() {
+      const card = state.contenidos.find(c => c.id === currentDrawerCardId);
+      if (!card) return;
+      checklistEditMode = !checklistEditMode;
+      renderChecklist(card);
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function guardarSubtareas(card) {
+      saveState();
+      renderCards();
+      if (currentDrawerCardId === card.id) updateDrawerContent(card);
+      syncCardFieldsToFirestore(card.id, ['subtareas']);
+    }
+
+    function addSubtaskFromSheet(e) {
+      if (e) e.preventDefault();
+      const card = state.contenidos.find(c => c.id === currentDrawerCardId);
+      const inp = $id('ps-check-input');
+      if (!card || !inp) return;
+      const texto = inp.value.trim();
+      if (!texto) return;
+      if (!Array.isArray(card.subtareas)) card.subtareas = [];
+      card.subtareas.push({ id: 'sub_' + Math.random().toString(36).substr(2, 7), texto, done: false });
+      inp.value = '';
+      guardarSubtareas(card);
+      inp.focus({ preventScroll: true });
+    }
+
+    function renameSubtask(cardId, subId, texto) {
+      const card = state.contenidos.find(c => c.id === cardId);
+      if (!card) return;
+      const sub = (card.subtareas || []).find(s => s.id === subId);
+      if (!sub) return;
+      const limpio = String(texto || '').trim();
+      if (!limpio || limpio === sub.texto) return;
+      sub.texto = limpio;
+      guardarSubtareas(card);
+    }
+
+    function removeSubtask(cardId, subId) {
+      const card = state.contenidos.find(c => c.id === cardId);
+      if (!card) return;
+      card.subtareas = (card.subtareas || []).filter(s => s.id !== subId);
+      if (!card.subtareas.length) checklistEditMode = false;
+      guardarSubtareas(card);
     }
 
     function setCardStatusFromDrawer(newStatus) {
@@ -3209,25 +4523,25 @@
     }
 
     function copyDrawerScript() {
-      const desc = document.getElementById('drawer-desc').textContent;
+      const card = state.contenidos.find(c => c.id === currentDrawerCardId);
+      const editor = $id('ps-script-editor');
+      const desc = scriptEditMode && editor ? editor.value : (card ? card.descripcion || '' : '');
       if (!desc) return;
-      navigator.clipboard.writeText(desc).then(() => {
-        const btn = document.getElementById('btn-copy-script');
-        if (btn) {
-          btn.innerHTML = `<i data-lucide="check"></i> <span>¡Copiado!</span>`;
-          btn.style.color = 'var(--nexo-green)';
-          btn.style.borderColor = 'var(--nexo-green)';
+      const btn = $id('btn-copy-script');
+      const listo = () => {
+        if (!btn) return;
+        btn.innerHTML = `<i data-lucide="check"></i> <span>Copiado</span>`;
+        btn.classList.add('is-ok');
+        if (window.lucide) lucide.createIcons();
+        setTimeout(() => {
+          btn.innerHTML = `<i data-lucide="copy"></i> <span>Copiar</span>`;
+          btn.classList.remove('is-ok');
           if (window.lucide) lucide.createIcons();
-          setTimeout(() => {
-            btn.innerHTML = `<i data-lucide="copy"></i> <span>Copiar</span>`;
-            btn.style.color = '';
-            btn.style.borderColor = '';
-            if (window.lucide) lucide.createIcons();
-          }, 2000);
-        }
-      }).catch(err => {
-        console.error('Error al copiar:', err);
-      });
+        }, 1800);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(desc).then(listo).catch(err => console.error('Error al copiar:', err));
+      }
     }
 
     function editFromDrawer() {
@@ -3242,6 +4556,70 @@
       const id = currentDrawerCardId;
       closeDrawer();
       deleteCard(id);
+    }
+
+    function isTypingTarget(el) {
+      if (!el) return false;
+      const tag = (el.tagName || '').toUpperCase();
+      return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || el.isContentEditable;
+    }
+
+    // Enlaza los campos editables de la ficha (una sola vez)
+    function setupSheet() {
+      const t = $id('drawer-title');
+      if (t) {
+        t.addEventListener('input', () => {
+          autoGrow(t);
+          const id = currentDrawerCardId;
+          if (id) scheduleFieldSave(id, 'titulo', () => t.value, 700);
+        });
+        t.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); t.blur(); } });
+        t.addEventListener('blur', () => {
+          const id = currentDrawerCardId;
+          if (!id) return;
+          flushPendingEdits(id, 'titulo');
+          const card = state.contenidos.find(c => c.id === id);
+          if (card && !t.value.trim()) { t.value = card.titulo || ''; autoGrow(t); }
+        });
+      }
+
+      const n = $id('ps-notes');
+      if (n) {
+        n.addEventListener('input', () => {
+          autoGrow(n);
+          const id = currentDrawerCardId;
+          if (!id) return;
+          setNotesStatus('pending');
+          scheduleFieldSave(id, 'notas', () => n.value, 600);
+        });
+        n.addEventListener('blur', () => { if (currentDrawerCardId) flushPendingEdits(currentDrawerCardId, 'notas'); });
+      }
+
+      const ed = $id('ps-script-editor');
+      if (ed) {
+        ed.addEventListener('input', () => {
+          autoGrow(ed);
+          const id = currentDrawerCardId;
+          if (id) scheduleFieldSave(id, 'descripcion', () => ed.value, 800);
+        });
+        ed.addEventListener('blur', () => { if (currentDrawerCardId) flushPendingEdits(currentDrawerCardId, 'descripcion'); });
+      }
+
+      // Flechas para pasar de tarjeta cuando la ficha está abierta (sin animación: acción repetida)
+      document.addEventListener('keydown', e => {
+        if (!currentDrawerCardId || isTypingTarget(e.target)) return;
+        const modal = $id('modal-card');
+        if (modal && modal.classList.contains('show')) return;
+        if (e.key === 'ArrowLeft') { e.preventDefault(); navigateSheet(-1); }
+        else if (e.key === 'ArrowRight') { e.preventDefault(); navigateSheet(1); }
+      });
+
+      // Guardar lo pendiente si se cierra o se oculta la pestaña
+      window.addEventListener('pagehide', () => flushPendingEdits());
+      document.addEventListener('visibilitychange', () => { if (document.hidden) flushPendingEdits(); });
+      window.addEventListener('resize', () => {
+        ['drawer-title', 'ps-notes', 'ps-script-editor'].forEach(x => autoGrow($id(x)));
+      });
     }
 
     // ── MODAL DE CREACIÓN / EDICIÓN ─────────────────────────────────────
@@ -3598,7 +4976,10 @@
         mediaLinks: Array.isArray(c.mediaLinks) ? c.mediaLinks.map(m => ({
           label: String(m.label || ''),
           url: String(m.url || '')
-        })) : []
+        })) : [],
+        notas: String(c.notas || ''),
+        ...(c.ads === true ? { ads: true } : {}),
+        ...(c.subidaAds ? { subidaAds: String(c.subidaAds) } : {})
       };
     }
 
@@ -4676,6 +6057,7 @@
               const saved = (parsed.contenidos || []).find(c => c.id === card.id);
               if (saved) {
                 card.estado = saved.estado || card.estado;
+                if (typeof saved.notas === 'string') card.notas = saved.notas;
                 card.subtareas.forEach(sub => {
                   const savedSub = (saved.subtareas || []).find(s => s.id === sub.id);
                   if (savedSub) sub.done = savedSub.done;
@@ -4708,6 +6090,7 @@
       renderCards();
       initDragAndDrop();
       setupSearch();
+      setupSheet();
       initFirebase();
       initNexoBackground();
 

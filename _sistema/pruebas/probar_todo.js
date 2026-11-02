@@ -2067,8 +2067,21 @@ async function getToastText(page) {
       pass('Edición de la fecha de publicación verificada (test_fase7.js)');
     }
 
+    // ============================================================
+    // CASO 31: Tablero de producción v3 (test_fase8.js)
+    // ============================================================
+    console.log(`\n${C.bold}31. Producción v3:${C.reset} ficha centrada, notas en vivo entre teléfonos, edición en pauta y checklist`);
+    {
+      try {
+        execSync(`node "${path.join(__dirname, 'test_fase8.js')}"`, { stdio: 'pipe' });
+      } catch (e8) {
+        fail('test_fase8.js (producción v3) falló:\n' + String((e8.stdout || '') + (e8.stderr || '')), e8);
+      }
+      pass('Tablero de producción v3 verificado (test_fase8.js)');
+    }
+
     console.log(`\n${C.bold}${C.green}================================================================${C.reset}`);
-    console.log(`${C.bold}${C.green}✓ TODOS LOS 30 CASOS DE PRUEBA PASARON EXITOSAMENTE (100% OK)${C.reset}`);
+    console.log(`${C.bold}${C.green}✓ TODOS LOS 31 CASOS DE PRUEBA PASARON EXITOSAMENTE (100% OK)${C.reset}`);
     console.log(`${C.bold}${C.green}================================================================${C.reset}\n`);
 
   } catch (err) {

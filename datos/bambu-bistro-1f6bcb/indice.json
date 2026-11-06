@@ -1,8 +1,13 @@
 {
   "cliente": "Bambú Bistro",
   "cuenta": "bambubistro",
-  "actual": "2026-10",
+  "actual": "2026-11",
   "meses": [
+    {
+      "mes": "2026-11",
+      "etiqueta": "Noviembre 2026",
+      "id": "bambu-bistro-2026-noviembre-b25b3aa7"
+    },
     {
       "mes": "2026-10",
       "etiqueta": "Octubre 2026",

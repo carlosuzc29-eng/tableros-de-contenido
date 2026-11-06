@@ -4651,8 +4651,24 @@
                 renderActiveMonth(monthData, isClosed);
               });
           } else {
-            // El mes activo ya está pintado, solo actualizar el selector si hay múltiples meses
+            // El mes activo ya está pintado, actualizar el selector y verificar si el JSON del servidor tiene contenidos nuevos respecto al HTML en caché
             updateMonthSelector();
+            return fetch('datos/' + encodeURIComponent(codigoCliente) + '/' + encodeURIComponent(targetMes) + '.json', { cache: 'no-cache' })
+              .then(function(res){
+                if (!res.ok) return null;
+                return res.json();
+              })
+              .then(function(monthData){
+                if (!monthData || !Array.isArray(monthData.contenidos)) return;
+                var embLen = (embeddedData && Array.isArray(embeddedData.contenidos)) ? embeddedData.contenidos.length : 0;
+                var embReset = (embeddedData && embeddedData.resetAt) ? embeddedData.resetAt : 0;
+                if (monthData.contenidos.length !== embLen || (monthData.resetAt && monthData.resetAt > embReset)) {
+                  monthsCache[activeMes] = monthData;
+                  if (!hasFocusedCardField() && !hasAnyCardEditing()) {
+                    renderActiveMonth(monthData, isClosed);
+                  }
+                }
+              });
           }
         })
         .catch(function(){

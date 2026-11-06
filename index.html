@@ -7110,10 +7110,10 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
     var filename = url.split('/').pop();
     var fetchUrl = (filename && filename !== url) ? './' + filename : url;
 
-    fetch(fetchUrl)
+    fetch(fetchUrl, { cache: 'no-cache' })
       .then(function(r){
         if (!r.ok) {
-          if (fetchUrl !== url) return fetch(url);
+          if (fetchUrl !== url) return fetch(url, { cache: 'no-cache' });
           throw new Error('HTTP ' + r.status);
         }
         return r;

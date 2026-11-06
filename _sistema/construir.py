@@ -328,7 +328,7 @@ def registrar_en_firestore(cfg, data, total_contenidos):
             len(doc_fields.get('contenidos', {}).get('arrayValue', {}).get('values', [])) > 0
         )
 
-        es_reinicio = ('--reiniciar' in sys.argv) or (doc_respondio_404 and not data.get('revision', {}).get('fecha'))
+        es_reinicio = ('--reiniciar' in sys.argv) or ((doc_respondio_404 or not tiene_revision_previa) and not data.get('revision', {}).get('fecha'))
 
         fields = {
             'id': {'stringValue': data['id']},
@@ -351,7 +351,10 @@ def registrar_en_firestore(cfg, data, total_contenidos):
                 'contenidos': {'arrayValue': {}}
             })
         elif tiene_revision_previa:
-            print(f"  ℹ Conservando revisión existente en Firestore ({doc_fields.get('aprobados',{}).get('integerValue','0')} ok, {doc_fields.get('cambios',{}).get('integerValue','0')} cambios)")
+            aprobados_prev = int(doc_fields.get('aprobados', {}).get('integerValue', '0'))
+            cambios_prev = int(doc_fields.get('cambios', {}).get('integerValue', '0'))
+            fields['pendientes'] = {'integerValue': str(max(0, total_contenidos - aprobados_prev - cambios_prev))}
+            print(f"  ℹ Conservando revisión existente en Firestore ({aprobados_prev} ok, {cambios_prev} cambios)")
 
         mask_params = '&'.join([f"updateMask.fieldPaths={k}" for k in fields.keys()])
         patch_url = f"{doc_url}?{mask_params}&key={fb['apiKey']}"

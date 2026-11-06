@@ -117,6 +117,22 @@
       "estado": "pendiente",
       "version": 1,
       "comentario": ""
+    },
+    {
+      "formato": "Post",
+      "pilar": "",
+      "fechaPublicacion": "",
+      "titulo": "Cena navideña",
+      "guionLabel": "Guion / texto",
+      "guion": "Un chat de whatsaoo\n\n¿Dónde hacemos lo de fin de año?\nVamos a Bambú 🙌",
+      "copy": "",
+      "hashtags": "",
+      "referencias": [],
+      "canal": "Orgánico",
+      "id": "c8",
+      "estado": "pendiente",
+      "version": 1,
+      "comentario": ""
     }
   ],
   "url": "https://carlosuzc29-eng.github.io/tableros-de-contenido/bambu-bistro-1f6bcb.html",
@@ -128,5 +144,5 @@
     "revisadoPor": "",
     "fecha": ""
   },
-  "resetAt": 1793930049688
+  "resetAt": 1793931256315
 }

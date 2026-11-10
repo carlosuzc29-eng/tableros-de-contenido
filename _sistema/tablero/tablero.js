@@ -4651,7 +4651,7 @@
     } else {
       isAwaitingFirestore = true;
       var revEl = $('reviewed');
-      if (revEl) revEl.classList.add('is-reserving');
+      if (revEl && DATA.revision && DATA.revision.fecha) revEl.classList.add('is-reserving');
       clearTimeout(fsTimeoutTimer);
       fsTimeoutTimer = setTimeout(function () {
         if (isAwaitingFirestore) {

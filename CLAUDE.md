@@ -117,3 +117,14 @@ El script imprime la URL de GitHub Pages y el mensaje listo para enviar al clien
 3. **Después de publicar, ejecutar `verificar_publicado.js`. Si falla, avisar a Carlos de inmediato.**
 4. El documento de Firestore (`tableros/{id}`) está registrado o actualizado.
 5. Los contadores en el Banco de Trabajo (`index.html`) reflejan exactamente un único tablero activo para este cliente y mes.
+
+---
+
+## 7. Service Worker y Kill-Switch de Emergencia
+
+El repositorio incluye un Service Worker (`sw.js`) que ofrece caché local gratuita y navegación offline para tableros e informes:
+- **Estrategias**: Cache-First (Stale-While-Revalidate) para estáticos versionados (`_sistema/*`), Network-First (timeout 3 s) para HTML y JSONs.
+- **Kill-Switch de Emergencia**:
+  Si se requiere desinstalar inmediatamente el Service Worker en todos los clientes:
+  1. En `sw.js`, cambiar `const KILL_SWITCH = false;` a `true;` y hacer push a `main`. Al activarse en los clientes, desregistra el Service Worker y purga todas las cachés.
+  2. Alternativamente, acceder con el parámetro `?kill=true` en cualquier URL para forzar la purga y desinstalación local inmediata.

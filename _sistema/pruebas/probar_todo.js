@@ -871,74 +871,45 @@ async function getToastText(page) {
         actualizado: new Date().toISOString()
       };
 
-      const clients = new Set();
-
-      function notifyClients(metadata = { fromCache: false, hasPendingWrites: false }) {
-        const payload = JSON.stringify({ doc: prodDoc, metadata });
-        for (const res of clients) {
-          res.write(`data: ${payload}\n\n`);
+      const registeredPages = [];
+      async function broadcastDoc(metadata = { fromCache: false, hasPendingWrites: false }) {
+        for (const p of registeredPages) {
+          if (!p.isClosed()) {
+            await p.evaluate(({ doc, metadata }) => {
+              if (typeof window.__onRemoteDoc === 'function') {
+                window.__onRemoteDoc(doc, metadata);
+              }
+            }, { doc: prodDoc, metadata }).catch(() => {});
+          }
         }
       }
 
-      const server = http.createServer((req, res) => {
-        const url = new URL(req.url, `http://${req.headers.host}`);
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-        if (req.method === 'OPTIONS') {
-          res.writeHead(204);
-          return res.end();
-        }
-
-        if (url.pathname === '/prod-events') {
-          res.writeHead(200, {
-            'Content-Type': 'text/event-stream',
-            'Cache-Control': 'no-cache',
-            'Connection': 'keep-alive'
-          });
-          clients.add(res);
-          res.write(`data: ${JSON.stringify({ doc: prodDoc, metadata: { fromCache: false, hasPendingWrites: false } })}\n\n`);
-          req.on('close', () => clients.delete(res));
-          return;
-        }
-
-        if (url.pathname === '/prod-update' && req.method === 'POST') {
-          let body = '';
-          req.on('data', chunk => body += chunk);
-          req.on('end', () => {
-            const updates = JSON.parse(body);
-            for (const [k, v] of Object.entries(updates)) {
-              if (k.startsWith('tarjetas.')) {
-                const cardId = k.split('.')[1];
-                if (v && v._op === 'delete') {
-                  delete prodDoc.tarjetas[cardId];
-                } else if (v) {
-                  prodDoc.tarjetas[cardId] = { ...(prodDoc.tarjetas[cardId] || {}), ...v };
-                }
-              } else if (k === 'orden') {
-                prodDoc.orden = v;
-              } else if (k === 'eliminadas' && v && v._op === 'arrayUnion') {
-                if (!prodDoc.eliminadas.includes(v.value)) prodDoc.eliminadas.push(v.value);
-              }
+      function applyUpdates(updates) {
+        for (const [k, v] of Object.entries(updates)) {
+          if (k.startsWith('tarjetas.')) {
+            const cardId = k.split('.')[1];
+            if (v && v._op === 'delete') {
+              delete prodDoc.tarjetas[cardId];
+            } else if (v) {
+              prodDoc.tarjetas[cardId] = { ...(prodDoc.tarjetas[cardId] || {}), ...v };
             }
-            prodDoc.actualizado = new Date().toISOString();
-            notifyClients();
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ ok: true }));
-          });
-          return;
+          } else if (k === 'orden') {
+            prodDoc.orden = v;
+          } else if (k === 'eliminadas' && v && v._op === 'arrayUnion') {
+            if (!prodDoc.eliminadas.includes(v.value)) prodDoc.eliminadas.push(v.value);
+          }
         }
-
-        res.writeHead(404);
-        res.end();
-      });
-
-      await new Promise(r => server.listen(0, '127.0.0.1', r));
-      const srvPort = server.address().port;
+        prodDoc.actualizado = new Date().toISOString();
+        broadcastDoc();
+      }
 
       // Generar HTML de producción de prueba
-      const prodHtmlPath = path.join(tmpDir, 'qa-produccion.html');
+      const prodDir = path.join(tmpDir, 'produccion');
+      fs.mkdirSync(prodDir, { recursive: true });
+      if (!fs.existsSync(path.join(tmpDir, '_sistema'))) {
+        fs.symlinkSync(path.join(REPO_ROOT, '_sistema'), path.join(tmpDir, '_sistema'));
+      }
+      const prodHtmlPath = path.join(prodDir, 'qa-produccion.html');
       let plantillaProdHtml = fs.readFileSync(PLANTILLA_PROD, 'utf8');
       const prodData = {
         fecha: "2026-11-01",
@@ -953,35 +924,30 @@ async function getToastText(page) {
         ]
       };
       plantillaProdHtml = plantillaProdHtml.replace(/const DATA = \{[\s\S]*?\};/, `const DATA = ${JSON.stringify(prodData, null, 2)};`);
+      plantillaProdHtml = plantillaProdHtml.replace(/<script[^>]*firebase[^>]*><\/script>/gi, '');
       fs.writeFileSync(prodHtmlPath, plantillaProdHtml);
 
-      // Script inyectado para simular Firebase Firestore conectándose al mock server
+      // Script inyectado para simular Firebase Firestore conectándose al mock
       async function setupMockFirebase(page) {
-        await page.route('**/*', r => {
-          const u = r.request().url();
-          if (u.includes('firebasejs')) {
-            return r.fulfill({ status: 200, contentType: 'application/javascript', body: '// Firebase mock' });
-          }
-          if (u.includes('firestore.googleapis.com')) return r.abort();
-          return r.continue();
+        registeredPages.push(page);
+        await page.exposeFunction('__prodUpdateNode', async (fields) => {
+          applyUpdates(fields);
         });
 
-        await page.addInitScript((port) => {
-          window.__mockPort = port;
+        await page.addInitScript((initialDoc) => {
+          window.__lastDoc = initialDoc;
           window.__isOffline = false;
           window.__pendingQueue = [];
 
           const listeners = [];
-          const es = new EventSource(`http://127.0.0.1:${port}/prod-events`);
-          es.onmessage = (e) => {
-            const data = JSON.parse(e.data);
-            window.__lastDoc = data.doc;
-            const metadata = window.__isOffline
+          window.__onRemoteDoc = function(doc, metadata) {
+            window.__lastDoc = doc;
+            const meta = window.__isOffline
               ? { fromCache: true, hasPendingWrites: window.__pendingQueue.length > 0 }
-              : data.metadata;
+              : (metadata || { fromCache: false, hasPendingWrites: false });
             listeners.forEach(cb => cb({
-              data: () => data.doc,
-              metadata,
+              data: () => doc,
+              metadata: meta,
               exists: true
             }));
           };
@@ -1001,11 +967,9 @@ async function getToastText(page) {
               const queue = [...window.__pendingQueue];
               window.__pendingQueue = [];
               queue.forEach(item => {
-                fetch(`http://127.0.0.1:${port}/prod-update`, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(item)
-                });
+                if (typeof window.__prodUpdateNode === 'function') {
+                  window.__prodUpdateNode(item);
+                }
               });
             }
           };
@@ -1044,11 +1008,9 @@ async function getToastText(page) {
                         window.__pendingQueue.push(fields);
                         return;
                       }
-                      await fetch(`http://127.0.0.1:${port}/prod-update`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(fields)
-                      });
+                      if (typeof window.__prodUpdateNode === 'function') {
+                        await window.__prodUpdateNode(fields);
+                      }
                     }
                   })
                 }),
@@ -1069,7 +1031,7 @@ async function getToastText(page) {
             delete: () => ({ _op: 'delete' }),
             serverTimestamp: () => new Date().toISOString()
           };
-        }, srvPort);
+        }, prodDoc);
       }
 
       // Contexto A y Contexto B
@@ -1130,11 +1092,12 @@ async function getToastText(page) {
       }
 
       // Subir tarjetas locales faltantes en Firestore
-      const prodHtmlFaltantes = path.join(tmpDir, 'qa-produccion-extra.html');
+      const prodHtmlFaltantes = path.join(prodDir, 'qa-produccion-extra.html');
       const prodDataExtra = JSON.parse(JSON.stringify(prodData));
       prodDataExtra.contenidos.push({ id: 'c5', titulo: 'Tarjeta Extra', tipo: 'reel', estado: 'todo', subtareas: [], mediaLinks: [] });
 
       let htmlExtra = fs.readFileSync(PLANTILLA_PROD, 'utf8').replace(/const DATA = \{[\s\S]*?\};/, `const DATA = ${JSON.stringify(prodDataExtra, null, 2)};`);
+      htmlExtra = htmlExtra.replace(/<script[^>]*firebase[^>]*><\/script>/gi, '');
       fs.writeFileSync(prodHtmlFaltantes, htmlExtra);
 
       const ctxC = await browser.newContext({ viewport: { width: 390, height: 844 } });
@@ -1156,7 +1119,6 @@ async function getToastText(page) {
       await ctxA.close();
       await ctxB.close();
       await ctxC.close();
-      server.close();
       pass('Concurrencia atómica, cola offline y sincronización de tarjetas faltantes validadas');
     }
 
@@ -1185,7 +1147,28 @@ async function getToastText(page) {
 
           await page.route('**/*', r => {
             const u = r.request().url();
-            if (u.startsWith('file:') || /cdn\.jsdelivr|cdnjs|gstatic\.com\/firebasejs|fonts\.googleapis|fonts\.gstatic/.test(u)) {
+            if (u.startsWith('file:')) {
+              return r.continue();
+            }
+            if (u.includes('Sortable') || u.includes('sortable')) {
+              const sortablePath = path.join(REPO_ROOT, '_sistema', 'vendor', 'sortable.min.js');
+              if (fs.existsSync(sortablePath)) {
+                return r.fulfill({ status: 200, contentType: 'application/javascript', body: fs.readFileSync(sortablePath) });
+              }
+            }
+            if (u.includes('d3')) {
+              const d3Path = path.join(REPO_ROOT, '_sistema', 'vendor', 'd3.min.js');
+              if (fs.existsSync(d3Path)) {
+                return r.fulfill({ status: 200, contentType: 'application/javascript', body: fs.readFileSync(d3Path) });
+              }
+            }
+            if (u.includes('lucide')) {
+              return r.fulfill({ status: 200, contentType: 'application/javascript', body: 'window.lucide = { createIcons: () => {} };' });
+            }
+            if (u.includes('firebasejs') || u.includes('firebase') || u.includes('firestore')) {
+              return r.fulfill({ status: 200, contentType: 'application/javascript', body: '// mock' });
+            }
+            if (/fonts\.googleapis|fonts\.gstatic/.test(u)) {
               return r.continue();
             }
             return r.abort();
@@ -2093,8 +2076,21 @@ async function getToastText(page) {
       pass('Antiparpadeo y rendimiento de carga verificado (test_parpadeo.js)');
     }
 
+    // ============================================================
+    // CASO 33: Fluidez, Service Worker y estabilidad CLS (test_fluidez.js)
+    // ============================================================
+    console.log(`\n${C.bold}33. Fluidez y Service Worker:${C.reset} caché local gratuita, registro SW, Jost unificada, vendors locales y CLS < 0.05`);
+    {
+      try {
+        execSync(`node "${path.join(__dirname, 'test_fluidez.js')}"`, { stdio: 'pipe' });
+      } catch (ef) {
+        fail('test_fluidez.js falló:\n' + String((ef.stdout || '') + (ef.stderr || '')), ef);
+      }
+      pass('Fluidez, Service Worker y estabilidad CLS verificados (test_fluidez.js)');
+    }
+
     console.log(`\n${C.bold}${C.green}================================================================${C.reset}`);
-    console.log(`${C.bold}${C.green}✓ TODOS LOS 32 CASOS DE PRUEBA PASARON EXITOSAMENTE (100% OK)${C.reset}`);
+    console.log(`${C.bold}${C.green}✓ TODOS LOS 33 CASOS DE PRUEBA PASARON EXITOSAMENTE (100% OK)${C.reset}`);
     console.log(`${C.bold}${C.green}================================================================${C.reset}\n`);
 
   } catch (err) {

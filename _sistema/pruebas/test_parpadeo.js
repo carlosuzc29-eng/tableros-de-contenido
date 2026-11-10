@@ -13,7 +13,12 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const { chromium } = require('playwright');
+let chromium;
+try {
+  chromium = require('playwright').chromium;
+} catch (e) {
+  chromium = require(path.join(__dirname, 'node_modules', 'playwright')).chromium;
+}
 
 const REPO_ROOT = path.resolve(__dirname, '../..');
 
@@ -117,11 +122,11 @@ function getSampleFirestoreDoc(docId = 'bambu-bistro-2026-noviembre-b25b3aa7') {
 (async () => {
   console.log(`${C.bold}${C.cyan}--- INICIO PRUEBAS ANTIPARPADEO Y RENDIMIENTO DE CARGA (test_parpadeo.js) ---${C.reset}\n`);
 
-  const { server, baseUrl } = await createLocalServer();
+  const baseUrl = 'file://' + REPO_ROOT;
   const browser = await chromium.launch({
     channel: 'chrome',
     headless: true,
-    args: ['--disable-web-security']
+    args: ['--allow-file-access-from-files', '--disable-web-security']
   });
 
   const VIEWPORTS = [
@@ -362,7 +367,6 @@ function getSampleFirestoreDoc(docId = 'bambu-bistro-2026-noviembre-b25b3aa7') {
     console.log(`${C.bold}${C.green}================================================================${C.reset}\n`);
   } finally {
     await browser.close();
-    server.close();
   }
 })();
 

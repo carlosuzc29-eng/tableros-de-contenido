@@ -37,6 +37,8 @@ const DATA = {
 };
 
 // ── Firestore simulado: aplica rutas con puntos (tarjetas.c1 y tarjetas.c1.notas) como Firestore ──
+const paginasRegistradas = [];
+
 function crearServidor() {
   const clean = c => ({ ...c, notas: c.notas || '' });
   const doc = {
@@ -46,10 +48,6 @@ function crearServidor() {
     todo: 3, grabando: 0, listo: 0, eliminadas: []
   };
   const clients = new Set();
-  const notify = (d) => {
-    const payload = `data: ${JSON.stringify({ doc: d || doc })}\n\n`;
-    clients.forEach(c => c.write(payload));
-  };
   const setPath = (obj, parts, val) => {
     let o = obj;
     for (let i = 0; i < parts.length - 1; i++) { o[parts[i]] = o[parts[i]] || {}; o = o[parts[i]]; }
@@ -57,56 +55,60 @@ function crearServidor() {
     if (val && val._op === 'delete') delete o[last];
     else o[last] = val;
   };
-  const server = http.createServer((req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    if (req.method === 'OPTIONS') { res.writeHead(204); return res.end(); }
-    if (req.url === '/prod-events') {
-      res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', Connection: 'keep-alive' });
-      clients.add(res);
-      res.write(`data: ${JSON.stringify({ doc })}\n\n`);
-      req.on('close', () => clients.delete(res));
-      return;
+  const notify = (d) => {
+    const targetDoc = d || doc;
+    paginasRegistradas.forEach(p => {
+      if (!p.isClosed()) {
+        p.evaluate((remote) => {
+          if (typeof window.__onRemoteDoc === 'function') {
+            window.__onRemoteDoc(remote);
+          }
+        }, targetDoc).catch(() => {});
+      }
+    });
+  };
+  const handleUpdate = (updates) => {
+    for (const [k, v] of Object.entries(updates)) {
+      if (k === 'eliminadas' && v && v._op === 'arrayUnion') { if (!doc.eliminadas.includes(v.value)) doc.eliminadas.push(v.value); continue; }
+      setPath(doc, k.split('.'), v);
     }
-    if (req.url === '/prod-update' && req.method === 'POST') {
-      let body = '';
-      req.on('data', ch => body += ch);
-      req.on('end', () => {
-        const updates = JSON.parse(body);
-        for (const [k, v] of Object.entries(updates)) {
-          if (k === 'eliminadas' && v && v._op === 'arrayUnion') { if (!doc.eliminadas.includes(v.value)) doc.eliminadas.push(v.value); continue; }
-          setPath(doc, k.split('.'), v);
-        }
-        notify();
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end('{"ok":true}');
-      });
-      return;
-    }
-    res.writeHead(404); res.end();
-  });
-  return { server, doc, notify };
+    notify();
+  };
+  return { doc, notify, handleUpdate };
 }
 
-async function prepararPagina(browser, port, htmlPath, viewport) {
+async function prepararPagina(browser, serverObj, htmlPath, viewport) {
   const ctx = await browser.newContext({ viewport });
   const page = await ctx.newPage();
+  paginasRegistradas.push(page);
   const errores = [];
   page.on('pageerror', e => errores.push(String(e)));
+
+  await page.exposeFunction('__prodUpdateNode', async (fields) => {
+    serverObj.handleUpdate(fields);
+  });
+
   await page.route('**/*', r => {
     const u = r.request().url();
-    if (u.includes('firebasejs')) return r.fulfill({ status: 200, contentType: 'application/javascript', body: '// mock' });
+    if (u.includes('firebasejs') || u.includes('vendor/firebase-')) return r.fulfill({ status: 200, contentType: 'application/javascript', body: '// mock' });
     if (u.includes('firestore.googleapis.com')) return r.abort();
+    if (u.includes('_sistema/')) {
+      const relPath = u.substring(u.indexOf('_sistema/'));
+      const filePath = path.join(REPO, relPath.split('?')[0]);
+      if (fs.existsSync(filePath)) {
+        const ext = path.extname(filePath);
+        const ct = ext === '.css' ? 'text/css' : (ext === '.js' ? 'application/javascript' : (ext === '.woff2' ? 'font/woff2' : 'text/plain'));
+        return r.fulfill({ status: 200, contentType: ct, body: fs.readFileSync(filePath) });
+      }
+    }
     return r.continue();
   });
-  await page.addInitScript((port) => {
+  await page.addInitScript((initialDoc) => {
+    window.__lastDoc = initialDoc;
     const listeners = [];
-    const es = new EventSource(`http://127.0.0.1:${port}/prod-events`);
-    es.onmessage = (e) => {
-      const data = JSON.parse(e.data);
-      window.__lastDoc = data.doc;
-      listeners.forEach(cb => cb({ data: () => data.doc, metadata: { fromCache: false, hasPendingWrites: false }, exists: true }));
+    window.__onRemoteDoc = (doc) => {
+      window.__lastDoc = doc;
+      listeners.forEach(cb => cb({ data: () => doc, metadata: { fromCache: false, hasPendingWrites: false }, exists: true }));
     };
     window.firebase = {
       apps: [{ name: '[DEFAULT]' }],
@@ -123,7 +125,9 @@ async function prepararPagina(browser, port, htmlPath, viewport) {
                 return () => {};
               },
               update: async (fields) => {
-                await fetch(`http://127.0.0.1:${port}/prod-update`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(fields) });
+                if (typeof window.__prodUpdateNode === 'function') {
+                  await window.__prodUpdateNode(fields);
+                }
               }
             })
           }),
@@ -135,7 +139,7 @@ async function prepararPagina(browser, port, htmlPath, viewport) {
       arrayUnion: (v) => ({ _op: 'arrayUnion', value: v }),
       delete: () => ({ _op: 'delete' })
     };
-  }, port);
+  }, serverObj.doc);
   await page.goto('file://' + htmlPath);
   await page.waitForTimeout(1200);
   return { ctx, page, errores };
@@ -149,19 +153,22 @@ const esperar = async (cond, ms = 4000) => {
 
 (async () => {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'nexo-fase8-'));
-  const htmlPath = path.join(tmpDir, 'qa-produccion-v3.html');
-  const html = fs.readFileSync(PLANTILLA_PROD, 'utf8').replace(/const DATA = \{[\s\S]*?\};/, () => `const DATA = ${JSON.stringify(DATA, null, 2)};`);
+  const prodDir = path.join(tmpDir, 'produccion');
+  fs.mkdirSync(prodDir, { recursive: true });
+  fs.symlinkSync(path.join(REPO, '_sistema'), path.join(tmpDir, '_sistema'));
+  const htmlPath = path.join(prodDir, 'qa-produccion-v3.html');
+  let html = fs.readFileSync(PLANTILLA_PROD, 'utf8').replace(/const DATA = \{[\s\S]*?\};/, () => `const DATA = ${JSON.stringify(DATA, null, 2)};`);
+  html = html.replace(/<script[^>]*firebase[^>]*><\/script>/gi, '');
   fs.writeFileSync(htmlPath, html);
 
-  const { server, doc, notify } = crearServidor();
-  await new Promise(r => server.listen(0, '127.0.0.1', r));
-  const port = server.address().port;
-  const browser = await chromium.launch({ channel: 'chrome', headless: true });
+  const serverObj = crearServidor();
+  const { doc, notify } = serverObj;
+  const browser = await chromium.launch({ channel: 'chrome', headless: true, args: ['--allow-file-access-from-files'] });
 
   try {
     console.log('--- INICIO PRUEBAS FASE 8 (PRODUCCIÓN v3) ---');
-    const A = await prepararPagina(browser, port, htmlPath, { width: 1440, height: 900 });
-    const B = await prepararPagina(browser, port, htmlPath, { width: 390, height: 844 });
+    const A = await prepararPagina(browser, serverObj, htmlPath, { width: 1440, height: 900 });
+    const B = await prepararPagina(browser, serverObj, htmlPath, { width: 390, height: 844 });
 
     // a) Ficha centrada, navegación y cierre
     {
@@ -288,7 +295,6 @@ const esperar = async (cond, ms = 4000) => {
     console.log('--- TODAS LAS PRUEBAS DE FASE 8 PASARON CON ÉXITO ---');
   } finally {
     await browser.close();
-    server.close();
     fs.rmSync(tmpDir, { recursive: true, force: true });
   }
 })().catch(err => {

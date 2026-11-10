@@ -5613,13 +5613,10 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
   </div>
 </div>
 
-<!-- Firebase SDK compat -->
-
-<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
-<!-- html2pdf para exportar PDF detallado a ClickUp -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<!-- Firebase SDK compat (vendor local optimizado) -->
+<script src="_sistema/vendor/firebase-app-compat.js"></script>
+<script src="_sistema/vendor/firebase-auth-compat.js"></script>
+<script src="_sistema/vendor/firebase-firestore-compat.js"></script>
 
 <script>
 (function(){
@@ -6674,6 +6671,11 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
   }
   var auth = firebase.auth();
   var db = firebase.firestore();
+  if (db && typeof db.enablePersistence === 'function') {
+    db.enablePersistence({ synchronizeTabs: true }).catch(function(err){
+      console.warn('Persistencia Firestore index:', err && err.code ? err.code : err);
+    });
+  }
   try {
     auth.setPersistence(firebase.auth.Auth.Persistence.SESSION).catch(function(){});
   } catch(e){}
@@ -7394,12 +7396,42 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
     copyText(JSON.stringify(exportData, null, 2), '✓ JSON completo copiado al portapapeles');
   }
 
+  var _loadingHtml2Pdf = null;
+  function ensureHtml2Pdf(cb){
+    if (window.html2pdf) return cb(true);
+    if (_loadingHtml2Pdf) {
+      _loadingHtml2Pdf.push(cb);
+      return;
+    }
+    _loadingHtml2Pdf = [cb];
+    toast('Cargando motor de PDF…');
+    var s = document.createElement('script');
+    s.src = '_sistema/vendor/html2pdf.bundle.min.js';
+    s.onload = function(){
+      var cbs = _loadingHtml2Pdf || [];
+      _loadingHtml2Pdf = null;
+      cbs.forEach(function(fn){ fn(true); });
+    };
+    s.onerror = function(){
+      var cbs = _loadingHtml2Pdf || [];
+      _loadingHtml2Pdf = null;
+      cbs.forEach(function(fn){ fn(false); });
+    };
+    document.head.appendChild(s);
+  }
+
   function descargarPdfClickUp(t, boardData){
     var items = getMergedItems(t, boardData);
     if (!items.length) {
       toast('Este tablero no tiene contenidos para exportar.');
       return;
     }
+    ensureHtml2Pdf(function(){
+      _ejecutarDescargaPdfClickUp(t, boardData, items);
+    });
+  }
+
+  function _ejecutarDescargaPdfClickUp(t, boardData, items){
 
     items.sort(function(a, b){ return a.n - b.n; });
 
@@ -8848,6 +8880,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
     // 1. Colección tableros (aprobaciones)
     unsubscribeFirestore = db.collection('tableros').onSnapshot(function(snapshot){
       if (btnRef) btnRef.disabled = false;
+      if (allTableros.length > 0 && snapshot.docChanges().length === 0 && !isManualRefresh) return;
       var docs = [];
       snapshot.forEach(function(doc){
         var d = doc.data();
@@ -8888,6 +8921,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
     // 2. Colección produccion (pautas en vivo)
     unsubscribeProduccion = db.collection('produccion').onSnapshot(function(snapshot){
       if (btnRef) btnRef.disabled = false;
+      if (allProduccion.length > 0 && snapshot.docChanges().length === 0 && !isManualRefresh) return;
       var docs = [];
       snapshot.forEach(function(doc){
         var d = doc.data();
@@ -8905,6 +8939,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
     // 3. Colección informes (informes registrados)
     unsubscribeInformes = db.collection('informes').onSnapshot(function(snapshot){
       if (btnRef) btnRef.disabled = false;
+      if (allInformes.length > 0 && snapshot.docChanges().length === 0 && !isManualRefresh) return;
       var docs = [];
       snapshot.forEach(function(doc){
         var d = doc.data();
@@ -11662,5 +11697,12 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
   });
 
 })();
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('sw.js').catch(function(e) { console.warn('SW:', e); });
+    });
+  }
 </script>
 </body></html>

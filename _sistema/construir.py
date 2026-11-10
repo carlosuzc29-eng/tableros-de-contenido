@@ -564,11 +564,13 @@ def main():
     chrome_bin = chrome()
     if chrome_bin:
         tmp_path = os.path.join(REPO, f".tmp_prerender_{secrets.token_hex(4)}.html")
+        user_data_dir = tempfile.mkdtemp(prefix='nexo_chrome_')
         with open(tmp_path, 'w', encoding='utf-8') as f:
             f.write(html)
-        extra = ['--no-sandbox'] if os.environ.get('NEXO_NOSANDBOX') else []
+        extra = ['--no-sandbox'] if os.environ.get('NEXO_NOSANDBOX') else ['--no-sandbox']
         try:
             res = subprocess.run([chrome_bin, *extra, '--headless=new', '--disable-gpu', '--no-first-run',
+                                  '--disable-crash-reporter', f'--user-data-dir={user_data_dir}',
                                   '--allow-file-access-from-files', '--virtual-time-budget=5000',
                                   '--dump-dom', 'file://' + tmp_path], capture_output=True, text=True, timeout=120)
             if 'tablero.js' in (res.stderr or '') and ('ERR_FILE_NOT_FOUND' in res.stderr or '404' in res.stderr or 'Failed to load resource' in res.stderr):
@@ -591,6 +593,7 @@ def main():
         finally:
             if os.path.exists(tmp_path):
                 os.unlink(tmp_path)
+            shutil.rmtree(user_data_dir, ignore_errors=True)
     else:
         print('  ℹ Google Chrome no detectado en el entorno: tablero generado en modo dinámico de plantilla.')
 

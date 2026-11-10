@@ -1,34 +1,11 @@
-/* Metric-adjusted fallback to prevent layout shift (CLS = 0) while Jost is loading */
+/* Fuente variable Jost unificada (100–900) */
 @font-face {
   font-family: 'Jost';
   font-style: normal;
-  font-weight: 400;
+  font-weight: 100 900;
   font-display: swap;
-  src: url('../fuentes/jost-400.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Jost';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('../fuentes/jost-500.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Jost';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url('../fuentes/jost-600.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Jost';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('../fuentes/jost-700.woff2') format('woff2');
+  src: url('../fuentes/jost-var.woff2') format('woff2-variations'),
+       url('../fuentes/jost-var.woff2') format('woff2');
 }
 
 @font-face {

@@ -28,7 +28,7 @@
  *   · prefers-reduced-motion: cuadro único estático.
  */
 
-(function(global){
+(function (global) {
   'use strict';
 
   var DEFAULT_CONFIG = {
@@ -91,15 +91,15 @@
     cursorFadeTime: 0.20 // 200ms
   };
 
-  function createNetworkBackground(targetContainer, options){
+  function createNetworkBackground(targetContainer, options) {
     var container = targetContainer || document.body;
     var config = Object.assign({}, DEFAULT_CONFIG, options || {});
 
     // Reutilizar o crear canvas
     var canvas = document.querySelector('.page-network-canvas') ||
-                 document.getElementById('nexo-bg-canvas') ||
-                 document.getElementById('netCanvas') ||
-                 (container && container.querySelector ? container.querySelector('canvas.page-network-canvas') : null);
+      document.getElementById('nexo-bg-canvas') ||
+      document.getElementById('netCanvas') ||
+      (container && container.querySelector ? container.querySelector('canvas.page-network-canvas') : null);
 
     if (!canvas) {
       canvas = document.createElement('canvas');
@@ -152,27 +152,27 @@
     var isTouchDevice = false;
     try {
       isTouchDevice = window.matchMedia('(pointer: coarse)').matches || ('ontouchstart' in window);
-    } catch(e){}
+    } catch (e) { }
 
     var reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-    function isMobile(){
+    function isMobile() {
       return (window.innerWidth <= 768);
     }
 
-    function getPointCount(){
+    function getPointCount() {
       return isMobile() ? config.pointCountMobile : config.pointCountDesktop;
     }
 
-    function getTargetConnections(){
+    function getTargetConnections() {
       return isMobile() ? config.targetConnectionsMobile : config.targetConnectionsDesktop;
     }
 
     // --- SPRITES PRE-RENDERIZADOS OFFSCREEN (cero shadowBlur) ---
     var sprites = {};
-    function initSprites(){
+    function initSprites() {
       var size = 64;
-      function buildSprite(coreColor, haloColor){
+      function buildSprite(coreColor, haloColor) {
         var c = document.createElement('canvas');
         c.width = size;
         c.height = size;
@@ -197,11 +197,11 @@
     initSprites();
 
     // Actualización en caché de límite inferior del hero (sin lecturas por cuadro)
-    function updateHeroBottomCache(){
+    function updateHeroBottomCache() {
       var hero = document.querySelector('.hero') ||
-                 document.querySelector('.kanban-header') ||
-                 document.querySelector('.pub-hero') ||
-                 document.querySelector('.ws-hero');
+        document.querySelector('.kanban-header') ||
+        document.querySelector('.pub-hero') ||
+        document.querySelector('.ws-hero');
       if (hero) {
         cachedHeroBottom = hero.getBoundingClientRect().bottom;
       } else {
@@ -209,7 +209,7 @@
       }
     }
 
-    function getDistanceBrackets(){
+    function getDistanceBrackets() {
       var w = width || 1024;
       if (isMobile()) {
         return {
@@ -232,7 +232,7 @@
     }
 
     // Clearance elíptico en tarjetas y hero para no comprometer legibilidad
-    function calculateClearance(px, py, heroBottom){
+    function calculateClearance(px, py, heroBottom) {
       if (heroBottom <= 20) return 1.0;
       var heroHeight = Math.min(height, heroBottom);
       var focalX = width * 0.32;
@@ -246,7 +246,7 @@
       return Math.min(1.0, Math.max(0.25, Math.sqrt(distSq)));
     }
 
-    function initPoints(){
+    function initPoints() {
       points = [];
       activeConnectionsMap.clear();
       pulses = [];
@@ -308,7 +308,7 @@
     var lastW = 0;
     var lastH = 0;
 
-    function resize(){
+    function resize() {
       var w = window.innerWidth || document.documentElement.clientWidth || 1024;
       var h = window.innerHeight || document.documentElement.clientHeight || 768;
       if (w <= 0 || h <= 0) return;
@@ -340,7 +340,7 @@
       if (!points.length || Math.abs(points.length - expectedCount) > 2) {
         initPoints();
       } else {
-        points.forEach(function(p){
+        points.forEach(function (p) {
           if (p.x > width * 1.1) p.x = width * Math.random();
           if (p.y > height * 1.1) p.y = height * Math.random();
         });
@@ -351,11 +351,11 @@
       }
     }
 
-    function spawnPulse(activeList){
+    function spawnPulse(activeList) {
       if (!config.pulseEnabled || !activeList.length) return;
       if (pulses.length >= config.pulseMaxConcurrent) return;
 
-      var candidates = activeList.filter(function(c){
+      var candidates = activeList.filter(function (c) {
         return c.alpha > 0.4 && (c.tier === 'large' || c.tier === 'medium');
       });
       if (!candidates.length) candidates = activeList;
@@ -381,7 +381,7 @@
       });
     }
 
-    function updatePhysics(dt){
+    function updatePhysics(dt) {
       var count = points.length;
       var bleedX = width * 0.09;
       var bleedY = height * 0.09;
@@ -442,7 +442,7 @@
             nearNodes.push({ point: pt, dist: cDist });
           }
         }
-        nearNodes.sort(function(a, b){ return a.dist - b.dist; });
+        nearNodes.sort(function (a, b) { return a.dist - b.dist; });
 
         for (var cIdx = 0; cIdx < 2; cIdx++) {
           var link = cursorLinks[cIdx];
@@ -463,7 +463,7 @@
       }
     }
 
-    function evaluateConnections(dt){
+    function evaluateConnections(dt) {
       var count = points.length;
       var brackets = getDistanceBrackets();
       var targetTotal = getTargetConnections();
@@ -476,12 +476,12 @@
         points[pIdx].connectionCount = 0;
       }
 
-      activeConnectionsMap.forEach(function(conn){
+      activeConnectionsMap.forEach(function (conn) {
         conn.desired = false;
       });
 
       // 1. Evaluar conexiones existentes
-      activeConnectionsMap.forEach(function(conn){
+      activeConnectionsMap.forEach(function (conn) {
         var ax = conn.a.x + conn.a.offsetX;
         var ay = conn.a.y + conn.a.offsetY;
         var bx = conn.b.x + conn.b.offsetX;
@@ -511,8 +511,8 @@
         }
 
         if (inRange &&
-            conn.a.connectionCount < config.maxConnectionsPerPoint &&
-            conn.b.connectionCount < config.maxConnectionsPerPoint) {
+          conn.a.connectionCount < config.maxConnectionsPerPoint &&
+          conn.b.connectionCount < config.maxConnectionsPerPoint) {
           conn.desired = true;
           conn.a.connectionCount++;
           conn.b.connectionCount++;
@@ -520,7 +520,7 @@
       });
 
       var currentLarge = 0, currentMedium = 0, currentSmall = 0;
-      activeConnectionsMap.forEach(function(conn){
+      activeConnectionsMap.forEach(function (conn) {
         if (conn.desired) {
           if (conn.tier === 'large') currentLarge++;
           else if (conn.tier === 'medium') currentMedium++;
@@ -574,7 +574,7 @@
         }
       }
 
-      candidatePairs.sort(function(c1, c2){
+      candidatePairs.sort(function (c1, c2) {
         if (c1.sameLayer !== c2.sameLayer) {
           return c1.sameLayer ? -1 : 1;
         }
@@ -623,7 +623,7 @@
       var activeList = [];
       var keysToDelete = [];
 
-      activeConnectionsMap.forEach(function(conn, key){
+      activeConnectionsMap.forEach(function (conn, key) {
         var targetAlpha = 0.0;
         if (conn.desired) {
           var bracketsLocal = getDistanceBrackets();
@@ -670,7 +670,7 @@
       return activeList;
     }
 
-    function drawFrame(dt, isStatic){
+    function drawFrame(dt, isStatic) {
       var tStart = performance.now();
       ctx.clearRect(0, 0, width, height);
 
@@ -684,11 +684,11 @@
 
       // Detectar si toda la superficie es oscura (ej. Banco de trabajo o Producción dark)
       var isDarkPage = (document.documentElement.getAttribute('data-theme') === 'dark') ||
-                       (document.body && document.body.classList.contains('dark-theme')) ||
-                       (!document.querySelector('.hero') && !document.querySelector('.kanban-area[data-theme="light"]'));
+        (document.body && document.body.classList.contains('dark-theme')) ||
+        (!document.querySelector('.hero') && !document.querySelector('.kanban-area[data-theme="light"]'));
 
       // Fondo infinito en toda la pantalla: sin desfase acumulativo por scroll
-      function getParallaxY(layer){
+      function getParallaxY(layer) {
         return 0;
       }
 
@@ -891,7 +891,7 @@
       }
     }
 
-    function loop(currentTime){
+    function loop(currentTime) {
       if (!isRunning) return;
 
       // Throttling a 30fps en celular para preservar batería y fluidez de scroll
@@ -913,7 +913,7 @@
       animationFrameId = requestAnimationFrame(loop);
     }
 
-    function start(){
+    function start() {
       if (isRunning) return;
       if (reducedMotionQuery.matches) {
         resize();
@@ -925,7 +925,7 @@
       animationFrameId = requestAnimationFrame(loop);
     }
 
-    function stop(){
+    function stop() {
       isRunning = false;
       if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);
@@ -933,13 +933,13 @@
       }
     }
 
-    function onMouseMove(e){
+    function onMouseMove(e) {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
       mouse.active = true;
     }
 
-    function onMouseLeave(){
+    function onMouseLeave() {
       mouse.active = false;
       mouse.x = -9999;
       mouse.y = -9999;
@@ -951,7 +951,7 @@
     }
 
     // Pausa pasiva al ocultar pestaña
-    function onVisibilityChange(){
+    function onVisibilityChange() {
       if (document.hidden) {
         isVisible = false;
         stop();
@@ -964,7 +964,7 @@
 
     // IntersectionObserver para pausar si el canvas no se visualiza
     if ('IntersectionObserver' in window && canvas) {
-      var observer = new IntersectionObserver(function(entries){
+      var observer = new IntersectionObserver(function (entries) {
         if (entries && entries[0]) {
           isIntersecting = entries[0].isIntersecting;
           if (isIntersecting && !document.hidden && !reducedMotionQuery.matches) {
@@ -978,13 +978,13 @@
     }
 
     // Scroll pasivo para parallax y actualización de hero
-    window.addEventListener('scroll', function(){
+    window.addEventListener('scroll', function () {
       currentScrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
       updateHeroBottomCache();
     }, { passive: true });
 
     // Accesibilidad: prefers-reduced-motion
-    function onMotionChange(e){
+    function onMotionChange(e) {
       if (e.matches) {
         stop();
         drawFrame(0, true);
@@ -1003,7 +1003,7 @@
     start();
 
     return {
-      destroy: function(){
+      destroy: function () {
         stop();
         window.removeEventListener('resize', resize);
         window.removeEventListener('mousemove', onMouseMove);
@@ -1036,10 +1036,10 @@
 /* ===============================================================
    LÓGICA DEL TABLERO V2 CON SELECTOR DE MESES Y SOPORTE MULTI-MES
    =============================================================== */
-(function(){
+(function () {
   'use strict';
 
-  document.addEventListener('touchstart', function(){}, {passive:true});
+  document.addEventListener('touchstart', function () { }, { passive: true });
   document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/, 'js');
 
   var DATA = null;
@@ -1059,18 +1059,40 @@
   var monthsCache = {};
   var codigoCliente = '';
 
-  var LBL = {
-    borrador: 'Borrador',
-    en_revision: 'En revisión',
-    pendiente: 'En revisión',
-    cambios: 'Cambios solicitados',
-    en_correccion: 'En corrección',
-    corregido: 'Corregido',
-    aprobado: 'Aprobado'
-  };
-  var C = 2 * Math.PI * 82;
-  var $ = function(id){ return document.getElementById(id); };
-  var list = null, nav = null;
+  var initialFsPromise = null;
+  var lastAppliedFsUpdateTime = null;
+  var isAwaitingFirestore = false;
+  var fsTimeoutTimer = null;
+  var io = null, act = null;
+
+  function setTextIfChanged(node, text) {
+    if (node && node.textContent !== text) {
+      node.textContent = text;
+    }
+  }
+
+  function saveFirestoreCache(docId, doc) {
+    if (!docId || !doc || !doc.fields) return;
+    try {
+      localStorage.setItem('nexo-fs-' + docId, JSON.stringify({
+        updateTime: doc.updateTime || '',
+        doc: doc,
+        cachedAt: Date.now()
+      }));
+    } catch (e) { }
+  }
+
+  function getFirestoreCache(docId) {
+    if (!docId) return null;
+    try {
+      var raw = localStorage.getItem('nexo-fs-' + docId);
+      if (!raw) return null;
+      var parsed = JSON.parse(raw);
+      return (parsed && parsed.doc) ? parsed.doc : null;
+    } catch (e) {
+      return null;
+    }
+  }
 
   var LBL = {
     borrador: 'Borrador',
@@ -1082,9 +1104,10 @@
     aprobado: 'Aprobado'
   };
   var C = 2 * Math.PI * 82;
-  var $ = function(id){ return document.getElementById(id); };
-  [].forEach.call(document.querySelectorAll('[data-logo]'), function(d){ d.innerHTML = $('nexo-logo').innerHTML; });
-  try { $('fav').href = 'data:image/svg+xml,' + encodeURIComponent($('nexo-iso').innerHTML.trim()); } catch (e) {}
+  var $ = function (id) { return document.getElementById(id); };
+  var list = null, nav = null;
+  [].forEach.call(document.querySelectorAll('[data-logo]'), function (d) { d.innerHTML = $('nexo-logo').innerHTML; });
+  try { $('fav').href = 'data:image/svg+xml,' + encodeURIComponent($('nexo-iso').innerHTML.trim()); } catch (e) { }
 
   // Configuración de Firebase
   var FB = {
@@ -1106,32 +1129,32 @@
     localStorage.removeItem('nexo_agency_logged_user');
     sessionStorage.removeItem('nexo_agency_logged_user');
     localStorage.removeItem('nexo_reviewer_name');
-  } catch(e) {}
+  } catch (e) { }
 
   try {
     freeEditMode = sessionStorage.getItem(FREE_EDIT_SESSION_KEY) === '1';
-  } catch(e) {
+  } catch (e) {
     freeEditMode = false;
   }
 
-  function isFreeEditActive(){
+  function isFreeEditActive() {
     return !!(agencyUser && freeEditMode);
   }
 
-  function setFreeEditMode(on){
+  function setFreeEditMode(on) {
     freeEditMode = !!on;
     try {
       sessionStorage.setItem(FREE_EDIT_SESSION_KEY, freeEditMode ? '1' : '0');
-    } catch(e) {}
+    } catch (e) { }
     if (typeof updateAgencyUI === 'function') updateAgencyUI();
   }
 
-  function clearAgencySession(){
+  function clearAgencySession() {
     agencySession = null;
     agencyUser = null;
     freeEditMode = false;
     if (Array.isArray(cards)) {
-      cards.forEach(function(c){
+      cards.forEach(function (c) {
         if (c && c.setEditingState) c.setEditingState(false);
         else if (c) c.editando = false;
       });
@@ -1141,10 +1164,10 @@
       sessionStorage.removeItem(FREE_EDIT_SESSION_KEY);
       localStorage.removeItem('nexo_agency_logged_user');
       sessionStorage.removeItem('nexo_agency_logged_user');
-    } catch(e) {}
+    } catch (e) { }
   }
 
-  function saveAgencySession(sess){
+  function saveAgencySession(sess) {
     agencySession = sess;
     agencyUser = sess ? sess.email : null;
     try {
@@ -1153,10 +1176,10 @@
       } else {
         sessionStorage.removeItem(AGENCY_SESSION_KEY);
       }
-    } catch(e) {}
+    } catch (e) { }
   }
 
-  function refreshAgencyToken(refreshToken){
+  function refreshAgencyToken(refreshToken) {
     var url = 'https://securetoken.googleapis.com/v1/token?key=' + encodeURIComponent(FB.apiKey);
     var body = 'grant_type=refresh_token&refresh_token=' + encodeURIComponent(refreshToken);
     return fetch(url, {
@@ -1164,42 +1187,42 @@
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: body
     })
-    .then(function(res){
-      if (!res.ok) {
-        throw new Error('Refresh failed HTTP ' + res.status);
-      }
-      return res.json();
-    })
-    .then(function(data){
-      var newIdToken = data.id_token || data.idToken;
-      var newRefreshToken = data.refresh_token || data.refreshToken || refreshToken;
-      var expiresInSec = parseInt(data.expires_in || data.expiresIn || '3600', 10);
-      if (!newIdToken) throw new Error('No idToken in refresh response');
-      var updatedSession = {
-        idToken: newIdToken,
-        refreshToken: newRefreshToken,
-        email: (agencySession && agencySession.email) || (agencyUser || ''),
-        expiresAt: Date.now() + (expiresInSec * 1000)
-      };
-      saveAgencySession(updatedSession);
-      return updatedSession;
-    })
-    .catch(function(err){
-      clearAgencySession();
-      if (typeof updateAgencyUI === 'function') updateAgencyUI();
-      throw err;
-    });
+      .then(function (res) {
+        if (!res.ok) {
+          throw new Error('Refresh failed HTTP ' + res.status);
+        }
+        return res.json();
+      })
+      .then(function (data) {
+        var newIdToken = data.id_token || data.idToken;
+        var newRefreshToken = data.refresh_token || data.refreshToken || refreshToken;
+        var expiresInSec = parseInt(data.expires_in || data.expiresIn || '3600', 10);
+        if (!newIdToken) throw new Error('No idToken in refresh response');
+        var updatedSession = {
+          idToken: newIdToken,
+          refreshToken: newRefreshToken,
+          email: (agencySession && agencySession.email) || (agencyUser || ''),
+          expiresAt: Date.now() + (expiresInSec * 1000)
+        };
+        saveAgencySession(updatedSession);
+        return updatedSession;
+      })
+      .catch(function (err) {
+        clearAgencySession();
+        if (typeof updateAgencyUI === 'function') updateAgencyUI();
+        throw err;
+      });
   }
 
-  function getValidAgencyToken(){
+  function getValidAgencyToken() {
     if (!agencySession || !agencySession.idToken) return Promise.resolve(null);
     if (agencySession.expiresAt && Date.now() < (agencySession.expiresAt - 60000)) {
       return Promise.resolve(agencySession.idToken);
     }
     if (agencySession.refreshToken) {
-      return refreshAgencyToken(agencySession.refreshToken).then(function(sess){
+      return refreshAgencyToken(agencySession.refreshToken).then(function (sess) {
         return sess.idToken;
-      }).catch(function(){
+      }).catch(function () {
         return null;
       });
     }
@@ -1218,9 +1241,9 @@
           agencySession = parsedAgencySess;
           agencyUser = parsedAgencySess.email;
         } else if (parsedAgencySess.refreshToken) {
-          refreshAgencyToken(parsedAgencySess.refreshToken).then(function(){
+          refreshAgencyToken(parsedAgencySess.refreshToken).then(function () {
             if (typeof updateAgencyUI === 'function') updateAgencyUI();
-          }).catch(function(){});
+          }).catch(function () { });
         } else {
           clearAgencySession();
         }
@@ -1228,7 +1251,7 @@
         clearAgencySession();
       }
     }
-  } catch(e) {
+  } catch (e) {
     clearAgencySession();
   }
 
@@ -1257,15 +1280,15 @@
   function canalLabel(c) { return c === 'Ads' ? '📣 Ads' : (c === 'Orgánico' ? '🌱 Orgánico' : ''); }
   var fc = 'all'; // filtro por canal
 
-  function isValidHttpUrl(u){
+  function isValidHttpUrl(u) {
     return /^https?:\/\/\S+/i.test(String(u || '').trim());
   }
 
   // Fecha de publicación: acepta 9/11, 09-11, 9.11, 9/11/2026 o 9/11/26 y la devuelve como DD/MM.
   // Vacía es válida (quita la fecha). Rechaza días o meses que no existen (31/11, 30/02...).
-  var MESES_FECHA_PUB = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-  function dos(nv){ return (nv < 10 ? '0' : '') + nv; }
-  function normalizarFechaPub(valor){
+  var MESES_FECHA_PUB = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  function dos(nv) { return (nv < 10 ? '0' : '') + nv; }
+  function normalizarFechaPub(valor) {
     var s = String(valor == null ? '' : valor).trim();
     if (!s) return { ok: true, valor: '' };
     var m = s.match(/^(\d{1,2})\s*[\/\-.]\s*(\d{1,2})(?:\s*[\/\-.]\s*(\d{2}|\d{4}))?$/);
@@ -1290,18 +1313,18 @@
     }
     return { ok: true, valor: dos(dia) + '/' + dos(mes) };
   }
-  function normalizeReferencias(refs){
+  function normalizeReferencias(refs) {
     if (!Array.isArray(refs)) return [];
-    return refs.filter(function(r){
+    return refs.filter(function (r) {
       return r && typeof r === 'object' && isValidHttpUrl(r.url);
-    }).map(function(r){
+    }).map(function (r) {
       return {
         label: String(r.label || '').trim() || 'Referencia',
         url: String(r.url || '').trim()
       };
     });
   }
-  function hasFocusedCardField(){
+  function hasFocusedCardField() {
     if (typeof document === 'undefined') return false;
     var ae = document.activeElement;
     if (!ae || ae === document.body || ae === document.documentElement) return false;
@@ -1313,11 +1336,11 @@
     var tag = (ae.tagName || '').toUpperCase();
     return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
   }
-  function hasAnyCardEditing(){
-    return Array.isArray(cards) && cards.some(function(c){ return !!(c && c.editando === true); });
+  function hasAnyCardEditing() {
+    return Array.isArray(cards) && cards.some(function (c) { return !!(c && c.editando === true); });
   }
   if (typeof window !== 'undefined' && window.addEventListener) {
-    window.addEventListener('beforeunload', function(e){
+    window.addEventListener('beforeunload', function (e) {
       if (hasAnyCardEditing()) {
         e.preventDefault();
         e.returnValue = '';
@@ -1336,11 +1359,11 @@
     return t.indexOf('pieza corregida') >= 0 || t.indexOf('versión v') >= 0;
   }
 
-  function parseComentarios(str, defaultAuthor){
+  function parseComentarios(str, defaultAuthor) {
     if (!str || !String(str).trim()) return [];
     var lines = String(str).split(/\r?\n/);
     var result = [], cur = null;
-    lines.forEach(function(line){
+    lines.forEach(function (line) {
       var t = line.trim();
       if (!t) return;
       var m = t.match(/^\[(.*?)\]:\s*(.*)$/);
@@ -1353,24 +1376,24 @@
       }
     });
     if (cur) result.push(cur);
-    var filtered = result.filter(function(c){ return !isCorrectionNote(c); });
+    var filtered = result.filter(function (c) { return !isCorrectionNote(c); });
     return filtered.length ? filtered : (result.length ? [] : [{ autor: defaultAuthor || 'Cliente', texto: String(str).trim(), fecha: '' }]);
   }
 
-  function formatComentariosString(list){
+  function formatComentariosString(list) {
     if (!list || !list.length) return '';
-    return list.filter(function(c){ return !isCorrectionNote(c); }).map(function(c){
+    return list.filter(function (c) { return !isCorrectionNote(c); }).map(function (c) {
       return (c.autor ? '[' + c.autor + ']: ' : '') + (c.texto || '');
     }).join('\n\n');
   }
 
-  function formatRelTime(isoStr){
+  function formatRelTime(isoStr) {
     if (!isoStr) return '';
     try {
       var d = new Date(isoStr);
       if (isNaN(d.getTime())) return '';
-      return d.toLocaleDateString('es-VE', {day:'2-digit', month:'short'}) + ' ' + d.toLocaleTimeString('es-VE', {hour:'2-digit', minute:'2-digit'});
-    } catch(e){ return ''; }
+      return d.toLocaleDateString('es-VE', { day: '2-digit', month: 'short' }) + ' ' + d.toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit' });
+    } catch (e) { return ''; }
   }
 
   // DETECCIÓN DE ENVÍO DE CORRECCIONES / FILTRO SELECTIVO DE PIEZAS
@@ -1379,10 +1402,10 @@
   var isReviewShipment = urlParams.get('review') === 'corregidos' || urlParams.get('filtro') === 'corregido' || urlParams.get('filtro') === 'corregidos' || !!piezasParam;
   var targetPieceNumbers = null;
   if (piezasParam) {
-    targetPieceNumbers = piezasParam.split(',').map(function(s){ return parseInt(s.trim(), 10); }).filter(function(n){ return !isNaN(n) && n > 0; });
+    targetPieceNumbers = piezasParam.split(',').map(function (s) { return parseInt(s.trim(), 10); }).filter(function (n) { return !isNaN(n) && n > 0; });
   }
 
-  function getReviewerName(){
+  function getReviewerName() {
     if (agencyUser) {
       return 'Agencia (' + (agencyUser === 'carlosuzc29@gmail.com' ? 'Carlos' : 'Andrea') + ')';
     }
@@ -1393,11 +1416,11 @@
       var boardKey = 'nexo_reviewer_name_' + (DATA.id || 'board');
       var stored = localStorage.getItem(boardKey) || sessionStorage.getItem(boardKey);
       if (stored && stored.trim() && stored.trim().indexOf('Agencia (') !== 0) return stored.trim();
-    } catch(e){}
+    } catch (e) { }
     return '';
   }
 
-  function setReviewerName(name){
+  function setReviewerName(name) {
     var trimmed = (name || '').trim();
     if (trimmed.indexOf('Agencia (') === 0) return;
     DATA.revision.revisadoPor = trimmed;
@@ -1409,17 +1432,17 @@
         localStorage.setItem(boardKey, trimmed);
         sessionStorage.setItem(boardKey, trimmed);
       }
-    } catch(e){}
+    } catch (e) { }
   }
 
 
 
-  function saveDraft(){
+  function saveDraft() {
     try {
       var whoVal = getReviewerName();
       if (whoVal && whoVal.indexOf('Agencia (') === 0) whoVal = '';
-      var o = {who: whoVal, items: {}, resetAt: DATA.resetAt || 0, sinEnviar: sinEnviar};
-      items.forEach(function(it){
+      var o = { who: whoVal, items: {}, resetAt: DATA.resetAt || 0, sinEnviar: sinEnviar };
+      items.forEach(function (it) {
         o.items[it.id] = {
           estado: it.estado,
           comentario: it.comentario,
@@ -1436,35 +1459,35 @@
       if (whoVal && whoVal.indexOf('Agencia (') !== 0) {
         localStorage.setItem('nexo_reviewer_name_' + (DATA.id || 'board'), whoVal);
       }
-    } catch (e) {}
+    } catch (e) { }
   }
 
-  function marcarSinEnviar(it){
+  function marcarSinEnviar(it) {
     if (agencyUser) return;
     sinEnviar[it.id] = parseInt(it.version, 10) || 1;
   }
 
-  function el(tag, cls, txt){ var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
-  function pad(n){ return (n < 10 ? '0' : '') + n; }
-  function safeUrl(u){ return /^https?:\/\//i.test(u || '') ? u : null; }
-  function escapeHtml(s){
-    return String(s || '').replace(/[&<>'"]/g, function(t){
-      return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t];
+  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function safeUrl(u) { return /^https?:\/\//i.test(u || '') ? u : null; }
+  function escapeHtml(s) {
+    return String(s || '').replace(/[&<>'"]/g, function (t) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[t];
     });
   }
 
-  function copyTextToClipboard(text, cb){
+  function copyTextToClipboard(text, cb) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function(){
+      navigator.clipboard.writeText(text).then(function () {
         if (cb) cb(true);
-      }).catch(function(){
+      }).catch(function () {
         fallbackCopyText(text, cb);
       });
     } else {
       fallbackCopyText(text, cb);
     }
   }
-  function fallbackCopyText(text, cb){
+  function fallbackCopyText(text, cb) {
     try {
       var ta = document.createElement('textarea');
       ta.value = text;
@@ -1477,13 +1500,13 @@
       var ok = document.execCommand('copy');
       document.body.removeChild(ta);
       if (cb) cb(ok);
-    } catch(e) {
+    } catch (e) {
       if (cb) cb(false);
     }
   }
 
-  function getReviewCorregidosUrl(){
-    var corregidosNums = items.map(function(it, idx){
+  function getReviewCorregidosUrl() {
+    var corregidosNums = items.map(function (it, idx) {
       return it.estado === 'corregido' ? (idx + 1) : null;
     }).filter(Boolean);
 
@@ -1504,7 +1527,7 @@
 
 
 
-  function updateClosedMonthBanner(){
+  function updateClosedMonthBanner() {
     var existing = document.getElementById('closedMonthBanner');
     if (isClosedMonth) {
       if (!existing) {
@@ -1538,7 +1561,7 @@
       }
       var btn = existing.querySelector('#btnGoCurrentMonth');
       if (btn) {
-        btn.onclick = function(){
+        btn.onclick = function () {
           if (indiceData && indiceData.actual) {
             switchMonth(indiceData.actual);
           }
@@ -1550,7 +1573,7 @@
     }
   }
 
-  function updateMonthSelector(){
+  function updateMonthSelector() {
     var wrap = document.getElementById('monthSelectorWrap');
     if (!indiceData || !indiceData.meses || indiceData.meses.length <= 1) {
       if (wrap) wrap.style.display = 'none';
@@ -1571,21 +1594,21 @@
       '</label>';
     var select = wrap.querySelector('#monthSelect');
     if (select) {
-      indiceData.meses.forEach(function(m){
+      indiceData.meses.forEach(function (m) {
         var opt = document.createElement('option');
         opt.value = m.mes;
         opt.textContent = m.etiqueta || m.mes;
         if (m.mes === activeMes) opt.selected = true;
         select.appendChild(opt);
       });
-      select.onchange = function(){
+      select.onchange = function () {
         switchMonth(select.value);
       };
     }
     wrap.style.display = 'inline-flex';
   }
 
-  function updateHeader(){
+  function updateHeader() {
     var periodo = [DATA.mes, DATA.anio].filter(Boolean).join(' ');
     var mt = $('metaTitle');
     if (mt) {
@@ -1613,7 +1636,7 @@
     if (revEl) {
       if (DATA.revision && DATA.revision.fecha && !agencyUser) {
         var d = new Date(DATA.revision.fecha);
-        revEl.textContent = '✓ Revisado por ' + (DATA.revision.revisadoPor || currentStoredReviewer || 'el cliente') + ' el ' + d.toLocaleDateString('es-VE', {day:'2-digit', month:'long', year:'numeric'}) + ' a las ' + d.toLocaleTimeString('es-VE', {hour:'2-digit', minute:'2-digit'});
+        revEl.textContent = '✓ Revisado por ' + (DATA.revision.revisadoPor || currentStoredReviewer || 'el cliente') + ' el ' + d.toLocaleDateString('es-VE', { day: '2-digit', month: 'long', year: 'numeric' }) + ' a las ' + d.toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit' });
         revEl.classList.add('show');
       } else {
         revEl.classList.remove('show');
@@ -1627,8 +1650,8 @@
     }
   }
 
-  function normalizeItems(){
-    items.forEach(function(it, i){
+  function normalizeItems() {
+    items.forEach(function (it, i) {
       if (!it.id) it.id = 'c' + (i + 1);
       if (!it.version) it.version = 1;
       it.version = parseInt(it.version, 10) || 1;
@@ -1645,13 +1668,13 @@
       if (it.comentario && !it.comentarios.length) {
         it.comentarios = parseComentarios(it.comentario, it.revisadoPor || (DATA.revision ? DATA.revision.revisadoPor : '') || '');
       } else {
-        it.comentarios = it.comentarios.filter(function(c){ return !isCorrectionNote(c); });
+        it.comentarios = it.comentarios.filter(function (c) { return !isCorrectionNote(c); });
       }
     });
-    DATA.revision = DATA.revision || {revisadoPor:'', fecha:''};
+    DATA.revision = DATA.revision || { revisadoPor: '', fecha: '' };
   }
 
-  function recoverDraft(){
+  function recoverDraft() {
     try {
       var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
       if (saved && DATA.resetAt && (!saved.resetAt || saved.resetAt < DATA.resetAt)) {
@@ -1661,8 +1684,8 @@
       }
       if (saved && saved.items) {
         if (saved.sinEnviar && typeof saved.sinEnviar === 'object') sinEnviar = saved.sinEnviar;
-        var hasCorr = items.some(function(x){ return x.estado === 'corregido'; });
-        items.forEach(function(it){
+        var hasCorr = items.some(function (x) { return x.estado === 'corregido'; });
+        items.forEach(function (it) {
           var s = saved.items[it.id];
           if (s) {
             it.estado = s.estado;
@@ -1672,7 +1695,7 @@
               it.formatoOriginal = it.formato;
             }
             if (Array.isArray(s.comentarios) && s.comentarios.length) {
-              it.comentarios = s.comentarios.filter(function(c){ return !isCorrectionNote(c); });
+              it.comentarios = s.comentarios.filter(function (c) { return !isCorrectionNote(c); });
             }
             if (s.revisadoPor) it.revisadoPor = s.revisadoPor;
             if (s.guion != null) it.guion = s.guion;
@@ -1687,1028 +1710,1104 @@
             setReviewerName(saved.who);
           }
         }
-        setTimeout(function(){ toast('Recuperamos tu revisión en curso'); }, 600);
+        setTimeout(function () { toast('Recuperamos tu revisión en curso'); }, 600);
       }
-    } catch (e) {}
+    } catch (e) { }
   }
 
-  function buildAllCards(){
+  function buildAllCards() {
     list = $('list');
     nav = $('nav');
+
+    var visibleCardIds = {};
+    if (cards && cards.length) {
+      cards.forEach(function (c) {
+        if (c.card && c.card.classList.contains('in')) {
+          visibleCardIds[c.it.id] = true;
+        }
+      });
+    }
+
     if (list) list.innerHTML = '';
     if (nav) nav.innerHTML = '';
     cards = [];
     var handle = (DATA.cuenta || DATA.cliente || '').replace(/^@/, '');
     // Agrupar por canal solo si las piezas vienen ordenadas en bloques (orgánicos y luego Ads, o al revés)
-    var canalesSeq = items.map(function(x){ return normalizeCanal(x.canal); });
-    var bloques = canalesSeq.filter(function(c, i){ return c && (i === 0 || c !== canalesSeq[i - 1]); });
-    var canalAgrupado = canalesSeq.every(function(c){ return !!c; }) && bloques.length === 2 && bloques[0] !== bloques[1];
+    var canalesSeq = items.map(function (x) { return normalizeCanal(x.canal); });
+    var bloques = canalesSeq.filter(function (c, i) { return c && (i === 0 || c !== canalesSeq[i - 1]); });
+    var canalAgrupado = canalesSeq.every(function (c) { return !!c; }) && bloques.length === 2 && bloques[0] !== bloques[1];
     var ultimoCanal = null;
 
-  items.forEach(function(it, i){
-    var pieceNum = i + 1;
-    var num = pad(pieceNum);
-    it._estadoInicial = it._estadoInicial || it.estado;
-    var isIncludedInShipment = (!targetPieceNumbers || targetPieceNumbers.indexOf(pieceNum) !== -1);
-    var isCorregidoEditable = (!isClosedMonth || (isReviewShipment && it._estadoInicial === 'corregido' && isIncludedInShipment));
-    var card = el('article', 'card' + (isCorregidoEditable ? ' is-corregido-editable' : '')); card.id = it.id; card.dataset.state = it.estado;
-    card.dataset.pieceNum = pieceNum;
-    var cardObjRef = null;
+    items.forEach(function (it, i) {
+      var pieceNum = i + 1;
+      var num = pad(pieceNum);
+      it._estadoInicial = it._estadoInicial || it.estado;
+      var isIncludedInShipment = (!targetPieceNumbers || targetPieceNumbers.indexOf(pieceNum) !== -1);
+      var isCorregidoEditable = (!isClosedMonth || (isReviewShipment && it._estadoInicial === 'corregido' && isIncludedInShipment));
+      var shouldBeIn = !!visibleCardIds[it.id] || (i < 3);
+      var card = el('article', 'card' + (isCorregidoEditable ? ' is-corregido-editable' : '') + (shouldBeIn ? ' in no-trans' : ''));
+      card.id = it.id; card.dataset.state = it.estado;
+      card.dataset.pieceNum = pieceNum;
+      var cardObjRef = null;
 
-    var freeEditStrip = el('div', 'card-free-edit-strip', '✎ Edición libre');
-    freeEditStrip.style.display = 'none';
-    card.appendChild(freeEditStrip);
+      var freeEditStrip = el('div', 'card-free-edit-strip', '✎ Edición libre');
+      freeEditStrip.style.display = 'none';
+      card.appendChild(freeEditStrip);
 
-    var top = el('div', 'c-top');
-    top.appendChild(el('div', 'big', num));
-    var tw = el('div'); var tags = el('div', 'tags');
+      var top = el('div', 'c-top');
+      top.appendChild(el('div', 'big', num));
+      var tw = el('div'); var tags = el('div', 'tags');
 
-    // Formato de contenido:
-    // Para el cliente: etiqueta estática
-    // Para la agencia: la etiqueta misma es clickeable y abre un popover con los formatos
-    var fmtWrap = el('div', null); fmtWrap.style.cssText = 'position:relative;display:inline-block';
-    var fmtTag = el('span', 'tag fmt', it.formato || 'Post');
-    var fmtPopover = el('div', 'fmt-popover');
+      // Formato de contenido:
+      // Para el cliente: etiqueta estática
+      // Para la agencia: la etiqueta misma es clickeable y abre un popover con los formatos
+      var fmtWrap = el('div', null); fmtWrap.style.cssText = 'position:relative;display:inline-block';
+      var fmtTag = el('span', 'tag fmt', it.formato || 'Post');
+      var fmtPopover = el('div', 'fmt-popover');
 
-    function buildPopover() {
-      fmtPopover.innerHTML = '';
-      var activeFmt = (isFreeEditActive() && fs && fs.value) ? fs.value : it.formato;
-      FORMATOS.forEach(function(x){
-        var opt = el('div', 'fmt-popover-opt' + (x === activeFmt ? ' active' : ''), x);
-        opt.addEventListener('mousedown', function(e){
-          e.preventDefault();
-          var newFmt = x;
-          fmtTag.textContent = newFmt;
-          fs.value = newFmt;
-          closeFmtPopover();
-          if (isFreeEditActive()) {
-            if (cardObjRef && cardObjRef.markEditing) cardObjRef.markEditing();
-            toast('Formato "' + newFmt + '" listo para guardar');
-            return;
-          }
-          it.formato = newFmt;
-          it.formatoOriginal = newFmt;
-          saveDraft();
-          toast('Guardando tipo de contenido (' + newFmt + ')…');
-          saveAgencyFormatoChange(it, newFmt);
-        });
-        fmtPopover.appendChild(opt);
-      });
-    }
-
-    var fmtPopoverOpen = false;
-    function openFmtPopover(){
-      buildPopover();
-      fmtPopover.classList.add('open');
-      fmtPopoverOpen = true;
-      setTimeout(function(){ document.addEventListener('click', closeFmtOnOutside); }, 0);
-    }
-    function closeFmtPopover(){
-      fmtPopover.classList.remove('open');
-      fmtPopoverOpen = false;
-      document.removeEventListener('click', closeFmtOnOutside);
-    }
-    function toggleFmtPopover(){
-      if (fmtPopoverOpen) closeFmtPopover();
-      else openFmtPopover();
-    }
-    function closeFmtOnOutside(e){
-      if (!fmtWrap.contains(e.target)) closeFmtPopover();
-    }
-
-    fmtWrap.appendChild(fmtTag);
-    fmtWrap.appendChild(fmtPopover);
-    tags.appendChild(fmtWrap);
-
-    // fw/fs oculto: sólo se mantiene para compatibilidad interna, nunca visible
-    var fw = el('label', 'fmt-wrap');
-    var fs = el('select', 'fmt-sel');
-    fs.setAttribute('aria-label', 'Tipo de contenido');
-    FORMATOS.forEach(function(x){
-      var o = el('option', null, x); o.value = x;
-      if (x === it.formato) o.setAttribute('selected', '');
-      fs.appendChild(o);
-    });
-    fs.value = it.formato || 'Post';
-    fs.addEventListener('change', function(){
-      var nf = normalizeFormato(fs.value);
-      fs.value = nf;
-      fmtTag.textContent = nf;
-      if (agencyUser && cardObjRef && cardObjRef.markEditing) cardObjRef.markEditing();
-    });
-    fw.appendChild(fs);
-    tags.appendChild(fw);
-
-    fmtTag._agencyClickBound = true;
-    fmtTag.addEventListener('click', function(e){
-      if (!agencyUser) return;
-      e.stopPropagation();
-      toggleFmtPopover();
-    });
-    if (agencyUser) {
-      fmtTag.classList.add('agency-editable');
-    }
-
-    it.canal = normalizeCanal(it.canal);
-    card.dataset.canal = it.canal || '';
-    var canalTag = el('span', 'tag canal ' + (it.canal === 'Ads' ? 'canal-ads' : 'canal-org'), canalLabel(it.canal));
-    if (!it.canal) canalTag.style.display = 'none';
-    tags.appendChild(canalTag);
-    var pilarTag = el('span', 'tag tag-pilar', it.pilar || '');
-    if (!it.pilar) pilarTag.style.display = 'none';
-    tags.appendChild(pilarTag);
-    var dateTag = el('span', 'tag date', '📅 ' + (it.fechaPublicacion || ''));
-    if (!it.fechaPublicacion) dateTag.style.display = 'none';
-    tags.appendChild(dateTag);
-
-    // Versión concreta y contexto de revisión
-    var vNum = parseInt(it.version, 10) || 1;
-    var vTag = el('span', 'tag version', 'v' + vNum); // no se muestra
-    var isCorrectionReview = vNum > 1;
-    var ctxTag = el('span', 'tag ' + (isCorrectionReview ? 'ctx-correction' : 'ctx-first'), isCorrectionReview ? '🔄 Revisión de correcciones' : '✨ Primera revisión'); // no se muestra
-    if (it.fechaCorreccion || it.fechaEnvio) {
-      tags.appendChild(el('span', 'tag date', '🚀 ' + formatRelTime(it.fechaCorreccion || it.fechaEnvio)));
-    }
-
-    tw.appendChild(tags);
-    var h2Title = el('h2', null, it.titulo || 'Contenido ' + num);
-    tw.appendChild(h2Title);
-    top.appendChild(tw);
-    var badge = el('span', 'badge', LBL[it.estado] || it.estado); top.appendChild(badge);
-    card.appendChild(top);
-
-    var hasCopy = (it.copy || it.hashtags);
-    var body = el('div', 'c-body' + (hasCopy ? '' : ' single'));
-    var g = el('div', 'guion');
-    g.appendChild(el('span', 'lbl', it.guionLabel || 'Guion / descripción'));
-    var pGuion = el('p', 'p-guion', it.guion || '');
-    pGuion.setAttribute('data-placeholder', 'Haz clic para escribir el guion…');
-    if (!it.guion) pGuion.style.display = agencyUser ? 'block' : 'none';
-    g.appendChild(pGuion);
-
-    var rw = el('div', 'refs');
-    function renderRefsView(){
-      rw.innerHTML = '';
-      var validRefs = normalizeReferencias(it.referencias);
-      validRefs.forEach(function(r){
-        var aRef = el('a', null, r.label || 'Referencia');
-        aRef.href = r.url;
-        aRef.target = '_blank';
-        aRef.rel = 'noopener';
-        rw.appendChild(aRef);
-      });
-      rw.style.display = (validRefs.length && !isFreeEditActive()) ? '' : 'none';
-    }
-    renderRefsView();
-    g.appendChild(rw);
-    body.appendChild(g);
-
-    var cw = el('div', 'copy-wrap');
-    cw.appendChild(el('span', 'lbl', 'Copy'));
-    var post = el('div', 'post'); var ph = el('div', 'post-h');
-    ph.appendChild(el('div', 'av', (handle || 'N').charAt(0).toUpperCase()));
-    var pn = el('div'); pn.appendChild(el('b', null, handle || 'tu cuenta')); pn.appendChild(el('small', null, 'Vista previa del copy'));
-    ph.appendChild(pn); post.appendChild(ph);
-    var pCopy = el('p', 'p-copy', it.copy || '');
-    pCopy.setAttribute('data-placeholder', 'Haz clic para escribir el copy…');
-    if (!it.copy) pCopy.style.display = agencyUser ? 'block' : 'none';
-    var pHash = el('p', 'hash', it.hashtags || '');
-    pHash.setAttribute('data-placeholder', '#hashtags');
-    if (!it.hashtags) pHash.style.display = agencyUser ? 'block' : 'none';
-    if (!hasCopy) cw.style.display = agencyUser ? 'block' : 'none';
-    post.appendChild(pCopy); post.appendChild(pHash); cw.appendChild(post); body.appendChild(cw);
-    card.appendChild(body);
-
-    var rv = el('div', 'review');
-
-    // Resumen de versión corregida
-    if ((parseInt(it.version, 10) || 1) > 1) {
-      var corrBox = el('div', 'correction-summary-box');
-      corrBox.style.cssText = 'margin-bottom:12px;background:rgba(2,132,199,0.08);border:1px solid rgba(56,189,248,0.25);border-radius:8px;padding:10px 12px;';
-      var lastH = Array.isArray(it.historial) && it.historial.length ? it.historial[it.historial.length - 1] : null;
-      var hAction = (lastH && lastH.accion) ? lastH.accion : 'Ajustes realizados por el equipo según las observaciones de la versión anterior.';
-      corrBox.innerHTML = '<div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#38BDF8;margin-bottom:4px;">' +
-        '<span>🔄 Versión corregida</span>' +
-        (it.fechaCorreccion ? '<span style="font-weight:400;color:rgba(255,255,255,0.5);font-size:11px;">· ' + formatRelTime(it.fechaCorreccion) + '</span>' : '') +
-      '</div>' +
-      '<div style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.4;">' +
-        escapeHtml(hAction) +
-      '</div>';
-      rv.appendChild(corrBox);
-    }
-
-    // 1. BLOQUE DE COMENTARIOS (ARRIBA)
-    var cmBox = el('div', 'comment-box');
-    var cmHead = el('div', 'cm-head');
-    cmHead.appendChild(el('h4', null, '💬 Comentarios y observaciones'));
-    cmHead.appendChild(el('span', 'cm-sub', 'Cualquier persona del equipo puede dejar comentarios'));
-    cmBox.appendChild(cmHead);
-
-    var cmThread = el('div', 'cm-thread');
-    cmBox.appendChild(cmThread);
-
-    function renderThread(newComment){
-      cmThread.innerHTML = '';
-      var visibleComms = (it.comentarios || []).filter(function(cm){
-        return !isCorrectionNote(cm);
-      });
-      visibleComms.forEach(function(cm){
-        var isNew = (newComment && cm === newComment);
-        var bubble = el('div', 'cm-bubble' + (isNew ? ' cm-new' : ''));
-        var initial = (cm.autor || 'C').trim().charAt(0).toUpperCase();
-        bubble.appendChild(el('div', 'cm-av', initial || 'C'));
-        var r = el('div', 'cm-right');
-        var topRow = el('div', 'cm-top');
-        topRow.appendChild(el('b', 'cm-author', cm.autor || 'Cliente'));
-        if (cm.fecha) topRow.appendChild(el('span', 'cm-date', formatRelTime(cm.fecha)));
-        var delBtn = el('button', 'cm-del', '×');
-        delBtn.type = 'button';
-        delBtn.title = 'Eliminar este comentario';
-        delBtn.onclick = function(){
-          if (isClosedMonth && !agencyUser) {
-            if (!isReviewShipment || it._estadoInicial !== 'corregido' || (targetPieceNumbers && targetPieceNumbers.indexOf(pieceNum) === -1)) {
+      function buildPopover() {
+        fmtPopover.innerHTML = '';
+        var activeFmt = (isFreeEditActive() && fs && fs.value) ? fs.value : it.formato;
+        FORMATOS.forEach(function (x) {
+          var opt = el('div', 'fmt-popover-opt' + (x === activeFmt ? ' active' : ''), x);
+          opt.addEventListener('mousedown', function (e) {
+            e.preventDefault();
+            var newFmt = x;
+            fmtTag.textContent = newFmt;
+            fs.value = newFmt;
+            closeFmtPopover();
+            if (isFreeEditActive()) {
+              if (cardObjRef && cardObjRef.markEditing) cardObjRef.markEditing();
+              toast('Formato "' + newFmt + '" listo para guardar');
               return;
             }
-          }
-          var origIdx = it.comentarios.indexOf(cm);
-          if (origIdx >= 0) it.comentarios.splice(origIdx, 1);
-          it.comentario = formatComentariosString(it.comentarios);
-          marcarSinEnviar(it);
-          renderThread(); saveDraft();
-        };
-        topRow.appendChild(delBtn);
-        r.appendChild(topRow);
-        r.appendChild(el('p', 'cm-txt', cm.texto));
-        bubble.appendChild(r);
-        cmThread.appendChild(bubble);
+            it.formato = newFmt;
+            it.formatoOriginal = newFmt;
+            saveDraft();
+            toast('Guardando tipo de contenido (' + newFmt + ')…');
+            saveAgencyFormatoChange(it, newFmt);
+          });
+          fmtPopover.appendChild(opt);
+        });
+      }
+
+      var fmtPopoverOpen = false;
+      function openFmtPopover() {
+        buildPopover();
+        fmtPopover.classList.add('open');
+        fmtPopoverOpen = true;
+        setTimeout(function () { document.addEventListener('click', closeFmtOnOutside); }, 0);
+      }
+      function closeFmtPopover() {
+        fmtPopover.classList.remove('open');
+        fmtPopoverOpen = false;
+        document.removeEventListener('click', closeFmtOnOutside);
+      }
+      function toggleFmtPopover() {
+        if (fmtPopoverOpen) closeFmtPopover();
+        else openFmtPopover();
+      }
+      function closeFmtOnOutside(e) {
+        if (!fmtWrap.contains(e.target)) closeFmtPopover();
+      }
+
+      fmtWrap.appendChild(fmtTag);
+      fmtWrap.appendChild(fmtPopover);
+      tags.appendChild(fmtWrap);
+
+      // fw/fs oculto: sólo se mantiene para compatibilidad interna, nunca visible
+      var fw = el('label', 'fmt-wrap');
+      var fs = el('select', 'fmt-sel');
+      fs.setAttribute('aria-label', 'Tipo de contenido');
+      FORMATOS.forEach(function (x) {
+        var o = el('option', null, x); o.value = x;
+        if (x === it.formato) o.setAttribute('selected', '');
+        fs.appendChild(o);
       });
-      cmThread.style.display = visibleComms.length ? 'grid' : 'none';
-    }
+      fs.value = it.formato || 'Post';
+      fs.addEventListener('change', function () {
+        var nf = normalizeFormato(fs.value);
+        fs.value = nf;
+        fmtTag.textContent = nf;
+        if (agencyUser && cardObjRef && cardObjRef.markEditing) cardObjRef.markEditing();
+      });
+      fw.appendChild(fs);
+      tags.appendChild(fw);
 
-    var cmForm = el('div', 'cm-form');
-    var ta = el('textarea', 'cm-textarea');
-    ta.placeholder = 'Escribe aquí tu comentario, ajuste o sugerencia…';
-    cmForm.appendChild(ta);
-
-    var formFoot = el('div', 'cm-form-foot');
-    var hint = el('span', 'hint', '✎ Si pides cambios, debes detallar qué ajustar para poder enviar.');
-    formFoot.appendChild(hint);
-
-    var btnAdd = el('button', 'btn-add-cm', '+ Agregar comentario');
-    btnAdd.type = 'button';
-
-    function addCommentFromInput(){
-      var txt = ta.value.trim();
-      if (!txt) return false;
-      var auth = getReviewerName() || '';
-      it.comentarios = it.comentarios || [];
-      var newCm = { autor: auth, texto: txt, fecha: new Date().toISOString(), version: parseInt(it.version, 10) || 1 };
-      it.comentarios.push(newCm);
-      it.comentario = formatComentariosString(it.comentarios);
-      if (auth) it.revisadoPor = auth;
-      ta.value = '';
-      card.classList.remove('warn');
-      marcarSinEnviar(it);
-      renderThread(newCm);
-      saveDraft();
-      toast('✓ Comentario registrado');
-      return true;
-    }
-
-    btnAdd.onclick = function(){
-      if (isClosedMonth && !agencyUser) {
-        if (!isReviewShipment || it._estadoInicial !== 'corregido' || (targetPieceNumbers && targetPieceNumbers.indexOf(pieceNum) === -1)) {
-          return;
-        }
-      }
-      addCommentFromInput();
-    };
-    formFoot.appendChild(btnAdd);
-    cmForm.appendChild(formFoot);
-    cmBox.appendChild(cmForm);
-    rv.appendChild(cmBox);
-
-    // 2. BLOQUE DE DECISIÓN (ABAJO DEL COMENTARIO — PASO OBLIGATORIO)
-    var decSec = el('div', 'review-decision');
-    var decHead = el('div', 'dec-head');
-    decHead.appendChild(el('h4', null, '¿Cuál es tu decisión sobre este contenido?'));
-    decHead.appendChild(el('span', 'req-badge', '* Paso obligatorio'));
-    decSec.appendChild(decHead);
-
-    var seg = el('div', 'seg');
-    var ap = el('button', 'approve'); ap.type = 'button'; ap.innerHTML = '<span class="ic">✓</span>Aprobar esta versión';
-    var ch = el('button', 'change'); ch.type = 'button'; ch.innerHTML = '<span class="ic">✎</span>Solicitar cambios';
-    seg.appendChild(ap); seg.appendChild(ch);
-    decSec.appendChild(seg);
-
-    var decStatus = el('div', 'dec-status', '• Pendiente de evaluación (obligatorio)');
-    decSec.appendChild(decStatus);
-    rv.appendChild(decSec);
-    card.appendChild(rv);
-
-    if (canalAgrupado && it.canal && it.canal !== ultimoCanal) {
-      ultimoCanal = it.canal;
-      var nCanal = items.filter(function(x){ return normalizeCanal(x.canal) === it.canal; }).length;
-      var sh = el('div', 'canal-section-head ' + (it.canal === 'Ads' ? 'canal-ads' : 'canal-org'));
-      sh.dataset.canal = it.canal;
-      sh.appendChild(el('span', 'csh-t', it.canal === 'Ads' ? '📣 Contenidos para Ads' : '🌱 Contenidos orgánicos'));
-      sh.appendChild(el('span', 'csh-n', nCanal + (nCanal === 1 ? ' pieza' : ' piezas')));
-      list.appendChild(sh);
-      var ns = el('div', 'nav-sec ' + (it.canal === 'Ads' ? 'canal-ads' : 'canal-org'), it.canal === 'Ads' ? '📣 Ads' : '🌱 Orgánicos');
-      ns.dataset.canal = it.canal;
-      nav.appendChild(ns);
-    }
-
-    list.appendChild(card);
-
-    var a = el('a'); a.href = '#' + it.id; a.dataset.state = it.estado;
-    a.appendChild(el('span', 'n', num)); a.appendChild(el('span', 't', it.titulo || 'Contenido ' + num));
-    nav.appendChild(a);
-
-    renderThread();
-
-    function paint(){
-      card.dataset.state = it.estado; a.dataset.state = it.estado;
-      var curSt = it.estado;
-      if (curSt === 'pendiente') curSt = 'en_revision';
-      var stLabel = LBL[curSt] || curSt;
-      if (curSt === 'en_revision') {
-        stLabel = 'En revisión';
-      }
-      badge.textContent = (curSt === 'corregido' && !agencyUser) ? 'En revisión' : stLabel;
-      ap.classList.toggle('on', curSt === 'aprobado'); ch.classList.toggle('on', curSt === 'cambios');
-      ap.setAttribute('aria-pressed', curSt === 'aprobado'); ch.setAttribute('aria-pressed', curSt === 'cambios');
-
-      if (curSt === 'aprobado') {
-        decStatus.className = 'dec-status ok';
-        var revWho = (it.aprobacion && it.aprobacion.usuario) || it.revisadoPor || getReviewerName() || 'Cliente';
-        var revWhen = (it.aprobacion && it.aprobacion.fecha) || DATA.revision.fecha || '';
-        decStatus.textContent = '✓ Aprobado' + (revWho ? ' por ' + revWho : '') + (revWhen ? ' el ' + formatRelTime(revWhen) : '');
-      } else if (curSt === 'cambios') {
-        decStatus.className = 'dec-status fix';
-        decStatus.textContent = '✎ Marcado para Solicitar cambios (observaciones registradas)';
-      } else if (curSt === 'en_correccion') {
-        decStatus.className = 'dec-status fix';
-        decStatus.textContent = '⚙ En corrección por el equipo';
-      } else if (curSt === 'corregido') {
-        decStatus.className = 'dec-status ok';
-        decStatus.textContent = '🔄 Ajustes terminados · Pendiente de envío';
-      } else {
-        decStatus.className = 'dec-status';
-        decStatus.textContent = '• Pendiente de evaluación (obligatorio)';
-      }
-    }
-
-    function set(s){
-      if (isClosedMonth && !agencyUser) {
-        if (!isReviewShipment || it._estadoInicial !== 'corregido' || (targetPieceNumbers && targetPieceNumbers.indexOf(pieceNum) === -1)) {
-          return;
-        }
-      }
-      if (s === 'cambios') {
-        if (ta.value.trim()) addCommentFromInput();
-        var hasComments = (it.comentarios && it.comentarios.length > 0 && it.comentarios.some(function(x){ return x.texto && x.texto.trim(); }));
-        if (!hasComments) {
-          ta.placeholder = 'Cuéntanos qué te gustaría ajustar (requerido para pedir cambios)…';
-          ta.focus({preventScroll:true});
-          toast('Por favor escribe qué cambios solicitas antes de enviar');
-          card.classList.add('warn');
-          return;
-        }
-        delete it.aprobacion;
-        it.estado = 'cambios';
-        marcarSinEnviar(it);
-        card.classList.remove('warn');
-        paint(); refresh(); updateApartadoCorregidos(); applyFilter(); saveDraft();
-        toast('✎ Cambios solicitados');
-        if (agencyUser && typeof saveAgencyDecisionChange === 'function') {
-          saveAgencyDecisionChange(it, 'cambios');
-        }
-        return;
+      fmtTag._agencyClickBound = true;
+      fmtTag.addEventListener('click', function (e) {
+        if (!agencyUser) return;
+        e.stopPropagation();
+        toggleFmtPopover();
+      });
+      if (agencyUser) {
+        fmtTag.classList.add('agency-editable');
       }
 
-      if (ta.value.trim()) addCommentFromInput();
+      it.canal = normalizeCanal(it.canal);
+      card.dataset.canal = it.canal || '';
+      var canalTag = el('span', 'tag canal ' + (it.canal === 'Ads' ? 'canal-ads' : 'canal-org'), canalLabel(it.canal));
+      if (!it.canal) canalTag.style.display = 'none';
+      tags.appendChild(canalTag);
+      var pilarTag = el('span', 'tag tag-pilar', it.pilar || '');
+      if (!it.pilar) pilarTag.style.display = 'none';
+      tags.appendChild(pilarTag);
+      var dateTag = el('span', 'tag date', '📅 ' + (it.fechaPublicacion || ''));
+      if (!it.fechaPublicacion) dateTag.style.display = 'none';
+      tags.appendChild(dateTag);
 
-      if (s === 'aprobado') {
-        var revWho = getReviewerName() || (agencyUser ? ('Agencia (' + (agencyUser === 'carlosuzc29@gmail.com' ? 'Carlos' : 'Andrea') + ')') : 'Cliente');
-        var nowIso = new Date().toISOString();
-        it.aprobacion = {
-          version: parseInt(it.version, 10) || 1,
-          usuario: revWho,
-          fecha: nowIso
-        };
-        it.revisadoPor = revWho;
-        it.fechaAprobacion = nowIso;
-        it.estado = 'aprobado';
-        marcarSinEnviar(it);
-        card.classList.remove('warn');
-        paint(); refresh(); updateApartadoCorregidos(); applyFilter(); saveDraft();
-        toast('✓ Contenido aprobado');
-        if (agencyUser && typeof saveAgencyDecisionChange === 'function') {
-          saveAgencyDecisionChange(it, 'aprobado');
-        }
-        return;
+      // Versión concreta y contexto de revisión
+      var vNum = parseInt(it.version, 10) || 1;
+      var vTag = el('span', 'tag version', 'v' + vNum); // no se muestra
+      var isCorrectionReview = vNum > 1;
+      var ctxTag = el('span', 'tag ' + (isCorrectionReview ? 'ctx-correction' : 'ctx-first'), isCorrectionReview ? '🔄 Revisión de correcciones' : '✨ Primera revisión'); // no se muestra
+      if (it.fechaCorreccion || it.fechaEnvio) {
+        tags.appendChild(el('span', 'tag date', '🚀 ' + formatRelTime(it.fechaCorreccion || it.fechaEnvio)));
       }
 
-      it.estado = s;
-      marcarSinEnviar(it);
-      card.classList.remove('warn');
-      paint(); refresh(); updateApartadoCorregidos(); applyFilter(); saveDraft();
-      if (agencyUser && typeof saveAgencyDecisionChange === 'function') {
-        saveAgencyDecisionChange(it, s);
-      }
-    }
+      tw.appendChild(tags);
+      var h2Title = el('h2', null, it.titulo || 'Contenido ' + num);
+      tw.appendChild(h2Title);
+      top.appendChild(tw);
+      var badge = el('span', 'badge', LBL[it.estado] || it.estado); top.appendChild(badge);
+      card.appendChild(top);
 
-    ap.onclick = function(){ set('aprobado'); };
-    ch.onclick = function(){ set('cambios'); };
+      var hasCopy = (it.copy || it.hashtags);
+      var body = el('div', 'c-body' + (hasCopy ? '' : ' single'));
+      var g = el('div', 'guion');
+      g.appendChild(el('span', 'lbl', it.guionLabel || 'Guion / descripción'));
+      var pGuion = el('p', 'p-guion', it.guion || '');
+      pGuion.setAttribute('data-placeholder', 'Haz clic para escribir el guion…');
+      if (!it.guion) pGuion.style.display = agencyUser ? 'block' : 'none';
+      g.appendChild(pGuion);
 
-    // Guardar referencia a la función de auto-commit para validación global
-    card.__commitDraftComment = addCommentFromInput;
-
-    var unsavedBadge = el('div', 'card-unsaved-badge', '⚠️ Sin guardar en la nube');
-    unsavedBadge.style.display = 'none';
-    card.appendChild(unsavedBadge);
-    function setUnsavedState(isUnsaved){
-      card.classList.toggle('card-unsaved', !!isUnsaved);
-      unsavedBadge.style.display = isUnsaved ? 'inline-flex' : 'none';
-    }
-
-    paint();
-    cardObjRef = {
-      card: card,
-      nav: a,
-      it: it,
-      pieceNum: pieceNum,
-      editando: false,
-      freeEditStrip: freeEditStrip,
-      setDecision: set,
-      setUnsavedState: setUnsavedState,
-      commitComment: addCommentFromInput,
-      renderThread: renderThread,
-      paint: paint,
-      fmtTag: fmtTag,
-      openFmtPopover: openFmtPopover,
-      closeFmtPopover: closeFmtPopover,
-      toggleFmtPopover: toggleFmtPopover,
-      fw: fw,
-      fs: fs,
-      h2Title: h2Title,
-      tagsEl: tags,
-      canalTag: canalTag,
-      pilarTag: pilarTag,
-      dateTag: dateTag,
-      vTag: vTag,
-      ctxTag: ctxTag,
-      bodyEl: body,
-      guionWrap: g,
-      refsView: rw,
-      renderRefsView: renderRefsView,
-      guionParagraph: pGuion,
-      copyParagraph: pCopy,
-      hashParagraph: pHash,
-      copyContainer: cw
-    };
-    card.__cObj = cardObjRef;
-    cards.push(cardObjRef);
-  });
-
-
-  // Insertar controles de edición de agencia directamente en cada tarjeta (contenteditable inline)
-  cards.forEach(function(cObj){
-    var it = cObj.it;
-    var card = cObj.card;
-    var btnDiscard = null;
-
-    function setEditingState(isEditing){
-      cObj.editando = !!isEditing;
-      card.classList.toggle('card-editing', !!isEditing);
-      if (btnDiscard) {
-        btnDiscard.style.display = (agencyUser && cObj.editando) ? 'inline-flex' : 'none';
-      }
-    }
-    cObj.setEditingState = setEditingState;
-    cObj.markEditing = function(){
-      if (!agencyUser) return;
-      setEditingState(true);
-    };
-
-    function isAgencyEditableTarget(target){
-      if (!target || !agencyUser) return false;
-      if (target.classList && target.classList.contains('cm-textarea')) return false;
-      if (target.closest && target.closest('.comment-box')) return false;
-      if (target.isContentEditable) return true;
-      var ce = target.getAttribute ? target.getAttribute('contenteditable') : null;
-      if (ce && ce !== 'false') return true;
-      var tag = (target.tagName || '').toUpperCase();
-      return tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA';
-    }
-    card.addEventListener('input', function(e){
-      if (isAgencyEditableTarget(e.target)) setEditingState(true);
-    });
-    card.addEventListener('change', function(e){
-      if (isAgencyEditableTarget(e.target)) setEditingState(true);
-    });
-
-    // Añadir etiqueta de ayuda sobre el guion
-    if (cObj.guionParagraph && cObj.guionParagraph.parentNode) {
-      var gHint = el('div', 'card-agency-edit-hint', '✎ Haz clic en el texto para editar el guion');
-      cObj.guionParagraph.parentNode.insertBefore(gHint, cObj.guionParagraph);
-    }
-    // Añadir etiqueta de ayuda sobre el copy
-    if (cObj.copyParagraph && cObj.copyParagraph.parentNode) {
-      var cHint = el('div', 'card-agency-edit-hint', '✎ Haz clic en el texto para editar el copy');
-      cObj.copyParagraph.parentNode.insertBefore(cHint, cObj.copyParagraph);
-    }
-    // Añadir etiqueta de ayuda sobre los hashtags
-    if (cObj.hashParagraph && cObj.hashParagraph.parentNode) {
-      var hHint = el('div', 'card-agency-edit-hint', '✎ Haz clic en el texto para editar los hashtags');
-      cObj.hashParagraph.parentNode.insertBefore(hHint, cObj.hashParagraph);
-    }
-
-    // Editor de referencias ({label, url}) exclusivo para Modo edición libre
-    var refsEditor = el('div', 'agency-refs-editor');
-    refsEditor.style.display = 'none';
-    var refsHead = el('div', 'agency-refs-head');
-    refsHead.appendChild(el('span', null, '🔗 Referencias'));
-    var btnRefAdd = el('button', 'btn-agency-ref-add', '+ Agregar');
-    btnRefAdd.type = 'button';
-    refsHead.appendChild(btnRefAdd);
-    refsEditor.appendChild(refsHead);
-    var refsListEl = el('div', 'agency-refs-list');
-    refsEditor.appendChild(refsListEl);
-    if (cObj.guionWrap) cObj.guionWrap.appendChild(refsEditor);
-
-    function addRefRow(refObj, markDirty){
-      var row = el('div', 'agency-ref-row');
-      var lblInp = el('input', 'agency-ref-label');
-      lblInp.type = 'text';
-      lblInp.placeholder = 'Etiqueta (ej: Reel)';
-      lblInp.value = (refObj && refObj.label) ? String(refObj.label) : '';
-      var urlInp = el('input', 'agency-ref-url');
-      urlInp.type = 'url';
-      urlInp.placeholder = 'https://...';
-      urlInp.value = (refObj && refObj.url) ? String(refObj.url) : '';
-      urlInp.addEventListener('input', function(){ urlInp.classList.remove('err'); });
-      var btnRem = el('button', 'btn-agency-ref-remove', '✕ Quitar');
-      btnRem.type = 'button';
-      btnRem.onclick = function(){
-        if (row.parentNode) row.parentNode.removeChild(row);
-        if (agencyUser) setEditingState(true);
-      };
-      row.appendChild(lblInp);
-      row.appendChild(urlInp);
-      row.appendChild(btnRem);
-      refsListEl.appendChild(row);
-      if (markDirty && agencyUser) {
-        setEditingState(true);
-        lblInp.focus();
-      }
-      return row;
-    }
-
-    function renderRefsEditor(refsArr){
-      refsListEl.innerHTML = '';
-      var listToRender = normalizeReferencias(refsArr !== undefined ? refsArr : it.referencias);
-      listToRender.forEach(function(r){ addRefRow(r, false); });
-    }
-    renderRefsEditor(it.referencias);
-
-    btnRefAdd.onclick = function(){
-      if (!isFreeEditActive()) return;
-      addRefRow({ label: '', url: '' }, true);
-    };
-
-    function collectAndValidateRefs(){
-      var rows = refsListEl.querySelectorAll('.agency-ref-row');
-      var out = [];
-      var invalidInput = null;
-      for (var ri = 0; ri < rows.length; ri++) {
-        var lEl = rows[ri].querySelector('.agency-ref-label');
-        var uEl = rows[ri].querySelector('.agency-ref-url');
-        var lbl = lEl ? lEl.value.trim() : '';
-        var url = uEl ? uEl.value.trim() : '';
-        if (uEl) uEl.classList.remove('err');
-        if (!isValidHttpUrl(url)) {
-          if (uEl) uEl.classList.add('err');
-          if (!invalidInput) invalidInput = uEl;
-        } else {
-          out.push({ label: lbl || 'Referencia', url: url });
-        }
-      }
-      if (invalidInput) {
-        invalidInput.focus();
-        toast('⚠️ La URL de cada referencia debe empezar con http:// o https://');
-        return { ok: false, refs: null };
-      }
-      return { ok: true, refs: out };
-    }
-    cObj.refsEditor = refsEditor;
-    cObj.renderRefsEditor = renderRefsEditor;
-    cObj.collectAndValidateRefs = collectAndValidateRefs;
-
-    // Barra inferior de acciones de agencia con botones Guardar y Aprobar
-    var agencyBar = el('div', 'card-agency-bar');
-    agencyBar.style.display = 'none';
-
-    // Canal, fecha y pilar: etiquetas visibles + editores del Modo Agencia
-    var agencyMeta = el('div', 'card-agency-meta');
-    var canalLbl = el('label', 'agency-meta-field');
-    canalLbl.appendChild(el('span', null, 'Canal'));
-    var canalSel = el('select', 'agency-canal-sel');
-    [['', 'Sin definir'], ['Orgánico', '🌱 Orgánico'], ['Ads', '📣 Ads']].forEach(function(o){
-      var op = el('option', null, o[1]); op.value = o[0]; canalSel.appendChild(op);
-    });
-    canalSel.value = normalizeCanal(it.canal);
-    canalLbl.appendChild(canalSel);
-    var fechaLbl = el('label', 'agency-meta-field');
-    fechaLbl.appendChild(el('span', null, 'Publicación'));
-    var fechaInp = el('input', 'agency-fecha-inp');
-    fechaInp.type = 'text'; fechaInp.placeholder = 'DD/MM'; fechaInp.maxLength = 10;
-    fechaInp.value = it.fechaPublicacion || '';
-    fechaInp.setAttribute('autocomplete', 'off');
-    fechaInp.title = 'Fecha de publicación en formato DD/MM (ej: 09/11). Déjala vacía para quitarla.';
-    fechaInp.addEventListener('input', function(){ fechaInp.classList.remove('err'); });
-    fechaInp.addEventListener('blur', function(){
-      var chk = normalizarFechaPub(fechaInp.value);
-      if (chk.ok) {
-        fechaInp.value = chk.valor;
-        fechaInp.classList.remove('err');
-      } else {
-        fechaInp.classList.add('err');
-      }
-    });
-    fechaLbl.appendChild(fechaInp);
-    var pilarLbl = el('label', 'agency-meta-field agency-free-only');
-    pilarLbl.style.display = 'none';
-    pilarLbl.appendChild(el('span', null, 'Pilar'));
-    var pilarInp = el('input', 'agency-pilar-inp');
-    pilarInp.type = 'text'; pilarInp.placeholder = 'Ej: Educativo';
-    pilarInp.value = it.pilar || '';
-    pilarLbl.appendChild(pilarInp);
-
-    agencyMeta.appendChild(canalLbl);
-    agencyMeta.appendChild(fechaLbl);
-    agencyMeta.appendChild(pilarLbl);
-    cObj.canalSel = canalSel;
-    cObj.fechaInp = fechaInp;
-    cObj.pilarLbl = pilarLbl;
-    cObj.pilarInp = pilarInp;
-
-    cObj.refreshMeta = function(){
-      var cn = normalizeCanal(it.canal);
-      it.canal = cn;
-      card.dataset.canal = cn || '';
-      if (cObj.canalTag) {
-        cObj.canalTag.textContent = canalLabel(cn);
-        cObj.canalTag.className = 'tag canal ' + (cn === 'Ads' ? 'canal-ads' : 'canal-org');
-        cObj.canalTag.style.display = cn ? '' : 'none';
-      }
-      if (cObj.pilarTag) {
-        cObj.pilarTag.textContent = it.pilar || '';
-        cObj.pilarTag.style.display = it.pilar ? '' : 'none';
-      }
-      if (cObj.dateTag) {
-        cObj.dateTag.textContent = '📅 ' + (it.fechaPublicacion || '');
-        cObj.dateTag.style.display = it.fechaPublicacion ? '' : 'none';
-      }
-      if (!cObj.editando) {
-        if (document.activeElement !== canalSel) canalSel.value = cn;
-        if (document.activeElement !== fechaInp) fechaInp.value = it.fechaPublicacion || '';
-        if (document.activeElement !== pilarInp) pilarInp.value = it.pilar || '';
-        renderRefsEditor(it.referencias);
-      }
-      if (cObj.renderRefsView) cObj.renderRefsView();
-    };
-
-    var vNum = parseInt(it.version, 10) || 1;
-    var barInfo = el('span', 'agency-bar-info');
-    function updateAgencyBarText(){
-      var nv = parseInt(it.version, 10) || 1;
-      if (isFreeEditActive()) {
-        barInfo.textContent = '✎ Edición libre activa (no cambia estado ni versión)';
-      } else if (it.estado === 'aprobado') {
-        barInfo.textContent = '✓ Aprobado por agencia';
-      } else if (it.estado === 'corregido') {
-        barInfo.textContent = '🔄 Versión corregida';
-      } else {
-        barInfo.textContent = (it.estado === 'cambios' || it.estado === 'en_correccion') ? '✎ Corrección pedida por el cliente' : '✎ Edición libre del administrador';
-      }
-      if (cObj.vTag) cObj.vTag.textContent = 'v' + nv;
-    }
-    updateAgencyBarText();
-    cObj.updateAgencyBarText = updateAgencyBarText;
-    agencyBar.appendChild(barInfo);
-    agencyBar.appendChild(agencyMeta);
-
-    var agencyBtns = el('div', 'card-agency-actions');
-
-    function readCardFormValues(includeFreeFields){
-      var newTitle = cObj.h2Title ? leerTextoEditable(cObj.h2Title).replace(/[\r\n]+/g, ' ').trim() : (it.titulo || '').trim();
-      var newGuion = cObj.guionParagraph ? leerTextoEditable(cObj.guionParagraph) : (it.guion || '');
-      var newCopy = cObj.copyParagraph ? leerTextoEditable(cObj.copyParagraph) : (it.copy || '');
-      var newHash = cObj.hashParagraph ? leerTextoEditable(cObj.hashParagraph).replace(/[\r\n]+/g, ' ').trim() : (it.hashtags || '').trim();
-      var newFmt = normalizeFormato((cObj.fs && cObj.fs.value) ? cObj.fs.value : it.formato);
-
-      var curTitle = (it.titulo || '').trim();
-      var curGuion = (it.guion || '').trim();
-      var curCopy = (it.copy || '').trim();
-      var curHash = (it.hashtags || '').trim();
-      var curFmt = normalizeFormato(it.formato);
-
-      // Fecha de publicación: se valida y normaliza a DD/MM antes de guardar
-      var fechaCheck = normalizarFechaPub(fechaInp.value);
-      if (!fechaCheck.ok) {
-        fechaInp.classList.add('err');
-        fechaInp.focus();
-        toast('⚠️ Fecha de publicación no válida: ' + fechaCheck.motivo);
-        return null;
-      }
-      fechaInp.classList.remove('err');
-      fechaInp.value = fechaCheck.valor;
-
-      var meta = {
-        canal: canalSel.value,
-        fechaPublicacion: fechaCheck.valor,
-        formato: newFmt
-      };
-      var metaCambio = (normalizeCanal(meta.canal) !== normalizeCanal(it.canal)) ||
-                       (meta.fechaPublicacion !== (it.fechaPublicacion || '')) ||
-                       (newFmt !== curFmt);
-
-      if (includeFreeFields) {
-        var refsCheck = collectAndValidateRefs();
-        if (!refsCheck.ok) return null;
-        meta.pilar = pilarInp.value.trim();
-        meta.referencias = refsCheck.refs;
-        if (meta.pilar !== (it.pilar || '')) metaCambio = true;
-        if (JSON.stringify(normalizeReferencias(meta.referencias)) !== JSON.stringify(normalizeReferencias(it.referencias))) {
-          metaCambio = true;
-        }
-      }
-
-      var textoCambio = !(newTitle === curTitle && newGuion.trim() === curGuion && newCopy.trim() === curCopy && newHash === curHash);
-      return {
-        newTitle: newTitle,
-        newGuion: newGuion,
-        newCopy: newCopy,
-        newHash: newHash,
-        meta: meta,
-        textoCambio: textoCambio,
-        metaCambio: metaCambio,
-        hayCambios: textoCambio || metaCambio
-      };
-    }
-
-    var btnSave = el('button', 'btn-agency-save');
-    btnSave.type = 'button';
-    btnSave.textContent = '💾 Guardar cambios';
-    btnSave.dataset.origLabel = '💾 Guardar cambios';
-    btnSave.title = 'Guarda el guion y copy corregidos en Firestore';
-    btnSave.onclick = function(){
-      var freeActive = isFreeEditActive();
-      var form = readCardFormValues(freeActive);
-      if (!form) return;
-
-      if (!form.hayCambios) {
-        toast('Sin cambios para guardar');
-        return;
-      }
-
-      if (REGEX_FRASES_PEGADAS.test(form.newGuion) || REGEX_FRASES_PEGADAS.test(form.newCopy)) {
-        toast('⚠️ Parece que faltan saltos de línea: revisa antes de guardar');
-      }
-
-      function guardar(opts){
-        form.meta.modo = opts.modo;
-        saveCardCorrection(it, cObj, form.newGuion, form.newCopy, form.newTitle, btnSave, form.newHash, form.meta).catch(function(){});
-        setTimeout(function(){ updateAgencyBarText(); }, 300);
-      }
-
-      if (freeActive) {
-        guardar({ modo: 'libre' });
-        return;
-      }
-
-      // Cambios de texto en una pieza ya aprobada: el administrador decide
-      if (form.textoCambio && it.estado === 'aprobado') {
-        modal({
-          kind: 'warn',
-          icon: '✎',
-          title: 'Esta pieza ya está aprobada',
-          text: '¿Quieres guardar el cambio y mantenerla aprobada, o enviarla al cliente como corrección para que la vuelva a revisar?',
-          buttons: [
-            { label: 'Guardar y mantener aprobada', primary: true, fn: function(){ guardar({ modo: 'libre' }); } },
-            { label: 'Enviar como corrección', fn: function(){ guardar({ modo: 'correccion' }); } },
-            { label: 'Cancelar' }
-          ]
+      var rw = el('div', 'refs');
+      function renderRefsView() {
+        rw.innerHTML = '';
+        var validRefs = normalizeReferencias(it.referencias);
+        validRefs.forEach(function (r) {
+          var aRef = el('a', null, r.label || 'Referencia');
+          aRef.href = r.url;
+          aRef.target = '_blank';
+          aRef.rel = 'noopener';
+          rw.appendChild(aRef);
         });
-        return;
+        rw.style.display = (validRefs.length && !isFreeEditActive()) ? '' : 'none';
       }
-      // Piezas con cambios pedidos por el cliente: el guardado es una corrección
-      var esCorreccion = form.textoCambio && (it.estado === 'cambios' || it.estado === 'en_correccion' || it.estado === 'corregido');
-      guardar({ modo: esCorreccion ? 'correccion' : 'libre' });
-    };
-    agencyBtns.appendChild(btnSave);
+      renderRefsView();
+      g.appendChild(rw);
+      body.appendChild(g);
 
-    var btnSendCorr = el('button', 'btn-agency-send-correction');
-    btnSendCorr.type = 'button';
-    btnSendCorr.textContent = 'Enviar al cliente como corrección';
-    btnSendCorr.dataset.origLabel = 'Enviar al cliente como corrección';
-    btnSendCorr.style.display = 'none';
-    btnSendCorr.title = 'Guarda como nueva versión corregida para que el cliente la revise';
-    btnSendCorr.onclick = function(){
-      if (!isFreeEditActive()) return;
-      var form = readCardFormValues(true);
-      if (!form) return;
-      if (!form.hayCambios && it.estado === 'corregido') {
-        toast('Sin cambios para guardar');
-        return;
+      var cw = el('div', 'copy-wrap');
+      cw.appendChild(el('span', 'lbl', 'Copy'));
+      var post = el('div', 'post'); var ph = el('div', 'post-h');
+      ph.appendChild(el('div', 'av', (handle || 'N').charAt(0).toUpperCase()));
+      var pn = el('div'); pn.appendChild(el('b', null, handle || 'tu cuenta')); pn.appendChild(el('small', null, 'Vista previa del copy'));
+      ph.appendChild(pn); post.appendChild(ph);
+      var pCopy = el('p', 'p-copy', it.copy || '');
+      pCopy.setAttribute('data-placeholder', 'Haz clic para escribir el copy…');
+      if (!it.copy) pCopy.style.display = agencyUser ? 'block' : 'none';
+      var pHash = el('p', 'hash', it.hashtags || '');
+      pHash.setAttribute('data-placeholder', '#hashtags');
+      if (!it.hashtags) pHash.style.display = agencyUser ? 'block' : 'none';
+      if (!hasCopy) cw.style.display = agencyUser ? 'block' : 'none';
+      post.appendChild(pCopy); post.appendChild(pHash); cw.appendChild(post); body.appendChild(cw);
+      card.appendChild(body);
+
+      var rv = el('div', 'review');
+
+      // Resumen de versión corregida
+      if ((parseInt(it.version, 10) || 1) > 1) {
+        var corrBox = el('div', 'correction-summary-box');
+        corrBox.style.cssText = 'margin-bottom:12px;background:rgba(2,132,199,0.08);border:1px solid rgba(56,189,248,0.25);border-radius:8px;padding:10px 12px;';
+        var lastH = Array.isArray(it.historial) && it.historial.length ? it.historial[it.historial.length - 1] : null;
+        var hAction = (lastH && lastH.accion) ? lastH.accion : 'Ajustes realizados por el equipo según las observaciones de la versión anterior.';
+        corrBox.innerHTML = '<div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#38BDF8;margin-bottom:4px;">' +
+          '<span>🔄 Versión corregida</span>' +
+          (it.fechaCorreccion ? '<span style="font-weight:400;color:rgba(255,255,255,0.5);font-size:11px;">· ' + formatRelTime(it.fechaCorreccion) + '</span>' : '') +
+          '</div>' +
+          '<div style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.4;">' +
+          escapeHtml(hAction) +
+          '</div>';
+        rv.appendChild(corrBox);
       }
-      if (REGEX_FRASES_PEGADAS.test(form.newGuion) || REGEX_FRASES_PEGADAS.test(form.newCopy)) {
-        toast('⚠️ Parece que faltan saltos de línea: revisa antes de guardar');
-      }
-      form.meta.modo = 'correccion';
-      form.meta.forzarCorreccion = true;
-      saveCardCorrection(it, cObj, form.newGuion, form.newCopy, form.newTitle, btnSendCorr, form.newHash, form.meta).catch(function(){});
-      setTimeout(function(){ updateAgencyBarText(); }, 300);
-    };
-    agencyBtns.appendChild(btnSendCorr);
 
-    btnDiscard = el('button', 'btn-agency-discard');
-    btnDiscard.type = 'button';
-    btnDiscard.textContent = 'Descartar cambios';
-    btnDiscard.style.display = 'none';
-    btnDiscard.title = 'Restaurar todos los campos de esta tarjeta a los últimos valores guardados';
-    function discardCardChanges(){
-      var fallbackTitle = it.titulo || ('Contenido ' + pad(cObj.pieceNum || 1));
-      if (cObj.h2Title) cObj.h2Title.textContent = fallbackTitle;
-      if (cObj.guionParagraph) cObj.guionParagraph.textContent = it.guion || '';
-      if (cObj.copyParagraph) cObj.copyParagraph.textContent = it.copy || '';
-      if (cObj.hashParagraph) {
-        cObj.hashParagraph.textContent = it.hashtags || '';
-        cObj.hashParagraph.style.display = (it.hashtags || agencyUser) ? 'block' : 'none';
-      }
-      var normFmt = normalizeFormato(it.formato || 'Post');
-      if (cObj.fs) cObj.fs.value = normFmt;
-      if (cObj.fmtTag) cObj.fmtTag.textContent = normFmt;
-      canalSel.value = normalizeCanal(it.canal);
-      fechaInp.value = it.fechaPublicacion || '';
-      pilarInp.value = it.pilar || '';
-      renderRefsEditor(it.referencias);
-      if (cObj.renderRefsView) cObj.renderRefsView();
-      if (cObj.setUnsavedState) cObj.setUnsavedState(false);
-      setEditingState(false);
-      toast('Cambios descartados');
-    }
-    btnDiscard.onclick = discardCardChanges;
-    cObj.discardChanges = discardCardChanges;
-    agencyBtns.appendChild(btnDiscard);
+      // 1. BLOQUE DE COMENTARIOS (ARRIBA)
+      var cmBox = el('div', 'comment-box');
+      var cmHead = el('div', 'cm-head');
+      cmHead.appendChild(el('h4', null, '💬 Comentarios y observaciones'));
+      cmHead.appendChild(el('span', 'cm-sub', 'Cualquier persona del equipo puede dejar comentarios'));
+      cmBox.appendChild(cmHead);
 
-    var btnApprove = el('button', 'btn-agency-approve');
-    btnApprove.type = 'button';
-    btnApprove.textContent = '✓ Aprobar versión';
-    btnApprove.dataset.origLabel = '✓ Aprobar versión';
-    btnApprove.title = 'Aprobar esta versión y sincronizarla directamente en Firestore';
-    btnApprove.onclick = function(){
-      // Lee todos los campos (texto, formato, canal y fecha) para no aprobar dejando cambios sin guardar
-      var form = readCardFormValues(isFreeEditActive());
-      if (!form) return;
-      var newTitle = form.newTitle;
-      var newGuion = form.newGuion;
-      var newCopy = form.newCopy;
-      var newHash = form.newHash;
+      var cmThread = el('div', 'cm-thread');
+      cmBox.appendChild(cmThread);
 
-      if (form.hayCambios) {
-        modal({
-          kind: 'warn',
-          icon: '!',
-          title: 'Tienes cambios sin guardar',
-          text: form.textoCambio ? '¿Guardar la corrección y aprobar?' : '¿Guardar los cambios (fecha, canal o formato) y aprobar?',
-          buttons: [
-            {
-              label: 'Guardar y aprobar',
-              primary: true,
-              fn: function(){
-                var approveMeta = form.meta;
-                // Solo un cambio de texto fuera de Edición libre cuenta como corrección; fecha/canal/formato no suben versión
-                approveMeta.modo = (isFreeEditActive() || !form.textoCambio) ? 'libre' : undefined;
-                saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnApprove, newHash, approveMeta).then(function(){
-                  saveAgencyDecisionChange(it, 'aprobado', btnApprove);
-                }).catch(function(){});
+      function renderThread(newComment) {
+        cmThread.innerHTML = '';
+        var visibleComms = (it.comentarios || []).filter(function (cm) {
+          return !isCorrectionNote(cm);
+        });
+        visibleComms.forEach(function (cm) {
+          var isNew = (newComment && cm === newComment);
+          var bubble = el('div', 'cm-bubble' + (isNew ? ' cm-new' : ''));
+          var initial = (cm.autor || 'C').trim().charAt(0).toUpperCase();
+          bubble.appendChild(el('div', 'cm-av', initial || 'C'));
+          var r = el('div', 'cm-right');
+          var topRow = el('div', 'cm-top');
+          topRow.appendChild(el('b', 'cm-author', cm.autor || 'Cliente'));
+          if (cm.fecha) topRow.appendChild(el('span', 'cm-date', formatRelTime(cm.fecha)));
+          var delBtn = el('button', 'cm-del', '×');
+          delBtn.type = 'button';
+          delBtn.title = 'Eliminar este comentario';
+          delBtn.onclick = function () {
+            if (isClosedMonth && !agencyUser) {
+              if (!isReviewShipment || it._estadoInicial !== 'corregido' || (targetPieceNumbers && targetPieceNumbers.indexOf(pieceNum) === -1)) {
+                return;
               }
-            },
-            { label: 'Cancelar' }
-          ]
+            }
+            var origIdx = it.comentarios.indexOf(cm);
+            if (origIdx >= 0) it.comentarios.splice(origIdx, 1);
+            it.comentario = formatComentariosString(it.comentarios);
+            marcarSinEnviar(it);
+            renderThread(); saveDraft();
+          };
+          topRow.appendChild(delBtn);
+          r.appendChild(topRow);
+          r.appendChild(el('p', 'cm-txt', cm.texto));
+          bubble.appendChild(r);
+          cmThread.appendChild(bubble);
         });
-        return;
+        cmThread.style.display = visibleComms.length ? 'grid' : 'none';
       }
 
-      it.titulo = newTitle;
-      if (newGuion) it.guion = newGuion;
-      if (newCopy) it.copy = newCopy;
-      if (newHash) it.hashtags = newHash;
-      saveAgencyDecisionChange(it, 'aprobado', btnApprove);
-    };
-    agencyBtns.appendChild(btnApprove);
+      var cmForm = el('div', 'cm-form');
+      var ta = el('textarea', 'cm-textarea');
+      ta.placeholder = 'Escribe aquí tu comentario, ajuste o sugerencia…';
+      cmForm.appendChild(ta);
 
-    agencyBar.appendChild(agencyBtns);
-    card.appendChild(agencyBar);
+      var formFoot = el('div', 'cm-form-foot');
+      var hint = el('span', 'hint', '✎ Si pides cambios, debes detallar qué ajustar para poder enviar.');
+      formFoot.appendChild(hint);
 
-    cObj.updateAgencyActions = function(active){
-      var freeActive = !!(active && freeEditMode);
-      card.classList.toggle('card-free-edit-mode', freeActive);
-      if (cObj.freeEditStrip) cObj.freeEditStrip.style.display = freeActive ? 'flex' : 'none';
-      if (pilarLbl) pilarLbl.style.display = freeActive ? 'inline-flex' : 'none';
-      if (refsEditor) refsEditor.style.display = freeActive ? 'grid' : 'none';
-      if (btnSendCorr) btnSendCorr.style.display = freeActive ? 'inline-flex' : 'none';
-      if (btnDiscard) btnDiscard.style.display = (active && cObj.editando) ? 'inline-flex' : 'none';
-      if (cObj.renderRefsView) cObj.renderRefsView();
+      var btnAdd = el('button', 'btn-add-cm', '+ Agregar comentario');
+      btnAdd.type = 'button';
 
-      if (active) {
-        card.classList.add('card-agency-edit-mode');
-        agencyBar.style.display = 'flex';
-        updateAgencyBarText();
-        if (cObj.bodyEl) {
-          if (freeActive) cObj.bodyEl.classList.remove('single');
-          else cObj.bodyEl.classList.toggle('single', !(it.copy || it.hashtags));
+      function addCommentFromInput() {
+        var txt = ta.value.trim();
+        if (!txt) return false;
+        var auth = getReviewerName() || '';
+        it.comentarios = it.comentarios || [];
+        var newCm = { autor: auth, texto: txt, fecha: new Date().toISOString(), version: parseInt(it.version, 10) || 1 };
+        it.comentarios.push(newCm);
+        it.comentario = formatComentariosString(it.comentarios);
+        if (auth) it.revisadoPor = auth;
+        ta.value = '';
+        card.classList.remove('warn');
+        marcarSinEnviar(it);
+        renderThread(newCm);
+        saveDraft();
+        toast('✓ Comentario registrado');
+        return true;
+      }
+
+      btnAdd.onclick = function () {
+        if (isClosedMonth && !agencyUser) {
+          if (!isReviewShipment || it._estadoInicial !== 'corregido' || (targetPieceNumbers && targetPieceNumbers.indexOf(pieceNum) === -1)) {
+            return;
+          }
         }
-        if (cObj.guionParagraph) cObj.guionParagraph.style.display = 'block';
-        if (cObj.copyParagraph) cObj.copyParagraph.style.display = 'block';
-        if (cObj.copyContainer) cObj.copyContainer.style.display = 'block';
+        addCommentFromInput();
+      };
+      formFoot.appendChild(btnAdd);
+      cmForm.appendChild(formFoot);
+      cmBox.appendChild(cmForm);
+      rv.appendChild(cmBox);
+
+      // 2. BLOQUE DE DECISIÓN (ABAJO DEL COMENTARIO — PASO OBLIGATORIO)
+      var decSec = el('div', 'review-decision');
+      var decHead = el('div', 'dec-head');
+      decHead.appendChild(el('h4', null, '¿Cuál es tu decisión sobre este contenido?'));
+      decHead.appendChild(el('span', 'req-badge', '* Paso obligatorio'));
+      decSec.appendChild(decHead);
+
+      var seg = el('div', 'seg');
+      var ap = el('button', 'approve'); ap.type = 'button'; ap.innerHTML = '<span class="ic">✓</span>Aprobar esta versión';
+      var ch = el('button', 'change'); ch.type = 'button'; ch.innerHTML = '<span class="ic">✎</span>Solicitar cambios';
+      seg.appendChild(ap); seg.appendChild(ch);
+      decSec.appendChild(seg);
+
+      var decStatus = el('div', 'dec-status', '• Pendiente de evaluación (obligatorio)');
+      decSec.appendChild(decStatus);
+      rv.appendChild(decSec);
+      card.appendChild(rv);
+
+      if (canalAgrupado && it.canal && it.canal !== ultimoCanal) {
+        ultimoCanal = it.canal;
+        var nCanal = items.filter(function (x) { return normalizeCanal(x.canal) === it.canal; }).length;
+        var sh = el('div', 'canal-section-head ' + (it.canal === 'Ads' ? 'canal-ads' : 'canal-org'));
+        sh.dataset.canal = it.canal;
+        sh.appendChild(el('span', 'csh-t', it.canal === 'Ads' ? '📣 Contenidos para Ads' : '🌱 Contenidos orgánicos'));
+        sh.appendChild(el('span', 'csh-n', nCanal + (nCanal === 1 ? ' pieza' : ' piezas')));
+        list.appendChild(sh);
+        var ns = el('div', 'nav-sec ' + (it.canal === 'Ads' ? 'canal-ads' : 'canal-org'), it.canal === 'Ads' ? '📣 Ads' : '🌱 Orgánicos');
+        ns.dataset.canal = it.canal;
+        nav.appendChild(ns);
+      }
+
+      list.appendChild(card);
+
+      var a = el('a'); a.href = '#' + it.id; a.dataset.state = it.estado;
+      a.appendChild(el('span', 'n', num)); a.appendChild(el('span', 't', it.titulo || 'Contenido ' + num));
+      nav.appendChild(a);
+
+      renderThread();
+
+      function paint() {
+        card.dataset.state = it.estado; a.dataset.state = it.estado;
+        var curSt = it.estado;
+        if (curSt === 'pendiente') curSt = 'en_revision';
+        var stLabel = LBL[curSt] || curSt;
+        if (curSt === 'en_revision') {
+          stLabel = 'En revisión';
+        }
+
+        if (isAwaitingFirestore) {
+          setTextIfChanged(badge, '…');
+          badge.classList.add('is-neutral');
+          setTextIfChanged(decStatus, '• Consultando estado…');
+          decStatus.className = 'dec-status';
+          return;
+        }
+        badge.classList.remove('is-neutral');
+        setTextIfChanged(badge, (curSt === 'corregido' && !agencyUser) ? 'En revisión' : stLabel);
+        ap.classList.toggle('on', curSt === 'aprobado'); ch.classList.toggle('on', curSt === 'cambios');
+        ap.setAttribute('aria-pressed', curSt === 'aprobado'); ch.setAttribute('aria-pressed', curSt === 'cambios');
+
+        if (curSt === 'aprobado') {
+          decStatus.className = 'dec-status ok';
+          var revWho = (it.aprobacion && it.aprobacion.usuario) || it.revisadoPor || getReviewerName() || 'Cliente';
+          var revWhen = (it.aprobacion && it.aprobacion.fecha) || DATA.revision.fecha || '';
+          setTextIfChanged(decStatus, '✓ Aprobado' + (revWho ? ' por ' + revWho : '') + (revWhen ? ' el ' + formatRelTime(revWhen) : ''));
+        } else if (curSt === 'cambios') {
+          decStatus.className = 'dec-status fix';
+          setTextIfChanged(decStatus, '✎ Marcado para Solicitar cambios (observaciones registradas)');
+        } else if (curSt === 'en_correccion') {
+          decStatus.className = 'dec-status fix';
+          setTextIfChanged(decStatus, '⚙ En corrección por el equipo');
+        } else if (curSt === 'corregido') {
+          decStatus.className = 'dec-status ok';
+          setTextIfChanged(decStatus, '🔄 Ajustes terminados · Pendiente de envío');
+        } else {
+          decStatus.className = 'dec-status';
+          setTextIfChanged(decStatus, '• Pendiente de evaluación (obligatorio)');
+        }
+      }
+
+      function set(s) {
+        if (isClosedMonth && !agencyUser) {
+          if (!isReviewShipment || it._estadoInicial !== 'corregido' || (targetPieceNumbers && targetPieceNumbers.indexOf(pieceNum) === -1)) {
+            return;
+          }
+        }
+        if (s === 'cambios') {
+          if (ta.value.trim()) addCommentFromInput();
+          var hasComments = (it.comentarios && it.comentarios.length > 0 && it.comentarios.some(function (x) { return x.texto && x.texto.trim(); }));
+          if (!hasComments) {
+            ta.placeholder = 'Cuéntanos qué te gustaría ajustar (requerido para pedir cambios)…';
+            ta.focus({ preventScroll: true });
+            toast('Por favor escribe qué cambios solicitas antes de enviar');
+            card.classList.add('warn');
+            return;
+          }
+          delete it.aprobacion;
+          it.estado = 'cambios';
+          marcarSinEnviar(it);
+          card.classList.remove('warn');
+          paint(); refresh(); updateApartadoCorregidos(); applyFilter(); saveDraft();
+          toast('✎ Cambios solicitados');
+          if (agencyUser && typeof saveAgencyDecisionChange === 'function') {
+            saveAgencyDecisionChange(it, 'cambios');
+          }
+          return;
+        }
+
+        if (ta.value.trim()) addCommentFromInput();
+
+        if (s === 'aprobado') {
+          var revWho = getReviewerName() || (agencyUser ? ('Agencia (' + (agencyUser === 'carlosuzc29@gmail.com' ? 'Carlos' : 'Andrea') + ')') : 'Cliente');
+          var nowIso = new Date().toISOString();
+          it.aprobacion = {
+            version: parseInt(it.version, 10) || 1,
+            usuario: revWho,
+            fecha: nowIso
+          };
+          it.revisadoPor = revWho;
+          it.fechaAprobacion = nowIso;
+          it.estado = 'aprobado';
+          marcarSinEnviar(it);
+          card.classList.remove('warn');
+          paint(); refresh(); updateApartadoCorregidos(); applyFilter(); saveDraft();
+          toast('✓ Contenido aprobado');
+          if (agencyUser && typeof saveAgencyDecisionChange === 'function') {
+            saveAgencyDecisionChange(it, 'aprobado');
+          }
+          return;
+        }
+
+        it.estado = s;
+        marcarSinEnviar(it);
+        card.classList.remove('warn');
+        paint(); refresh(); updateApartadoCorregidos(); applyFilter(); saveDraft();
+        if (agencyUser && typeof saveAgencyDecisionChange === 'function') {
+          saveAgencyDecisionChange(it, s);
+        }
+      }
+
+      ap.onclick = function () { set('aprobado'); };
+      ch.onclick = function () { set('cambios'); };
+
+      // Guardar referencia a la función de auto-commit para validación global
+      card.__commitDraftComment = addCommentFromInput;
+
+      var unsavedBadge = el('div', 'card-unsaved-badge', '⚠️ Sin guardar en la nube');
+      unsavedBadge.style.display = 'none';
+      card.appendChild(unsavedBadge);
+      function setUnsavedState(isUnsaved) {
+        card.classList.toggle('card-unsaved', !!isUnsaved);
+        unsavedBadge.style.display = isUnsaved ? 'inline-flex' : 'none';
+      }
+
+      paint();
+      cardObjRef = {
+        card: card,
+        nav: a,
+        it: it,
+        pieceNum: pieceNum,
+        editando: false,
+        freeEditStrip: freeEditStrip,
+        setDecision: set,
+        setUnsavedState: setUnsavedState,
+        commitComment: addCommentFromInput,
+        renderThread: renderThread,
+        paint: paint,
+        fmtTag: fmtTag,
+        openFmtPopover: openFmtPopover,
+        closeFmtPopover: closeFmtPopover,
+        toggleFmtPopover: toggleFmtPopover,
+        fw: fw,
+        fs: fs,
+        h2Title: h2Title,
+        tagsEl: tags,
+        canalTag: canalTag,
+        pilarTag: pilarTag,
+        dateTag: dateTag,
+        vTag: vTag,
+        ctxTag: ctxTag,
+        bodyEl: body,
+        guionWrap: g,
+        refsView: rw,
+        renderRefsView: renderRefsView,
+        guionParagraph: pGuion,
+        copyParagraph: pCopy,
+        hashParagraph: pHash,
+        copyContainer: cw
+      };
+      card.__cObj = cardObjRef;
+      cards.push(cardObjRef);
+    });
+
+
+    // Insertar controles de edición de agencia directamente en cada tarjeta (contenteditable inline)
+    cards.forEach(function (cObj) {
+      var it = cObj.it;
+      var card = cObj.card;
+      var btnDiscard = null;
+
+      function setEditingState(isEditing) {
+        cObj.editando = !!isEditing;
+        card.classList.toggle('card-editing', !!isEditing);
+        if (btnDiscard) {
+          btnDiscard.style.display = (agencyUser && cObj.editando) ? 'inline-flex' : 'none';
+        }
+      }
+      cObj.setEditingState = setEditingState;
+      cObj.markEditing = function () {
+        if (!agencyUser) return;
+        setEditingState(true);
+      };
+
+      function isAgencyEditableTarget(target) {
+        if (!target || !agencyUser) return false;
+        if (target.classList && target.classList.contains('cm-textarea')) return false;
+        if (target.closest && target.closest('.comment-box')) return false;
+        if (target.isContentEditable) return true;
+        var ce = target.getAttribute ? target.getAttribute('contenteditable') : null;
+        if (ce && ce !== 'false') return true;
+        var tag = (target.tagName || '').toUpperCase();
+        return tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA';
+      }
+      card.addEventListener('input', function (e) {
+        if (isAgencyEditableTarget(e.target)) setEditingState(true);
+      });
+      card.addEventListener('change', function (e) {
+        if (isAgencyEditableTarget(e.target)) setEditingState(true);
+      });
+
+      // Añadir etiqueta de ayuda sobre el guion
+      if (cObj.guionParagraph && cObj.guionParagraph.parentNode) {
+        var gHint = el('div', 'card-agency-edit-hint', '✎ Haz clic en el texto para editar el guion');
+        cObj.guionParagraph.parentNode.insertBefore(gHint, cObj.guionParagraph);
+      }
+      // Añadir etiqueta de ayuda sobre el copy
+      if (cObj.copyParagraph && cObj.copyParagraph.parentNode) {
+        var cHint = el('div', 'card-agency-edit-hint', '✎ Haz clic en el texto para editar el copy');
+        cObj.copyParagraph.parentNode.insertBefore(cHint, cObj.copyParagraph);
+      }
+      // Añadir etiqueta de ayuda sobre los hashtags
+      if (cObj.hashParagraph && cObj.hashParagraph.parentNode) {
+        var hHint = el('div', 'card-agency-edit-hint', '✎ Haz clic en el texto para editar los hashtags');
+        cObj.hashParagraph.parentNode.insertBefore(hHint, cObj.hashParagraph);
+      }
+
+      // Editor de referencias ({label, url}) exclusivo para Modo edición libre
+      var refsEditor = el('div', 'agency-refs-editor');
+      refsEditor.style.display = 'none';
+      var refsHead = el('div', 'agency-refs-head');
+      refsHead.appendChild(el('span', null, '🔗 Referencias'));
+      var btnRefAdd = el('button', 'btn-agency-ref-add', '+ Agregar');
+      btnRefAdd.type = 'button';
+      refsHead.appendChild(btnRefAdd);
+      refsEditor.appendChild(refsHead);
+      var refsListEl = el('div', 'agency-refs-list');
+      refsEditor.appendChild(refsListEl);
+      if (cObj.guionWrap) cObj.guionWrap.appendChild(refsEditor);
+
+      function addRefRow(refObj, markDirty) {
+        var row = el('div', 'agency-ref-row');
+        var lblInp = el('input', 'agency-ref-label');
+        lblInp.type = 'text';
+        lblInp.placeholder = 'Etiqueta (ej: Reel)';
+        lblInp.value = (refObj && refObj.label) ? String(refObj.label) : '';
+        var urlInp = el('input', 'agency-ref-url');
+        urlInp.type = 'url';
+        urlInp.placeholder = 'https://...';
+        urlInp.value = (refObj && refObj.url) ? String(refObj.url) : '';
+        urlInp.addEventListener('input', function () { urlInp.classList.remove('err'); });
+        var btnRem = el('button', 'btn-agency-ref-remove', '✕ Quitar');
+        btnRem.type = 'button';
+        btnRem.onclick = function () {
+          if (row.parentNode) row.parentNode.removeChild(row);
+          if (agencyUser) setEditingState(true);
+        };
+        row.appendChild(lblInp);
+        row.appendChild(urlInp);
+        row.appendChild(btnRem);
+        refsListEl.appendChild(row);
+        if (markDirty && agencyUser) {
+          setEditingState(true);
+          lblInp.focus();
+        }
+        return row;
+      }
+
+      function renderRefsEditor(refsArr) {
+        refsListEl.innerHTML = '';
+        var listToRender = normalizeReferencias(refsArr !== undefined ? refsArr : it.referencias);
+        listToRender.forEach(function (r) { addRefRow(r, false); });
+      }
+      renderRefsEditor(it.referencias);
+
+      btnRefAdd.onclick = function () {
+        if (!isFreeEditActive()) return;
+        addRefRow({ label: '', url: '' }, true);
+      };
+
+      function collectAndValidateRefs() {
+        var rows = refsListEl.querySelectorAll('.agency-ref-row');
+        var out = [];
+        var invalidInput = null;
+        for (var ri = 0; ri < rows.length; ri++) {
+          var lEl = rows[ri].querySelector('.agency-ref-label');
+          var uEl = rows[ri].querySelector('.agency-ref-url');
+          var lbl = lEl ? lEl.value.trim() : '';
+          var url = uEl ? uEl.value.trim() : '';
+          if (uEl) uEl.classList.remove('err');
+          if (!isValidHttpUrl(url)) {
+            if (uEl) uEl.classList.add('err');
+            if (!invalidInput) invalidInput = uEl;
+          } else {
+            out.push({ label: lbl || 'Referencia', url: url });
+          }
+        }
+        if (invalidInput) {
+          invalidInput.focus();
+          toast('⚠️ La URL de cada referencia debe empezar con http:// o https://');
+          return { ok: false, refs: null };
+        }
+        return { ok: true, refs: out };
+      }
+      cObj.refsEditor = refsEditor;
+      cObj.renderRefsEditor = renderRefsEditor;
+      cObj.collectAndValidateRefs = collectAndValidateRefs;
+
+      // Barra inferior de acciones de agencia con botones Guardar y Aprobar
+      var agencyBar = el('div', 'card-agency-bar');
+      agencyBar.style.display = 'none';
+
+      // Canal, fecha y pilar: etiquetas visibles + editores del Modo Agencia
+      var agencyMeta = el('div', 'card-agency-meta');
+      var canalLbl = el('label', 'agency-meta-field');
+      canalLbl.appendChild(el('span', null, 'Canal'));
+      var canalSel = el('select', 'agency-canal-sel');
+      [['', 'Sin definir'], ['Orgánico', '🌱 Orgánico'], ['Ads', '📣 Ads']].forEach(function (o) {
+        var op = el('option', null, o[1]); op.value = o[0]; canalSel.appendChild(op);
+      });
+      canalSel.value = normalizeCanal(it.canal);
+      canalLbl.appendChild(canalSel);
+      var fechaLbl = el('label', 'agency-meta-field');
+      fechaLbl.appendChild(el('span', null, 'Publicación'));
+      var fechaInp = el('input', 'agency-fecha-inp');
+      fechaInp.type = 'text'; fechaInp.placeholder = 'DD/MM'; fechaInp.maxLength = 10;
+      fechaInp.value = it.fechaPublicacion || '';
+      fechaInp.setAttribute('autocomplete', 'off');
+      fechaInp.title = 'Fecha de publicación en formato DD/MM (ej: 09/11). Déjala vacía para quitarla.';
+      fechaInp.addEventListener('input', function () { fechaInp.classList.remove('err'); });
+      fechaInp.addEventListener('blur', function () {
+        var chk = normalizarFechaPub(fechaInp.value);
+        if (chk.ok) {
+          fechaInp.value = chk.valor;
+          fechaInp.classList.remove('err');
+        } else {
+          fechaInp.classList.add('err');
+        }
+      });
+      fechaLbl.appendChild(fechaInp);
+      var pilarLbl = el('label', 'agency-meta-field agency-free-only');
+      pilarLbl.style.display = 'none';
+      pilarLbl.appendChild(el('span', null, 'Pilar'));
+      var pilarInp = el('input', 'agency-pilar-inp');
+      pilarInp.type = 'text'; pilarInp.placeholder = 'Ej: Educativo';
+      pilarInp.value = it.pilar || '';
+      pilarLbl.appendChild(pilarInp);
+
+      agencyMeta.appendChild(canalLbl);
+      agencyMeta.appendChild(fechaLbl);
+      agencyMeta.appendChild(pilarLbl);
+      cObj.canalSel = canalSel;
+      cObj.fechaInp = fechaInp;
+      cObj.pilarLbl = pilarLbl;
+      cObj.pilarInp = pilarInp;
+
+      cObj.refreshMeta = function () {
+        var cn = normalizeCanal(it.canal);
+        it.canal = cn;
+        card.dataset.canal = cn || '';
+        if (cObj.canalTag) {
+          cObj.canalTag.textContent = canalLabel(cn);
+          cObj.canalTag.className = 'tag canal ' + (cn === 'Ads' ? 'canal-ads' : 'canal-org');
+          cObj.canalTag.style.display = cn ? '' : 'none';
+        }
+        if (cObj.pilarTag) {
+          cObj.pilarTag.textContent = it.pilar || '';
+          cObj.pilarTag.style.display = it.pilar ? '' : 'none';
+        }
+        if (cObj.dateTag) {
+          cObj.dateTag.textContent = '📅 ' + (it.fechaPublicacion || '');
+          cObj.dateTag.style.display = it.fechaPublicacion ? '' : 'none';
+        }
         if (!cObj.editando) {
-          pilarInp.value = it.pilar || '';
+          if (document.activeElement !== canalSel) canalSel.value = cn;
+          if (document.activeElement !== fechaInp) fechaInp.value = it.fechaPublicacion || '';
+          if (document.activeElement !== pilarInp) pilarInp.value = it.pilar || '';
           renderRefsEditor(it.referencias);
         }
-        if (cObj.fmtTag) {
-          cObj.fmtTag.classList.add('agency-editable');
-          if (!cObj.fmtTag._agencyClickBound) {
-            cObj.fmtTag._agencyClickBound = true;
-            cObj.fmtTag.addEventListener('click', function(e){
-              if (!agencyUser) return;
-              e.stopPropagation();
-              if (cObj.toggleFmtPopover) cObj.toggleFmtPopover();
-            });
+        if (cObj.renderRefsView) cObj.renderRefsView();
+      };
+
+      var vNum = parseInt(it.version, 10) || 1;
+      var barInfo = el('span', 'agency-bar-info');
+      function updateAgencyBarText() {
+        var nv = parseInt(it.version, 10) || 1;
+        if (isFreeEditActive()) {
+          barInfo.textContent = '✎ Edición libre activa (no cambia estado ni versión)';
+        } else if (it.estado === 'aprobado') {
+          barInfo.textContent = '✓ Aprobado por agencia';
+        } else if (it.estado === 'corregido') {
+          barInfo.textContent = '🔄 Versión corregida';
+        } else {
+          barInfo.textContent = (it.estado === 'cambios' || it.estado === 'en_correccion') ? '✎ Corrección pedida por el cliente' : '✎ Edición libre del administrador';
+        }
+        if (cObj.vTag) cObj.vTag.textContent = 'v' + nv;
+      }
+      updateAgencyBarText();
+      cObj.updateAgencyBarText = updateAgencyBarText;
+      agencyBar.appendChild(barInfo);
+      agencyBar.appendChild(agencyMeta);
+
+      var agencyBtns = el('div', 'card-agency-actions');
+
+      function readCardFormValues(includeFreeFields) {
+        var newTitle = cObj.h2Title ? leerTextoEditable(cObj.h2Title).replace(/[\r\n]+/g, ' ').trim() : (it.titulo || '').trim();
+        var newGuion = cObj.guionParagraph ? leerTextoEditable(cObj.guionParagraph) : (it.guion || '');
+        var newCopy = cObj.copyParagraph ? leerTextoEditable(cObj.copyParagraph) : (it.copy || '');
+        var newHash = cObj.hashParagraph ? leerTextoEditable(cObj.hashParagraph).replace(/[\r\n]+/g, ' ').trim() : (it.hashtags || '').trim();
+        var newFmt = normalizeFormato((cObj.fs && cObj.fs.value) ? cObj.fs.value : it.formato);
+
+        var curTitle = (it.titulo || '').trim();
+        var curGuion = (it.guion || '').trim();
+        var curCopy = (it.copy || '').trim();
+        var curHash = (it.hashtags || '').trim();
+        var curFmt = normalizeFormato(it.formato);
+
+        // Fecha de publicación: se valida y normaliza a DD/MM antes de guardar
+        var fechaCheck = normalizarFechaPub(fechaInp.value);
+        if (!fechaCheck.ok) {
+          fechaInp.classList.add('err');
+          fechaInp.focus();
+          toast('⚠️ Fecha de publicación no válida: ' + fechaCheck.motivo);
+          return null;
+        }
+        fechaInp.classList.remove('err');
+        fechaInp.value = fechaCheck.valor;
+
+        var meta = {
+          canal: canalSel.value,
+          fechaPublicacion: fechaCheck.valor,
+          formato: newFmt
+        };
+        var metaCambio = (normalizeCanal(meta.canal) !== normalizeCanal(it.canal)) ||
+          (meta.fechaPublicacion !== (it.fechaPublicacion || '')) ||
+          (newFmt !== curFmt);
+
+        if (includeFreeFields) {
+          var refsCheck = collectAndValidateRefs();
+          if (!refsCheck.ok) return null;
+          meta.pilar = pilarInp.value.trim();
+          meta.referencias = refsCheck.refs;
+          if (meta.pilar !== (it.pilar || '')) metaCambio = true;
+          if (JSON.stringify(normalizeReferencias(meta.referencias)) !== JSON.stringify(normalizeReferencias(it.referencias))) {
+            metaCambio = true;
           }
         }
-        if (cObj.h2Title) {
-          setupPlainTextEditable(cObj.h2Title, true);
-          cObj.h2Title.setAttribute('title', 'Haz clic para editar el título');
+
+        var textoCambio = !(newTitle === curTitle && newGuion.trim() === curGuion && newCopy.trim() === curCopy && newHash === curHash);
+        return {
+          newTitle: newTitle,
+          newGuion: newGuion,
+          newCopy: newCopy,
+          newHash: newHash,
+          meta: meta,
+          textoCambio: textoCambio,
+          metaCambio: metaCambio,
+          hayCambios: textoCambio || metaCambio
+        };
+      }
+
+      var btnSave = el('button', 'btn-agency-save');
+      btnSave.type = 'button';
+      btnSave.textContent = '💾 Guardar cambios';
+      btnSave.dataset.origLabel = '💾 Guardar cambios';
+      btnSave.title = 'Guarda el guion y copy corregidos en Firestore';
+      btnSave.onclick = function () {
+        var freeActive = isFreeEditActive();
+        var form = readCardFormValues(freeActive);
+        if (!form) return;
+
+        if (!form.hayCambios) {
+          toast('Sin cambios para guardar');
+          return;
         }
-        if (cObj.guionParagraph) {
-          setupPlainTextEditable(cObj.guionParagraph, false);
+
+        if (REGEX_FRASES_PEGADAS.test(form.newGuion) || REGEX_FRASES_PEGADAS.test(form.newCopy)) {
+          toast('⚠️ Parece que faltan saltos de línea: revisa antes de guardar');
         }
-        if (cObj.copyParagraph) {
-          setupPlainTextEditable(cObj.copyParagraph, false);
+
+        function guardar(opts) {
+          form.meta.modo = opts.modo;
+          saveCardCorrection(it, cObj, form.newGuion, form.newCopy, form.newTitle, btnSave, form.newHash, form.meta).catch(function () { });
+          setTimeout(function () { updateAgencyBarText(); }, 300);
         }
+
+        if (freeActive) {
+          guardar({ modo: 'libre' });
+          return;
+        }
+
+        // Cambios de texto en una pieza ya aprobada: el administrador decide
+        if (form.textoCambio && it.estado === 'aprobado') {
+          modal({
+            kind: 'warn',
+            icon: '✎',
+            title: 'Esta pieza ya está aprobada',
+            text: '¿Quieres guardar el cambio y mantenerla aprobada, o enviarla al cliente como corrección para que la vuelva a revisar?',
+            buttons: [
+              { label: 'Guardar y mantener aprobada', primary: true, fn: function () { guardar({ modo: 'libre' }); } },
+              { label: 'Enviar como corrección', fn: function () { guardar({ modo: 'correccion' }); } },
+              { label: 'Cancelar' }
+            ]
+          });
+          return;
+        }
+        // Piezas con cambios pedidos por el cliente: el guardado es una corrección
+        var esCorreccion = form.textoCambio && (it.estado === 'cambios' || it.estado === 'en_correccion' || it.estado === 'corregido');
+        guardar({ modo: esCorreccion ? 'correccion' : 'libre' });
+      };
+      agencyBtns.appendChild(btnSave);
+
+      var btnSendCorr = el('button', 'btn-agency-send-correction');
+      btnSendCorr.type = 'button';
+      btnSendCorr.textContent = 'Enviar al cliente como corrección';
+      btnSendCorr.dataset.origLabel = 'Enviar al cliente como corrección';
+      btnSendCorr.style.display = 'none';
+      btnSendCorr.title = 'Guarda como nueva versión corregida para que el cliente la revise';
+      btnSendCorr.onclick = function () {
+        if (!isFreeEditActive()) return;
+        var form = readCardFormValues(true);
+        if (!form) return;
+        if (!form.hayCambios && it.estado === 'corregido') {
+          toast('Sin cambios para guardar');
+          return;
+        }
+        if (REGEX_FRASES_PEGADAS.test(form.newGuion) || REGEX_FRASES_PEGADAS.test(form.newCopy)) {
+          toast('⚠️ Parece que faltan saltos de línea: revisa antes de guardar');
+        }
+        form.meta.modo = 'correccion';
+        form.meta.forzarCorreccion = true;
+        saveCardCorrection(it, cObj, form.newGuion, form.newCopy, form.newTitle, btnSendCorr, form.newHash, form.meta).catch(function () { });
+        setTimeout(function () { updateAgencyBarText(); }, 300);
+      };
+      agencyBtns.appendChild(btnSendCorr);
+
+      btnDiscard = el('button', 'btn-agency-discard');
+      btnDiscard.type = 'button';
+      btnDiscard.textContent = 'Descartar cambios';
+      btnDiscard.style.display = 'none';
+      btnDiscard.title = 'Restaurar todos los campos de esta tarjeta a los últimos valores guardados';
+      function discardCardChanges() {
+        var fallbackTitle = it.titulo || ('Contenido ' + pad(cObj.pieceNum || 1));
+        if (cObj.h2Title) cObj.h2Title.textContent = fallbackTitle;
+        if (cObj.guionParagraph) cObj.guionParagraph.textContent = it.guion || '';
+        if (cObj.copyParagraph) cObj.copyParagraph.textContent = it.copy || '';
         if (cObj.hashParagraph) {
-          cObj.hashParagraph.style.display = 'block';
-          setupPlainTextEditable(cObj.hashParagraph, true);
+          cObj.hashParagraph.textContent = it.hashtags || '';
+          cObj.hashParagraph.style.display = (it.hashtags || agencyUser) ? 'block' : 'none';
         }
-      } else {
-        card.classList.remove('card-agency-edit-mode');
-        card.classList.remove('card-free-edit-mode');
-        agencyBar.style.display = 'none';
-        if (cObj.bodyEl) cObj.bodyEl.classList.toggle('single', !(it.copy || it.hashtags));
-        if (cObj.fmtTag) {
-          cObj.fmtTag.classList.remove('agency-editable');
-          if (cObj.closeFmtPopover) cObj.closeFmtPopover();
+        var normFmt = normalizeFormato(it.formato || 'Post');
+        if (cObj.fs) cObj.fs.value = normFmt;
+        if (cObj.fmtTag) cObj.fmtTag.textContent = normFmt;
+        canalSel.value = normalizeCanal(it.canal);
+        fechaInp.value = it.fechaPublicacion || '';
+        pilarInp.value = it.pilar || '';
+        renderRefsEditor(it.referencias);
+        if (cObj.renderRefsView) cObj.renderRefsView();
+        if (cObj.setUnsavedState) cObj.setUnsavedState(false);
+        setEditingState(false);
+        toast('Cambios descartados');
+      }
+      btnDiscard.onclick = discardCardChanges;
+      cObj.discardChanges = discardCardChanges;
+      agencyBtns.appendChild(btnDiscard);
+
+      var btnApprove = el('button', 'btn-agency-approve');
+      btnApprove.type = 'button';
+      btnApprove.textContent = '✓ Aprobar versión';
+      btnApprove.dataset.origLabel = '✓ Aprobar versión';
+      btnApprove.title = 'Aprobar esta versión y sincronizarla directamente en Firestore';
+      btnApprove.onclick = function () {
+        // Lee todos los campos (texto, formato, canal y fecha) para no aprobar dejando cambios sin guardar
+        var form = readCardFormValues(isFreeEditActive());
+        if (!form) return;
+        var newTitle = form.newTitle;
+        var newGuion = form.newGuion;
+        var newCopy = form.newCopy;
+        var newHash = form.newHash;
+
+        if (form.hayCambios) {
+          modal({
+            kind: 'warn',
+            icon: '!',
+            title: 'Tienes cambios sin guardar',
+            text: form.textoCambio ? '¿Guardar la corrección y aprobar?' : '¿Guardar los cambios (fecha, canal o formato) y aprobar?',
+            buttons: [
+              {
+                label: 'Guardar y aprobar',
+                primary: true,
+                fn: function () {
+                  var approveMeta = form.meta;
+                  // Solo un cambio de texto fuera de Edición libre cuenta como corrección; fecha/canal/formato no suben versión
+                  approveMeta.modo = (isFreeEditActive() || !form.textoCambio) ? 'libre' : undefined;
+                  saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnApprove, newHash, approveMeta).then(function () {
+                    saveAgencyDecisionChange(it, 'aprobado', btnApprove);
+                  }).catch(function () { });
+                }
+              },
+              { label: 'Cancelar' }
+            ]
+          });
+          return;
         }
-        if (cObj.h2Title) {
-          cObj.h2Title.removeAttribute('contenteditable');
-          cObj.h2Title.removeAttribute('spellcheck');
-          cObj.h2Title.removeAttribute('title');
+
+        it.titulo = newTitle;
+        if (newGuion) it.guion = newGuion;
+        if (newCopy) it.copy = newCopy;
+        if (newHash) it.hashtags = newHash;
+        saveAgencyDecisionChange(it, 'aprobado', btnApprove);
+      };
+      agencyBtns.appendChild(btnApprove);
+
+      agencyBar.appendChild(agencyBtns);
+      card.appendChild(agencyBar);
+
+      cObj.updateAgencyActions = function (active) {
+        var freeActive = !!(active && freeEditMode);
+        card.classList.toggle('card-free-edit-mode', freeActive);
+        if (cObj.freeEditStrip) cObj.freeEditStrip.style.display = freeActive ? 'flex' : 'none';
+        if (pilarLbl) pilarLbl.style.display = freeActive ? 'inline-flex' : 'none';
+        if (refsEditor) refsEditor.style.display = freeActive ? 'grid' : 'none';
+        if (btnSendCorr) btnSendCorr.style.display = freeActive ? 'inline-flex' : 'none';
+        if (btnDiscard) btnDiscard.style.display = (active && cObj.editando) ? 'inline-flex' : 'none';
+        if (cObj.renderRefsView) cObj.renderRefsView();
+
+        if (active) {
+          card.classList.add('card-agency-edit-mode');
+          agencyBar.style.display = 'flex';
+          updateAgencyBarText();
+          if (cObj.bodyEl) {
+            if (freeActive) cObj.bodyEl.classList.remove('single');
+            else cObj.bodyEl.classList.toggle('single', !(it.copy || it.hashtags));
+          }
+          if (cObj.guionParagraph) cObj.guionParagraph.style.display = 'block';
+          if (cObj.copyParagraph) cObj.copyParagraph.style.display = 'block';
+          if (cObj.copyContainer) cObj.copyContainer.style.display = 'block';
+          if (!cObj.editando) {
+            pilarInp.value = it.pilar || '';
+            renderRefsEditor(it.referencias);
+          }
+          if (cObj.fmtTag) {
+            cObj.fmtTag.classList.add('agency-editable');
+            if (!cObj.fmtTag._agencyClickBound) {
+              cObj.fmtTag._agencyClickBound = true;
+              cObj.fmtTag.addEventListener('click', function (e) {
+                if (!agencyUser) return;
+                e.stopPropagation();
+                if (cObj.toggleFmtPopover) cObj.toggleFmtPopover();
+              });
+            }
+          }
+          if (cObj.h2Title) {
+            setupPlainTextEditable(cObj.h2Title, true);
+            cObj.h2Title.setAttribute('title', 'Haz clic para editar el título');
+          }
+          if (cObj.guionParagraph) {
+            setupPlainTextEditable(cObj.guionParagraph, false);
+          }
+          if (cObj.copyParagraph) {
+            setupPlainTextEditable(cObj.copyParagraph, false);
+          }
+          if (cObj.hashParagraph) {
+            cObj.hashParagraph.style.display = 'block';
+            setupPlainTextEditable(cObj.hashParagraph, true);
+          }
+        } else {
+          card.classList.remove('card-agency-edit-mode');
+          card.classList.remove('card-free-edit-mode');
+          agencyBar.style.display = 'none';
+          if (cObj.bodyEl) cObj.bodyEl.classList.toggle('single', !(it.copy || it.hashtags));
+          if (cObj.fmtTag) {
+            cObj.fmtTag.classList.remove('agency-editable');
+            if (cObj.closeFmtPopover) cObj.closeFmtPopover();
+          }
+          if (cObj.h2Title) {
+            cObj.h2Title.removeAttribute('contenteditable');
+            cObj.h2Title.removeAttribute('spellcheck');
+            cObj.h2Title.removeAttribute('title');
+          }
+          if (cObj.guionParagraph) {
+            cObj.guionParagraph.removeAttribute('contenteditable');
+            cObj.guionParagraph.removeAttribute('spellcheck');
+            if (!it.guion) cObj.guionParagraph.style.display = 'none';
+          }
+          if (cObj.copyParagraph) {
+            cObj.copyParagraph.removeAttribute('contenteditable');
+            cObj.copyParagraph.removeAttribute('spellcheck');
+            if (!it.copy) cObj.copyParagraph.style.display = 'none';
+          }
+          if (cObj.copyContainer && !(it.copy || it.hashtags)) {
+            cObj.copyContainer.style.display = 'none';
+          }
+          if (cObj.hashParagraph) {
+            cObj.hashParagraph.removeAttribute('contenteditable');
+            cObj.hashParagraph.removeAttribute('spellcheck');
+            if (!it.hashtags) cObj.hashParagraph.style.display = 'none';
+          }
         }
-        if (cObj.guionParagraph) {
-          cObj.guionParagraph.removeAttribute('contenteditable');
-          cObj.guionParagraph.removeAttribute('spellcheck');
-          if (!it.guion) cObj.guionParagraph.style.display = 'none';
-        }
-        if (cObj.copyParagraph) {
-          cObj.copyParagraph.removeAttribute('contenteditable');
-          cObj.copyParagraph.removeAttribute('spellcheck');
-          if (!it.copy) cObj.copyParagraph.style.display = 'none';
-        }
-        if (cObj.copyContainer && !(it.copy || it.hashtags)) {
-          cObj.copyContainer.style.display = 'none';
-        }
-        if (cObj.hashParagraph) {
-          cObj.hashParagraph.removeAttribute('contenteditable');
-          cObj.hashParagraph.removeAttribute('spellcheck');
-          if (!it.hashtags) cObj.hashParagraph.style.display = 'none';
+      };
+    });
+
+    // Asegurar que las tarjetas dentro del viewport inicial tengan clase .in
+    var vh = window.innerHeight || document.documentElement.clientHeight || 800;
+    cards.forEach(function (c) {
+      if (!c.card.classList.contains('in')) {
+        var r = c.card.getBoundingClientRect();
+        if (r.top < vh + 100) {
+          c.card.classList.add('in', 'no-trans');
         }
       }
-    };
-  });
+    });
 
+    if (!io) {
+      try {
+        io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (e.isIntersecting) {
+              e.target.classList.add('in');
+              e.target.classList.remove('no-trans');
+            }
+          });
+        }, { threshold: .05 });
+        var navContainer = $('nav');
+        act = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (e.isIntersecting) {
+              cards.forEach(function (c) {
+                c.nav.classList.remove('active');
+                if (c.card === e.target) {
+                  c.nav.classList.add('active');
+                  if (navContainer && window.innerWidth <= 980) {
+                    var targetLeft = c.nav.offsetLeft - (navContainer.clientWidth - c.nav.clientWidth) / 2;
+                    if (navContainer.scrollTo) {
+                      navContainer.scrollTo({ left: targetLeft, behavior: 'smooth' });
+                    } else {
+                      navContainer.scrollLeft = targetLeft;
+                    }
+                  }
+                }
+              });
+            }
+          });
+        }, { rootMargin: '-45% 0px -50% 0px' });
+      } catch (e) { }
+    }
+
+    if (io) {
+      cards.forEach(function (c) {
+        io.observe(c.card);
+        if (act) act.observe(c.card);
+      });
+    }
+
+    setTimeout(function () {
+      cards.forEach(function (c) { c.card.classList.remove('no-trans'); });
+    }, 300);
   }
 
 
-  function counts(){
-    var o = {aprobado:0, cambios:0, pendiente:0, corregido:0};
+  function counts() {
+    var o = { aprobado: 0, cambios: 0, pendiente: 0, corregido: 0 };
     var evaluatedItems = (targetPieceNumbers && targetPieceNumbers.length > 0)
-      ? items.filter(function(it, idx){ return targetPieceNumbers.indexOf(idx + 1) !== -1; })
+      ? items.filter(function (it, idx) { return targetPieceNumbers.indexOf(idx + 1) !== -1; })
       : items;
-    evaluatedItems.forEach(function(it){
+    evaluatedItems.forEach(function (it) {
       var st = it.estado || 'pendiente';
       if (esSinEvaluar(st)) {
         o.pendiente = (o.pendiente || 0) + 1;
@@ -2718,30 +2817,45 @@
     });
     return o;
   }
-  function refresh(){
+  function refresh() {
     var evaluatedItems = (targetPieceNumbers && targetPieceNumbers.length > 0)
-      ? items.filter(function(it, idx){ return targetPieceNumbers.indexOf(idx + 1) !== -1; })
+      ? items.filter(function (it, idx) { return targetPieceNumbers.indexOf(idx + 1) !== -1; })
       : items;
     var n = evaluatedItems.length || 1, k = counts();
-    $('sOk').textContent = k.aprobado; $('sFix').textContent = k.cambios; $('sPend').textContent = k.pendiente;
-    $('dN').textContent = (k.aprobado + k.cambios) + '/' + evaluatedItems.length;
-    $('pct').textContent = Math.round((k.aprobado + k.cambios) / n * 100) + '%';
+
+    if (isAwaitingFirestore) {
+      if ($('sOk')) setTextIfChanged($('sOk'), '…');
+      if ($('sFix')) setTextIfChanged($('sFix'), '…');
+      if ($('sPend')) setTextIfChanged($('sPend'), '…');
+      if ($('dN')) setTextIfChanged($('dN'), '…');
+      if ($('pct')) setTextIfChanged($('pct'), '…');
+      if ($('rOk')) $('rOk').setAttribute('stroke-opacity', '0');
+      if ($('rFix')) $('rFix').setAttribute('stroke-opacity', '0');
+      return;
+    }
+
+    if ($('sOk')) setTextIfChanged($('sOk'), String(k.aprobado));
+    if ($('sFix')) setTextIfChanged($('sFix'), String(k.cambios));
+    if ($('sPend')) setTextIfChanged($('sPend'), String(k.pendiente));
+    if ($('dN')) setTextIfChanged($('dN'), (k.aprobado + k.cambios) + '/' + evaluatedItems.length);
+    if ($('pct')) setTextIfChanged($('pct'), Math.round((k.aprobado + k.cambios) / n * 100) + '%');
     var lo = C * k.aprobado / n, lf = C * k.cambios / n;
-    $('rOk').setAttribute('stroke-dasharray', lo + ' ' + C);
-    $('rFix').setAttribute('stroke-dasharray', lf + ' ' + C);
-    $('rFix').setAttribute('stroke-dashoffset', -lo);
-    $('rOk').setAttribute('stroke-opacity', k.aprobado ? 1 : 0); $('rFix').setAttribute('stroke-opacity', k.cambios ? 1 : 0);
+    if ($('rOk')) $('rOk').setAttribute('stroke-dasharray', lo + ' ' + C);
+    if ($('rFix')) $('rFix').setAttribute('stroke-dasharray', lf + ' ' + C);
+    if ($('rFix')) $('rFix').setAttribute('stroke-dashoffset', -lo);
+    if ($('rOk')) $('rOk').setAttribute('stroke-opacity', k.aprobado ? '1' : '0');
+    if ($('rFix')) $('rFix').setAttribute('stroke-opacity', k.cambios ? '1' : '0');
 
     var chipCount = $('chipCountCorregidos');
     var filterBtn = $('filterCorregidos');
-    if (chipCount) chipCount.textContent = k.corregido || 0;
+    if (chipCount) setTextIfChanged(chipCount, String(k.corregido || 0));
     if (filterBtn) filterBtn.style.display = (k.corregido > 0) ? 'inline-flex' : 'none';
   }
 
   var f = 'all';
-  function applyFilter(){
+  function applyFilter() {
     var vis = 0;
-    cards.forEach(function(c, cIdx){
+    cards.forEach(function (c, cIdx) {
       var pieceNum = parseInt(c.card.dataset.pieceNum || (cIdx + 1), 10);
       var isIncludedInShipment = (!targetPieceNumbers || targetPieceNumbers.indexOf(pieceNum) !== -1);
       var matchesFilter = (f === 'all') || (c.it.estado === f);
@@ -2757,21 +2871,21 @@
     if ($('empty')) $('empty').style.display = vis ? 'none' : 'block';
 
     // Encabezados de canal: visibles solo si su canal tiene piezas visibles
-    [].forEach.call(document.querySelectorAll('.canal-section-head, .nav-sec'), function(h){
-      var algunaVisible = cards.some(function(c){ return normalizeCanal(c.it.canal) === h.dataset.canal && c.card.style.display !== 'none'; });
+    [].forEach.call(document.querySelectorAll('.canal-section-head, .nav-sec'), function (h) {
+      var algunaVisible = cards.some(function (c) { return normalizeCanal(c.it.canal) === h.dataset.canal && c.card.style.display !== 'none'; });
       h.style.display = algunaVisible ? '' : 'none';
     });
-    [].forEach.call(document.querySelectorAll('.canal-btn'), function(x){
+    [].forEach.call(document.querySelectorAll('.canal-btn'), function (x) {
       x.classList.toggle('on', x.dataset.c === fc);
     });
 
-    [].forEach.call(document.querySelectorAll('.chip'), function(x){
+    [].forEach.call(document.querySelectorAll('.chip'), function (x) {
       x.classList.toggle('on', x.dataset.f === f);
     });
 
     var btnVerSolo = $('btnVerSoloCorregidos');
     if (btnVerSolo) {
-      var corregidosCount = items.filter(function(it){ return it.estado === 'corregido'; }).length;
+      var corregidosCount = items.filter(function (it) { return it.estado === 'corregido'; }).length;
       if (f === 'corregido') {
         btnVerSolo.textContent = 'Ver todos los contenidos';
         btnVerSolo.classList.add('active');
@@ -2782,7 +2896,7 @@
     }
   }
 
-  function updateApartadoCorregidos(){
+  function updateApartadoCorregidos() {
     var apartado = $('apartadoCorregidos');
     var pillsContainer = $('apartadoCorregidosPills');
     var chipCount = $('chipCountCorregidos');
@@ -2792,7 +2906,7 @@
     var btnCopy = $('btnCopiarLinkCorregidos');
     var btnWa = $('btnWhatsAppCorregidos');
 
-    var corregidos = items.filter(function(it, idx){
+    var corregidos = items.filter(function (it, idx) {
       var isIncludedInShipment = (!targetPieceNumbers || targetPieceNumbers.indexOf(idx + 1) !== -1);
       return isIncludedInShipment && (it.estado === 'corregido');
     });
@@ -2817,14 +2931,14 @@
       apartado.style.display = 'block';
 
       if (btnCopy) {
-        btnCopy.onclick = function(){
+        btnCopy.onclick = function () {
           var targetUrl = getReviewCorregidosUrl();
-          copyTextToClipboard(targetUrl, function(ok){
+          copyTextToClipboard(targetUrl, function (ok) {
             if (ok) {
               btnCopy.classList.add('copied');
               btnCopy.innerHTML = '<span class="btn-copy-ic">✓</span> <span class="btn-copy-txt">¡Link copiado!</span>';
               toast('📋 Enlace exclusivo copiado: Al abrirlo, el cliente verá solo los ' + count + ' contenidos corregidos para su visto bueno.');
-              setTimeout(function(){
+              setTimeout(function () {
                 btnCopy.classList.remove('copied');
                 btnCopy.innerHTML = '<span class="btn-copy-ic">📋</span> <span class="btn-copy-txt">Copiar link para cliente</span>';
               }, 3000);
@@ -2836,7 +2950,7 @@
       }
 
       if (btnWa) {
-        btnWa.onclick = function(){
+        btnWa.onclick = function () {
           var targetUrl = getReviewCorregidosUrl();
           var clientName = DATA.cliente || 'tu parrilla';
           var msg = '¡Hola! 👋 Ya están listos los contenidos corregidos de ' + clientName + '. Puedes revisarlos y aprobarlos directamente aquí:\n\n' + targetUrl;
@@ -2852,14 +2966,14 @@
           btnVerSolo.textContent = '👁️ Ver solo corregidos (' + count + ')';
           btnVerSolo.classList.remove('active');
         }
-        btnVerSolo.onclick = function(){
+        btnVerSolo.onclick = function () {
           f = (f === 'corregido') ? 'all' : 'corregido';
           applyFilter();
         };
       }
       if (pillsContainer) {
         pillsContainer.innerHTML = '';
-        corregidos.forEach(function(it){
+        corregidos.forEach(function (it) {
           var pieceIdx = items.indexOf(it);
           var num = (pieceIdx + 1 < 10 ? '0' : '') + (pieceIdx + 1);
           var vStr = 'v' + (it.version || 2);
@@ -2867,7 +2981,7 @@
           a.href = '#' + (it.id || ('c' + (pieceIdx + 1)));
           a.innerHTML = '<span style="color:#7c3aed;font-weight:800;">#' + num + '</span> ' +
             '<span>' + (it.titulo || 'Contenido') + '</span>';
-          a.onclick = function(e){
+          a.onclick = function (e) {
             e.preventDefault();
             var targetCard = $('list').querySelector('#' + (it.id || ('c' + (pieceIdx + 1))));
             if (targetCard) {
@@ -2875,9 +2989,9 @@
                 f = 'all';
                 applyFilter();
               }
-              targetCard.scrollIntoView({behavior:'smooth', block:'center'});
+              targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
               targetCard.classList.add('highlight-pulse');
-              setTimeout(function(){ targetCard.classList.remove('highlight-pulse'); }, 1500);
+              setTimeout(function () { targetCard.classList.remove('highlight-pulse'); }, 1500);
             }
           };
           pillsContainer.appendChild(a);
@@ -2892,18 +3006,18 @@
     }
   }
 
-  [].forEach.call(document.querySelectorAll('.chip'), function(b){
-    b.onclick = function(){
+  [].forEach.call(document.querySelectorAll('.chip'), function (b) {
+    b.onclick = function () {
       f = b.dataset.f;
       applyFilter();
     };
   });
 
-  function setupCanalFilter(){
+  function setupCanalFilter() {
     var listEl = $('list');
     if (!listEl || !listEl.parentNode) return;
-    var nAds = items.filter(function(x){ return normalizeCanal(x.canal) === 'Ads'; }).length;
-    var nOrg = items.filter(function(x){ return normalizeCanal(x.canal) === 'Orgánico'; }).length;
+    var nAds = items.filter(function (x) { return normalizeCanal(x.canal) === 'Ads'; }).length;
+    var nOrg = items.filter(function (x) { return normalizeCanal(x.canal) === 'Orgánico'; }).length;
     var bar = $('canalFilter');
     if (!nAds && !nOrg) { if (bar) bar.style.display = 'none'; fc = 'all'; return; }
     if (!bar) {
@@ -2913,8 +3027,28 @@
       listEl.parentNode.insertBefore(bar, listEl);
     }
     bar.style.display = '';
+
+    var defs = [['all', 'Todos', items.length], ['Orgánico', '🌱 Orgánicos', nOrg], ['Ads', '📣 Ads', nAds]];
+    var existingBtns = bar.querySelectorAll('.canal-btn');
+    if (existingBtns.length > 0) {
+      defs.forEach(function (o) {
+        var b = bar.querySelector('.canal-btn[data-c="' + o[0] + '"]');
+        if (b) {
+          if (o[0] !== 'all' && !o[2]) {
+            b.style.display = 'none';
+          } else {
+            b.style.display = '';
+            var cnt = b.querySelector('.canal-cnt');
+            if (cnt) setTextIfChanged(cnt, String(o[2]));
+            b.classList.toggle('on', fc === o[0]);
+          }
+        }
+      });
+      return;
+    }
+
     bar.innerHTML = '';
-    [['all', 'Todos', items.length], ['Orgánico', '🌱 Orgánicos', nOrg], ['Ads', '📣 Ads', nAds]].forEach(function(o){
+    defs.forEach(function (o) {
       if (o[0] !== 'all' && !o[2]) return;
       var b = el('button', 'canal-btn' + (fc === o[0] ? ' on' : ''));
       b.type = 'button';
@@ -2922,67 +3056,39 @@
       b.setAttribute('role', 'tab');
       b.appendChild(el('span', null, o[1]));
       b.appendChild(el('span', 'canal-cnt', String(o[2])));
-      b.onclick = function(){ fc = o[0]; applyFilter(); };
+      b.onclick = function () { fc = o[0]; applyFilter(); };
       bar.appendChild(b);
     });
   }
 
-  try {
-    var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) e.target.classList.add('in'); }); }, {threshold:.05});
-    var navContainer = $('nav');
-    var act = new IntersectionObserver(function(es){
-      es.forEach(function(e){
-        if (e.isIntersecting) {
-          cards.forEach(function(c){
-            c.nav.classList.remove('active');
-            if (c.card === e.target) {
-              c.nav.classList.add('active');
-              // Centrar el chip activo únicamente en el contenedor horizontal sin mover el scroll vertical de la ventana
-              if (navContainer && window.innerWidth <= 980) {
-                var targetLeft = c.nav.offsetLeft - (navContainer.clientWidth - c.nav.clientWidth) / 2;
-                if (navContainer.scrollTo) {
-                  navContainer.scrollTo({ left: targetLeft, behavior: 'smooth' });
-                } else {
-                  navContainer.scrollLeft = targetLeft;
-                }
-              }
-            }
-          });
-        }
-      });
-    }, {rootMargin:'-45% 0px -50% 0px'});
-    cards.forEach(function(c){ io.observe(c.card); act.observe(c.card); });
-  } catch (e) {}
-  setTimeout(function(){ cards.forEach(function(c){ c.card.classList.add('in'); }); }, 1200);
-
-  $('who').addEventListener('input', function(){ this.classList.remove('err'); saveDraft(); });
+  $('who').addEventListener('input', function () { this.classList.remove('err'); saveDraft(); });
 
   // Modal / toast
   var tt;
-  function toast(msg){ var t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(tt); tt = setTimeout(function(){ t.classList.remove('show'); }, 3200); }
-  function modal(opts){
+  function toast(msg) { var t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(tt); tt = setTimeout(function () { t.classList.remove('show'); }, 3200); }
+  function modal(opts) {
     var b = $('box'); b.innerHTML = '';
     b.appendChild(el('div', 'ico ' + (opts.kind || 'ok') + (opts.celebrate ? ' celebrate' : ''), opts.icon || '✓'));
     b.appendChild(el('h3', null, opts.title));
     if (opts.text) b.appendChild(el('p', null, opts.text));
-    if (opts.list && opts.list.length) { var ul = el('ul'); opts.list.forEach(function(x){ ul.appendChild(el('li', null, x)); }); b.appendChild(ul); }
+    if (opts.list && opts.list.length) { var ul = el('ul'); opts.list.forEach(function (x) { ul.appendChild(el('li', null, x)); }); b.appendChild(ul); }
     var row = el('div', 'row');
-    (opts.buttons || []).forEach(function(bt){ var x = el('button', bt.primary ? 'b-pri' : 'b-sec', bt.label); x.type = 'button'; x.onclick = function(){ closeModal(); if (bt.fn) bt.fn(); }; row.appendChild(x); });
+    (opts.buttons || []).forEach(function (bt) { var x = el('button', bt.primary ? 'b-pri' : 'b-sec', bt.label); x.type = 'button'; x.onclick = function () { closeModal(); if (bt.fn) bt.fn(); }; row.appendChild(x); });
     b.appendChild(row); $('modal').classList.add('show');
   }
-  function closeModal(){ $('modal').classList.remove('show'); }
-  $('modal').addEventListener('click', function(e){ if (e.target === this) closeModal(); });
+  function closeModal() { $('modal').classList.remove('show'); }
+  $('modal').addEventListener('click', function (e) { if (e.target === this) closeModal(); });
 
-  function slug(s){ return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+  function slug(s) { return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
 
-  function commitAllDraftComments(){
-    cards.forEach(function(c){
+  function commitAllDraftComments() {
+    cards.forEach(function (c) {
       if (c.commitComment) c.commitComment();
     });
   }
 
   // Copia estática del tablero (se ve aunque el visor no ejecute JavaScript, p. ej. vista previa del iPhone)
-  function buildHTML(){
+  function buildHTML() {
     commitAllDraftComments();
     DATA.contenidos = items;
     var root = document.documentElement.cloneNode(true);
@@ -2990,20 +3096,20 @@
     var liveTa = document.querySelectorAll('#list textarea'), cloneTa = root.querySelectorAll('#list textarea');
     for (var i = 0; i < liveTa.length; i++) cloneTa[i].textContent = liveTa[i].value;
     var liveSel = document.querySelectorAll('#list select'), cloneSel = root.querySelectorAll('#list select');
-    for (var j = 0; j < liveSel.length; j++) { var v = liveSel[j].value; [].forEach.call(cloneSel[j].options, function(o){ if (o.value === v) o.setAttribute('selected', ''); else o.removeAttribute('selected'); }); }
-    [].forEach.call(root.querySelectorAll('.card, #nav a'), function(n){ n.removeAttribute('style'); n.classList.remove('warn', 'card-agency-edit-mode', 'card-free-edit-mode', 'card-editing', 'card-unsaved'); });
-    [].forEach.call(root.querySelectorAll('.card'), function(n){ n.classList.add('in'); });
+    for (var j = 0; j < liveSel.length; j++) { var v = liveSel[j].value;[].forEach.call(cloneSel[j].options, function (o) { if (o.value === v) o.setAttribute('selected', ''); else o.removeAttribute('selected'); }); }
+    [].forEach.call(root.querySelectorAll('.card, #nav a'), function (n) { n.removeAttribute('style'); n.classList.remove('warn', 'card-agency-edit-mode', 'card-free-edit-mode', 'card-editing', 'card-unsaved'); });
+    [].forEach.call(root.querySelectorAll('.card'), function (n) { n.classList.add('in'); });
     var cloneBody = root.querySelector('body');
     if (cloneBody) cloneBody.classList.remove('agency-active', 'free-edit-active');
     var cloneFreeBtn = root.querySelector('#btnFreeEditMode');
     if (cloneFreeBtn && cloneFreeBtn.parentNode) cloneFreeBtn.parentNode.removeChild(cloneFreeBtn);
-    [].forEach.call(root.querySelectorAll('.card-agency-bar, .card-free-edit-strip, .agency-refs-editor, .card-unsaved-badge, #agencyActiveBarWrap'), function(n){ n.style.display = 'none'; });
-    [].forEach.call(root.querySelectorAll('[contenteditable]'), function(n){ n.removeAttribute('contenteditable'); n.removeAttribute('spellcheck'); });
+    [].forEach.call(root.querySelectorAll('.card-agency-bar, .card-free-edit-strip, .agency-refs-editor, .card-unsaved-badge, #agencyActiveBarWrap'), function (n) { n.style.display = 'none'; });
+    [].forEach.call(root.querySelectorAll('[contenteditable]'), function (n) { n.removeAttribute('contenteditable'); n.removeAttribute('spellcheck'); });
     root.querySelector('#empty').removeAttribute('style');
     root.querySelector('#modal').classList.remove('show');
     var tc = root.querySelector('#toast'); tc.classList.remove('show'); tc.textContent = '';
     root.querySelector('#who').setAttribute('value', $('who').value);
-    [].forEach.call(root.querySelectorAll('.chip'), function(c, k){ c.classList.toggle('on', k === 0); });
+    [].forEach.call(root.querySelectorAll('.chip'), function (c, k) { c.classList.toggle('on', k === 0); });
     root.querySelector('#board-data').textContent = '\n' + JSON.stringify(DATA, null, 2).replace(/</g, '\\u003c') + '\n';
     return '<!DOCTYPE html>\n' + root.outerHTML;
   }
@@ -3012,7 +3118,7 @@
   var SEND = !!(FB && FB.projectId);
   if (SEND) { document.body.classList.add('has-send'); $('dl').textContent = 'Enviar revisión ✓'; }
 
-  function unpackFsValue(v){
+  function unpackFsValue(v) {
     if (!v || typeof v !== 'object') return v;
     if ('stringValue' in v) return v.stringValue;
     if ('integerValue' in v) return parseInt(v.integerValue, 10);
@@ -3033,7 +3139,7 @@
     return v;
   }
 
-  function packFsValue(v){
+  function packFsValue(v) {
     if (v === undefined) return undefined;
     if (v === null) return { nullValue: null };
     if (typeof v === 'boolean') return { booleanValue: v };
@@ -3065,7 +3171,7 @@
     return { stringValue: String(v) };
   }
 
-  function leerTextoEditable(el){
+  function leerTextoEditable(el) {
     if (!el) return '';
     var clone = el.cloneNode(true);
     var hashes = clone.querySelectorAll('.hash');
@@ -3085,7 +3191,7 @@
     var text = clone.textContent || '';
     text = text.replace(/\u00a0/g, ' ');
     text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-    var lines = text.split('\n').map(function(l){ return l.replace(/[ \t]+$/, ''); });
+    var lines = text.split('\n').map(function (l) { return l.replace(/[ \t]+$/, ''); });
     text = lines.join('\n');
     text = text.replace(/\n{3,}/g, '\n\n');
     return text.trim();
@@ -3093,11 +3199,11 @@
 
   var REGEX_FRASES_PEGADAS = /[.?!…:][A-ZÁÉÍÓÚÑ¿¡]/;
 
-  function setupPlainTextEditable(node, isSingleLine){
+  function setupPlainTextEditable(node, isSingleLine) {
     if (!node) return;
     try {
       node.contentEditable = 'plaintext-only';
-    } catch(e) {
+    } catch (e) {
       node.setAttribute('contenteditable', 'true');
     }
     if (node.contentEditable !== 'plaintext-only') {
@@ -3106,7 +3212,7 @@
     node.setAttribute('spellcheck', 'true');
     if (!node._agencyKeyBound) {
       node._agencyKeyBound = true;
-      node.addEventListener('keydown', function(e){
+      node.addEventListener('keydown', function (e) {
         if (e.key === 'Enter') {
           if (isSingleLine) {
             e.preventDefault();
@@ -3120,7 +3226,7 @@
           }
         }
       });
-      node.addEventListener('paste', function(e){
+      node.addEventListener('paste', function (e) {
         if (node.contentEditable !== 'plaintext-only') {
           e.preventDefault();
           var clip = (e.clipboardData || window.clipboardData);
@@ -3132,7 +3238,7 @@
     }
   }
 
-  function guardarPiezas(cambiosPorId, opciones){
+  function guardarPiezas(cambiosPorId, opciones) {
     opciones = opciones || {};
     var intentosMax = 3;
     var intentoActual = opciones.intento || 1;
@@ -3146,7 +3252,7 @@
       guardadosEnCurso++;
       opciones = Object.assign({}, opciones, { _inFlightTracked: true });
     }
-    function finishInFlight(){
+    function finishInFlight() {
       if (trackInFlight) guardadosEnCurso = Math.max(0, guardadosEnCurso - 1);
     }
 
@@ -3154,10 +3260,10 @@
       '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
       '?key=' + encodeURIComponent(FB.apiKey);
 
-    return getValidAgencyToken().then(function(token){
+    return getValidAgencyToken().then(function (token) {
       var getHeaders = {};
       if (token) getHeaders['Authorization'] = 'Bearer ' + token;
-      return fetch(docUrl, { headers: getHeaders }).then(function(res){
+      return fetch(docUrl, { headers: getHeaders }).then(function (res) {
         if (!res.ok) {
           if (res.status === 404 && !opciones._autoRegistrado && !isClosedMonth) {
             var nowIso = new Date().toISOString();
@@ -3186,7 +3292,7 @@
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ fields: initialFields })
-            }).then(function(postRes){
+            }).then(function (postRes) {
               if (!postRes.ok && postRes.status !== 409) {
                 var errReg = new Error('No pudimos registrar tu revisión. Descarga una copia y envíala por WhatsApp.');
                 errReg.isRegistrationFailure = true;
@@ -3200,13 +3306,13 @@
             err404.isRegistrationFailure = true;
             throw err404;
           }
-          return res.json().catch(function(){ return {}; }).then(function(j){
+          return res.json().catch(function () { return {}; }).then(function (j) {
             throw new Error((j.error && j.error.message) || ('HTTP ' + res.status + ' al leer tablero'));
           });
         }
         return res.json();
       });
-    }).then(function(doc){
+    }).then(function (doc) {
       if (!doc || !doc.fields) return doc;
       var updateTime = doc.updateTime;
       var f = {};
@@ -3218,20 +3324,20 @@
 
       // Si contenidos está vacío en Firestore (primera revisión), parte de items con todos sus campos
       if (rawContenidos.length === 0) {
-        baseContenidos = items.map(function(it, i){
+        baseContenidos = items.map(function (it, i) {
           var baseObj = Object.assign({}, it);
           baseObj.n = i + 1;
           baseObj.id = it.id || ('c' + (i + 1));
           return baseObj;
         });
       } else {
-        baseContenidos = rawContenidos.map(function(item){
+        baseContenidos = rawContenidos.map(function (item) {
           return Object.assign({}, item);
         });
       }
 
       // Fusionar cambios por pieza sin borrar claves que no conoce
-      baseContenidos.forEach(function(pieza, idx){
+      baseContenidos.forEach(function (pieza, idx) {
         var n = pieza.n || (idx + 1);
         var id = pieza.id || ('c' + n);
         pieza.n = n;
@@ -3278,16 +3384,16 @@
       });
 
       // Recalcular contadores a partir del arreglo fusionado
-      var totalOk = baseContenidos.filter(function(x){ return x.estado === 'aprobado'; }).length;
-      var totalFix = baseContenidos.filter(function(x){ return x.estado === 'cambios' || x.estado === 'en_correccion'; }).length;
-      var totalCorr = baseContenidos.filter(function(x){ return x.estado === 'corregido'; }).length;
-      var totalPend = baseContenidos.filter(function(x){
+      var totalOk = baseContenidos.filter(function (x) { return x.estado === 'aprobado'; }).length;
+      var totalFix = baseContenidos.filter(function (x) { return x.estado === 'cambios' || x.estado === 'en_correccion'; }).length;
+      var totalCorr = baseContenidos.filter(function (x) { return x.estado === 'corregido'; }).length;
+      var totalPend = baseContenidos.filter(function (x) {
         return esSinEvaluar(x.estado);
       }).length;
 
       var estadoGeneral = (totalFix > 0) ? 'Con cambios' :
-                          (totalCorr > 0 ? 'En revisión' :
-                          ((totalOk === baseContenidos.length && baseContenidos.length > 0) ? 'Aprobado' : (totalOk > 0 ? 'Parcial' : 'Sin revisar')));
+        (totalCorr > 0 ? 'En revisión' :
+          ((totalOk === baseContenidos.length && baseContenidos.length > 0) ? 'Aprobado' : (totalOk > 0 ? 'Parcial' : 'Sin revisar')));
 
       var patchFields = {
         aprobados: totalOk,
@@ -3322,7 +3428,7 @@
         if (pv !== undefined) packedFields[pf] = pv;
       }
 
-      return getValidAgencyToken().then(function(token){
+      return getValidAgencyToken().then(function (token) {
         var patchHeaders = { 'Content-Type': 'application/json' };
         if (token) patchHeaders['Authorization'] = 'Bearer ' + token;
         return fetch(patchUrl, {
@@ -3330,9 +3436,9 @@
           headers: patchHeaders,
           body: JSON.stringify({ fields: packedFields })
         });
-      }).then(function(patchRes){
+      }).then(function (patchRes) {
         if (!patchRes.ok) {
-          return patchRes.json().catch(function(){ return {}; }).then(function(errJson){
+          return patchRes.json().catch(function () { return {}; }).then(function (errJson) {
             var errMsg = (errJson.error && errJson.error.message) || ('HTTP ' + patchRes.status);
             var isPrecondition = (patchRes.status === 400 || patchRes.status === 409 || patchRes.status === 412) ||
               (errJson.error && (errJson.error.status === 'FAILED_PRECONDITION' || errJson.error.status === 'ABORTED'));
@@ -3346,23 +3452,29 @@
           });
         }
         return patchRes.json();
-      }).then(function(savedDoc){
+      }).then(function (savedDoc) {
         if (!opciones.skipAutoSync) {
           syncBoardWithFirestore(savedDoc);
         }
         return savedDoc;
       });
-    }).then(function(res){
+    }).then(function (res) {
       finishInFlight();
       return res;
-    }, function(err){
+    }, function (err) {
       finishInFlight();
       throw err;
     });
   }
 
-  function syncBoardWithFirestore(doc){
+  function syncBoardWithFirestore(doc) {
     if (!doc || !doc.fields) return;
+
+    if (doc.updateTime && doc.updateTime === lastAppliedFsUpdateTime) {
+      return;
+    }
+    lastAppliedFsUpdateTime = doc.updateTime || null;
+
     var f = {};
     for (var k in doc.fields) f[k] = unpackFsValue(doc.fields[k]);
 
@@ -3370,14 +3482,20 @@
     var revPor = f.revisadoPor || '';
     var revFecha = f.ultimaRevision || '';
 
-    var hasReview = (f.aprobados > 0 || f.cambios > 0 || revPor || revFecha || (f.estado && f.estado !== 'Sin revisar') || fsContenidos.length > 0);
-    if (!hasReview) return;
+    var revBanner = $('reviewed');
+    if (revBanner) revBanner.classList.remove('is-reserving');
 
-    var fsHasCorregidos = fsContenidos.some(function(x){ return x.estado === 'corregido'; });
+    var hasReview = (f.aprobados > 0 || f.cambios > 0 || revPor || revFecha || (f.estado && f.estado !== 'Sin revisar') || fsContenidos.length > 0);
+    if (!hasReview) {
+      if (revBanner) revBanner.classList.remove('show');
+      return;
+    }
+
+    var fsHasCorregidos = fsContenidos.some(function (x) { return x.estado === 'corregido'; });
     if (isReviewShipment || fsHasCorregidos || agencyUser || f.estado === 'En revisión' || f.estado === 'Sin revisar') {
       DATA.revision.revisadoPor = '';
       if ($('who')) $('who').value = '';
-      if ($('reviewed')) $('reviewed').classList.remove('show');
+      if (revBanner) revBanner.classList.remove('show');
     } else {
       if (revPor) {
         DATA.revision.revisadoPor = revPor;
@@ -3386,9 +3504,8 @@
         DATA.revision.fecha = revFecha;
         var d = new Date(revFecha);
         if (!isNaN(d.getTime())) {
-          var revBanner = $('reviewed');
           if (revBanner) {
-            revBanner.textContent = '✓ Revisado por ' + (revPor || 'el cliente') + ' el ' + d.toLocaleDateString('es-VE', {day:'2-digit', month:'long', year:'numeric'}) + ' a las ' + d.toLocaleTimeString('es-VE', {hour:'2-digit', minute:'2-digit'});
+            setTextIfChanged(revBanner, '✓ Revisado por ' + (revPor || 'el cliente') + ' el ' + d.toLocaleDateString('es-VE', { day: '2-digit', month: 'long', year: 'numeric' }) + ' a las ' + d.toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit' }));
             revBanner.classList.add('show');
           }
         }
@@ -3397,15 +3514,15 @@
 
     if (fsContenidos.length > 0) {
       var piezasActualizadas = [];
-      cards.forEach(function(cObj, idx){
+      cards.forEach(function (cObj, idx) {
         if (agencyUser && cObj.editando === true) return;
         var it = cObj.it;
         var n = idx + 1;
         // Buscar primero por id: si el orden de las piezas cambió (p. ej. al reordenar por fecha),
         // la posición n ya no identifica la misma pieza. n y título solo como respaldo para piezas sin id.
-        var fsItem = (it.id && fsContenidos.find(function(x){ return x.id && x.id === it.id; })) ||
-          fsContenidos.find(function(x){ return !x.id && +x.n === n; }) ||
-          fsContenidos.find(function(x){ return !x.id && x.titulo && x.titulo === it.titulo; });
+        var fsItem = (it.id && fsContenidos.find(function (x) { return x.id && x.id === it.id; })) ||
+          fsContenidos.find(function (x) { return !x.id && +x.n === n; }) ||
+          fsContenidos.find(function (x) { return !x.id && x.titulo && x.titulo === it.titulo; });
 
         if (fsItem) {
           // Decisión y comentarios del cliente sin enviar: se conservan salvo que Nexo haya subido otra versión
@@ -3421,11 +3538,11 @@
           }
           if (fsItem.version) {
             it.version = parseInt(fsItem.version, 10);
-            if (cObj.vTag) cObj.vTag.textContent = 'v' + it.version;
+            if (cObj.vTag) setTextIfChanged(cObj.vTag, 'v' + it.version);
             if (cObj.ctxTag) {
               var isCorr = it.version > 1;
               cObj.ctxTag.className = 'tag ' + (isCorr ? 'ctx-correction' : 'ctx-first');
-              cObj.ctxTag.textContent = isCorr ? '🔄 Revisión de correcciones' : '✨ Primera revisión';
+              setTextIfChanged(cObj.ctxTag, isCorr ? '🔄 Revisión de correcciones' : '✨ Primera revisión');
             }
           }
           if (!conservarLocal && fsItem.aprobacion) {
@@ -3440,24 +3557,24 @@
             it.formato = normFmt;
             it.formatoOriginal = normFmt;
             if (cObj.fs) cObj.fs.value = normFmt;
-            if (cObj.fmtTag) cObj.fmtTag.textContent = normFmt;
+            if (cObj.fmtTag) setTextIfChanged(cObj.fmtTag, normFmt);
           }
           if (fsItem.titulo) {
             it.titulo = fsItem.titulo;
-            if (cObj.h2Title) cObj.h2Title.textContent = fsItem.titulo;
+            if (cObj.h2Title) setTextIfChanged(cObj.h2Title, fsItem.titulo);
           }
           if (fsItem.guion != null) {
             it.guion = fsItem.guion;
-            if (cObj.guionParagraph) cObj.guionParagraph.textContent = fsItem.guion;
+            if (cObj.guionParagraph) setTextIfChanged(cObj.guionParagraph, fsItem.guion);
           }
           if (fsItem.copy != null) {
             it.copy = fsItem.copy;
-            if (cObj.copyParagraph) cObj.copyParagraph.textContent = fsItem.copy;
+            if (cObj.copyParagraph) setTextIfChanged(cObj.copyParagraph, fsItem.copy);
           }
           if (fsItem.hashtags != null) {
             it.hashtags = fsItem.hashtags;
             if (cObj.hashParagraph) {
-              cObj.hashParagraph.textContent = fsItem.hashtags;
+              setTextIfChanged(cObj.hashParagraph, fsItem.hashtags);
               if (fsItem.hashtags || agencyUser) {
                 cObj.hashParagraph.style.display = 'block';
               } else {
@@ -3488,7 +3605,12 @@
             it.comentarios = filteredComments;
           }
 
-          if (cObj.renderThread) cObj.renderThread();
+          var oldCommStr = it._lastRenderedCommentStr || '';
+          var newCommStr = JSON.stringify(it.comentarios || []);
+          if (oldCommStr !== newCommStr) {
+            it._lastRenderedCommentStr = newCommStr;
+            if (cObj.renderThread) cObj.renderThread();
+          }
           if (cObj.paint) cObj.paint();
         }
       });
@@ -3506,7 +3628,7 @@
   }
 
 
-  function syncAndRegisterBoard(){
+  function syncAndRegisterBoard() {
     if (!DATA || !DATA.id || !FB || !FB.projectId || !FB.apiKey) return;
     if (guardadosEnCurso > 0 || hasFocusedCardField()) return;
     try {
@@ -3514,14 +3636,37 @@
         '/databases/(default)/documents/tableros/' + encodeURIComponent(DATA.id) +
         '?key=' + encodeURIComponent(FB.apiKey);
 
-      fetch(checkUrl)
-        .then(function(res){
+      var fetchPromise = null;
+      if (initialFsPromise && initialFsPromise.docId === DATA.id) {
+        fetchPromise = initialFsPromise.promise;
+        initialFsPromise = null;
+      } else {
+        fetchPromise = fetch(checkUrl, { cache: 'no-cache' });
+      }
+
+      fetchPromise
+        .then(function (res) {
           if (res.status === 200) {
-            return res.json().then(function(doc){
+            return res.json().then(function (doc) {
+              clearTimeout(fsTimeoutTimer);
+              if (isAwaitingFirestore) {
+                isAwaitingFirestore = false;
+                var revB = $('reviewed');
+                if (revB) revB.classList.remove('is-reserving');
+              }
+              saveFirestoreCache(DATA.id, doc);
               if (guardadosEnCurso > 0 || hasFocusedCardField()) return;
               syncBoardWithFirestore(doc);
             });
           } else if (res.status === 404) {
+            clearTimeout(fsTimeoutTimer);
+            if (isAwaitingFirestore) {
+              isAwaitingFirestore = false;
+              var revB = $('reviewed');
+              if (revB) revB.classList.remove('is-reserving');
+              refresh();
+              cards.forEach(function (c) { if (c.paint) c.paint(); });
+            }
             // REGLA FUNDAMENTAL: NUNCA escribir en Firestore desde un mes anterior/cerrado
             if (isClosedMonth) return;
 
@@ -3552,67 +3697,83 @@
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ fields: initialFields })
             });
+          } else {
+            clearTimeout(fsTimeoutTimer);
+            if (isAwaitingFirestore) {
+              isAwaitingFirestore = false;
+              var revB = $('reviewed');
+              if (revB) revB.classList.remove('is-reserving');
+              refresh();
+              cards.forEach(function (c) { if (c.paint) c.paint(); });
+            }
           }
         })
-        .catch(function(){
-          // Silencioso
+        .catch(function () {
+          clearTimeout(fsTimeoutTimer);
+          if (isAwaitingFirestore) {
+            isAwaitingFirestore = false;
+            var revB = $('reviewed');
+            if (revB) revB.classList.remove('is-reserving');
+            refresh();
+            cards.forEach(function (c) { if (c.paint) c.paint(); });
+          }
         });
-    } catch(e) {}
+    } catch (e) { }
   }
 
   // Mantener sincronización periódica pasiva
-  document.addEventListener('visibilitychange', function(){
+  document.addEventListener('visibilitychange', function () {
     if (!document.hidden) syncAndRegisterBoard();
   });
-  window.addEventListener('focus', function(){
+  window.addEventListener('focus', function () {
     syncAndRegisterBoard();
   });
-  setInterval(function(){
+  setInterval(function () {
     if (!document.hidden) syncAndRegisterBoard();
   }, 30000);
 
-  function doDownload(){
+  function doDownload() {
     commitAllDraftComments();
     var revName = getReviewerName() || 'Cliente';
-    if (!DATA.revision.fecha) DATA.revision = {revisadoPor: revName, fecha: new Date().toISOString()};
+    if (!DATA.revision.fecha) DATA.revision = { revisadoPor: revName, fecha: new Date().toISOString() };
     var html = buildHTML();
     var name = 'Revision-' + slug(DATA.cliente) + '-' + slug(DATA.mes) + '-' + (DATA.anio || '') + '.html';
-    var blob = new Blob([html], {type:'text/html;charset=utf-8'});
+    var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click();
-    setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 1500);
+    setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 1500);
     var k = counts();
-    modal({kind:'ok', icon:'✓', title:'¡Revisión descargada!', text:'Se guardó el archivo "' + name + '" con ' + k.aprobado + ' aprobados y ' + k.cambios + ' con cambios.' + (SEND ? ' Es una copia para ti: tu revisión se registra al tocar "Enviar revisión".' : ' Envíanoslo por WhatsApp o correo para empezar a producir.'), buttons:[{label:'Entendido', primary:true}]});
+    modal({ kind: 'ok', icon: '✓', title: '¡Revisión descargada!', text: 'Se guardó el archivo "' + name + '" con ' + k.aprobado + ' aprobados y ' + k.cambios + ' con cambios.' + (SEND ? ' Es una copia para ti: tu revisión se registra al tocar "Enviar revisión".' : ' Envíanoslo por WhatsApp o correo para empezar a producir.'), buttons: [{ label: 'Entendido', primary: true }] });
   }
 
   // Envío directo a Firebase Cloud Firestore
-  function doSend(){
+  function doSend() {
     if (isClosedMonth && !isReviewShipment) {
       toast('Este es un mes cerrado (solo lectura). No se pueden enviar revisiones.');
       return;
     }
     commitAllDraftComments();
     var revName = getReviewerName() || 'Cliente';
-    DATA.revision = {revisadoPor: revName, fecha: new Date().toISOString()};
+    DATA.revision = { revisadoPor: revName, fecha: new Date().toISOString() };
 
     var btn = $('dl');
     btn.disabled = true; btn.textContent = 'Enviando…';
 
-    function ok(){
-      evaluatedItems.forEach(function(it){ delete sinEnviar[it.id]; });
+    function ok() {
+      evaluatedItems.forEach(function (it) { delete sinEnviar[it.id]; });
       btn.disabled = false; btn.textContent = 'Enviar revisión ✓'; saveDraft();
       var k = counts();
       modal({
-        kind:'ok',
-        icon:'✓',
-        title:'¡Revisión enviada!',
-        text:'Nexo ya recibió tus respuestas: ' + k.aprobado + ' aprobados y ' + k.cambios + ' con cambios.' + (isReviewShipment ? ' (Envío de revisión procesado).' : '') + ' Si cambias algo, puedes volver a enviarla.',
+        kind: 'ok',
+        icon: '✓',
+        title: '¡Revisión enviada!',
+        text: 'Nexo ya recibió tus respuestas: ' + k.aprobado + ' aprobados y ' + k.cambios + ' con cambios.' + (isReviewShipment ? ' (Envío de revisión procesado).' : '') + ' Si cambias algo, puedes volver a enviarla.',
         celebrate: true,
-        buttons:[{label:'Descargar una copia', fn:doDownload}, {label:'Listo', primary:true}]
+        buttons: [{ label: 'Descargar una copia', fn: doDownload }, { label: 'Listo', primary: true }]
       });
     }
 
-    function fail(err){
+    function fail(err) {
       console.error('Error enviando revisión a Firestore:', err);
       btn.disabled = false; btn.textContent = 'Enviar revisión ✓';
       var isRegFail = err && (err.isRegistrationFailure || (err.message && err.message.indexOf('No pudimos registrar tu revisión') !== -1));
@@ -3620,24 +3781,24 @@
         ? 'No pudimos registrar tu revisión. Descarga una copia y envíala por WhatsApp.'
         : 'Revisa tu conexión e inténtalo de nuevo. Si el problema continúa, descarga una copia y compártela por WhatsApp.';
       modal({
-        kind:'warn',
-        icon:'!',
+        kind: 'warn',
+        icon: '!',
         title: isRegFail ? 'No pudimos registrar tu revisión' : 'No pudimos enviarla',
         text: errorText,
-        buttons:[{label:'Descargar copia', fn:doDownload}, {label:'Reintentar', primary:true, fn:doSend}]
+        buttons: [{ label: 'Descargar copia', fn: doDownload }, { label: 'Reintentar', primary: true, fn: doSend }]
       });
     }
 
     var evaluatedItems = (targetPieceNumbers && targetPieceNumbers.length > 0)
-      ? items.filter(function(it, idx){ return targetPieceNumbers.indexOf(idx + 1) !== -1; })
+      ? items.filter(function (it, idx) { return targetPieceNumbers.indexOf(idx + 1) !== -1; })
       : items;
 
     if (isClosedMonth && isReviewShipment) {
-      evaluatedItems = evaluatedItems.filter(function(it){ return it._estadoInicial === 'corregido'; });
+      evaluatedItems = evaluatedItems.filter(function (it) { return it._estadoInicial === 'corregido'; });
     }
 
     var cambiosPorId = {};
-    evaluatedItems.forEach(function(it){
+    evaluatedItems.forEach(function (it) {
       var cList = (it.comentarios && it.comentarios.length) ? it.comentarios : (it.comentario ? [{ autor: it.revisadoPor || revName, texto: it.comentario, fecha: '' }] : []);
       var fullComment = formatComentariosString(cList) || it.comentario || '';
       var lastAuthor = (cList.length && cList[cList.length - 1].autor) ? cList[cList.length - 1].autor : (it.revisadoPor || revName);
@@ -3667,43 +3828,43 @@
       }
     };
 
-    guardarPiezas(cambiosPorId, opciones).then(function(){
+    guardarPiezas(cambiosPorId, opciones).then(function () {
       ok();
-    }).catch(function(err){
+    }).catch(function (err) {
       fail(err);
     });
   }
 
   // VALIDACIÓN OBLIGATORIA (EN PC Y CELULARES)
-  function validate(next, label){
+  function validate(next, label) {
     commitAllDraftComments();
 
     // Evaluar solo las piezas del envío si estamos en modo revisión específica
     var cardsToValidate = (targetPieceNumbers && targetPieceNumbers.length > 0)
-      ? cards.filter(function(c){ return targetPieceNumbers.indexOf(parseInt(c.card.dataset.pieceNum, 10)) !== -1; })
+      ? cards.filter(function (c) { return targetPieceNumbers.indexOf(parseInt(c.card.dataset.pieceNum, 10)) !== -1; })
       : cards;
 
     // 1. PASO OBLIGATORIO: Todos los contenidos evaluables deben estar evaluados (Aprobar o Solicitar cambios)
-    var pend = cardsToValidate.filter(function(c){ return esSinEvaluar(c.it.estado); });
+    var pend = cardsToValidate.filter(function (c) { return esSinEvaluar(c.it.estado); });
     if (pend.length) {
       f = 'all'; applyFilter();
-      [].forEach.call(document.querySelectorAll('.chip'), function(x){ x.classList.toggle('on', x.dataset.f === 'all'); });
-      cards.forEach(function(c){ c.card.classList.remove('warn'); });
-      pend.forEach(function(c){ c.card.classList.add('warn'); });
-      pend[0].card.scrollIntoView({behavior:'smooth', block:'center'});
+      [].forEach.call(document.querySelectorAll('.chip'), function (x) { x.classList.toggle('on', x.dataset.f === 'all'); });
+      cards.forEach(function (c) { c.card.classList.remove('warn'); });
+      pend.forEach(function (c) { c.card.classList.add('warn'); });
+      pend[0].card.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
       modal({
         kind: 'warn',
         icon: '!',
         title: pend.length === 1 ? 'Paso obligatorio: falta 1 contenido por evaluar' : 'Paso obligatorio: faltan ' + pend.length + ' contenidos por evaluar',
         text: 'Debes evaluar todos los contenidos del envío (Aprobar o Solicitar cambios) antes de enviar la revisión. No se pueden dejar contenidos pendientes.',
-        list: pend.map(function(c){ return c.nav.textContent.replace(/^(\d+)/, '$1 · '); }),
+        list: pend.map(function (c) { return c.nav.textContent.replace(/^(\d+)/, '$1 · '); }),
         buttons: [{
           label: 'Evaluar pendientes ahora',
           primary: true,
-          fn: function(){
+          fn: function () {
             f = 'all'; applyFilter();
-            pend[0].card.scrollIntoView({behavior:'smooth', block:'center'});
+            pend[0].card.scrollIntoView({ behavior: 'smooth', block: 'center' });
           }
         }]
       });
@@ -3711,26 +3872,26 @@
     }
 
     // Si hay contenidos corregidos aún sin evaluación del cliente (Aprobar o Pedir cambios)
-    var corrPendientes = cardsToValidate.filter(function(c){ return c.it.estado === 'corregido'; });
+    var corrPendientes = cardsToValidate.filter(function (c) { return c.it.estado === 'corregido'; });
     if (corrPendientes.length) {
       f = 'corregido'; applyFilter();
-      [].forEach.call(document.querySelectorAll('.chip'), function(x){ x.classList.toggle('on', x.dataset.f === 'corregido'); });
-      cards.forEach(function(c){ c.card.classList.remove('warn'); });
-      corrPendientes.forEach(function(c){ c.card.classList.add('warn'); });
-      corrPendientes[0].card.scrollIntoView({behavior:'smooth', block:'center'});
+      [].forEach.call(document.querySelectorAll('.chip'), function (x) { x.classList.toggle('on', x.dataset.f === 'corregido'); });
+      cards.forEach(function (c) { c.card.classList.remove('warn'); });
+      corrPendientes.forEach(function (c) { c.card.classList.add('warn'); });
+      corrPendientes[0].card.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
       modal({
         kind: 'warn',
         icon: '🔄',
         title: corrPendientes.length === 1 ? 'Falta dar visto bueno a 1 contenido corregido' : 'Falta dar visto bueno a ' + corrPendientes.length + ' contenidos corregidos',
         text: 'La agencia preparó los ajustes en estas piezas. Por favor márcalas como "Aprobado" o "Solicitar cambios" antes de enviar tu visto bueno definitivo.',
-        list: corrPendientes.map(function(c){ return c.nav.textContent.replace(/^(\d+)/, '$1 · '); }),
+        list: corrPendientes.map(function (c) { return c.nav.textContent.replace(/^(\d+)/, '$1 · '); }),
         buttons: [{
           label: 'Evaluar corregidos ahora',
           primary: true,
-          fn: function(){
+          fn: function () {
             f = 'corregido'; applyFilter();
-            corrPendientes[0].card.scrollIntoView({behavior:'smooth', block:'center'});
+            corrPendientes[0].card.scrollIntoView({ behavior: 'smooth', block: 'center' });
           }
         }]
       });
@@ -3738,34 +3899,34 @@
     }
 
     // 2. PASO OBLIGATORIO: Si se solicitaron cambios, debe existir comentario explicando qué ajustar
-    var sinComentario = cardsToValidate.filter(function(c){
+    var sinComentario = cardsToValidate.filter(function (c) {
       if (c.it.estado !== 'cambios') return false;
-      var hasComments = (c.it.comentarios && c.it.comentarios.length > 0 && c.it.comentarios.some(function(x){ return x.texto && x.texto.trim(); }));
+      var hasComments = (c.it.comentarios && c.it.comentarios.length > 0 && c.it.comentarios.some(function (x) { return x.texto && x.texto.trim(); }));
       var hasSingle = !!(c.it.comentario && c.it.comentario.trim());
       return !hasComments && !hasSingle;
     });
 
     if (sinComentario.length) {
       f = 'all'; applyFilter();
-      [].forEach.call(document.querySelectorAll('.chip'), function(x){ x.classList.toggle('on', x.dataset.f === 'all'); });
-      cards.forEach(function(c){ c.card.classList.remove('warn'); });
-      sinComentario.forEach(function(c){ c.card.classList.add('warn'); });
-      sinComentario[0].card.scrollIntoView({behavior:'smooth', block:'center'});
+      [].forEach.call(document.querySelectorAll('.chip'), function (x) { x.classList.toggle('on', x.dataset.f === 'all'); });
+      cards.forEach(function (c) { c.card.classList.remove('warn'); });
+      sinComentario.forEach(function (c) { c.card.classList.add('warn'); });
+      sinComentario[0].card.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
       modal({
         kind: 'warn',
         icon: '✎',
         title: 'Cuéntanos qué debemos ajustar',
         text: 'Marcaste "Pedir cambios" pero es obligatorio indicar el ajuste solicitado en:',
-        list: sinComentario.map(function(c){ return c.nav.textContent.replace(/^(\d+)/, '$1 · '); }),
+        list: sinComentario.map(function (c) { return c.nav.textContent.replace(/^(\d+)/, '$1 · '); }),
         buttons: [{
           label: 'Escribir detalle del cambio',
           primary: true,
-          fn: function(){
+          fn: function () {
             f = 'all'; applyFilter();
-            sinComentario[0].card.scrollIntoView({behavior:'smooth', block:'center'});
+            sinComentario[0].card.scrollIntoView({ behavior: 'smooth', block: 'center' });
             var ta = sinComentario[0].card.querySelector('.cm-textarea');
-            if (ta) ta.focus({preventScroll:true});
+            if (ta) ta.focus({ preventScroll: true });
           }
         }]
       });
@@ -3786,9 +3947,9 @@
         buttons: [{
           label: 'Escribir mi nombre',
           primary: true,
-          fn: function(){
-            who.scrollIntoView({behavior:'smooth', block:'center'});
-            setTimeout(function(){ who.focus(); }, 350);
+          fn: function () {
+            who.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(function () { who.focus(); }, 350);
           }
         }]
       });
@@ -3797,23 +3958,23 @@
 
     // Asociar nombre a la revisión, a todos los ítems y comentarios pendientes de autor
     setReviewerName(reviewerName);
-    items.forEach(function(it){
+    items.forEach(function (it) {
       if (!it.revisadoPor) it.revisadoPor = reviewerName;
       if (Array.isArray(it.comentarios)) {
-        it.comentarios.forEach(function(cm){
+        it.comentarios.forEach(function (cm) {
           if (!cm.autor) cm.autor = reviewerName;
         });
         it.comentario = formatComentariosString(it.comentarios) || it.comentario;
       }
     });
     saveDraft();
-    cards.forEach(function(c){ if (c.renderThread) c.renderThread(); });
+    cards.forEach(function (c) { if (c.renderThread) c.renderThread(); });
 
     next();
   }
 
-  $('dl').onclick = function(){ if (SEND) validate(doSend, 'Enviar'); else validate(doDownload, 'Descargar'); };
-  $('dlMini').onclick = function(){ doDownload(); };
+  $('dl').onclick = function () { if (SEND) validate(doSend, 'Enviar'); else validate(doDownload, 'Descargar'); };
+  $('dlMini').onclick = function () { doDownload(); };
 
   refresh(); updateApartadoCorregidos(); applyFilter();
   if (typeof NexoNetworkBackground !== 'undefined') {
@@ -3827,7 +3988,7 @@
   // Usuarios permitidos: carlosuzc29@gmail.com, andrevmuedit@gmail.com
   // Clave autorizada: Caracas0327 (configurada en Firebase Auth)
   // ==============================================================
-  function updateAgencyUI(){
+  function updateAgencyUI() {
     var isAgency = !!agencyUser;
     var freeActive = !!(isAgency && freeEditMode);
     var accessBtn = $('btnAgencyAccess');
@@ -3850,7 +4011,7 @@
         freeBtn.type = 'button';
         freeBtn.id = 'btnFreeEditMode';
         freeBtn.title = 'Activar o desactivar el Modo edición libre del administrador';
-        freeBtn.onclick = function(){
+        freeBtn.onclick = function () {
           if (!agencyUser) return;
           setFreeEditMode(!freeEditMode);
           toast(freeEditMode ? '✎ Edición libre activada' : 'Edición libre desactivada');
@@ -3880,7 +4041,7 @@
       userLbl.textContent = agencyUser + ' (Administrador)';
     }
     if (activeBar) {
-      [].forEach.call(activeBar.querySelectorAll('span'), function(sp){
+      [].forEach.call(activeBar.querySelectorAll('span'), function (sp) {
         if (/correcciones v\d/i.test(sp.textContent)) sp.textContent = 'Edita libremente cualquier pieza';
       });
     }
@@ -3892,7 +4053,7 @@
     }
 
     // Actualizar cada tarjeta para mostrar u ocultar la barra de corrección de agencia y alternar formato
-    cards.forEach(function(cObj){
+    cards.forEach(function (cObj) {
       if (cObj.updateAgencyActions) cObj.updateAgencyActions(isAgency);
     });
   }
@@ -3908,20 +4069,20 @@
   var btnAgencyAccessFooter = $('btnAgencyAccessFooter');
   var btnAgencyLogout = $('btnAgencyLogout');
 
-  function openAgencyLogin(){
+  function openAgencyLogin() {
     if (modalLogin) {
       if (passInp) passInp.value = '';
       if (errEl) errEl.classList.remove('show');
       modalLogin.classList.add('show');
-      setTimeout(function(){ if (passInp) passInp.focus(); }, 150);
+      setTimeout(function () { if (passInp) passInp.focus(); }, 150);
     }
   }
-  function closeAgencyLogin(){
+  function closeAgencyLogin() {
     if (modalLogin) modalLogin.classList.remove('show');
   }
 
   if (btnAgencyAccess) {
-    btnAgencyAccess.onclick = function(){
+    btnAgencyAccess.onclick = function () {
       if (agencyUser) {
         toast('Modo editor de agencia ya activo');
       } else {
@@ -3930,7 +4091,7 @@
     };
   }
   if (btnAgencyAccessFooter) {
-    btnAgencyAccessFooter.onclick = function(){
+    btnAgencyAccessFooter.onclick = function () {
       if (agencyUser) {
         toast('Modo editor de agencia ya activo');
       } else {
@@ -3941,12 +4102,12 @@
 
   if (btnLoginCancel) btnLoginCancel.onclick = closeAgencyLogin;
   if (modalLogin) {
-    modalLogin.addEventListener('click', function(e){
+    modalLogin.addEventListener('click', function (e) {
       if (e.target === this) closeAgencyLogin();
     });
   }
 
-  function handleAgencyLogin(){
+  function handleAgencyLogin() {
     var email = (emailSel ? emailSel.value : '').toLowerCase().trim();
     var pass = (passInp ? passInp.value : '').trim();
 
@@ -3971,61 +4132,61 @@
         returnSecureToken: true
       })
     })
-    .then(function(res){
-      if (!res.ok) {
-        throw new Error('Auth failed HTTP ' + res.status);
-      }
-      return res.json();
-    })
-    .then(function(data){
-      if (btnLoginSubmit) {
-        btnLoginSubmit.disabled = false;
-        btnLoginSubmit.textContent = 'Ingresar al modo editor';
-      }
-      var returnedEmail = (data.email || '').toLowerCase().trim();
-      if (!returnedEmail || AGENCY_ALLOWED.indexOf(returnedEmail) === -1) {
+      .then(function (res) {
+        if (!res.ok) {
+          throw new Error('Auth failed HTTP ' + res.status);
+        }
+        return res.json();
+      })
+      .then(function (data) {
+        if (btnLoginSubmit) {
+          btnLoginSubmit.disabled = false;
+          btnLoginSubmit.textContent = 'Ingresar al modo editor';
+        }
+        var returnedEmail = (data.email || '').toLowerCase().trim();
+        if (!returnedEmail || AGENCY_ALLOWED.indexOf(returnedEmail) === -1) {
+          if (errEl) {
+            errEl.textContent = 'Usuario no autorizado para realizar correcciones';
+            errEl.classList.add('show');
+          }
+          return;
+        }
+        var expiresInSec = parseInt(data.expiresIn || '3600', 10);
+        var sess = {
+          idToken: data.idToken,
+          refreshToken: data.refreshToken,
+          email: returnedEmail,
+          expiresAt: Date.now() + (expiresInSec * 1000)
+        };
+        saveAgencySession(sess);
+        closeAgencyLogin();
+        updateAgencyUI();
+        toast('✓ Acceso de agencia verificado: ¡Modo corrección activo!');
+      })
+      .catch(function () {
+        if (btnLoginSubmit) {
+          btnLoginSubmit.disabled = false;
+          btnLoginSubmit.textContent = 'Ingresar al modo editor';
+        }
         if (errEl) {
-          errEl.textContent = 'Usuario no autorizado para realizar correcciones';
+          errEl.textContent = 'Correo o contraseña incorrectos';
           errEl.classList.add('show');
         }
-        return;
-      }
-      var expiresInSec = parseInt(data.expiresIn || '3600', 10);
-      var sess = {
-        idToken: data.idToken,
-        refreshToken: data.refreshToken,
-        email: returnedEmail,
-        expiresAt: Date.now() + (expiresInSec * 1000)
-      };
-      saveAgencySession(sess);
-      closeAgencyLogin();
-      updateAgencyUI();
-      toast('✓ Acceso de agencia verificado: ¡Modo corrección activo!');
-    })
-    .catch(function(){
-      if (btnLoginSubmit) {
-        btnLoginSubmit.disabled = false;
-        btnLoginSubmit.textContent = 'Ingresar al modo editor';
-      }
-      if (errEl) {
-        errEl.textContent = 'Correo o contraseña incorrectos';
-        errEl.classList.add('show');
-      }
-      if (passInp) {
-        passInp.focus();
-        passInp.select();
-      }
-    });
+        if (passInp) {
+          passInp.focus();
+          passInp.select();
+        }
+      });
   }
 
   if (btnLoginSubmit) btnLoginSubmit.onclick = handleAgencyLogin;
   if (passInp) {
-    passInp.addEventListener('keydown', function(e){
+    passInp.addEventListener('keydown', function (e) {
       if (e.key === 'Enter') handleAgencyLogin();
     });
   }
 
-  
+
   // Control modal Envío por Separado en Modo Agencia
   var btnAgencyShipment = $('btnAgencyShipment');
   var agencyShipmentModal = $('agencyShipmentModal');
@@ -4036,10 +4197,10 @@
   var agencyShipmentUrlInp = $('agencyShipmentUrlInp');
   var btnCopyAgencyShipment = $('btnCopyAgencyShipment');
 
-  function updateAgencyShipmentUrl(){
+  function updateAgencyShipmentUrl() {
     if (!agencyShipmentItemsList) return '';
     var cbs = agencyShipmentItemsList.querySelectorAll('.cb-board-shipment:checked');
-    var nums = Array.from(cbs).map(function(x){ return parseInt(x.getAttribute('data-n'), 10); });
+    var nums = Array.from(cbs).map(function (x) { return parseInt(x.getAttribute('data-n'), 10); });
     var baseUrl = window.location.origin + window.location.pathname;
     var finalUrl = baseUrl;
     if (nums.length > 0) {
@@ -4049,12 +4210,12 @@
     return finalUrl;
   }
 
-  function openAgencyShipmentModal(){
+  function openAgencyShipmentModal() {
     if (!agencyShipmentModal) return;
     if (agencyShipmentItemsList) {
-      var hasFix = items.some(function(it){ return it.estado === 'cambios' || (it.version && it.version > 1); });
+      var hasFix = items.some(function (it) { return it.estado === 'cambios' || (it.version && it.version > 1); });
       var h = '';
-      items.forEach(function(it, idx){
+      items.forEach(function (it, idx) {
         var n = idx + 1;
         var nStr = (n < 10 ? '0' : '') + n;
         var isTarget = (it.estado === 'cambios' || (it.version && it.version > 1));
@@ -4073,19 +4234,19 @@
           '<span style="font-weight:700;color:#bae6fd;">#' + nStr + '</span>' +
           '<span style="flex:1;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + titleClean + ' <small style="opacity:.6;">(' + fmtClean + ')</small></span>' +
           stBadge +
-        '</label>';
+          '</label>';
       });
       agencyShipmentItemsList.innerHTML = h;
 
       var cbs = agencyShipmentItemsList.querySelectorAll('.cb-board-shipment');
-      cbs.forEach(function(cb){ cb.onchange = updateAgencyShipmentUrl; });
+      cbs.forEach(function (cb) { cb.onchange = updateAgencyShipmentUrl; });
     }
 
     if (btnToggleAllAgencyShipment) {
-      btnToggleAllAgencyShipment.onclick = function(){
+      btnToggleAllAgencyShipment.onclick = function () {
         var cbs = agencyShipmentItemsList.querySelectorAll('.cb-board-shipment');
-        var allChecked = Array.from(cbs).every(function(x){ return x.checked; });
-        cbs.forEach(function(x){ x.checked = !allChecked; });
+        var allChecked = Array.from(cbs).every(function (x) { return x.checked; });
+        cbs.forEach(function (x) { x.checked = !allChecked; });
         btnToggleAllAgencyShipment.textContent = allChecked ? 'Seleccionar todas' : 'Deseleccionar todas';
         updateAgencyShipmentUrl();
       };
@@ -4095,7 +4256,7 @@
     agencyShipmentModal.style.display = 'flex';
   }
 
-  function closeAgencyShipmentModal(){
+  function closeAgencyShipmentModal() {
     if (agencyShipmentModal) agencyShipmentModal.style.display = 'none';
   }
 
@@ -4103,15 +4264,15 @@
   if (btnCloseAgencyShipment) btnCloseAgencyShipment.onclick = closeAgencyShipmentModal;
   if (btnCancelAgencyShipment) btnCancelAgencyShipment.onclick = closeAgencyShipmentModal;
   if (agencyShipmentModal) {
-    agencyShipmentModal.onclick = function(e){
+    agencyShipmentModal.onclick = function (e) {
       if (e.target === agencyShipmentModal) closeAgencyShipmentModal();
     };
   }
 
   if (btnCopyAgencyShipment) {
-    btnCopyAgencyShipment.onclick = function(){
+    btnCopyAgencyShipment.onclick = function () {
       var cbs = agencyShipmentItemsList.querySelectorAll('.cb-board-shipment:checked');
-      var nums = Array.from(cbs).map(function(x){ return parseInt(x.getAttribute('data-n'), 10); });
+      var nums = Array.from(cbs).map(function (x) { return parseInt(x.getAttribute('data-n'), 10); });
       if (!nums.length) {
         toast('Selecciona al menos una pieza para enviar.');
         return;
@@ -4124,7 +4285,7 @@
         'Hemos preparado y ajustado los contenidos solicitados de tu parrilla (*' + periodo + '*).\n\n' +
         'Piezas listas para tu visto bueno (' + nums.length + '):\n';
 
-      nums.forEach(function(n){
+      nums.forEach(function (n) {
         var it = items[n - 1];
         if (it) {
           var nStr = (n < 10 ? '0' : '') + n;
@@ -4136,7 +4297,7 @@
         '¡Quedamos atentos a tus comentarios!';
 
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(msg).then(function(){
+        navigator.clipboard.writeText(msg).then(function () {
           toast('✓ ¡Enlace exclusivo y mensaje copiados!');
           closeAgencyShipmentModal();
         });
@@ -4151,7 +4312,7 @@
 
 
   if (btnAgencyLogout) {
-    btnAgencyLogout.onclick = function(){
+    btnAgencyLogout.onclick = function () {
       clearAgencySession();
       updateAgencyUI();
       toast('Sesión de agencia cerrada');
@@ -4159,23 +4320,23 @@
   }
 
   // Guardar cambio de formato directo en Firestore (Modo Agencia)
-  function saveAgencyFormatoChange(it, newFormato){
+  function saveAgencyFormatoChange(it, newFormato) {
     if (!FB || !FB.projectId || !DATA.id) {
       toast('Formato cambiado localmente (sin conexión a Firestore)');
       return;
     }
 
-    var cObj = cards.find(function(c){ return c.it === it; });
+    var cObj = cards.find(function (c) { return c.it === it; });
     var cambiosPorId = {};
     cambiosPorId[it.id] = {
       formato: newFormato,
       formatoOriginal: newFormato
     };
 
-    guardarPiezas(cambiosPorId).then(function(){
+    guardarPiezas(cambiosPorId).then(function () {
       if (cObj && cObj.setUnsavedState) cObj.setUnsavedState(false);
       toast('✓ Tipo de contenido (' + newFormato + ') sincronizado en Firestore');
-    }).catch(function(err){
+    }).catch(function (err) {
       console.error('Error guardando formato en Firestore:', err);
       if (cObj && cObj.setUnsavedState) cObj.setUnsavedState(true);
       modal({
@@ -4184,7 +4345,7 @@
         title: 'No se guardó en la nube',
         text: 'No se pudo sincronizar el formato (' + newFormato + ') en Firestore. Revisa tu conexión.',
         buttons: [
-          { label: 'Reintentar', primary: true, fn: function(){ saveAgencyFormatoChange(it, newFormato); } },
+          { label: 'Reintentar', primary: true, fn: function () { saveAgencyFormatoChange(it, newFormato); } },
           { label: 'Cerrar' }
         ]
       });
@@ -4192,7 +4353,7 @@
   }
 
   // Guardar corrección directa en Firestore y actualizar tarjeta
-  function saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnSave, newHash, meta){
+  function saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnSave, newHash, meta) {
     var origBtnLabel = btnSave ? (btnSave.dataset.origLabel || btnSave.textContent || '💾 Guardar cambios') : '';
     if (btnSave) {
       if (!btnSave.dataset.origLabel) btnSave.dataset.origLabel = origBtnLabel;
@@ -4209,7 +4370,7 @@
         : ((cObj && cObj.fs && cObj.fs.value) ? cObj.fs.value : (it.formato || 'Post'))
     );
 
-    cambiosPorId[it.id] = function(piezaFs){
+    cambiosPorId[it.id] = function (piezaFs) {
       var metaFields = {};
       if (meta.canal !== undefined) metaFields.canal = normalizeCanal(meta.canal);
       if (meta.fechaPublicacion !== undefined) metaFields.fechaPublicacion = String(meta.fechaPublicacion);
@@ -4296,21 +4457,21 @@
     var opciones = (meta.modo === 'libre')
       ? { skipAutoSync: true }
       : {
-          skipAutoSync: true,
-          tableroFields: {
-            revisadoPor: '',
-            ultimaRevision: ''
-          }
-        };
+        skipAutoSync: true,
+        tableroFields: {
+          revisadoPor: '',
+          ultimaRevision: ''
+        }
+      };
 
-    return guardarPiezas(cambiosPorId, opciones).then(function(savedDoc){
+    return guardarPiezas(cambiosPorId, opciones).then(function (savedDoc) {
       // Comprobar en savedDoc (buscando la pieza por id) que los campos guardados coincidan
       var savedFields = {};
       if (savedDoc && savedDoc.fields) {
         for (var sk in savedDoc.fields) savedFields[sk] = unpackFsValue(savedDoc.fields[sk]);
       }
       var savedContenidos = Array.isArray(savedFields.contenidos) ? savedFields.contenidos : [];
-      var savedPiece = savedContenidos.find(function(x){
+      var savedPiece = savedContenidos.find(function (x) {
         return x && String(x.id || '') === String(it.id || '');
       });
 
@@ -4353,7 +4514,7 @@
       toast(meta.modo === 'libre' ? '✓ Cambios guardados' : '✓ Corrección guardada y sincronizada en el tablero');
       if (cObj && cObj.updateAgencyBarText) cObj.updateAgencyBarText();
       return savedDoc;
-    }).catch(function(err){
+    }).catch(function (err) {
       console.error('Error guardando corrección en Firestore:', err);
       if (btnSave) { btnSave.disabled = false; btnSave.textContent = origBtnLabel; }
       if (cObj && cObj.setUnsavedState) cObj.setUnsavedState(true);
@@ -4366,8 +4527,8 @@
           {
             label: 'Reintentar',
             primary: true,
-            fn: function(){
-              saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnSave, newHash, meta).catch(function(){});
+            fn: function () {
+              saveCardCorrection(it, cObj, newGuion, newCopy, newTitle, btnSave, newHash, meta).catch(function () { });
             }
           },
           { label: 'Cerrar' }
@@ -4378,15 +4539,15 @@
   }
 
   // Sincronizar decisión de aprobación/cambios directamente en Firestore (Modo Agencia)
-  function saveAgencyDecisionChange(it, decision, btn){
+  function saveAgencyDecisionChange(it, decision, btn) {
     if (btn) btn.disabled = true;
 
-    var cObj = cards.find(function(c){ return c.it === it; });
+    var cObj = cards.find(function (c) { return c.it === it; });
     var pieceNum = items.indexOf(it) + 1;
 
     var cambiosPorId = {};
     if (decision === 'aprobado') {
-      cambiosPorId[it.id] = function(piezaFs){
+      cambiosPorId[it.id] = function (piezaFs) {
         if (piezaFs.borrador) {
           var bGuion = piezaFs.borrador.guion || '';
           var bCopy = piezaFs.borrador.copy || '';
@@ -4422,12 +4583,12 @@
       };
     }
 
-    guardarPiezas(cambiosPorId).then(function(){
+    guardarPiezas(cambiosPorId).then(function () {
       if (btn) btn.disabled = false;
       if (cObj && cObj.setUnsavedState) cObj.setUnsavedState(false);
       toast('✓ Contenido #' + (pieceNum < 10 ? '0' : '') + pieceNum + ' marcado como ' + (decision === 'aprobado' ? 'Aprobado' : decision) + ' y sincronizado');
       if (cObj && cObj.updateAgencyBarText) cObj.updateAgencyBarText();
-    }).catch(function(err){
+    }).catch(function (err) {
       console.error('Error sincronizando estado en Firestore:', err);
       if (btn) btn.disabled = false;
       if (cObj && cObj.setUnsavedState) cObj.setUnsavedState(true);
@@ -4440,7 +4601,7 @@
           {
             label: 'Reintentar',
             primary: true,
-            fn: function(){
+            fn: function () {
               saveAgencyDecisionChange(it, decision, btn);
             }
           },
@@ -4452,7 +4613,7 @@
 
 
 
-  function renderActiveMonth(monthData, isClosed){
+  function renderActiveMonth(monthData, isClosed) {
     DATA = monthData;
     items = DATA.contenidos || [];
     KEY = 'nexo-revision-' + (DATA.id || (DATA.cliente + '-' + DATA.mes + '-' + DATA.anio));
@@ -4481,8 +4642,35 @@
       recoverDraft();
     }
 
+    // Comprobar si hay caché en localStorage para este DATA.id
+    var cachedDoc = (DATA && DATA.id) ? getFirestoreCache(DATA.id) : null;
+    if (cachedDoc) {
+      isAwaitingFirestore = false;
+      var revB = $('reviewed');
+      if (revB) revB.classList.remove('is-reserving');
+    } else {
+      isAwaitingFirestore = true;
+      var revEl = $('reviewed');
+      if (revEl) revEl.classList.add('is-reserving');
+      clearTimeout(fsTimeoutTimer);
+      fsTimeoutTimer = setTimeout(function () {
+        if (isAwaitingFirestore) {
+          isAwaitingFirestore = false;
+          var rB = $('reviewed');
+          if (rB) rB.classList.remove('is-reserving');
+          refresh();
+          cards.forEach(function (c) { if (c.paint) c.paint(); });
+        }
+      }, 2500);
+    }
+
     buildAllCards();
     setupCanalFilter();
+
+    if (cachedDoc) {
+      syncBoardWithFirestore(cachedDoc);
+    }
+
     syncAndRegisterBoard();
 
     counts();
@@ -4499,7 +4687,7 @@
           ghostClass: 'sortable-ghost',
           disabled: isClosedMonth && !agencyUser
         });
-      } catch(e) {}
+      } catch (e) { }
     }
 
     // Si viene ?review=corregidos
@@ -4507,14 +4695,14 @@
       applyFilter();
       var firstCorr = document.querySelector('.card.status-corregido');
       if (firstCorr) {
-        setTimeout(function(){
+        setTimeout(function () {
           firstCorr.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }, 400);
       }
     }
   }
 
-  function switchMonth(newMes){
+  function switchMonth(newMes) {
     if (!newMes || newMes === activeMes) return;
     activeMes = newMes;
     var newUrl = new URL(window.location.href);
@@ -4531,16 +4719,16 @@
       renderActiveMonth(monthsCache[newMes], isClosed);
     } else if (codigoCliente) {
       fetch('datos/' + encodeURIComponent(codigoCliente) + '/' + encodeURIComponent(newMes) + '.json', { cache: 'no-cache' })
-        .then(function(res){
+        .then(function (res) {
           if (!res.ok) throw new Error('HTTP ' + res.status);
           return res.json();
         })
-        .then(function(data){
+        .then(function (data) {
           monthsCache[newMes] = data;
           var isClosed = (indiceData && indiceData.actual) ? (newMes !== indiceData.actual) : false;
           renderActiveMonth(data, isClosed);
         })
-        .catch(function(err){
+        .catch(function (err) {
           toast('No se pudieron cargar los datos del mes seleccionado.');
         });
     }
@@ -4548,10 +4736,10 @@
 
   // Carga inicial y respaldo offline
   var MESES_MAP = {
-    enero:'01', febrero:'02', marzo:'03', abril:'04', mayo:'05', junio:'06',
-    julio:'07', agosto:'08', septiembre:'09', setiembre:'09', octubre:'10', noviembre:'11', diciembre:'12'
+    enero: '01', febrero: '02', marzo: '03', abril: '04', mayo: '05', junio: '06',
+    julio: '07', agosto: '08', septiembre: '09', setiembre: '09', octubre: '10', noviembre: '11', diciembre: '12'
   };
-  function getMesKey(m, a){
+  function getMesKey(m, a) {
     if (!m) return '';
     var s = String(m).toLowerCase().trim();
     var num = MESES_MAP[s] || (s.length === 2 ? s : '');
@@ -4559,11 +4747,11 @@
     return String(a || '2026') + '-' + num;
   }
 
-  function initTablero(){
+  function initTablero() {
     list = $('list');
     nav = $('nav');
-    [].forEach.call(document.querySelectorAll('[data-logo]'), function(d){ if ($('nexo-logo')) d.innerHTML = $('nexo-logo').innerHTML; });
-    try { if ($('fav') && $('nexo-iso')) $('fav').href = 'data:image/svg+xml,' + encodeURIComponent($('nexo-iso').innerHTML.trim()); } catch (e) {}
+    [].forEach.call(document.querySelectorAll('[data-logo]'), function (d) { if ($('nexo-logo')) d.innerHTML = $('nexo-logo').innerHTML; });
+    try { if ($('fav') && $('nexo-iso')) $('fav').href = 'data:image/svg+xml,' + encodeURIComponent($('nexo-iso').innerHTML.trim()); } catch (e) { }
 
     var metaTag = document.querySelector('meta[name="nexo-tablero"]');
     codigoCliente = metaTag ? metaTag.getAttribute('content') : '';
@@ -4584,8 +4772,21 @@
       if (boardDataScript && boardDataScript.textContent) {
         embeddedData = JSON.parse(boardDataScript.textContent);
       }
-    } catch(e) {}
+    } catch (e) { }
     var embMesKey = embeddedData ? getMesKey(embeddedData.mes, embeddedData.anio) : '';
+
+    // Consultar Firestore antes con los datos embebidos si están disponibles
+    if (embeddedData && embeddedData.id && FB && FB.projectId && FB.apiKey) {
+      try {
+        var preCheckUrl = 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(FB.projectId) +
+          '/databases/(default)/documents/tableros/' + encodeURIComponent(embeddedData.id) +
+          '?key=' + encodeURIComponent(FB.apiKey);
+        initialFsPromise = {
+          docId: embeddedData.id,
+          promise: fetch(preCheckUrl, { cache: 'no-cache' })
+        };
+      } catch (e) { }
+    }
 
     // 1. Renderizado síncrono inicial con respaldo si existe (pre-renderizado inmediato para Chrome headless y LCP rápido)
     if (embeddedData) {
@@ -4608,11 +4809,11 @@
     // 2. Carga asíncrona de datos multi-mes si hay codigoCliente
     if (codigoCliente) {
       fetch('datos/' + encodeURIComponent(codigoCliente) + '/indice.json', { cache: 'no-cache' })
-        .then(function(res){
+        .then(function (res) {
           if (!res.ok) throw new Error('Error al leer indice');
           return res.json();
         })
-        .then(function(ind){
+        .then(function (ind) {
           indiceData = ind || {};
 
           // Si hay board-data embebido y el mes embebido es más nuevo que indice.actual, manda el embebido
@@ -4620,7 +4821,7 @@
             if (!indiceData.actual || embMesKey > indiceData.actual) {
               indiceData.actual = embMesKey;
               if (!indiceData.meses) indiceData.meses = [];
-              var found = indiceData.meses.some(function(m){ return m.mes === embMesKey; });
+              var found = indiceData.meses.some(function (m) { return m.mes === embMesKey; });
               if (!found) {
                 indiceData.meses.unshift({
                   mes: embMesKey,
@@ -4631,7 +4832,7 @@
             }
           }
 
-          if (requestedMes && indiceData.meses && !indiceData.meses.some(function(m){ return m.mes === requestedMes; })) {
+          if (requestedMes && indiceData.meses && !indiceData.meses.some(function (m) { return m.mes === requestedMes; })) {
             return;
           }
 
@@ -4641,11 +4842,11 @@
           // Si el mes pedido es diferente al que ya se pintó, o si aún no se había pintado
           if (targetMes !== activeMes || !embeddedData) {
             return fetch('datos/' + encodeURIComponent(codigoCliente) + '/' + encodeURIComponent(targetMes) + '.json', { cache: 'no-cache' })
-              .then(function(res){
+              .then(function (res) {
                 if (!res.ok) throw new Error('Error al leer mes');
                 return res.json();
               })
-              .then(function(monthData){
+              .then(function (monthData) {
                 activeMes = targetMes;
                 monthsCache[activeMes] = monthData;
                 renderActiveMonth(monthData, isClosed);
@@ -4654,11 +4855,11 @@
             // El mes activo ya está pintado, actualizar el selector y verificar si el JSON del servidor tiene contenidos nuevos respecto al HTML en caché
             updateMonthSelector();
             return fetch('datos/' + encodeURIComponent(codigoCliente) + '/' + encodeURIComponent(targetMes) + '.json', { cache: 'no-cache' })
-              .then(function(res){
+              .then(function (res) {
                 if (!res.ok) return null;
                 return res.json();
               })
-              .then(function(monthData){
+              .then(function (monthData) {
                 if (!monthData || !Array.isArray(monthData.contenidos)) return;
                 var embLen = (embeddedData && Array.isArray(embeddedData.contenidos)) ? embeddedData.contenidos.length : 0;
                 var embReset = (embeddedData && embeddedData.resetAt) ? embeddedData.resetAt : 0;
@@ -4671,7 +4872,7 @@
               });
           }
         })
-        .catch(function(){
+        .catch(function () {
           // Respaldo sin conexión / bloqueo de ruta: ya está activo embeddedData
         });
     } else if (!embeddedData) {
@@ -4682,9 +4883,9 @@
 
     // Si se abre con ?agencia=1, #agencia, ?admin=1 o #admin y aún no está iniciada la sesión, abrir modal de autenticación inmediatamente
     if (window.location.search.indexOf('agencia=1') !== -1 || window.location.hash.indexOf('agencia') !== -1 ||
-        window.location.search.indexOf('admin=1') !== -1 || window.location.hash.indexOf('admin') !== -1) {
+      window.location.search.indexOf('admin=1') !== -1 || window.location.hash.indexOf('admin') !== -1) {
       if (!agencyUser) {
-        setTimeout(function(){
+        setTimeout(function () {
           openAgencyLogin();
         }, 400);
       }

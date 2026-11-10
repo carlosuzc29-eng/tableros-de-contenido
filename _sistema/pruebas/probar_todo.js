@@ -111,7 +111,7 @@ async function getToastText(page) {
 // EJECUCIÓN PRINCIPAL DE LA SUITE
 // ─────────────────────────────────────────────────────────────────────────────
 (async () => {
-  console.log(`${C.bold}${C.cyan}Iniciando suite de pruebas automatizadas Nexo (28 casos: 13 ciclo de vida + 15 arquitectura v2)...${C.reset}\n`);
+  console.log(`${C.bold}${C.cyan}Iniciando suite de pruebas automatizadas Nexo (32 casos: 13 ciclo de vida + 19 arquitectura v2 / rendimiento)...${C.reset}\n`);
 
   // Carpeta temporal aislada para pruebas
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'nexo-qa-suite-'));
@@ -2080,8 +2080,21 @@ async function getToastText(page) {
       pass('Tablero de producción v3 verificado (test_fase8.js)');
     }
 
+    // ============================================================
+    // CASO 32: Antiparpadeo y rendimiento de carga (test_parpadeo.js)
+    // ============================================================
+    console.log(`\n${C.bold}32. Antiparpadeo y rendimiento de carga:${C.reset} sin aviso .nojs-note, tarjetas visibles < 300ms, caché localStorage, sin saltos en #pct/top y 0 mutaciones en focus`);
+    {
+      try {
+        execSync(`node "${path.join(__dirname, 'test_parpadeo.js')}"`, { stdio: 'pipe' });
+      } catch (ep) {
+        fail('test_parpadeo.js falló:\n' + String((ep.stdout || '') + (ep.stderr || '')), ep);
+      }
+      pass('Antiparpadeo y rendimiento de carga verificado (test_parpadeo.js)');
+    }
+
     console.log(`\n${C.bold}${C.green}================================================================${C.reset}`);
-    console.log(`${C.bold}${C.green}✓ TODOS LOS 31 CASOS DE PRUEBA PASARON EXITOSAMENTE (100% OK)${C.reset}`);
+    console.log(`${C.bold}${C.green}✓ TODOS LOS 32 CASOS DE PRUEBA PASARON EXITOSAMENTE (100% OK)${C.reset}`);
     console.log(`${C.bold}${C.green}================================================================${C.reset}\n`);
 
   } catch (err) {

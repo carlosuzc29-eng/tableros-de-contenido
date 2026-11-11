@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Tablero NEXO</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%22540%20610%201300%201160%22%3E%3Cg%20transform%3D%22translate(0%2C2364)%20scale(1%2C-1)%22%3E%3Cpath%20fill%3D%22%235CB83E%22%20d%3D%22M1266%201638%20c-67%20-59%20-123%20-108%20-123%20-108%200%20-1%20129%20-214%20131%20-216%201%20-1%202%204%2018%2065%20l17%2064%20116%200%20115%200%200%20-3%20c-1%20-1%20-43%20-157%20-94%20-347%20-51%20-189%20-93%20-344%20-93%20-345%200%200%2051%200%20114%200%20l113%201%2014%2051%20c8%2028%2051%20188%2096%20355%20109%20402%20124%20459%20124%20460%200%201%20-62%201%20-229%201%20-218%200%20-229%200%20-229%202%201%202%2034%20127%2034%20128%200%201%20-17%20-13%20-124%20-108z%20M759%201528%20c-147%20-548%20-209%20-778%20-209%20-779%200%20-1%2073%20-1%20229%20-1%20125%200%20228%200%20228%200%200%200%20-8%20-30%20-17%20-65%20-9%20-35%20-17%20-65%20-16%20-65%200%200%201%201%203%202%201%202%2056%2050%20122%20107%2066%2058%20120%20106%20120%20106%201%201%20-18%2034%20-63%20108%20-75%20123%20-67%20110%20-67%20109%20-1%200%20-9%20-29%20-18%20-65%20l-17%20-64%20-115%200%20-115%200%200%203%20c1%202%20184%20687%20186%20690%200%202%20-6%202%20-114%202%20l-114%200%20-23%20-88z%22%3E%3C%2Fpath%3E%3C%2Fg%3E%3C%2Fsvg%3E">
+  <link rel="preload" href="../_sistema/fuentes/jost-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../_sistema/produccion/produccion.css?v=3.1">
+  <script src="../_sistema/vendor/sortable.min.js" defer></script>
+  <script src="../_sistema/vendor/firebase-app-compat.js" defer></script>
+  <script src="../_sistema/vendor/firebase-firestore-compat.js" defer></script>
+  <script src="../_sistema/produccion/produccion.js?v=3.1" defer></script>
+</head>
+<body class="density-comfortable is-entering">
+
+  <!-- SPRITE DE ICONOS SVG NEXO (reemplazo ultraligero de Lucide 82KB) -->
+  <svg style="display:none;" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path>
+    </symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 6 6 18"></path><path d="m6 6 12 12"></path>
+    </symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path>
+    </symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+    </symbol>
+    <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line>
+    </symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 12h14"></path><path d="M12 5v14"></path>
+    </symbol>
+    <symbol id="i-circle-dashed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10.1 2.182a10 10 0 0 1 3.8 0"></path><path d="M13.9 21.818a10 10 0 0 1-3.8 0"></path><path d="M17.609 3.721a10 10 0 0 1 2.69 2.7"></path><path d="M2.182 10.1a10 10 0 0 1 0-3.8"></path><path d="M20.279 17.609a10 10 0 0 1-2.7 2.69"></path><path d="M21.818 13.9a10 10 0 0 1 0-3.8"></path><path d="M3.721 6.391a10 10 0 0 1 2.7-2.69"></path><path d="M6.391 20.279a10 10 0 0 1-2.69-2.7"></path>
+    </symbol>
+    <symbol id="i-video" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m22 8-6 4 6 4V8Z"></path><rect width="14" height="12" x="2" y="6" rx="2"></rect>
+    </symbol>
+    <symbol id="i-check-circle-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 6 9 17l-5-5"></path>
+    </symbol>
+    <symbol id="i-chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m15 18-6-6 6-6"></path>
+    </symbol>
+    <symbol id="i-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m9 18 6-6-6-6"></path>
+    </symbol>
+    <symbol id="i-pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path><path d="m15 5 4 4"></path>
+    </symbol>
+    <symbol id="i-pen-line" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+    </symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
+    </symbol>
+    <symbol id="i-notebook-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4"></path><path d="M2 6h4"></path><path d="M2 10h4"></path><path d="M2 14h4"></path><path d="M2 18h4"></path><path d="M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"></path>
+    </symbol>
+    <symbol id="i-map-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle>
+    </symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+    </symbol>
+    <symbol id="i-film" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M7 3v18"></path><path d="M3 7.5h4"></path><path d="M3 12h18"></path><path d="M3 16.5h4"></path><path d="M17 3v18"></path><path d="M17 7.5h4"></path><path d="M17 16.5h4"></path>
+    </symbol>
+    <symbol id="i-clapperboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20.2 6 3 11l-.9-2.4c-.4-1.1.2-2.4 1.3-2.8l13.7-5c1.1-.4 2.4.2 2.8 1.3z"></path><path d="m6.2 5.3 3.1 4"></path><path d="m12.1 3.1 3.1 4"></path><rect width="20" height="12" x="2" y="9" rx="2"></rect>
+    </symbol>
+    <symbol id="i-list-checks" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m3 17 2 2 4-4"></path><path d="m3 7 2 2 4-4"></path><path d="M13 6h8"></path><path d="M13 12h8"></path><path d="M13 18h8"></path>
+    </symbol>
+    <symbol id="i-paperclip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+    </symbol>
+    <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+    </symbol>
+    <symbol id="i-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="6 3 20 12 6 21 6 3"></polygon>
+    </symbol>
+    <symbol id="i-rotate-ccw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path>
+    </symbol>
+    <symbol id="i-external-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+    </symbol>
+    <symbol id="i-arrow-up-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M7 7h10v10"></path><path d="M7 17 17 7"></path>
+    </symbol>
+    <symbol id="i-trash-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" x2="10" y1="11" y2="17"></line><line x1="14" x2="14" y1="11" y2="17"></line>
+    </symbol>
+    <symbol id="i-sliders-horizontal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="21" x2="14" y1="4" y2="4"></line><line x1="10" x2="3" y1="4" y2="4"></line><line x1="21" x2="12" y1="12" y2="12"></line><line x1="8" x2="3" y1="12" y2="12"></line><line x1="21" x2="16" y1="20" y2="20"></line><line x1="12" x2="3" y1="20" y2="20"></line><line x1="14" x2="14" y1="2" y2="6"></line><line x1="8" x2="8" y1="10" y2="14"></line><line x1="16" x2="16" y1="18" y2="22"></line>
+    </symbol>
+    <symbol id="i-grip-vertical" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="19" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="19" r="1"></circle>
+    </symbol>
+    <symbol id="i-file-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M10 9H8"></path><path d="M16 13H8"></path><path d="M16 17H8"></path>
+    </symbol>
+    <symbol id="i-more-horizontal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle>
+    </symbol>
+    <symbol id="i-maximize-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" x2="14" y1="3" y2="10"></line><line x1="3" x2="10" y1="21" y2="14"></line>
+    </symbol>
+  </svg>
+
+  <!-- FONDO ANIMADO DE CONEXIONES NEXO -->
+  <canvas id="nexo-bg-canvas"></canvas>
+
+  <!-- ENCABEZADO ULTRA-MODERNO -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-left">
+        <div class="nexo-logo-badge" title="NEXO Agencia Creativa">
+          <svg viewBox="540 610 1300 1160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(0,2364) scale(1,-1)">
+              <path fill="#5CB83E" d="M1266 1638 c-67 -59 -123 -108 -123 -108 0 -1 129 -214 131 -216 1 -1 2 4 18 65 l17 64 116 0 115 0 0 -3 c-1 -1 -43 -157 -94 -347 -51 -189 -93 -344 -93 -345 0 0 51 0 114 0 l113 1 14 51 c8 28 51 188 96 355 109 402 124 459 124 460 0 1 -62 1 -229 1 -218 0 -229 0 -229 2 1 2 34 127 34 128 0 1 -17 -13 -124 -108z M759 1528 c-147 -548 -209 -778 -209 -779 0 -1 73 -1 229 -1 125 0 228 0 228 0 0 0 -8 -30 -17 -65 -9 -35 -17 -65 -16 -65 0 0 1 1 3 2 1 2 56 50 122 107 66 58 120 106 120 106 1 1 -18 34 -63 108 -75 123 -67 110 -67 109 -1 0 -9 -29 -18 -65 l-17 -64 -115 0 -115 0 0 3 c1 2 184 687 186 690 0 2 -6 2 -114 2 l-114 0 -23 -88z"/>
+            </g>
+          </svg>
+        </div>
+        <div class="topbar-titles">
+          <h1 id="hdr-client" class="client-title">Tablero NEXO</h1>
+          <span class="prod-pill">PRODUCCIÓN</span>
+          <span class="header-sep">·</span>
+          <span id="hdr-date" class="client-date">Sin Fecha</span>
+        </div>
+      </div>
+
+      <!-- Buscador compacto Linear-style en escritorio -->
+      <div class="topbar-center">
+        <div class="compact-search">
+          <svg class="ico"><use href="#i-search"></use></svg>
+          <input type="text" id="search-input" placeholder="Buscar tarjetas..." autocomplete="off">
+          <kbd class="search-kbd" onclick="document.getElementById('search-input').focus()">⌘K</kbd>
+          <button id="search-clear" class="btn-search-clear" onclick="clearSearch()" title="Limpiar"><svg class="ico"><use href="#i-x"></use></svg></button>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <!-- Selector de densidad Compacta / Cómoda -->
+        <div class="density-toggle" title="Densidad visual del tablero">
+          <button class="density-btn" id="btn-density-compact" onclick="setDensity('compact')">Compacta</button>
+          <button class="density-btn active" id="btn-density-comfortable" onclick="setDensity('comfortable')">Cómoda</button>
+        </div>
+
+        <!-- Selector de tema Oscuro / Claro -->
+        <button class="btn-icon-top" id="btn-theme-toggle" onclick="toggleTheme()" title="Cambiar tema (Oscuro / Claro)">
+          <svg class="ico" id="theme-toggle-icon"><use href="#i-sun"></use></svg>
+        </button>
+
+        <!-- Progreso global discreto -->
+        <div class="header-progress-box" title="Progreso de producción">
+          <div class="hp-info"><span id="hp-count">0 de 0</span> listos</div>
+          <div class="hp-bar-track">
+            <div class="hp-bar-fill" id="hp-fill" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <!-- Estado en vivo Firestore -->
+        <div id="live-indicator" class="live-status" style="display:none;" title="Sincronización en la nube" aria-label="En vivo">
+          <span class="live-dot"></span>
+          <span id="live-indicator-label" class="live-label-text visually-hidden-mobile">En vivo</span>
+        </div>
+
+        <!-- Botón buscar móvil -->
+        <button class="btn-icon-top btn-mobile-search-toggle" onclick="toggleMobileSearch()" title="Buscar">
+          <svg class="ico"><use href="#i-search"></use></svg>
+        </button>
+
+        <!-- Botón Exportar -->
+        <button class="btn-icon-top" onclick="exportData()" title="Exportar datos (JSON)">
+          <svg class="ico"><use href="#i-download"></use></svg>
+        </button>
+
+        <!-- Botón Crear Tarjeta -->
+        <button class="btn-primary-top" onclick="openModal()">
+          <svg class="ico"><use href="#i-plus"></use></svg> <span>Nueva tarjeta</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- BUSCADOR MÓVIL DESPLEGABLE -->
+  <div id="mobile-search-bar" class="mobile-search-bar">
+    <div class="compact-search" style="width:100%;">
+      <svg class="ico"><use href="#i-search"></use></svg>
+      <input type="text" id="mobile-search-input" placeholder="Buscar tarjetas..." autocomplete="off">
+      <button id="mobile-search-clear" class="btn-search-clear" onclick="clearSearch()" title="Limpiar"><svg class="ico"><use href="#i-x"></use></svg></button>
+    </div>
+  </div>
+
+  <!-- PESTAÑAS MÓVILES (RODAJE CON 1 MANO) -->
+  <nav class="mobile-col-tabs" aria-label="Columnas de producción">
+    <button class="m-tab-btn active" data-tab="todo" onclick="switchMobileTab('todo')">
+      Por hacer <span class="m-tab-count" id="m-count-todo">0</span>
+    </button>
+    <button class="m-tab-btn" data-tab="grabando" onclick="switchMobileTab('grabando')">
+      Grabando <span class="m-tab-count" id="m-count-grabando">0</span>
+    </button>
+    <button class="m-tab-btn" data-tab="listo" onclick="switchMobileTab('listo')">
+      Listo <span class="m-tab-count" id="m-count-listo">0</span>
+    </button>
+  </nav>
+
+  <!-- MESA KANBAN -->
+  <main class="kanban-area" id="kanban-canvas">
+    <!-- COLUMNA: POR HACER -->
+    <section class="k-col mobile-active" id="section-todo" data-status="todo">
+      <div class="k-col-head">
+        <div class="k-col-title-group">
+          <div class="k-col-icon-wrap"><svg class="ico k-col-icon"><use href="#i-circle-dashed"></use></svg></div>
+          <h2 class="k-col-title">Por hacer</h2>
+        </div>
+        <div class="k-col-right-group">
+          <span class="k-col-count-badge" id="count-todo">0</span>
+          <button class="k-col-add-btn" onclick="openModalWithStatus('todo')" title="Añadir tarjeta a Por hacer">
+            <svg class="ico"><use href="#i-plus"></use></svg>
+          </button>
+        </div>
+      </div>
+      <div class="k-col-cards" id="col-todo" data-status="todo"></div>
+    </section>
+
+    <!-- COLUMNA: GRABANDO -->
+    <section class="k-col" id="section-grabando" data-status="grabando">
+      <div class="k-col-head">
+        <div class="k-col-title-group">
+          <div class="k-col-icon-wrap"><svg class="ico k-col-icon"><use href="#i-video"></use></svg></div>
+          <h2 class="k-col-title">Grabando</h2>
+        </div>
+        <div class="k-col-right-group">
+          <span class="k-col-count-badge" id="count-grabando">0</span>
+          <button class="k-col-add-btn" onclick="openModalWithStatus('grabando')" title="Añadir tarjeta a Grabando">
+            <svg class="ico"><use href="#i-plus"></use></svg>
+          </button>
+        </div>
+      </div>
+      <div class="k-col-cards" id="col-grabando" data-status="grabando"></div>
+    </section>
+
+    <!-- COLUMNA: LISTO -->
+    <section class="k-col" id="section-listo" data-status="listo">
+      <div class="k-col-head">
+        <div class="k-col-title-group">
+          <div class="k-col-icon-wrap"><svg class="ico k-col-icon"><use href="#i-check-circle-2"></use></svg></div>
+          <h2 class="k-col-title">Listo</h2>
+        </div>
+        <div class="k-col-right-group">
+          <span class="k-col-count-badge" id="count-listo">0</span>
+          <button class="k-col-add-btn" onclick="openModalWithStatus('listo')" title="Añadir tarjeta a Listo">
+            <svg class="ico"><use href="#i-plus"></use></svg>
+          </button>
+        </div>
+      </div>
+      <div class="k-col-cards" id="col-listo" data-status="listo"></div>
+    </section>
+  </main>
+
+  <!-- ── FICHA CENTRADA DE LA TARJETA (v3) ─────────────────────────────
+       Conserva los id del panel anterior (side-drawer, drawer-*) para no romper la lógica existente -->
+  <div id="drawer-backdrop" class="ps-backdrop" onclick="closeDrawer()"></div>
+  <aside id="side-drawer" class="ps" role="dialog" aria-modal="true" aria-labelledby="drawer-title" aria-hidden="true">
+    <div class="ps-panel" tabindex="-1">
+      <div class="ps-grabber" aria-hidden="true"></div>
+      <header class="ps-head">
+        <div class="ps-head-left">
+          <span class="ps-num" id="ps-num">01</span>
+          <span id="drawer-type-badge" class="card-type-badge ps-type"></span>
+          <span id="ps-ads" class="ps-chip ps-chip-ads" style="display:none;">ADS</span>
+          <span id="ps-hora" class="ps-chip" style="display:none;"></span>
+          <span id="drawer-sede-pill" class="ps-chip" style="display:none;"></span>
+        </div>
+        <div class="ps-head-right">
+          <span class="ps-pos" id="ps-pos"></span>
+          <button type="button" class="ps-icon" id="ps-prev" onclick="navigateSheet(-1)" title="Tarjeta anterior (←)" aria-label="Tarjeta anterior"><svg class="ico"><use href="#i-chevron-left"></use></svg></button>
+          <button type="button" class="ps-icon" id="ps-next" onclick="navigateSheet(1)" title="Tarjeta siguiente (→)" aria-label="Tarjeta siguiente"><svg class="ico"><use href="#i-chevron-right"></use></svg></button>
+          <span class="ps-divider" aria-hidden="true"></span>
+          <button type="button" class="ps-icon" onclick="editFromDrawer()" title="Editar formato, sede y referencias" aria-label="Editar formato, sede y referencias"><svg class="ico"><use href="#i-sliders-horizontal"></use></svg></button>
+          <button type="button" class="ps-icon ps-danger" onclick="deleteFromDrawer()" title="Eliminar tarjeta" aria-label="Eliminar tarjeta"><svg class="ico"><use href="#i-trash-2"></use></svg></button>
+          <button type="button" class="ps-close" id="ps-close" onclick="closeDrawer()" title="Cerrar (Esc)" aria-label="Cerrar"><svg class="ico"><use href="#i-x"></use></svg></button>
+        </div>
+      </header>
+
+      <div class="ps-body">
+        <div class="ps-main">
+          <textarea id="drawer-title" class="ps-title" rows="1" spellcheck="false" aria-label="Título de la tarjeta" placeholder="Título del contenido"></textarea>
+
+          <div class="ps-status status-segmented-control" role="group" aria-label="Estado de producción">
+            <button type="button" class="status-seg-btn" data-status="todo" onclick="setCardStatusFromDrawer('todo')">
+              <svg class="ico"><use href="#i-circle-dashed"></use></svg> Por hacer
+            </button>
+            <button type="button" class="status-seg-btn" data-status="grabando" onclick="setCardStatusFromDrawer('grabando')">
+              <svg class="ico"><use href="#i-video"></use></svg> Grabando
+            </button>
+            <button type="button" class="status-seg-btn" data-status="listo" onclick="setCardStatusFromDrawer('listo')">
+              <svg class="ico"><use href="#i-check-circle-2"></use></svg> Listo
+            </button>
+          </div>
+
+          <section class="ps-sec ps-sec-script" id="drawer-desc-section">
+            <div class="ps-sec-head">
+              <h3 class="ps-sec-label"><svg class="ico"><use href="#i-file-text"></use></svg> Guion</h3>
+              <span class="ps-sec-meta" id="ps-script-meta"></span>
+              <div class="ps-sec-actions">
+                <button type="button" class="ps-btn-ghost" id="btn-edit-script" onclick="toggleScriptEdit()"><svg class="ico"><use href="#i-pencil"></use></svg> <span>Editar</span></button>
+                <button type="button" class="ps-btn-ghost" id="btn-copy-script" onclick="copyDrawerScript()"><svg class="ico"><use href="#i-copy"></use></svg> <span>Copiar</span></button>
+              </div>
+            </div>
+            <div id="drawer-desc" class="ps-script"></div>
+            <textarea id="ps-script-editor" class="ps-script-editor" spellcheck="false" aria-label="Editar guion" style="display:none;"></textarea>
+            <button type="button" class="ps-empty" id="ps-script-empty" onclick="toggleScriptEdit(true)" style="display:none;">
+              <svg class="ico"><use href="#i-pen-line"></use></svg> Sin guion todavía. Toca para escribirlo.
+            </button>
+          </section>
+        </div>
+
+        <div class="ps-side">
+          <section class="ps-sec ps-sec-notes" id="ps-notes-section">
+            <div class="ps-sec-head">
+              <h3 class="ps-sec-label"><svg class="ico"><use href="#i-notebook-pen"></use></svg> Notas en vivo</h3>
+              <span class="ps-save" id="ps-notes-status" aria-live="polite"></span>
+            </div>
+            <textarea id="ps-notes" class="ps-notes" rows="3" aria-label="Notas de rodaje" placeholder="Escribe lo que pase en el set: tomas buenas, cambios, pendientes… Se guarda solo y se ve en todos los teléfonos."></textarea>
+          </section>
+
+          <section class="ps-sec" id="drawer-check-section">
+            <div class="ps-sec-head">
+              <h3 class="ps-sec-label"><svg class="ico"><use href="#i-list-checks"></use></svg> Checklist</h3>
+              <span id="drawer-check-count" class="ps-sec-meta">0/0</span>
+              <div class="ps-sec-actions">
+                <button type="button" class="ps-btn-ghost" id="btn-edit-checklist" onclick="toggleChecklistEdit()"><svg class="ico"><use href="#i-pencil"></use></svg> <span>Editar</span></button>
+              </div>
+            </div>
+            <div class="ps-check-track" aria-hidden="true"><div class="ps-check-fill" id="ps-check-fill"></div></div>
+            <div id="drawer-checklist" class="ps-checklist"></div>
+            <form class="ps-check-add" onsubmit="addSubtaskFromSheet(event)">
+              <svg class="ico"><use href="#i-plus"></use></svg>
+              <input type="text" id="ps-check-input" autocomplete="off" placeholder="Agregar paso o toma…" aria-label="Agregar paso al checklist">
+              <button type="submit" class="ps-check-add-btn">Agregar</button>
+            </form>
+          </section>
+
+          <section class="ps-sec" id="drawer-media-section" style="display:none;">
+            <div class="ps-sec-head">
+              <h3 class="ps-sec-label"><svg class="ico"><use href="#i-paperclip"></use></svg> Referencias</h3>
+            </div>
+            <div id="drawer-media-grid" class="ps-media"></div>
+          </section>
+        </div>
+      </div>
+
+      <footer class="ps-foot">
+        <button type="button" class="ps-advance" id="btn-drawer-next-step" onclick="advanceCardFromDrawer()">
+          <span class="ps-advance-icon" id="ps-advance-icon"><svg class="ico"><use href="#i-play"></use></svg></span>
+          <span id="drawer-next-label">Comenzar rodaje</span>
+        </button>
+      </footer>
+    </div>
+  </aside>
+
+  <!-- ── MODAL DE CREACIÓN / EDICIÓN ───────────────────────────────────── -->
+  <div id="modal-card" class="modal-overlay" onclick="handleModalOverlayClick(event)">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 id="modal-card-title" class="modal-title">Nueva tarjeta de producción</h3>
+        <button class="btn-icon-top" onclick="closeModal()"><svg class="ico"><use href="#i-x"></use></svg></button>
+      </div>
+      <form id="form-card" onsubmit="handleFormSubmit(event)">
+        <div class="modal-body">
+          <input type="hidden" id="card-id">
+
+          <div class="form-group">
+            <label class="form-label" for="card-title">Título o Gancho Principal *</label>
+            <input type="text" id="card-title" class="form-input" required placeholder="Ej: POV: Probando el nuevo menú...">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="card-type">Formato *</label>
+              <select id="card-type" class="form-select">
+                <option value="reel">Reel</option>
+                <option value="carrusel">Carrusel</option>
+                <option value="tiktok">TikTok</option>
+                <option value="foto">Foto</option>
+                <option value="otro">Otro</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="card-state">Estado *</label>
+              <select id="card-state" class="form-select">
+                <option value="todo">Por hacer</option>
+                <option value="grabando">Grabando</option>
+                <option value="listo">Listo</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="card-sede">Sede / Locación</label>
+            <input type="text" id="card-sede" class="form-input" placeholder="Ej: Terraza, Cocina, Sede Norte...">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="card-desc">Guión / Indicaciones de rodaje</label>
+            <textarea id="card-desc" class="form-textarea" placeholder="Escribe el concepto, guión, planos clave o indicaciones..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="card-subtasks-input">Subtareas de rodaje (una por línea)</label>
+            <textarea id="card-subtasks-input" class="form-textarea" style="min-height:75px;" placeholder="Plano de entrada al plato&#10;Reacción de cliente&#10;Cierre con logo..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="card-links-input">Enlaces de referencia (URL o Título | URL, uno por línea)</label>
+            <textarea id="card-links-input" class="form-textarea" style="min-height:65px;" placeholder="https://instagram.com/reel/...&#10;Referencia visual | https://drive.google.com/..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" onclick="closeModal()">Cancelar</button>
+          <button type="submit" class="btn-primary">Guardar tarjeta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- DATOS DEL TABLERO -->
+  <script id="board-data">
+    const DATA = {
+  "fecha": "2026-11-12",
+  "cliente": "Wil Auto Service",
+  "id": "wil-auto-service-2026-11-12-a12520",
+  "firebase": {
+    "apiKey": "AIzaSyAsH9TxW0ld2aNQejJw6xxZW7fpZiw212Q",
+    "projectId": "nexo-tableros-app"
+  },
+  "contenidos": [
+    {
+      "id": "c1",
+      "titulo": "ANTES DE VIAJAR",
+      "tipo": "reel",
+      "sede": "",
+      "estado": "todo",
+      "descripcion": "Pauta: 12/11 \u00b7 4:00 PM\n\nSe acerca la temporada de viajes, pero antes de hacer las maletas, hay algo que no puedes olvidar: revisar tu carro.\nY no, no basta con que encienda y aparentemente funcione bien.\nPrimero, revisa los frenos. No querr\u00e1s descubrir que est\u00e1n fallando cuando m\u00e1s los necesites.\nSegundo, verifica el estado de los cauchos, incluyendo la presi\u00f3n y el desgaste.\nTercero, revisa los niveles de aceite, refrigerante y l\u00edquido de frenos.\nCuarto, aseg\u00farate de que la bater\u00eda y el sistema de carga est\u00e9n funcionando correctamente.\nY quinto, no te olvides del tren delantero y la suspensi\u00f3n. Un peque\u00f1o problema puede convertirse en uno mucho mayor durante el camino.\nRecuerda: que tu carro funcione en la ciudad no significa que est\u00e9 listo para un viaje largo.\nEn Wil Auto Service te ayudamos a revisar tu veh\u00edculo antes de salir a carretera.\n\u00a1Agenda tu revisi\u00f3n y viaja con tranquilidad!",
+      "subtareas": [],
+      "mediaLinks": []
+    },
+    {
+      "id": "c2",
+      "titulo": "TIPS PARA SABER",
+      "tipo": "reel",
+      "sede": "",
+      "estado": "todo",
+      "descripcion": "Pauta: 12/11 \u00b7 4:00 PM\n\n3 TIPS PARA SABER SI UN MEC\u00c1NICO TE DICE LA VERDAD\nPrimero: que te explique cu\u00e1l es la falla y c\u00f3mo lleg\u00f3 a ese diagn\u00f3stico. No basta con decirte que una pieza est\u00e1 da\u00f1ada, debe poder explicarte por qu\u00e9.\nSegundo: que te muestre evidencias. Ya sea una pieza desgastada, una fuga o el resultado de una prueba, tienes derecho a entender qu\u00e9 est\u00e1 pasando con tu carro.\nTercero: que te d\u00e9 un presupuesto claro antes de reparar. Debes saber qu\u00e9 piezas necesita tu carro, cu\u00e1nto cuesta la mano de obra y qu\u00e9 trabajos van a realizar.\nY recuerda algo: un buen mec\u00e1nico no necesita que le creas a ciegas, necesita que entiendas qu\u00e9 le pasa a tu veh\u00edculo.",
+      "subtareas": [],
+      "mediaLinks": []
+    },
+    {
+      "id": "c3",
+      "titulo": "TIPOS DE MECANICO",
+      "tipo": "reel",
+      "sede": "",
+      "estado": "todo",
+      "descripcion": "Pauta: 12/11 \u00b7 4:00 PM\n\nRECREAR REFERENCIA CON WILL Y LOS CHICOS\n\nComentario del cliente (Wilder):\nEse de referencia puede ser siiii me gusta",
+      "subtareas": [],
+      "mediaLinks": [
+        {
+          "label": "Reel de referencia",
+          "url": "https://www.instagram.com/reel/DAjke2JSvqy/?xtok=bzFhMXZiZmF6ZTRo"
+        }
+      ]
+    },
+    {
+      "id": "c4",
+      "titulo": "SOMOS MECANICOS PERO SOMOS",
+      "tipo": "foto",
+      "sede": "",
+      "estado": "todo",
+      "descripcion": "Pauta: 12/11 \u00b7 4:00 PM\n\ntomar fotograf\u00edas\n\nComentario del cliente (Wilder):\nDoctor, s\u00faper h\u00e9roe, mago,\nY otros pueden ser",
+      "subtareas": [
+        {
+          "id": "c4-s1",
+          "texto": "Tomar fotograf\u00eda",
+          "done": false
+        }
+      ],
+      "mediaLinks": [
+        {
+          "label": "Post de referencia",
+          "url": "https://www.instagram.com/p/DdrYDfKFSC1/?obrf=MW51MmVuenp6cW96eg=="
+        }
+      ]
+    },
+    {
+      "id": "c5",
+      "titulo": "PROMOS PARA NOVIEMBRE",
+      "tipo": "reel",
+      "sede": "",
+      "estado": "todo",
+      "descripcion": "Pauta: 12/11 \u00b7 4:00 PM\n\n\u00a1Este noviembre, pon tu carro al d\u00eda y aprovecha nuestros precios especiales!\nDel 15 al 30 de noviembre, en Wil Auto Service tenemos cambios de aceite desde XX$ y un X% de descuento en diagn\u00f3sticos con esc\u00e1ner.(por definir si son estas promos)\nEs la oportunidad perfecta para realizar ese mantenimiento que tienes pendiente y revisar el estado de tu veh\u00edculo antes de salir a carretera.\n\u00a1Pero atenci\u00f3n! Esta promoci\u00f3n estar\u00e1 disponible \u00fanicamente hasta el 30 de noviembre.\nEscr\u00edbenos ahora por WhatsApp, aprovecha estos precios especiales y agenda tu cita.\n\u00a1Te esperamos en Wil Auto Service, en La Mata, Los Curos!\n\nComentario del cliente (Wilder):\nCambio de aceite y filtros con un costo de 65$ con revisi\u00f3n general \nDescuento del 30% mano de obra ( \u00fanica condici\u00f3n que los repuestos los compr\u00e9 con nosotros )",
+      "subtareas": [],
+      "mediaLinks": []
+    }
+  ]
+};
+    window.DATA = DATA;
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('../sw.js').catch(function(e) { console.warn('SW:', e); });
+      });
+    }
+  </script>
+</body>
+</html>

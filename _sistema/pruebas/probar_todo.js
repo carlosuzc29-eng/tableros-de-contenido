@@ -1669,10 +1669,10 @@ async function getToastText(page) {
     // ─────────────────────────────────────────────────────────────────────────
     // CASO 24: Tableros v2 - Verificación de migración de los 4 tableros existentes
     // ─────────────────────────────────────────────────────────────────────────
-    console.log(`\n${C.bold}24. Tableros v2 (Migración de los 4 tableros existentes):${C.reset} Milkarf 11, Bambú 8, Moffyns 8, Trina 9`);
+    console.log(`\n${C.bold}24. Tableros v2 (Migración de los 4 tableros existentes):${C.reset} Milkarf 19 (Nov 2026), Bambú 8, Moffyns 8, Trina 9`);
     {
       const tablerosEsperados = [
-        { file: 'milkarf-octubre-2026-f01f.html', expectedCards: 11, client: 'Milkarf' },
+        { file: 'milkarf-octubre-2026-f01f.html', expectedCards: 19, client: 'Milkarf' },
         { file: 'bambu-bistro-1f6bcb.html', expectedCards: 8, client: 'Bambú Bistro' },
         { file: 'moffyns-a8733d.html', expectedCards: 8, client: 'Moffyns' },
         { file: 'trina-hot-sauce-octubre-2026-a39c.html', expectedCards: 9, client: 'Trina Hot Sauce' }

@@ -1,8 +1,13 @@
 {
   "cliente": "Milkarf",
   "cuenta": "milkarfood",
-  "actual": "2026-10",
+  "actual": "2026-11",
   "meses": [
+    {
+      "mes": "2026-11",
+      "etiqueta": "Noviembre 2026",
+      "id": "milkarf-2026-noviembre-ba6c9ca0"
+    },
     {
       "mes": "2026-10",
       "etiqueta": "Octubre 2026",

@@ -1,4 +1,3 @@
-borradores/
 .DS_Store
 *.rtf
 .nexo-config.json
@@ -9,3 +8,7 @@ _sistema/herramientas-iniciales/
 _preview/
 node_modules/
 __pycache__/
+# Borradores: se versionan solo los <cliente>-<mes>-<año>.json; las exportaciones y notas quedan en la Mac
+borradores/*.clickup.json
+borradores/*.firestore.json
+borradores/*.md

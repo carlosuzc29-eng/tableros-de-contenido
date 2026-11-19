@@ -145,7 +145,7 @@ function buildTestHtml(tmpDir, overrides) {
       // Corregir solo el guion en la tarjeta 1
       const g = page.locator('article.card').first().locator('.guion p').first();
       await g.click();
-      await page.keyboard.press('Meta+A');
+      await page.keyboard.press('ControlOrMeta+A');
       await page.keyboard.type('Nuevo guion corregido v2');
       await page.keyboard.press('Enter');
       await page.keyboard.type('Segunda línea de guion');

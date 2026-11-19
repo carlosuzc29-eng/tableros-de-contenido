@@ -201,6 +201,10 @@ function fail(msg, err) {
           }
         });
 
+        // Firestore bloqueado: se mide la estabilidad propia de la página, no el estado real de las
+        // revisiones de los clientes (una revisión enviada después de construir agrega la franja "Revisado por").
+        await page.route(/firestore\.googleapis\.com/, (route) => route.abort());
+
         const targetUrl = 'file://' + path.join(REPO_ROOT, t.file);
         await page.goto(targetUrl, { waitUntil: 'load', timeout: 15000 });
 

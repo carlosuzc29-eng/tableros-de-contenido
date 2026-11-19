@@ -61,7 +61,21 @@ def enlace_previo(ruta, cliente):
         except Exception: continue
         if slug(d.get('cliente', '')) == slug(cliente) and d.get('archivo'):
             hallados.append((os.path.getmtime(r), d['archivo']))
-    return max(hallados)[1] if hallados else None
+    if hallados:
+        return max(hallados)[1]
+    # Sin borrador previo (por ejemplo, al construir desde la nube o desde otra computadora):
+    # se busca el enlace del cliente en datos/<codigo>/indice.json, que siempre está en el repositorio.
+    en_datos = []
+    dir_datos = os.path.join(REPO, 'datos')
+    if os.path.isdir(dir_datos):
+        for cod in os.listdir(dir_datos):
+            r = os.path.join(dir_datos, cod, 'indice.json')
+            if not os.path.isfile(r) or not os.path.isfile(os.path.join(REPO, cod + '.html')): continue
+            try: ind = json.load(open(r, encoding='utf-8'))
+            except Exception: continue
+            if slug(ind.get('cliente', '')) == slug(cliente):
+                en_datos.append((str(ind.get('actual', '')), cod + '.html'))
+    return max(en_datos)[1] if en_datos else None
 
 FORMATOS_VALIDOS = ['Reel', 'Carrusel', 'Carrusel con video', 'Post', 'Historia', 'Fotografía', 'Folleto', 'Video']
 
@@ -559,14 +573,27 @@ def main():
 
     html = open(PLANTILLA, encoding='utf-8').read()
     html = html.replace('__CODIGO_CLIENTE__', codigo_cliente)
-    html = html.replace('__DATA__', json.dumps(datos, ensure_ascii=False, indent=2).replace('</', '<\\/'))
+    # La cáscara lleva también la lista de meses del índice, para que el selector de meses
+    # salga en el pre-render y la página no salte al cargar (solo en el HTML, no en datos/).
+    datos_html = dict(datos)
+    datos_html['mesesIndice'] = indice.get('meses', [])
+    html = html.replace('__DATA__', json.dumps(datos_html, ensure_ascii=False, indent=2).replace('</', '<\\/'))
 
     chrome_bin = chrome()
     if chrome_bin:
         tmp_path = os.path.join(REPO, f".tmp_prerender_{secrets.token_hex(4)}.html")
         user_data_dir = tempfile.mkdtemp(prefix='nexo_chrome_')
+        # Pre-render sin Firestore: la cáscara refleja solo el JSON (ya sincronizado con Firestore arriba),
+        # no depende de la red ni del proxy, y el pre-render nunca escribe en Firestore.
+        # El script se inyecta solo en la copia temporal y se quita del DOM resultante.
+        bloqueo_fs = ('<script id="nexo-prerender-sin-firestore">(function(){var h="firestore.googleapis.com";'
+                      'var f=window.fetch;window.fetch=function(u){if(String(u&&u.url||u).indexOf(h)!==-1)'
+                      'return Promise.reject(new Error("prerender"));return f.apply(this,arguments)};'
+                      'var o=XMLHttpRequest.prototype.open;XMLHttpRequest.prototype.open=function(m,u){'
+                      'if(String(u).indexOf(h)!==-1)throw new Error("prerender");return o.apply(this,arguments)};})();</script>')
+        html_tmp = re.sub(r'(<head[^>]*>)', lambda m: m.group(1) + bloqueo_fs, html, count=1)
         with open(tmp_path, 'w', encoding='utf-8') as f:
-            f.write(html)
+            f.write(html_tmp)
         extra = ['--no-sandbox'] if os.environ.get('NEXO_NOSANDBOX') else ['--no-sandbox']
         try:
             res = subprocess.run([chrome_bin, *extra, '--headless=new', '--disable-gpu', '--no-first-run',
@@ -575,7 +602,7 @@ def main():
                                   '--dump-dom', 'file://' + tmp_path], capture_output=True, text=True, timeout=120)
             if 'tablero.js' in (res.stderr or '') and ('ERR_FILE_NOT_FOUND' in res.stderr or '404' in res.stderr or 'Failed to load resource' in res.stderr):
                 sys.exit(f"Error: falló el pre-render porque no se encontró _sistema/tablero/tablero.js ({res.stderr.strip()})")
-            out = res.stdout
+            out = re.sub(r'<script id="nexo-prerender-sin-firestore">.*?</script>', '', res.stdout or '', count=1, flags=re.S)
             if 'class="js"' in out[:400]:
                 out = '<!DOCTYPE html>\n' + re.sub(r'^\s*<!DOCTYPE html>\s*', '', out, flags=re.I).replace('class="js"', 'class="no-js"', 1)
                 tarjetas = len(re.findall(r'<article class="card', out))

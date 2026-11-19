@@ -138,4 +138,4 @@ El repositorio incluye un Service Worker (`sw.js`) que ofrece caché local gratu
 - Para publicar desde cualquier computadora o desde Claude en la nube basta con hacer push del borrador; **no** se usa `--publicar` ni hace falta `.github-token`.
 - Para reiniciar o reconstruir un tablero: Actions → "Publicar tableros" → Run workflow, con la ruta del borrador (y "reiniciar" si Carlos lo pidió).
 - Antes de editar un borrador en la Mac, hacer `git pull`: la acción vuelve a escribir el borrador con la huella `_sync` nueva.
-
+- El pre-render de `construir.py` corre **sin acceso a Firestore**: la cáscara refleja solo el JSON (que ya se sincronizó con Firestore al construir). La cáscara también embebe la lista de meses (`mesesIndice`) para que el selector de meses salga desde el primer render, sin saltos de diseño.

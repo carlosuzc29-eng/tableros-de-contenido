@@ -4795,7 +4795,8 @@
         cliente: embeddedData.cliente,
         cuenta: (embeddedData.cuenta || '').replace('@', ''),
         actual: embMesKey,
-        meses: [{
+        // mesesIndice lo embebe construir.py para pintar el selector de meses desde el primer render (sin salto de diseño)
+        meses: (Array.isArray(embeddedData.mesesIndice) && embeddedData.mesesIndice.length) ? embeddedData.mesesIndice.slice() : [{
           mes: embMesKey,
           etiqueta: [embeddedData.mes, embeddedData.anio].filter(Boolean).join(' '),
           id: embeddedData.id

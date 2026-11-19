@@ -165,7 +165,7 @@ function setAgencySessionInit(page) {
       // Editar guion, pilar y referencias en pieza 1 (estado: 'cambios', version: 1)
       const guionEl = card1.locator('.guion p.p-guion');
       await guionEl.click();
-      await page.keyboard.press('Meta+A');
+      await page.keyboard.press('ControlOrMeta+A');
       await page.keyboard.type('Guion editado en modo libre sin tocar estado');
 
       await card1.locator('.agency-pilar-inp').fill('Autoridad y confianza');
@@ -215,7 +215,7 @@ function setAgencySessionInit(page) {
       // También probar pieza 2 ('aprobado'): con ON NO muestra modal de aprobada y actualiza pieza.aprobacion
       const card2 = page.locator('article.card').nth(1);
       await card2.locator('.guion p.p-guion').click();
-      await page.keyboard.press('Meta+A');
+      await page.keyboard.press('ControlOrMeta+A');
       await page.keyboard.type('Guion ajustado en aprobada sin modal');
       await card2.locator('.btn-agency-save').click();
       await page.waitForTimeout(1400);
@@ -231,7 +231,7 @@ function setAgencySessionInit(page) {
 
       // Caso b) Un sync con datos viejos mientras cObj.editando === true no borra el texto editado
       await guionEl.click();
-      await page.keyboard.press('Meta+A');
+      await page.keyboard.press('ControlOrMeta+A');
       await page.keyboard.type('Texto en edición protegida contra sync');
       await card1.locator('.agency-pilar-inp').fill('Pilar en curso');
 
@@ -288,7 +288,7 @@ function setAgencySessionInit(page) {
 
       // Probar que "Reintentar" del modal de error conserva meta (modo: 'libre', pilar, referencias)
       await guionEl.click();
-      await page.keyboard.press('Meta+A');
+      await page.keyboard.press('ControlOrMeta+A');
       await page.keyboard.type('Guion tras reintento conservando meta');
       await card1.locator('.agency-pilar-inp').fill('Pilar tras reintento');
       stub.failPatch = 1;
@@ -307,7 +307,7 @@ function setAgencySessionInit(page) {
 
       // Caso c) "Enviar al cliente como corrección": estado 'corregido' y version +1
       await guionEl.click();
-      await page.keyboard.press('Meta+A');
+      await page.keyboard.press('ControlOrMeta+A');
       await page.keyboard.type('Guion definitivo v2 para revisión del cliente');
       await card1.locator('.btn-agency-send-correction').click();
       await page.waitForTimeout(1600);

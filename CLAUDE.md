@@ -10,7 +10,7 @@ Este repositorio contiene los tableros de revisión, correcciones y aprobación 
 - **Fuente de Verdad**: Los contenidos se definen en `borradores/<cliente>-<mes>-<año>.json` y se registran en Cloud Firestore (`tableros/{id}`).
 - **Plantilla Maestra**: `_sistema/plantilla-tablero.html`. Nunca crees ni edites archivos HTML en la raíz manualmente; todos los tableros se compilan automáticamente desde su JSON con `_sistema/construir.py`.
 - **Pruebas obligatorias**: Antes de publicar cualquier cambio en `_sistema/` o `index.html`, ejecutar `node _sistema/pruebas/probar_todo.js`; si falla, no publicar.
-- **Aislamiento de Secretos**: Las claves privadas de Firebase viven en `../.nexo-config.json` y el token de GitHub en `../.github-token` (ambos fuera del repositorio y estrictamente ignorados en git). Nunca expongas credenciales en archivos públicos.
+- **Aislamiento de Secretos**: Las credenciales de Firebase viven como secretos de GitHub Actions (`NEXO_FIREBASE_EMAIL`, `NEXO_FIREBASE_PASSWORD`) y, en la Mac, en `../.nexo-config.json` (fuera del repositorio). Nunca expongas credenciales en archivos públicos.
 - **Un solo enlace por cliente**: Cada cliente mantiene un único enlace público estable (ej. `milkarf-octubre-2026-f01f.html`). El mes nuevo reutiliza el archivo del tablero anterior para que el cliente siempre acceda a la versión vigente.
 
 ---
@@ -71,20 +71,17 @@ python3 _sistema/validar_tablero.py borradores/<cliente>-<mes>-<año>.json
 ```
 Si el validador reporta errores, corrígelos antes de continuar.
 
-### Paso 3: Compilar y publicar
-Ejecuta el motor de construcción:
-```bash
-python3 _sistema/construir.py borradores/<cliente>-<mes>-<año>.json --publicar
-```
-*¿Qué hace automáticamente este comando?*
+### Paso 3: Publicar subiendo solo el borrador
+Haz commit y push **solo** del borrador (`git add borradores/<cliente>-<mes>-<año>.json`). La GitHub Action "Publicar tableros" ejecuta `construir.py` (sección 8). No uses `--publicar` ni hagas commit a mano de la cáscara o de `datos/`.
+*¿Qué hace `construir.py` dentro de la acción?*
 1. Valida el esquema y normaliza formatos y meses.
 2. Sincroniza desde Firestore para **preservar revisiones, observaciones y versiones previas**.
 3. Si Google Chrome está disponible en el entorno, pre-renderiza el DOM para la vista previa de iPhone/WhatsApp. Si no está disponible, genera el tablero en modo dinámico sin fallar.
 4. Actualiza o crea el registro en Firestore (`tableros/{id}`).
-5. Con `--publicar`, ejecuta `git add`, `commit` y `push` a la rama `main`.
+5. La acción hace el commit de la cáscara, `datos/` y el borrador actualizado, y verifica lo publicado.
 
 ### Paso 4: Entregar el resultado
-El script imprime la URL de GitHub Pages y el mensaje listo para enviar al cliente por WhatsApp.
+El resumen de la ejecución en GitHub (pestaña Actions) muestra la URL de GitHub Pages y el mensaje listo para enviar al cliente por WhatsApp.
 
 ---
 
@@ -96,10 +93,7 @@ El script imprime la URL de GitHub Pages y el mensaje listo para enviar al clien
   - **Solo si el JSON cambió localmente después de la última sincronización** (huella distinta de `_sync`) y la pieza está `aprobado` en Firestore: se archiva la versión aprobada previa en `versiones['v' + version]` y se avanza a `v+1` en estado `corregido`.
   - La huella técnica `_sync` se almacena exclusivamente en el archivo JSON local del borrador y nunca se inyecta en el HTML final ni en Firestore.
 - **Reinicio Forzado a Solicitud de Carlos**:
-  Solo si Carlos solicita explícitamente reiniciar un tablero a cero, usa:
-  ```bash
-  python3 _sistema/construir.py borradores/<cliente>-<mes>-<año>.json --reiniciar --publicar
-  ```
+  Solo si Carlos solicita explícitamente reiniciar un tablero a cero: GitHub → Actions → "Publicar tableros" → Run workflow, con la ruta del borrador y la casilla **reiniciar**.
 
 ---
 

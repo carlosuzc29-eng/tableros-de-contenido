@@ -8,7 +8,7 @@ Responde siempre en español latinoamericano neutro, con "tú". Sé breve, rigur
 ## Ahorro de créditos y calidad técnica (obligatorio)
 
 - **No regeneres ni reescribas archivos HTML completos a mano.** Los tableros se construyen automáticamente con `python3 _sistema/construir.py`, que pre-renderiza con Chrome headless para garantizar la vista previa de iPhone y no consume créditos.
-- Para un tablero nuevo, tu único trabajo es crear `borradores/<cliente>-<mes>-<año>.json` desde el documento, siguiendo `_sistema/FORMATO-DATOS.md`. Luego ejecuta el script con `--publicar`.
+- Para un tablero nuevo, tu único trabajo es crear `borradores/<cliente>-<mes>-<año>.json` desde el documento, siguiendo `_sistema/FORMATO-DATOS.md`, y hacer commit + push **solo de ese borrador**. La GitHub Action "Publicar tableros" construye, registra en Firestore y publica (ver CLAUDE.md, sección 8).
 - Para cambios de diseño o lógica, edita **únicamente** `_sistema/plantilla-tablero.html` o `_sistema/fondo-red.js` con cambios quirúrgicos. Luego reconstruye los tableros con `construir.py`.
 - **Antes de publicar cualquier cambio en `_sistema/` o `index.html`, ejecutar `node _sistema/pruebas/probar_todo.js`; si falla, no publicar.**
 - No toques los tableros HTML de la raíz manualmente; siempre compílalos desde sus borradores para mantener sincronizados el DOM pre-renderizado, el JSON incrustado y el registro en Cloud Firestore.
@@ -22,12 +22,17 @@ Responde siempre en español latinoamericano neutro, con "tú". Sé breve, rigur
    ```bash
    python3 _sistema/validar_tablero.py borradores/<cliente>-<mes>-<año>.json
    ```
-4. **Construir y publicar**:
+4. **Publicar subiendo solo el borrador** (no usar `--publicar` ni hacer commit de la cáscara o de `datos/`):
    ```bash
-   python3 _sistema/construir.py borradores/<cliente>-<mes>-<año>.json --publicar
+   git pull --rebase origin main
+   git add borradores/<cliente>-<mes>-<año>.json
+   git commit -m "Borrador <cliente> <mes> <año>"
+   git push origin main
    ```
+   La GitHub Action "Publicar tableros" construye con Chrome, sincroniza y registra en Firestore, sube la cáscara + `datos/` + el borrador actualizado y verifica lo publicado. Tarda 3-5 minutos; el resultado se ve en la pestaña Actions de GitHub. Después, `git pull` para traer su commit.
+   - Para ensayar antes de subir: `python3 _sistema/construir.py borradores/<archivo>.json` **sin** `--publicar`, revisar y descartar los cambios de la cáscara y `datos/` (`git checkout -- <codigo>.html datos/`).
 5. **Verificar que no existan errores**:
-   - **Después de publicar, ejecutar `verificar_publicado.js`. Si falla, avisar a Carlos de inmediato.**
+   - La acción debe terminar en verde (incluye `verificar_publicado.js`). Si falla, avisar a Carlos de inmediato con el error.
    - Tablero con 0 revisiones previas (estado inicial limpio: 0 aprobados, 0 con cambios, todos pendientes).
    - En móviles: desplazamiento vertical completamente fluido sin rebotes ni saltos a la parte superior.
    - Sincronizado en tiempo real en el Banco de trabajo (`index.html`).
@@ -41,7 +46,7 @@ Si Carlos pide **reiniciar un tablero**:
 1. Asegurar en `borradores/<cliente>-<mes>-<año>.json`:
    - `"revision": { "revisadoPor": "", "fecha": "" }`
    - Todos los contenidos en `"estado": "pendiente"` y `"comentario": ""`
-2. Reconstruir con `python3 _sistema/construir.py ... --publicar` (el script genera automáticamente un nuevo `resetAt` que invalida borradores locales en navegadores, restablece las métricas en 0 y vacía el campo `contenidos` en Firestore).
+2. Lanzar la acción a mano: GitHub → Actions → "Publicar tableros" → Run workflow, con la ruta del borrador y la casilla **reiniciar** marcada (genera un nuevo `resetAt` que invalida borradores locales en navegadores, restablece las métricas en 0 y vacía el campo `contenidos` en Firestore).
 
 ## Reglas críticas de UX/UI y Frontend
 
@@ -67,7 +72,7 @@ Si Carlos pide **reiniciar un tablero**:
 - `_sistema/construir.py`: motor que genera el JSON del mes en `datos/`, actualiza el `indice.json`, pre-renderiza la cáscara liviana con Chrome headless, registra en Cloud Firestore y publica en git.
 - `_sistema/migrar_v2.py`: script de migración para convertir tableros legados a la arquitectura v2 sin tocar Firestore.
 - `index.html`: Banco de trabajo interno de Nexo conectado a Firebase en tiempo real.
-- `borradores/`: borradores JSON de trabajo (privados, ignorados en git).
+- `borradores/`: borradores JSON de trabajo, versionados en git (las exportaciones `*.clickup.json`, `*.firestore.json` y las notas `*.md` quedan solo en la Mac, ignoradas).
 - La configuración privada (`../.nexo-config.json`) vive **fuera** del repositorio con credenciales de Firebase. Nunca la copies al repositorio público.
 
 ## Reglas de Arquitectura v2 (Selector Multi-Mes)

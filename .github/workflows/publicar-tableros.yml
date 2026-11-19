@@ -1,0 +1,129 @@
+# Construye y publica los tableros de aprobación sin depender de ninguna computadora.
+#
+# Cómo se usa:
+#   1. Subir (push a main) un borrador nuevo o corregido en borradores/<cliente>-<mes>-<año>.json.
+#      Esta acción corre construir.py con las credenciales de Firebase guardadas como secretos,
+#      registra el tablero en Firestore, hace el commit de la cáscara + datos/ + borrador y verifica lo publicado.
+#   2. O lanzarla a mano (Actions → Publicar tableros → Run workflow) con la ruta del borrador,
+#      por ejemplo para reiniciar un tablero o volver a construir uno que ya existe.
+#
+# Secretos necesarios (Settings → Secrets and variables → Actions):
+#   NEXO_FIREBASE_EMAIL y NEXO_FIREBASE_PASSWORD  (el mismo usuario de .nexo-config.json)
+
+name: Publicar tableros
+
+on:
+  push:
+    branches: [main]
+    paths: ['borradores/*.json', '!borradores/*.clickup.json', '!borradores/*.firestore.json']
+  workflow_dispatch:
+    inputs:
+      borrador:
+        description: 'Ruta del borrador (ej. borradores/milkarf-noviembre-2026.json)'
+        required: true
+      reiniciar:
+        description: 'Reiniciar el tablero a cero (borra las respuestas del cliente de ese mes)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publicar-tableros
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configuración privada (fuera del repositorio)
+        env:
+          FB_EMAIL: ${{ secrets.NEXO_FIREBASE_EMAIL }}
+          FB_PASSWORD: ${{ secrets.NEXO_FIREBASE_PASSWORD }}
+        run: |
+          if [ -z "$FB_EMAIL" ] || [ -z "$FB_PASSWORD" ]; then
+            echo "::error::Faltan los secretos NEXO_FIREBASE_EMAIL y NEXO_FIREBASE_PASSWORD"; exit 1
+          fi
+          python3 - <<'EOF'
+          import json, os
+          cfg = {
+            "base_url": "https://carlosuzc29-eng.github.io/tableros-de-contenido/",
+            "firebase": {
+              "apiKey": "AIzaSyAsH9TxW0ld2aNQejJw6xxZW7fpZiw212Q",
+              "projectId": "nexo-tableros-app",
+              "email": os.environ["FB_EMAIL"],
+              "password": os.environ["FB_PASSWORD"],
+            },
+          }
+          json.dump(cfg, open(os.path.join("..", ".nexo-config.json"), "w"))
+          EOF
+
+      - name: Borradores a construir
+        id: lista
+        env:
+          BEFORE: ${{ github.event.before }}
+          MANUAL: ${{ github.event.inputs.borrador }}
+        run: |
+          if [ -n "$MANUAL" ]; then
+            printf '%s\n' "$MANUAL" > /tmp/borradores.txt
+          else
+            if [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ] || ! git cat-file -e "$BEFORE" 2>/dev/null; then
+              BEFORE="HEAD~1"
+            fi
+            git diff --name-only --diff-filter=AM "$BEFORE" HEAD -- 'borradores/*.json' | grep -vE '\.(clickup|firestore)\.json$' > /tmp/borradores.txt || true
+          fi
+          echo "Borradores:"; cat /tmp/borradores.txt
+          echo "n=$(grep -c . /tmp/borradores.txt || true)" >> "$GITHUB_OUTPUT"
+
+      - name: Construir y registrar en Firestore
+        if: steps.lista.outputs.n != '0'
+        env:
+          CHROME: /usr/bin/google-chrome
+          NEXO_NOSANDBOX: '1'
+          REINICIAR: ${{ github.event.inputs.reiniciar }}
+        run: |
+          set -e
+          : > /tmp/archivos.txt
+          while IFS= read -r b; do
+            [ -z "$b" ] && continue
+            [ -f "$b" ] || { echo "::error::No existe $b"; exit 1; }
+            python3 _sistema/validar_tablero.py "$b"
+            EXTRA=""; [ "$REINICIAR" = "true" ] && EXTRA="--reiniciar"
+            python3 _sistema/construir.py "$b" $EXTRA | tee /tmp/salida.txt
+            grep -q "Registrado en Cloud Firestore" /tmp/salida.txt || { echo "::error::$b no quedó registrado en Firestore"; exit 1; }
+            python3 -c "import json,sys; print(json.load(open(sys.argv[1]))['archivo'])" "$b" >> /tmp/archivos.txt
+            { echo "### $b"; echo '```'; sed -n '/^Enlace:/,$p' /tmp/salida.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          done < /tmp/borradores.txt
+
+      - name: Commit y push
+        if: steps.lista.outputs.n != '0'
+        run: |
+          git config user.name "nexo-publicador"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A -- '*.html' datos borradores _sistema/tablero
+          if git diff --cached --quiet; then echo "Sin cambios que publicar"; exit 0; fi
+          git commit -q -m "Publicar tableros: $(paste -sd ', ' /tmp/archivos.txt)"
+          for i in 1 2 3; do
+            git pull -q --rebase origin main && git push -q origin main && exit 0
+            sleep 5
+          done
+          echo "::error::No se pudo hacer push"; exit 1
+
+      - name: Verificar lo publicado
+        if: steps.lista.outputs.n != '0'
+        run: |
+          cd _sistema/pruebas && npm ci --silent && npx playwright install --with-deps chromium >/dev/null && cd ../..
+          sleep 60
+          for i in 1 2 3 4 5 6; do
+            if node _sistema/pruebas/verificar_publicado.js $(cat /tmp/archivos.txt); then
+              echo "✅ Publicado y verificado" >> "$GITHUB_STEP_SUMMARY"; exit 0
+            fi
+            echo "Todavía no está publicado, reintento en 45 s ($i/6)"; sleep 45
+          done
+          echo "::error::GitHub Pages no muestra el mes nuevo después de varios minutos"; exit 1

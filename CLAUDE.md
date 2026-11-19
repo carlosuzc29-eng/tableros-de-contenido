@@ -128,3 +128,14 @@ El repositorio incluye un Service Worker (`sw.js`) que ofrece caché local gratu
   Si se requiere desinstalar inmediatamente el Service Worker en todos los clientes:
   1. En `sw.js`, cambiar `const KILL_SWITCH = false;` a `true;` y hacer push a `main`. Al activarse en los clientes, desregistra el Service Worker y purga todas las cachés.
   2. Alternativamente, acceder con el parámetro `?kill=true` en cualquier URL para forzar la purga y desinstalación local inmediata.
+
+---
+
+## 8. Publicación desde la nube (GitHub Actions)
+
+- Los borradores principales (`borradores/<cliente>-<mes>-<año>.json`) **se versionan en el repositorio**. Las exportaciones `*.clickup.json`, `*.firestore.json` y las notas `*.md` siguen solo en la Mac (ignoradas en git).
+- La acción `.github/workflows/publicar-tableros.yml` se dispara con cada push a `main` que agregue o modifique un borrador: valida, corre `construir.py` con las credenciales de Firebase guardadas como secretos (`NEXO_FIREBASE_EMAIL`, `NEXO_FIREBASE_PASSWORD`), registra en Firestore, hace commit de la cáscara + `datos/` + el borrador actualizado (con `_sync`) y verifica lo publicado con `verificar_publicado.js`.
+- Para publicar desde cualquier computadora o desde Claude en la nube basta con hacer push del borrador; **no** se usa `--publicar` ni hace falta `.github-token`.
+- Para reiniciar o reconstruir un tablero: Actions → "Publicar tableros" → Run workflow, con la ruta del borrador (y "reiniciar" si Carlos lo pidió).
+- Antes de editar un borrador en la Mac, hacer `git pull`: la acción vuelve a escribir el borrador con la huella `_sync` nueva.
+

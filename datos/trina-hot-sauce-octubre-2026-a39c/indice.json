@@ -1,8 +1,13 @@
 {
   "cliente": "Trina Hot Sauce",
   "cuenta": "trinahotsauce",
-  "actual": "2026-10",
+  "actual": "2026-12",
   "meses": [
+    {
+      "mes": "2026-12",
+      "etiqueta": "Diciembre 2026",
+      "id": "trina-hot-sauce-2026-diciembre-0f01204d"
+    },
     {
       "mes": "2026-10",
       "etiqueta": "Octubre 2026",

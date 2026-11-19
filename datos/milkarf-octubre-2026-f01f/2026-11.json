@@ -18,25 +18,64 @@
       "referencias": [],
       "canal": "Ads",
       "id": "c1",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
-      "comentario": ""
+      "comentario": "",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "Delia",
+        "fecha": "2026-11-18T11:08:46.928Z",
+        "titulo": "¿Qué puede cambiar en tu perro cuando cambias su alimentación?",
+        "formato": "Carrusel",
+        "guion": "SLIDE 1 — PORTADA\n¿QUÉ PUEDE CAMBIAR EN TU PERRO CUANDO CAMBIAS SU ALIMENTACIÓN?\nNo se trata solo de lo que come, sino de cómo responde su organismo.\n\nSLIDE 2 — DESARROLLO\nHAY SEÑALES QUE PUEDES OBSERVAR EN SU DÍA A DÍA.\n🐾 Cómo acepta y disfruta sus comidas.\n🐾 La frecuencia y consistencia de sus heces.\n🐾 El estado de su piel y pelaje.\nCada perro responde de manera diferente.\n\nSLIDE 3 — CIERRE\nSU ALIMENTACIÓN ES PARTE DE SU CUIDADO DIARIO.\nEn MILKARF elaboramos fórmulas con ingredientes seleccionados y proporciones definidas, pensadas para cubrir sus necesidades nutricionales.\nConoce nuestras fórmulas en milkarf.com.",
+        "copy": "Lo que come tu perro todos los días forma parte de su bienestar. 🐶\n\nPero ¿alguna vez te has detenido a observar cómo responde a su alimentación?\n\nSu apetito, sus heces y el estado de su piel y pelaje son algunos de los aspectos que puedes tener presentes. Recuerda que cada perro es diferente y que los cambios no siempre se deben únicamente a la comida.\n\nEn MILKARF queremos ayudarte a tomar decisiones de alimentación más informadas y adaptadas a su rutina. 💚\n\nConoce nuestras fórmulas en el enlace de nuestra bio.",
+        "hashtags": ""
+      },
+      "revisadoPor": "Cliente"
     },
     {
       "formato": "Post",
       "pilar": "📅 Noviembre",
       "fechaPublicacion": "20/11",
-      "titulo": "Cocinarle todos los días también requiere tiempo",
+      "titulo": "Prepararle todos los días también requiere tiempo",
       "guionLabel": "Texto del diseño",
-      "guion": "LE PREPARAS SU COMIDA CON AMOR.\nPERO NO SIEMPRE TIENES TIEMPO.\n\nMILKARF: alimentación real, formulada y lista para servir después de descongelar.\n\nConoce nuestras fórmulas.",
+      "guion": "LE DAS SU COMIDA CON AMOR.\nPERO NO SIEMPRE TIENES TIEMPO.\n\nMILKARF: alimentación real, formulada y lista para servir después de descongelar.\n\nConoce nuestras fórmulas.",
       "copy": "Sabemos que preparar la comida de tu perro es una manera de cuidarlo. 🐶💚\n\nPero también sabemos que comprar los ingredientes, prepararlos, organizar las porciones y dedicarle tiempo todos los días no siempre es sencillo.\n\nCon MILKARF tienes una alternativa de alimentación real, con ingredientes seleccionados y porciones listas para servir después de descongelar correctamente.\n\nNosotros nos encargamos de la preparación para que tú puedas simplificar su rutina.\n\n🐾 Conoce nuestras fórmulas en milkarf.com.",
       "hashtags": "",
       "referencias": [],
       "canal": "Ads",
       "id": "c2",
-      "estado": "pendiente",
-      "version": 1,
-      "comentario": ""
+      "estado": "aprobado",
+      "version": 2,
+      "comentario": "[Delia]: Cambiar “cocinarle” por prepararle o hacerle sus comidas o lo que sea pero nuestra comida es cruda, ahí apuntamos de lo cocido. Cambiar cocinarle por otra palabra que vaya",
+      "fechaCorreccion": "2026-11-18T12:21:43.083Z",
+      "aprobacion": {
+        "version": 2,
+        "usuario": "Delia",
+        "fecha": "2026-11-18T12:27:27.773Z",
+        "titulo": "Prepararle todos los días también requiere tiempo",
+        "formato": "Post",
+        "guion": "LE DAS SU COMIDA CON AMOR.\nPERO NO SIEMPRE TIENES TIEMPO.\n\nMILKARF: alimentación real, formulada y lista para servir después de descongelar.\n\nConoce nuestras fórmulas.",
+        "copy": "Sabemos que preparar la comida de tu perro es una manera de cuidarlo. 🐶💚\n\nPero también sabemos que comprar los ingredientes, prepararlos, organizar las porciones y dedicarle tiempo todos los días no siempre es sencillo.\n\nCon MILKARF tienes una alternativa de alimentación real, con ingredientes seleccionados y porciones listas para servir después de descongelar correctamente.\n\nNosotros nos encargamos de la preparación para que tú puedas simplificar su rutina.\n\n🐾 Conoce nuestras fórmulas en milkarf.com.",
+        "hashtags": ""
+      },
+      "historial": [
+        {
+          "version": 2,
+          "accion": "Corrección guardada",
+          "usuario": "Agencia (andrevmuedit@gmail.com)",
+          "fecha": "2026-11-18T12:21:43.083Z"
+        }
+      ],
+      "revisadoPor": "Delia",
+      "comentarios": [
+        {
+          "autor": "Delia",
+          "texto": "Cambiar “cocinarle” por prepararle o hacerle sus comidas o lo que sea pero nuestra comida es cruda, ahí apuntamos de lo cocido. Cambiar cocinarle por otra palabra que vaya",
+          "fecha": "2026-11-18T10:58:29.902Z",
+          "version": 1
+        }
+      ]
     },
     {
       "formato": "Carrusel",
@@ -44,15 +83,49 @@
       "fechaPublicacion": "21/11",
       "titulo": "¿Te preocupa que su alimentación sea cruda?",
       "guionLabel": "Slides",
-      "guion": "SLIDE 1 — PORTADA\n¿TE PREOCUPA QUE SU ALIMENTACIÓN SEA CRUDA?\nHay cuidados importantes que debes conocer antes de tomar una decisión.\n\nSLIDE 2 — DESARROLLO\nLA CONSERVACIÓN Y MANIPULACIÓN IMPORTAN.\nLa alimentación cruda requiere mantener la cadena de frío, descongelar correctamente en nevera y cuidar la higiene de manos, superficies y utensilios.\nCongelar no elimina todos los riesgos microbiológicos.\n\nSLIDE 3 — CIERRE\nQUEREMOS QUE SEPAS CÓMO MANEJAR CADA PORCIÓN.\nEn MILKARF te orientamos sobre la conservación, descongelación y forma de servir nuestro producto.\nEscríbenos y resuelve tus dudas antes de comenzar.",
+      "guion": "SLIDE 1\n\n¿TE PREOCUPA QUE SU ALIMENTACIÓN SEA CRUDA?\nAntes de descartarla, conoce qué hay detrás de una alimentación formulada.\n\nSLIDE 2\nNO ES LO MISMO SERVIR CARNE CRUDA QUE UNA ALIMENTACIÓN FORMULADA.\n\nLa diferencia está en la selección de ingredientes, sus proporciones y el criterio nutricional con el que se elabora.\n\nAdemás, requiere cuidados adecuados de higiene y conservación.\n\nSLIDE 3\nEN MILKARF CUIDAMOS LO QUE HAY DETRÁS DE CADA PORCIÓN.\n\nCombinamos ingredientes seleccionados y proporciones definidas, con indicaciones claras para conservar, descongelar y servir cada comida.\n\nConoce nuestras fórmulas en www.milkarf.com.",
       "copy": "Cuando se trata de la alimentación de tu perro, conocer los cuidados necesarios es fundamental. 🐾\n\nLa alimentación cruda requiere condiciones específicas de conservación y manipulación, tanto antes de llegar a casa como al momento de servirla.\n\nEn MILKARF queremos ayudarte a entender cómo manejar correctamente cada porción, sin minimizar los riesgos que existen.\n\n💬 ¿Tienes dudas sobre nuestras fórmulas? Escríbenos y conversemos.\n\nConsulta con tu veterinario si este tipo de alimentación es adecuado para tu perro.",
       "hashtags": "",
       "referencias": [],
       "canal": "Orgánico",
       "id": "c3",
-      "estado": "pendiente",
-      "version": 1,
-      "comentario": ""
+      "estado": "aprobado",
+      "version": 2,
+      "comentario": "[Delia]: “El frío no elimina todos los riesgos micro biológicos”. Aquí estamos tirando cuchillo de una vez\n\n[Delia]: Cambiar eso por cualquier otra cosa. “Seguir estos pasos ayudará a mantener blabla” no se! Pero no pongamos eso",
+      "fechaCorreccion": "2026-11-18T12:16:15.271Z",
+      "aprobacion": {
+        "version": 2,
+        "usuario": "Delia",
+        "fecha": "2026-11-18T12:27:27.773Z",
+        "titulo": "¿Te preocupa que su alimentación sea cruda?",
+        "formato": "Carrusel",
+        "guion": "SLIDE 1\n\n¿TE PREOCUPA QUE SU ALIMENTACIÓN SEA CRUDA?\nAntes de descartarla, conoce qué hay detrás de una alimentación formulada.\n\nSLIDE 2\nNO ES LO MISMO SERVIR CARNE CRUDA QUE UNA ALIMENTACIÓN FORMULADA.\n\nLa diferencia está en la selección de ingredientes, sus proporciones y el criterio nutricional con el que se elabora.\n\nAdemás, requiere cuidados adecuados de higiene y conservación.\n\nSLIDE 3\nEN MILKARF CUIDAMOS LO QUE HAY DETRÁS DE CADA PORCIÓN.\n\nCombinamos ingredientes seleccionados y proporciones definidas, con indicaciones claras para conservar, descongelar y servir cada comida.\n\nConoce nuestras fórmulas en www.milkarf.com.",
+        "copy": "Cuando se trata de la alimentación de tu perro, conocer los cuidados necesarios es fundamental. 🐾\n\nLa alimentación cruda requiere condiciones específicas de conservación y manipulación, tanto antes de llegar a casa como al momento de servirla.\n\nEn MILKARF queremos ayudarte a entender cómo manejar correctamente cada porción, sin minimizar los riesgos que existen.\n\n💬 ¿Tienes dudas sobre nuestras fórmulas? Escríbenos y conversemos.\n\nConsulta con tu veterinario si este tipo de alimentación es adecuado para tu perro.",
+        "hashtags": ""
+      },
+      "historial": [
+        {
+          "version": 2,
+          "accion": "Corrección guardada",
+          "usuario": "Agencia (andrevmuedit@gmail.com)",
+          "fecha": "2026-11-18T12:16:15.271Z"
+        }
+      ],
+      "revisadoPor": "Delia",
+      "comentarios": [
+        {
+          "autor": "Delia",
+          "texto": "“El frío no elimina todos los riesgos micro biológicos”. Aquí estamos tirando cuchillo de una vez",
+          "fecha": "2026-11-18T11:00:07.380Z",
+          "version": 1
+        },
+        {
+          "autor": "Delia",
+          "texto": "Cambiar eso por cualquier otra cosa. “Seguir estos pasos ayudará a mantener blabla” no se! Pero no pongamos eso",
+          "fecha": "2026-11-18T11:01:04.014Z",
+          "version": 1
+        }
+      ]
     },
     {
       "formato": "Reel",
@@ -66,9 +139,20 @@
       "referencias": [],
       "canal": "Orgánico",
       "id": "c4",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
-      "comentario": ""
+      "comentario": "",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "Delia",
+        "fecha": "2026-11-18T11:08:46.928Z",
+        "titulo": "Lavando los platos",
+        "formato": "Reel",
+        "guion": "REELS YA GRABADO DE LO QUE DEBE SUCEDER DESPUES DE QUE TU PERRITO COME",
+        "copy": "",
+        "hashtags": ""
+      },
+      "revisadoPor": "Cliente"
     },
     {
       "formato": "Post",
@@ -82,9 +166,20 @@
       "referencias": [],
       "canal": "Ads",
       "id": "c5",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
-      "comentario": ""
+      "comentario": "",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "Delia",
+        "fecha": "2026-11-18T11:08:46.928Z",
+        "titulo": "Llegaste tarde. Su cena, no.",
+        "formato": "Post",
+        "guion": "LLEGASTE TARDE.\nSU CENA, NO.\n\nCon MILKARF, su comida puede estar lista para servir cuando llegues.\n\nPensada para ellos, práctica para ti.\n\nHaz tu pedido en milkarf.com.",
+        "copy": "Hay días en los que llegas a casa y lo único que quieres es descansar.\n\nPero él ya está esperando su comida. 🐶\n\nCon MILKARF puedes dejar su porción descongelándose correctamente en la nevera y tenerla lista para servir cuando llegue la hora.\n\nSin tener que cocinar cada día.\n\n💚 Su alimentación también puede adaptarse a tu rutina.\n\nHaz tu pedido en milkarf.com.",
+        "hashtags": ""
+      },
+      "revisadoPor": "Cliente"
     },
     {
       "formato": "Reel",
@@ -98,9 +193,20 @@
       "referencias": [],
       "canal": "Ads",
       "id": "c6",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
-      "comentario": ""
+      "comentario": "",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "Delia",
+        "fecha": "2026-11-18T11:08:46.928Z",
+        "titulo": "¿Pollo o carne? Conoce nuestras fórmulas",
+        "formato": "Reel",
+        "guion": "¿POLLO O CARNE? 🐶\n\n¿Pollo con zanahoria o carne con calabacín? ¿Cuál elegirías para tu perro?\n\nEn MILKARF tenemos dos fórmulas de alimentación real, elaboradas con ingredientes seleccionados y proporciones definidas.\n\nNuestra fórmula de pollo con zanahoria y nuestra fórmula de carne con calabacín.\n\nAmbas están pensadas para ofrecer una alimentación que puedas incorporar a su rutina sin tener que preparar cada comida desde cero.\n\nY como sabemos que cada perro es diferente, también contamos con una calculadora que te ayuda a estimar la porción que necesita diariamente.\n\nPorque no se trata solamente de elegir qué poner en su plato, sino de conocer lo que le estás ofreciendo.\n\nDescubre nuestras fórmulas y calcula su ración en milkarf.com.",
+        "copy": "Dos fórmulas, una misma intención: ayudarte a cuidar su alimentación todos los días. 🐶💚\n\n🥕 Pollo con zanahoria.\n🥒 Carne con calabacín.\n\nNuestras fórmulas están elaboradas con ingredientes seleccionados y proporciones definidas, en presentaciones prácticas que puedes incorporar a su rutina.\n\n¿No sabes cuánto debería comer tu perro?\n\nEn milkarf.com puedes conocer las opciones y utilizar nuestra calculadora para estimar su ración diaria.\n\n🐾 Descubre MILKARF y encuentra una opción para tu peludo.",
+        "hashtags": ""
+      },
+      "revisadoPor": "Cliente"
     },
     {
       "formato": "Post",
@@ -114,9 +220,20 @@
       "referencias": [],
       "canal": "Orgánico",
       "id": "c7",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
-      "comentario": ""
+      "comentario": "",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "Delia",
+        "fecha": "2026-11-18T11:08:46.928Z",
+        "titulo": "Los 4 tipos de perro a la hora de comer",
+        "formato": "Post",
+        "guion": "LOS 4 TIPOS DE PERRO A LA HORA DE COMER 🐶\n\nEl que no mastica, aspira. 💨\nEl que huele y se va. 👀\nEl que hace guardia frente a la nevera. 🫡\nEl que cree que tu comida también es suya. 😂\n\n¿CUÁL ES EL TUYO?",
+        "copy": "Todos conocemos a uno de estos. 😂🐶\n\nEstá el que termina en tres segundos, el que tiene que inspeccionar su plato y el que está convencido de que cualquier comida también le pertenece.\n\nAhora queremos saber:\n\n👇 ¿Cuál de estos cuatro es tu perro?\n\nEtiqueta a alguien que tenga uno igual.",
+        "hashtags": ""
+      },
+      "revisadoPor": "Cliente"
     },
     {
       "formato": "Carrusel",
@@ -130,9 +247,20 @@
       "referencias": [],
       "canal": "Ads",
       "id": "c8",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
-      "comentario": ""
+      "comentario": "",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "Delia",
+        "fecha": "2026-11-18T11:08:46.928Z",
+        "titulo": "¿Cuánto cuesta alimentar a tu perro con Milkarf?",
+        "formato": "Carrusel",
+        "guion": "IDEA\nCarrusel que aborda el costo de forma concreta con un ejemplo real (ración, fórmula, costo diario y mensual) para ayudar al tutor a planificar su presupuesto y llevarlo a la calculadora y a los planes.\n\n\nSLIDE 1 — PORTADA\n¿CUÁNTO TE COSTARÍA ALIMENTAR A TU PERRO CON MILKARF?\nEl primer paso es conocer cuánto necesita comer.\n\nSLIDE 2 — DESARROLLO\nVEAMOS UN EJEMPLO REAL.\nRación diaria: [X gramos]\nFórmula elegida: [Pollo / Carne]\nCosto aproximado por día: [$X]\nCosto aproximado por 30 días: [$X]\nLos valores varían según la ración y fórmula de cada perro.\n\nSLIDE 3 — CIERRE\nORGANIZA SU ALIMENTACIÓN CON MILKARF.\nConoce nuestros planes de 7, 15 y 30 días y elige el que mejor se adapte a tu rutina.\nCalcula su ración en milkarf.com.",
+        "copy": "¿Cuánto necesitas invertir en la alimentación de tu perro? 🐶\n\nAntes de responder, es importante conocer cuánto necesita comer diariamente.\n\nEn MILKARF contamos con una calculadora que te ayuda a estimar su ración y diferentes planes para que puedas organizar sus comidas.\n\nConoce nuestras fórmulas, revisa los precios vigentes y encuentra una opción que se adapte a tu rutina.\n\n📲 Calcula su porción en milkarf.com.",
+        "hashtags": ""
+      },
+      "revisadoPor": "Cliente"
     },
     {
       "formato": "Reel",
@@ -146,9 +274,20 @@
       "referencias": [],
       "canal": "Orgánico",
       "id": "c9",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
-      "comentario": ""
+      "comentario": "",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "Delia",
+        "fecha": "2026-11-18T11:08:46.928Z",
+        "titulo": "Testimonios",
+        "formato": "Reel",
+        "guion": "Hay cosas que podemos decirte nosotros sobre Milkarf… y otras que preferimos que te las cuenten quienes ya lo sirven en casa. (voz en off)\n¿Qué te hizo probar Milkarf?\n¿Qué hizo que decidieras seguir comprándolo?\n¿Qué es lo que más has valorado desde que lo incorporaste a su alimentación?\nCada perro tiene su propia experiencia y cada familia encuentra una forma diferente de incorporar Milkarf a su rutina.\nSi estás pensando en hacer un cambio en su alimentación, conoce nuestras fórmulas y descubre cómo puedes comenzar. (voz en off) tomas de perritos comiendo",
+        "copy": "Cada familia llega a Milkarf por una razón diferente.\n\nAlgunas buscaban una opción más práctica, otras querían entender mejor qué estaban poniendo en el plato de su perro y otras simplemente querían una alimentación que pudieran incorporar realmente a su rutina.\n\nPor eso esta vez preferimos que te lo cuenten ellos.\n\nExperiencias diferentes, perros diferentes y una misma decisión: prestar más atención a lo que reciben todos los días.\n\nConoce nuestras fórmulas desde el link de nuestra bio.",
+        "hashtags": ""
+      },
+      "revisadoPor": "Cliente"
     },
     {
       "formato": "Reel",
@@ -162,9 +301,20 @@
       "referencias": [],
       "canal": "Ads",
       "id": "c10",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
-      "comentario": ""
+      "comentario": "",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "Delia",
+        "fecha": "2026-11-18T11:08:46.928Z",
+        "titulo": "Cómo cuidar a tu perro de los fuegos artificiales esta Navidad",
+        "formato": "Reel",
+        "guion": "Si esta Navidad van a lanzar fuegos artificiales cerca de tu casa, hay varias cosas que puedes hacer para cuidar a tu perro antes de que comiencen.\n\nPrimero, prepara un espacio tranquilo donde pueda refugiarse, con su cama y sus cosas favoritas.\n\nCierra las ventanas y cortinas para reducir el ruido y los destellos. Puedes colocar música suave o encender el televisor para disimular los sonidos del exterior.\n\nProcura que sus paseos sean más temprano y evita dejarlo solo si sabes que la pólvora lo asusta.\n\nY si necesita apoyo adicional, consulta con su veterinario sobre opciones como MiMi Calming Soft Chews, un suplemento formulado para apoyar la relajación, disponible en nuestra web www.milkarf.com.\n\nPorque esta Navidad también se trata de que ellos se sientan acompañados.\n\nEntra en nuestra web y descubre más sobre MiMi Pet Lab.",
+        "copy": "La Navidad puede ser una época muy bonita para nosotros, pero los fuegos artificiales pueden generar miedo en muchos perros. 🐶🎄\n\nPreparar un espacio seguro, reducir los estímulos y acompañarlos puede ayudarlos a sentirse más protegidos.\n\nTambién existen suplementos de apoyo a la relajación, como MiMi Calming Soft Chews, cuyo uso debe consultarse con el veterinario.\n\n💜 Entra en www.milkarf.com y descubre más sobre MiMi Pet Lab.\n\nGuarda este video para tener presentes estas recomendaciones durante las fiestas.",
+        "hashtags": ""
+      },
+      "revisadoPor": "Cliente"
     },
     {
       "formato": "Carrusel",
@@ -178,9 +328,20 @@
       "referencias": [],
       "canal": "Ads",
       "id": "c11",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
-      "comentario": ""
+      "comentario": "",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "Delia",
+        "fecha": "2026-11-18T11:08:46.928Z",
+        "titulo": "Tú celebras. Él se esconde.",
+        "formato": "Carrusel",
+        "guion": "SLIDE 1 — PORTADA\nTÚ CELEBRAS.\nÉL SE ESCONDE. 🎆🐶\nPara muchos perros, los fuegos artificiales no son motivo de celebración.\n\nSLIDE 2 — PROBLEMA\nEL MIEDO A LA PÓLVORA NO ES UN CAPRICHO.\nTemblores, jadeos, inquietud o intentos de esconderse pueden ser señales de miedo ante los ruidos fuertes.\nEsta Navidad, anticiparte también es cuidarlo: prepara un espacio seguro, reduce el ruido y acompáñalo.\n\nSLIDE 3 — SOLUCIÓN + CTA\nCUIDARLO VA MÁS ALLÁ DE SU PLATO. 💚\nEn MILKARF sabemos que su bienestar importa todos los días, especialmente en momentos como estos.\nPor eso te presentamos MiMi Calming Soft Chews, un suplemento masticable formulado para apoyar la relajación.\nConsulta con su veterinario antes de utilizarlo.\nEscríbenos y conoce MiMi Pet Lab.",
+        "copy": "Para ti es una noche de celebración. Para tu perro puede ser un momento de mucho miedo. 🎆🐶\n\nLos fuegos artificiales pueden provocar inquietud, temblores y la necesidad de esconderse.\n\nPreparar un espacio tranquilo y acompañarlo es parte de cuidarlo durante las fiestas.\n\nY porque sabemos que su bienestar va más allá de su alimentación, queremos presentarte MiMi Calming Soft Chews, un suplemento de apoyo a la relajación cuyo uso debe consultarse previamente con el veterinario.\n\n💜 Escríbenos para conocer más sobre MiMi Pet Lab y consultar su disponibilidad.",
+        "hashtags": ""
+      },
+      "revisadoPor": "Cliente"
     },
     {
       "formato": "Post",
@@ -194,9 +355,20 @@
       "referencias": [],
       "canal": "Orgánico",
       "id": "c12",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
-      "comentario": ""
+      "comentario": "",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "Delia",
+        "fecha": "2026-11-18T11:08:46.928Z",
+        "titulo": "Todos los regalos son para él",
+        "formato": "Post",
+        "guion": "YO: VOY A PONER LOS REGALOS DEBAJO DEL ÁRBOL. 🎄\n\nMI PERRO:\n\n«Gracias, no tenías que comprarme tantas cosas». 🐶",
+        "copy": "La Navidad es de toda la familia, pero hay alguien que está convencido de que es el protagonista. 😂🎁\n\n¿Tu perro también revisa cada regalo como si fuera suyo?",
+        "hashtags": ""
+      },
+      "revisadoPor": "Cliente"
     },
     {
       "formato": "Reel",
@@ -210,9 +382,28 @@
       "referencias": [],
       "canal": "Ads",
       "id": "c13",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
-      "comentario": ""
+      "comentario": "[Delia]: Isa",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "Delia",
+        "fecha": "2026-11-18T11:08:46.928Z",
+        "titulo": "Diciembre cambia tu agenda, no sus comidas",
+        "formato": "Reel",
+        "guion": "Entre las compras, los preparativos y todos los planes de diciembre, hay algo que sigue formando parte de tu rutina: la alimentación de tu perro.\n\nY sabemos que no siempre tienes tiempo para preparar su comida desde cero.\n\nPor eso existe MILKARF.\n\nNos encargamos de elaborar su alimentación con ingredientes seleccionados y porciones que puedes organizar según sus necesidades.\n\nSolo debes conservarlas correctamente, descongelar con anticipación en la nevera y servir su ración.\n\nAsí, aunque tu agenda esté llena de planes, su alimentación puede seguir organizada.\n\nMILKARF. Pensada para ellos, práctica para ti.\n\nConoce nuestras fórmulas en milkarf.com.",
+        "copy": "Diciembre viene con una agenda llena de planes. 🎄\n\nPero hay una rutina que sigue siendo importante todos los días: la alimentación de tu perro. 🐶\n\nCon MILKARF puedes organizar sus porciones con anticipación y tener su comida lista para servir después de descongelar correctamente.\n\nNosotros nos encargamos de la preparación, tú de disfrutar más momentos con él. 💚\n\nConoce nuestras fórmulas en milkarf.com.",
+        "hashtags": ""
+      },
+      "revisadoPor": "Delia",
+      "comentarios": [
+        {
+          "autor": "Delia",
+          "texto": "Isa",
+          "fecha": "2026-11-18T11:05:30.327Z",
+          "version": 1
+        }
+      ]
     },
     {
       "formato": "Carrusel",
@@ -226,9 +417,20 @@
       "referencias": [],
       "canal": "Ads",
       "id": "c14",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
-      "comentario": ""
+      "comentario": "",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "Delia",
+        "fecha": "2026-11-18T11:08:46.928Z",
+        "titulo": "No todo lo que está en la mesa navideña debe llegar a su plato",
+        "formato": "Carrusel",
+        "guion": "SLIDE 1 — PORTADA\nEN NAVIDAD, TODOS QUIEREN DARLE «UN PEDACITO». 🎄\nPero no todo lo que comemos es adecuado para tu perro.\n\nSLIDE 2 — DESARROLLO\nCUIDADO CON LAS SOBRAS NAVIDEÑAS.\nAlgunos alimentos de nuestras celebraciones pueden contener ingredientes perjudiciales para los perros, como chocolate, uvas, pasas, cebolla o ajo.\nNo improvises su alimentación con lo que queda de la mesa.\n\nSLIDE 3 — CIERRE\nQUE ÉL TAMBIÉN TENGA SU COMIDA ORGANIZADA.\nCon MILKARF puedes planificar sus porciones y mantener su rutina durante las fiestas.\nAlimentación real, pensada para ellos y práctica para ti.\nConoce nuestras fórmulas en milkarf.com.",
+        "copy": "En diciembre todos queremos consentirlos, pero compartir nuestra comida no siempre es la mejor manera de hacerlo. 🎄🐶\n\nMuchos platos navideños contienen ingredientes que pueden resultar peligrosos para los perros.\n\nPor eso, es importante mantener su alimentación organizada y evitar darles sobras sin conocer lo que contienen.\n\nCon MILKARF puedes planificar sus porciones y simplificar su rutina durante las fiestas.\n\n💚 Conoce nuestras fórmulas en milkarf.com.",
+        "hashtags": ""
+      },
+      "revisadoPor": "Cliente"
     },
     {
       "formato": "Post",
@@ -242,9 +444,20 @@
       "referencias": [],
       "canal": "Ads",
       "id": "c15",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
-      "comentario": ""
+      "comentario": "",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "Delia",
+        "fecha": "2026-11-18T11:08:46.928Z",
+        "titulo": "La lista que casi nadie hace en diciembre",
+        "formato": "Post",
+        "guion": "YA TIENES TU LISTA DE COMPRAS NAVIDEÑAS. 🎄\n\n¿Y LAS COMIDAS DE TU PERRO?\n\nOrganiza su alimentación con nuestros planes de 7, 15 y 30 días.\n\nMILKARF. Pensada para ellos, práctica para ti.\n\nHaz tu pedido en milkarf.com.",
+        "copy": "Entre tantas compras de diciembre, hay una que forma parte de su rutina todos los días. 🐶💚\n\nEn MILKARF puedes conocer la ración orientativa que necesita tu perro y organizar sus comidas con nuestros planes.\n\nMenos improvisación y más facilidad para mantener su alimentación.\n\n📲 Consulta nuestras fórmulas y planes en milkarf.com.",
+        "hashtags": ""
+      },
+      "revisadoPor": "Cliente"
     },
     {
       "formato": "Reel",
@@ -258,9 +471,20 @@
       "referencias": [],
       "canal": "Orgánico",
       "id": "c16",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
-      "comentario": ""
+      "comentario": "",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "Delia",
+        "fecha": "2026-11-18T11:08:46.928Z",
+        "titulo": "Lo que tu perro realmente espera de esta Navidad",
+        "formato": "Reel",
+        "guion": "Tu perro no sabe que faltan pocos días para Navidad.\n\nNo sabe cuánto costó la decoración, qué vas a preparar para la cena ni cuántos regalos habrá debajo del árbol.\n\nPero sí sabe reconocer cuando llegas a casa, cuando es hora de salir a pasear y cuándo te sientas a pasar un rato con él.\n\nY aunque diciembre esté lleno de planes, esas pequeñas cosas siguen siendo parte de su mundo.\n\nPor eso, entre tantos preparativos, no te olvides de guardar tiempo para disfrutarlo.\n\nPorque los mejores momentos con ellos no necesitan una fecha especial.\n\nMILKARF. Cuidarlos también es compartir la vida con ellos.",
+        "copy": "Ellos no necesitan entender qué es Navidad para disfrutar lo más importante: pasar tiempo contigo. 🐶🎄\n\nEntre tantos preparativos, regalos y celebraciones, no olvidemos esos pequeños momentos que forman parte de su rutina.\n\nUn paseo, un juego o simplemente sentarnos a su lado.\n\n💚 Porque cuidarlos también es disfrutar la vida con ellos.\n\nMILKARF les desea una Navidad llena de momentos para compartir. 🐾",
+        "hashtags": ""
+      },
+      "revisadoPor": "Cliente"
     },
     {
       "formato": "Post",
@@ -274,9 +498,20 @@
       "referencias": [],
       "canal": "Orgánico",
       "id": "c17",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
-      "comentario": ""
+      "comentario": "",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "Delia",
+        "fecha": "2026-11-18T11:08:46.928Z",
+        "titulo": "El supervisor de la cena navideña",
+        "formato": "Post",
+        "guion": "MI PERRO EN NOCHEBUENA:\n\n«NO VINE A SOCIALIZAR».\n\n«VINE A SUPERVISAR LA CENA». 🐶🎄",
+        "copy": "Él no ayudó a cocinar, no puso la mesa y tampoco lavará los platos.\n\nPero lleva dos horas supervisando absolutamente TODO. 😂\n\n¿El tuyo también tiene un puesto fijo cerca de la cocina en Navidad?",
+        "hashtags": ""
+      },
+      "revisadoPor": "Cliente"
     },
     {
       "formato": "Carrusel",
@@ -290,9 +525,20 @@
       "referencias": [],
       "canal": "Ads",
       "id": "c18",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
-      "comentario": ""
+      "comentario": "",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "Delia",
+        "fecha": "2026-11-18T11:08:46.928Z",
+        "titulo": "¿Le estás sirviendo la cantidad correcta?",
+        "formato": "Carrusel",
+        "guion": "SLIDE 1 — PORTADA\n¿LE SIRVES SU COMIDA A OJO? 👀🐶\nLa cantidad que necesita tu perro no debería depender de cuánto crees que come.\n\nSLIDE 2 — DESARROLLO\nNO TODOS LOS PERROS NECESITAN LA MISMA PORCIÓN.\nSu peso, edad, actividad física y necesidades individuales influyen en la cantidad de alimento que requiere diariamente.\nPor eso, una porción adecuada para un perro puede no serlo para otro.\n\nSLIDE 3 — CIERRE + CTA\nEN MILKARF TE AYUDAMOS A EMPEZAR POR SU RACIÓN.\nContamos con una calculadora que te permite estimar cuánto alimento necesita tu perro diariamente.\nConoce nuestras fórmulas y calcula su porción en milkarf.com.",
+        "copy": "¿Alguna vez te has preguntado si le estás sirviendo la cantidad adecuada? 🐶\n\nCuando se trata de alimentación, no basta con llenar el plato. Cada perro tiene necesidades diferentes y la cantidad que requiere puede variar según sus características y actividad.\n\nEn MILKARF queremos ayudarte a tomar decisiones más informadas sobre su alimentación.\n\n💚 Entra en milkarf.com y utiliza nuestra calculadora para obtener una ración orientativa.\n\nPorque alimentarlo también implica saber cuánto necesita.",
+        "hashtags": ""
+      },
+      "revisadoPor": "Cliente"
     },
     {
       "formato": "Reel",
@@ -306,9 +552,20 @@
       "referencias": [],
       "canal": "Ads",
       "id": "c19",
-      "estado": "pendiente",
+      "estado": "aprobado",
       "version": 1,
-      "comentario": ""
+      "comentario": "",
+      "aprobacion": {
+        "version": 1,
+        "usuario": "Delia",
+        "fecha": "2026-11-18T11:08:46.928Z",
+        "titulo": "Que enero no te agarre improvisando su alimentación",
+        "formato": "Reel",
+        "guion": "Ya estás pensando en todo lo que quieres organizar para comenzar el próximo año.\n\n¿Y la alimentación de tu perro?\n\nSi quieres dejar de improvisar qué prepararle o cuánto necesita comer cada día, comienza por conocer su ración.\n\nEn MILKARF tenemos fórmulas de alimentación real, elaboradas con ingredientes seleccionados y listas para servir después de descongelar correctamente.\n\nAdemás, contamos con planes de 7, 15 y 30 días para ayudarte a organizar sus comidas.\n\nAsí puedes comenzar enero con una parte importante de su rutina planificada.\n\nEntra en milkarf.com, calcula su ración y conoce nuestras opciones.\n\nMILKARF. Pensada para ellos, práctica para ti.",
+        "copy": "Nuevo año, nuevas metas… ¿y la alimentación de tu perro? 🐶💚\n\nComenzar enero también puede ser una oportunidad para organizar mejor su rutina.\n\nCon MILKARF puedes conocer su ración orientativa, elegir entre nuestras fórmulas y planificar sus comidas con opciones de 7, 15 y 30 días.\n\nAlimentación real, formulada y práctica para tu día a día.\n\n✨ Comienza el año con su alimentación organizada.\n\nConoce nuestros planes en milkarf.com.",
+        "hashtags": ""
+      },
+      "revisadoPor": "Cliente"
     }
   ],
   "url": "https://carlosuzc29-eng.github.io/tableros-de-contenido/milkarf-octubre-2026-f01f.html",
@@ -317,8 +574,8 @@
     "projectId": "nexo-tableros-app"
   },
   "revision": {
-    "revisadoPor": "",
-    "fecha": ""
+    "revisadoPor": "Delia",
+    "fecha": "2026-11-18T12:27:27.773Z"
   },
-  "resetAt": 1794925779465
+  "resetAt": 1795064115696
 }

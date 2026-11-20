@@ -66,6 +66,51 @@ Un archivo por tablero en `borradores/` (esa carpeta no se publica). Ejemplo: `b
   Permite a `construir.py` determinar si el JSON fue editado a mano tras la última sincronización con Firestore. Si no cambió, Firestore manda y no se reabren aprobados. **Nunca se publica en el HTML final**.
 - `huellasClickup`: Diccionario opcional en el borrador `{ "c1": "sha1_hash...", "c2": "..." }` para registrar qué piezas ya fueron subidas a ClickUp y permitir re-sincronizaciones parciales marcando piezas como `sin_cambios` o `texto_cambio`.
 - `borrador`: Objeto temporal utilizado en el Banco de trabajo (`index.html`) para almacenar una edición de guion/copy en curso antes de "Guardar como corregido". Si una pieza tiene un `borrador` activo, el sistema bloquea su aprobación hasta resolverlo.
+- `insumos` (dentro de cada elemento de `contenidos`): Lista opcional de productos requeridos específicamente para esa pieza (clientes de comida):
+  ```json
+  "insumos": [
+    {
+      "producto": "Smash House",
+      "cantidad": 2,
+      "uso": "una para cortar",
+      "porDefinir": false
+    }
+  ]
+  ```
+- `insumosPauta` (en la raíz del JSON del tablero): Objeto opcional con la lista consolidada de lo que el cliente necesita preparar para el día de pauta (pasa tal cual a `datos/<codigo>/<aaaa-mm>.json`):
+  ```json
+  "insumosPauta": {
+    "productos": [
+      {
+        "producto": "Smash House",
+        "cantidad": 2,
+        "unidad": "unidades",
+        "contenidos": ["c1", "c3"],
+        "nota": "Una recién salida de plancha y una para cortar",
+        "porDefinir": false
+      }
+    ],
+    "ingredientes": [{ "nombre": "Queso cheddar", "nota": "Para fundir en cámara" }],
+    "utileria": [{ "nombre": "Tabla de madera", "nota": "Mesa despejada" }],
+    "bloques": [{ "titulo": "Bloque 1 · Cocina", "contenidos": ["c1", "c3"], "nota": "Plancha caliente" }]
+  }
+  ```
+  Si un tablero no trae `insumosPauta`, se ve y funciona exactamente igual que un tablero estándar sin mostrar esta sección.
+- `insumos` (en la raíz del documento de Cloud Firestore `tableros/{id}`): Estado y respuestas del cliente sobre la lista de insumos para el día de pauta, que se guarda junto con "Enviar revisión":
+  ```json
+  "insumos": {
+    "estado": "pendiente|aprobada|cambios",
+    "aprobadoPor": "Nombre del cliente",
+    "fecha": "2026-11-20T16:00:00.000Z",
+    "productos": {
+      "smash-house": {
+        "estado": "ok|no|cambio",
+        "cambio": "texto opcional cuando elige cambiar o definir"
+      }
+    }
+  }
+  ```
+  El `<id>` de cada producto en `insumos.productos` es el slug de `"producto"` (ej. `smash-house`).
 
 ## Reglas para pasar el documento del mes a este JSON
 

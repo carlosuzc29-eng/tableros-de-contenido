@@ -1669,13 +1669,13 @@ async function getToastText(page) {
     // ─────────────────────────────────────────────────────────────────────────
     // CASO 24: Tableros v2 - Verificación de migración de los 4 tableros existentes
     // ─────────────────────────────────────────────────────────────────────────
-    console.log(`\n${C.bold}24. Tableros v2 (Migración de los 4 tableros existentes):${C.reset} Milkarf 19 (Nov 2026), Bambú 8, Moffyns 8, Trina 9`);
+    console.log(`\n${C.bold}24. Tableros v2 (Migración de los 4 tableros existentes):${C.reset} Milkarf 19 (Nov 2026), Bambú 8, Moffyns 8, Trina 13 (Dic 2026)`);
     {
       const tablerosEsperados = [
         { file: 'milkarf-octubre-2026-f01f.html', expectedCards: 19, client: 'Milkarf' },
         { file: 'bambu-bistro-1f6bcb.html', expectedCards: 8, client: 'Bambú Bistro' },
         { file: 'moffyns-a8733d.html', expectedCards: 8, client: 'Moffyns' },
-        { file: 'trina-hot-sauce-octubre-2026-a39c.html', expectedCards: 9, client: 'Trina Hot Sauce' }
+        { file: 'trina-hot-sauce-octubre-2026-a39c.html', expectedCards: 13, client: 'Trina Hot Sauce' }
       ];
 
       for (const t of tablerosEsperados) {
@@ -2089,8 +2089,297 @@ async function getToastText(page) {
       pass('Fluidez, Service Worker y estabilidad CLS verificados (test_fluidez.js)');
     }
 
+    // ============================================================
+    // CASO 34: Tablero con insumosPauta (Sección de pauta, aprobación de lista y guardado en Firestore)
+    // ============================================================
+    console.log(`\n${C.bold}34. Tablero con insumosPauta:${C.reset} sección de pauta visible, activación de "Aprobar lista", guardado en campo insumos, recarga y vista 360 px sin desborde`);
+    {
+      const draftInsumosPath = path.join(borradoresDir, 'qa-burger-noviembre-2026.json');
+      const draftInsumos = {
+        cliente: 'QA Burger',
+        cuenta: 'qaburger',
+        mes: 'Noviembre',
+        anio: 2026,
+        intro: 'Parrilla de comida con insumos de pauta.',
+        insumosPauta: {
+          productos: [
+            {
+              producto: 'Smash House',
+              cantidad: 2,
+              unidad: 'unidades',
+              contenidos: ['c1', 'c2'],
+              nota: 'Una recién salida de plancha y una para cortar',
+              porDefinir: false
+            },
+            {
+              producto: 'Papas rústicas',
+              cantidad: 1,
+              unidad: 'porción',
+              contenidos: ['c1'],
+              nota: 'Bien doradas',
+              porDefinir: false
+            },
+            {
+              producto: 'Bebida especial',
+              cantidad: 2,
+              unidad: 'vasos',
+              contenidos: ['c2'],
+              nota: '¿Qué sabor de bebida prefieres mostrar en cámara?',
+              porDefinir: true
+            }
+          ],
+          ingredientes: [
+            { nombre: 'Queso cheddar fundido', nota: 'Para plano macro en caliente' }
+          ],
+          utileria: [
+            { nombre: 'Tabla de madera oscura', nota: 'Mesa limpia cerca de ventana' }
+          ],
+          bloques: [
+            { titulo: 'Bloque 1 · Plancha y armado', contenidos: ['c1', 'c2'], nota: 'Tener plancha lista a las 2:00 pm' }
+          ]
+        },
+        contenidos: [
+          {
+            id: 'c1',
+            formato: 'Reel',
+            canal: 'Orgánico',
+            pilar: 'Producto',
+            fechaPublicacion: '10/11',
+            titulo: 'El corte perfecto de la Smash',
+            guionLabel: 'Guion',
+            guion: 'Plano medio cortando la hamburguesa.',
+            copy: 'El queso que se desborda.',
+            hashtags: '#smash',
+            referencias: [],
+            insumos: [
+              { producto: 'Smash House', cantidad: 2, uso: 'una para cortar', porDefinir: false }
+            ]
+          },
+          {
+            id: 'c2',
+            formato: 'Post',
+            canal: 'Ads',
+            pilar: 'Combo',
+            fechaPublicacion: '15/11',
+            titulo: 'Combo con bebida',
+            guionLabel: 'Texto en diseño',
+            guion: 'Smash + bebida especial.',
+            copy: 'Pide tu combo hoy.',
+            hashtags: '#combo',
+            referencias: [],
+            insumos: [
+              { producto: 'Bebida especial', cantidad: 2, uso: 'con hielo', porDefinir: true }
+            ]
+          }
+        ]
+      };
+      fs.writeFileSync(draftInsumosPath, JSON.stringify(draftInsumos, null, 2));
+
+      execSync(`python3 "${CONSTRUIR_PY}" "${draftInsumosPath}"`, { env: envTest, stdio: 'pipe' });
+      const builtDraft = JSON.parse(fs.readFileSync(draftInsumosPath, 'utf8'));
+      const htmlInsumosFile = path.join(tmpDir, builtDraft.archivo);
+      const codInsumos = path.basename(builtDraft.archivo, '.html');
+      const jsonMesInsumos = JSON.parse(fs.readFileSync(path.join(tmpDir, 'datos', codInsumos, '2026-11.json'), 'utf8'));
+
+      if (!jsonMesInsumos.insumosPauta || !Array.isArray(jsonMesInsumos.insumosPauta.productos) || jsonMesInsumos.insumosPauta.productos.length !== 3) {
+        fail('datos/<codigo>/2026-11.json debe conservar insumosPauta tal cual');
+      }
+      if (!Array.isArray(jsonMesInsumos.contenidos[0].insumos) || jsonMesInsumos.contenidos[0].insumos[0].uso !== 'una para cortar') {
+        fail('datos/<codigo>/2026-11.json debe conservar insumos dentro de cada contenido');
+      }
+
+      const st = new Stub();
+      const { ctx, page, pageErrors } = await abrirPagina(browser, st, 'file://' + htmlInsumosFile, false, { width: 360, height: 780 });
+
+      if (pageErrors.length > 0) {
+        fail('Errores JS al cargar tablero con insumosPauta: ' + pageErrors.join('; '));
+      }
+
+      // Verificar vista en celular de 360 px sin desborde horizontal
+      const overflow360 = await page.evaluate(() => ({
+        sw: document.documentElement.scrollWidth,
+        cw: document.documentElement.clientWidth
+      }));
+      if (overflow360.sw > overflow360.cw + 1) {
+        fail(`Desborde horizontal a 360px en tablero con insumosPauta: scrollWidth=${overflow360.sw} > clientWidth=${overflow360.cw}`);
+      }
+
+      // Verificar sección, resumen superior y bloque por tarjeta
+      const uiCheck = await page.evaluate(() => {
+        const sec = document.getElementById('insumosPautaSection');
+        const stat = document.getElementById('statInsumosPauta');
+        const sInsumos = document.getElementById('sInsumos');
+        const cardIns = document.querySelector('#c1 .card-insumos');
+        const btnAprobar = document.getElementById('btnAprobarInsumos');
+        const counter = document.getElementById('insumosCounter');
+        const rowPorDefBtns = document.querySelectorAll('.insumo-prod-row[data-prod-id="bebida-especial"] .insumo-btn');
+        return {
+          hasSec: !!sec && sec.textContent.includes('Lo que necesitas para el día de pauta'),
+          hasStat: !!stat && sInsumos && sInsumos.textContent.trim() === 'Pendiente',
+          cardInsText: cardIns ? cardIns.textContent.replace(/\s+/g, ' ').trim() : '',
+          btnDisabled: btnAprobar ? btnAprobar.disabled : null,
+          btnText: btnAprobar ? btnAprobar.textContent.trim() : '',
+          counterText: counter ? counter.textContent.trim() : '',
+          porDefBtnCount: rowPorDefBtns.length,
+          porDefBtnLabel: rowPorDefBtns[0] ? rowPorDefBtns[0].textContent.trim() : '',
+          hasIngredientes: !!sec && sec.textContent.includes('Ingredientes para armar frente a cámara'),
+          hasUtileria: !!sec && sec.textContent.includes('Utilería y espacio'),
+          hasOrden: !!sec && sec.textContent.includes('Orden de grabación')
+        };
+      });
+
+      if (!uiCheck.hasSec) fail('No se muestra la sección "Lo que necesitas para el día de pauta"');
+      if (!uiCheck.hasStat) fail('No se muestra el estado "Pendiente" de la lista en el resumen superior (.stats)');
+      if (!uiCheck.cardInsText.includes('Necesitas para este contenido') || !uiCheck.cardInsText.includes('2× Smash House · una para cortar')) {
+        fail(`El bloque de insumos en la tarjeta #c1 no tiene el texto esperado: "${uiCheck.cardInsText}"`);
+      }
+      if (uiCheck.btnDisabled !== true || uiCheck.btnText !== 'Aprobar lista') {
+        fail(`El botón "Aprobar lista" debe iniciar desactivado: disabled=${uiCheck.btnDisabled}, text="${uiCheck.btnText}"`);
+      }
+      if (uiCheck.counterText !== '0 de 3 productos respondidos') {
+        fail(`Contador inicial incorrecto: "${uiCheck.counterText}"`);
+      }
+      if (uiCheck.porDefBtnCount !== 1 || uiCheck.porDefBtnLabel !== 'Elegir…') {
+        fail(`En productos porDefinir solo debe aparecer el botón "Elegir…": count=${uiCheck.porDefBtnCount}, label="${uiCheck.porDefBtnLabel}"`);
+      }
+      if (!uiCheck.hasIngredientes || !uiCheck.hasUtileria || !uiCheck.hasOrden) {
+        fail('Faltan subsecciones de Ingredientes, Utilería u Orden de grabación');
+      }
+
+      // 1) Responder producto 1: "Lo tengo"
+      await page.click('.insumo-prod-row[data-prod-id="smash-house"] .insumo-btn[data-action="ok"]');
+      // 2) Responder producto 2: "Cambiar por…" sin texto aún -> sigue sin contarse como respondido
+      await page.click('.insumo-prod-row[data-prod-id="papas-rusticas"] .insumo-btn[data-action="cambio"]');
+      let midCheck = await page.evaluate(() => ({
+        counter: document.getElementById('insumosCounter').textContent.trim(),
+        disabled: document.getElementById('btnAprobarInsumos').disabled
+      }));
+      if (midCheck.counter !== '1 de 3 productos respondidos' || midCheck.disabled !== true) {
+        fail(`Con "Cambiar por…" vacío no debe contarse como respondido: ${JSON.stringify(midCheck)}`);
+      }
+
+      // Escribir texto en "Cambiar por…" del producto 2
+      await page.fill('#ins-inp-papas-rusticas', 'Aros de cebolla');
+      midCheck = await page.evaluate(() => ({
+        counter: document.getElementById('insumosCounter').textContent.trim(),
+        disabled: document.getElementById('btnAprobarInsumos').disabled,
+        btnText: document.getElementById('btnAprobarInsumos').textContent.trim()
+      }));
+      if (midCheck.counter !== '2 de 3 productos respondidos' || midCheck.disabled !== true || midCheck.btnText !== 'Enviar lista con cambios') {
+        fail(`Tras llenar "Cambiar por…", falta porDefinir: ${JSON.stringify(midCheck)}`);
+      }
+
+      // 3) Escribir texto en producto 3 (porDefinir)
+      await page.fill('#ins-inp-bebida-especial', 'Limonada con hierbabuena');
+      midCheck = await page.evaluate(() => ({
+        counter: document.getElementById('insumosCounter').textContent.trim(),
+        disabled: document.getElementById('btnAprobarInsumos').disabled,
+        btnText: document.getElementById('btnAprobarInsumos').textContent.trim()
+      }));
+      if (midCheck.counter !== '3 de 3 productos respondidos' || midCheck.disabled !== false || midCheck.btnText !== 'Enviar lista con cambios') {
+        fail(`Con los 3 productos respondidos el botón debe activarse: ${JSON.stringify(midCheck)}`);
+      }
+
+      // Tocar "Enviar lista con cambios"
+      await page.click('#btnAprobarInsumos');
+      const stateAfterClick = await page.evaluate(() => ({
+        statText: document.getElementById('sInsumos').textContent.trim(),
+        badgeText: document.getElementById('insumosStatusBadge').textContent.trim()
+      }));
+      if (stateAfterClick.statText !== 'Con cambios' || !stateAfterClick.badgeText.includes('Con cambios')) {
+        fail(`El estado de la lista debe pasar a "Con cambios": ${JSON.stringify(stateAfterClick)}`);
+      }
+
+      // Evaluar las 2 tarjetas y enviar revisión
+      await page.click('#c1 .approve');
+      await page.click('#c2 .approve');
+      await page.fill('#who', 'Carlos Insumos');
+      await page.click('#dl');
+      await page.waitForTimeout(500);
+
+      if (!st.fields || !st.fields.insumos) {
+        fail('No se guardó el campo "insumos" en el documento de Firestore al Enviar revisión');
+      }
+      const savedInsumos = st.fields.insumos;
+      if (savedInsumos.estado !== 'cambios' || savedInsumos.aprobadoPor !== 'Carlos Insumos' || !savedInsumos.fecha) {
+        fail(`Metadatos de insumos guardados en Firestore incorrectos: ${JSON.stringify(savedInsumos)}`);
+      }
+      if (!savedInsumos.productos ||
+          savedInsumos.productos['smash-house']?.estado !== 'ok' ||
+          savedInsumos.productos['papas-rusticas']?.estado !== 'cambio' ||
+          savedInsumos.productos['papas-rusticas']?.cambio !== 'Aros de cebolla' ||
+          savedInsumos.productos['bebida-especial']?.estado !== 'ok' ||
+          savedInsumos.productos['bebida-especial']?.cambio !== 'Limonada con hierbabuena') {
+        fail(`Mapa de productos en insumos de Firestore incorrecto: ${JSON.stringify(savedInsumos.productos)}`);
+      }
+      await ctx.close();
+
+      // Recargar el tablero en un contexto limpio y comprobar que lee insumos desde Firestore
+      const { ctx: ctxReload, page: pageReload } = await abrirPagina(browser, st, 'file://' + htmlInsumosFile);
+      const reloadCheck = await pageReload.evaluate(() => ({
+        statText: document.getElementById('sInsumos')?.textContent.trim(),
+        counter: document.getElementById('insumosCounter')?.textContent.trim(),
+        valPapas: document.getElementById('ins-inp-papas-rusticas')?.value,
+        valBebida: document.getElementById('ins-inp-bebida-especial')?.value
+      }));
+      if (reloadCheck.statText !== 'Con cambios' ||
+          reloadCheck.counter !== '3 de 3 productos respondidos' ||
+          reloadCheck.valPapas !== 'Aros de cebolla' ||
+          reloadCheck.valBebida !== 'Limonada con hierbabuena') {
+        fail(`Al recargar desde Firestore no restauró las respuestas de insumos: ${JSON.stringify(reloadCheck)}`);
+      }
+      await ctxReload.close();
+      pass('Tablero con insumosPauta: sección, contador, "Aprobar lista", guardado en Firestore, recarga y diseño 360px verificados');
+    }
+
+    // ============================================================
+    // CASO 35: Tablero sin insumosPauta (Compatibilidad y envío sin campo insumos)
+    // ============================================================
+    console.log(`\n${C.bold}35. Tablero sin insumosPauta:${C.reset} se ve exactamente igual que hoy (sin sección ni stat de pauta) y Enviar revisión funciona sin campo insumos`);
+    {
+      const st = new Stub();
+      const { ctx, page, pageErrors } = await abrirPagina(browser, st, 'file://' + caso1HtmlFile);
+
+      if (pageErrors.length > 0) {
+        fail('Errores JS en tablero sin insumosPauta: ' + pageErrors.join('; '));
+      }
+
+      const noInsumosCheck = await page.evaluate(() => ({
+        sec: document.getElementById('insumosPautaSection'),
+        stat: document.getElementById('statInsumosPauta'),
+        hasInsumosClass: document.querySelector('section.stats')?.classList.contains('has-insumos'),
+        statsCount: document.querySelectorAll('section.stats .stat').length,
+        cardInsumosCount: document.querySelectorAll('.card-insumos').length
+      }));
+
+      if (noInsumosCheck.sec !== null || noInsumosCheck.stat !== null || noInsumosCheck.hasInsumosClass || noInsumosCheck.statsCount !== 3 || noInsumosCheck.cardInsumosCount !== 0) {
+        fail(`Un tablero sin insumosPauta no debe mostrar elementos de insumos: ${JSON.stringify(noInsumosCheck)}`);
+      }
+
+      // Aprobar las 8 tarjetas y enviar revisión
+      for (let i = 1; i <= 8; i++) {
+        await page.click(`#c${i} .approve`);
+      }
+      await page.fill('#who', 'Cliente Estándar');
+      await page.click('#dl');
+      await page.waitForTimeout(500);
+
+      if (!st.fields) {
+        fail('Enviar revisión falló en tablero sin insumosPauta');
+      }
+      if ('insumos' in st.fields) {
+        fail('Un tablero sin insumosPauta no debe escribir el campo "insumos" en Firestore');
+      }
+      if (st.fields.aprobados !== 8 || st.fields.revisadoPor !== 'Cliente Estándar') {
+        fail('Los datos de revisión estándar no se guardaron correctamente');
+      }
+
+      await ctx.close();
+      pass('Tablero sin insumosPauta: vista idéntica a hoy (3 stats, sin sección extra) y Enviar revisión 100% funcional');
+    }
+
     console.log(`\n${C.bold}${C.green}================================================================${C.reset}`);
-    console.log(`${C.bold}${C.green}✓ TODOS LOS 33 CASOS DE PRUEBA PASARON EXITOSAMENTE (100% OK)${C.reset}`);
+    console.log(`${C.bold}${C.green}✓ TODOS LOS 35 CASOS DE PRUEBA PASARON EXITOSAMENTE (100% OK)${C.reset}`);
     console.log(`${C.bold}${C.green}================================================================${C.reset}\n`);
 
   } catch (err) {

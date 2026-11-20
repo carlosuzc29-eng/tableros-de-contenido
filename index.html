@@ -7764,7 +7764,9 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
       '</div>';
     }
 
-    var listHtml = reenvioHtml + '<div class="detail-items-list">';
+    var insumosDetailHtml = buildInsumosDetailHtml(t, bData);
+
+    var listHtml = reenvioHtml + insumosDetailHtml + '<div class="detail-items-list">';
     if (!filtered.length) {
       listHtml += '<div class="detail-empty">No hay contenidos con el filtro seleccionado (' + escapeHtml(curFilter) + ').</div>';
     } else {
@@ -7956,6 +7958,177 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
         copyReenvioMessage(t, bData);
       };
     }
+
+    var btnsReabrirIns = wrap.querySelectorAll('.btn-reabrir-lista-pauta');
+    btnsReabrirIns.forEach(function(rb){
+      rb.onclick = function(e){
+        e.stopPropagation();
+        reabrirListaPauta(rb.getAttribute('data-id') || t.id);
+      };
+    });
+  }
+
+  function slugInsumoProd(s){
+    return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+
+  function boardHasInsumosPauta(t, bData){
+    if (!t && !bData) return false;
+    var ip = (bData && bData.insumosPauta) || (t && t.insumosPauta);
+    if (ip && typeof ip === 'object' && (
+      (Array.isArray(ip.productos) && ip.productos.length > 0) ||
+      (Array.isArray(ip.ingredientes) && ip.ingredientes.length > 0) ||
+      (Array.isArray(ip.utileria) && ip.utileria.length > 0) ||
+      (Array.isArray(ip.bloques) && ip.bloques.length > 0)
+    )) {
+      return true;
+    }
+    if (t && t.insumos && typeof t.insumos === 'object' && (t.insumos.estado || t.insumos.productos)) {
+      return true;
+    }
+    return false;
+  }
+
+  function buildInsumosDetailHtml(t, bData){
+    if (!boardHasInsumosPauta(t, bData)) return '';
+    var insObj = (t && t.insumos && typeof t.insumos === 'object') ? t.insumos : ((bData && bData.insumos && typeof bData.insumos === 'object') ? bData.insumos : {});
+    var est = String(insObj.estado || 'pendiente').toLowerCase();
+    var estLabel = est === 'aprobada' ? 'Aprobada' : (est === 'cambios' ? 'Con cambios' : 'Pendiente');
+    var estIcon = est === 'aprobada' ? '✓' : (est === 'cambios' ? '✎' : '•');
+    var estColor = est === 'aprobada' ? '#5CB83E' : (est === 'cambios' ? '#E64A00' : '#94A3B8');
+    var estBg = est === 'aprobada' ? 'rgba(92,184,62,0.14)' : (est === 'cambios' ? 'rgba(230,74,0,0.14)' : 'rgba(148,163,184,0.12)');
+    var estBorder = est === 'aprobada' ? 'rgba(92,184,62,0.35)' : (est === 'cambios' ? 'rgba(230,74,0,0.35)' : 'rgba(148,163,184,0.28)');
+
+    var whoStr = '';
+    if (insObj.aprobadoPor || insObj.fecha) {
+      whoStr = '<div class="insumos-detail-who" style="font-size:12px;color:rgba(255,255,255,0.8);margin-top:4px;">' +
+        (est === 'aprobada' ? 'Aprobada por ' : 'Enviada por ') +
+        '<b>' + escapeHtml(insObj.aprobadoPor || 'Cliente') + '</b>' +
+        (insObj.fecha ? ' · ' + escapeHtml(formatFecha(insObj.fecha)) : '') +
+      '</div>';
+    }
+
+    var ip = (bData && bData.insumosPauta) || (t && t.insumosPauta) || {};
+    var productosList = Array.isArray(ip.productos) ? ip.productos : [];
+    var prodsMap = (insObj.productos && typeof insObj.productos === 'object') ? insObj.productos : {};
+
+    var prodNameById = {};
+    var prodPorDefById = {};
+    productosList.forEach(function(p, idx){
+      if (!p || !p.producto) return;
+      var pid = p.id || slugInsumoProd(p.producto || ('producto-' + idx));
+      prodNameById[pid] = p.producto;
+      if (p.porDefinir) prodPorDefById[pid] = true;
+    });
+
+    var alertItemsHtml = [];
+    var seenIds = {};
+
+    productosList.forEach(function(p, idx){
+      if (!p || !p.producto) return;
+      var pid = p.id || slugInsumoProd(p.producto || ('producto-' + idx));
+      seenIds[pid] = true;
+      var r = prodsMap[pid];
+      if (!r) return;
+      if (r.estado === 'no') {
+        alertItemsHtml.push(
+          '<div class="insumos-alert-item is-no" style="background:rgba(230,74,0,0.15);border:1px solid rgba(230,74,0,0.45);color:#FFD6C2;padding:7px 11px;border-radius:9px;font-size:12.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
+            '<span style="background:#E64A00;color:#fff;font-weight:800;font-size:10.5px;padding:2px 7px;border-radius:6px;">No disponible</span>' +
+            '<b>' + escapeHtml(p.producto) + '</b>' +
+          '</div>'
+        );
+      } else if (r.estado === 'cambio' || (!p.porDefinir && r.cambio)) {
+        alertItemsHtml.push(
+          '<div class="insumos-alert-item is-cambio" style="background:rgba(230,74,0,0.15);border:1px solid rgba(230,74,0,0.45);color:#FFD6C2;padding:7px 11px;border-radius:9px;font-size:12.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
+            '<span style="background:#E64A00;color:#fff;font-weight:800;font-size:10.5px;padding:2px 7px;border-radius:6px;">Cambiar por…</span>' +
+            '<b>' + escapeHtml(p.producto) + ':</b> ' +
+            '<span>“' + escapeHtml(r.cambio || '') + '”</span>' +
+          '</div>'
+        );
+      } else if (p.porDefinir && r.cambio) {
+        alertItemsHtml.push(
+          '<div class="insumos-alert-item is-elegido" style="background:rgba(92,184,62,0.14);border:1px solid rgba(92,184,62,0.4);color:#DDF3D4;padding:7px 11px;border-radius:9px;font-size:12.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
+            '<span style="background:#5CB83E;color:#fff;font-weight:800;font-size:10.5px;padding:2px 7px;border-radius:6px;">Elegido</span>' +
+            '<b>' + escapeHtml(p.producto) + ':</b> ' +
+            '<span>“' + escapeHtml(r.cambio) + '”</span>' +
+          '</div>'
+        );
+      }
+    });
+
+    Object.keys(prodsMap).forEach(function(pid){
+      if (seenIds[pid]) return;
+      var r = prodsMap[pid];
+      if (!r) return;
+      var pName = prodNameById[pid] || pid;
+      if (r.estado === 'no') {
+        alertItemsHtml.push(
+          '<div class="insumos-alert-item is-no" style="background:rgba(230,74,0,0.15);border:1px solid rgba(230,74,0,0.45);color:#FFD6C2;padding:7px 11px;border-radius:9px;font-size:12.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
+            '<span style="background:#E64A00;color:#fff;font-weight:800;font-size:10.5px;padding:2px 7px;border-radius:6px;">No disponible</span>' +
+            '<b>' + escapeHtml(pName) + '</b>' +
+          '</div>'
+        );
+      } else if (r.estado === 'cambio' || r.cambio) {
+        alertItemsHtml.push(
+          '<div class="insumos-alert-item is-cambio" style="background:rgba(230,74,0,0.15);border:1px solid rgba(230,74,0,0.45);color:#FFD6C2;padding:7px 11px;border-radius:9px;font-size:12.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
+            '<span style="background:#E64A00;color:#fff;font-weight:800;font-size:10.5px;padding:2px 7px;border-radius:6px;">Cambiar por…</span>' +
+            '<b>' + escapeHtml(pName) + ':</b> ' +
+            '<span>“' + escapeHtml(r.cambio || '') + '”</span>' +
+          '</div>'
+        );
+      }
+    });
+
+    var reabrirBtnHtml = '<button type="button" class="btn-detail-action btn-reabrir-lista-pauta" data-id="' + escapeAttr(t.id) + '" style="border-color:rgba(255,255,255,0.22);" title="Pone insumos.estado en pendiente para que el cliente la apruebe otra vez">↺ Reabrir lista</button>';
+
+    return '<div class="detail-insumos-box" data-insumos-estado="' + escapeAttr(est) + '" style="margin-bottom:14px;padding:14px 16px;border-radius:12px;background:rgba(31,53,73,0.45);border:1px solid ' + estBorder + ';">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;">' +
+        '<div>' +
+          '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
+            '<span style="font-size:13px;font-weight:800;color:#fff;">📋 Lista de pauta</span>' +
+            '<span class="insumos-detail-badge" style="background:' + estBg + ';color:' + estColor + ';border:1px solid ' + estBorder + ';padding:3px 10px;border-radius:999px;font-size:11.5px;font-weight:700;">' + estIcon + ' ' + estLabel + '</span>' +
+          '</div>' +
+          whoStr +
+        '</div>' +
+        '<div>' + reabrirBtnHtml + '</div>' +
+      '</div>' +
+      (alertItemsHtml.length > 0
+        ? '<div class="insumos-alerts-list" style="display:flex;flex-direction:column;gap:6px;margin-top:10px;">' + alertItemsHtml.join('') + '</div>'
+        : '') +
+    '</div>';
+  }
+
+  function reabrirListaPauta(tId){
+    if (!tId) return;
+    var t = allTableros.find(function(x){ return x.id === tId; });
+    if (t) {
+      t.insumos = Object.assign({}, (t.insumos && typeof t.insumos === 'object') ? t.insumos : { aprobadoPor: '', fecha: '', productos: {} }, {
+        estado: 'pendiente'
+      });
+    }
+    if (boardCache[tId] && boardCache[tId].insumos) {
+      boardCache[tId].insumos.estado = 'pendiente';
+    }
+    applyFiltersAndRender();
+    var wrap = document.getElementById('detail-' + tId);
+    if (wrap && wrap.style.display !== 'none') {
+      renderBoardDetail(tId);
+    }
+    if (currentWorkspaceBoardId === tId) {
+      renderBoardWorkspace();
+    }
+    if (db) {
+      var docRef = db.collection('tableros').doc(tId);
+      var newInsumos = (t && t.insumos) ? t.insumos : { estado: 'pendiente', aprobadoPor: '', fecha: '', productos: {} };
+      docRef.update({ insumos: newInsumos }).then(function(){
+        toast('✓ Lista de pauta reabierta (Pendiente)');
+      }).catch(function(err){
+        console.warn('Error al reabrir lista en Firestore:', err);
+        toast('✓ Lista marcada como Pendiente');
+      });
+    } else {
+      toast('✓ Lista de pauta reabierta (Pendiente)');
+    }
   }
 
     function getPublicBoardUrl(u){
@@ -8018,6 +8191,20 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
     var copyBtn = t.url ? '<button class="btn-card sec btn-copy-url" data-url="' + escapeAttr(getPublicBoardUrl(t.url)) + '" title="Copiar enlace enviado al cliente">Copiar</button>' : '';
     var sendSeparatedBtn = '<button class="btn-card sec link-envio btn-send-separated" data-id="' + escapeAttr(t.id) + '" title="Enviar por separado los contenidos que el cliente quiera que se corrijan">Por separado</button>';
 
+    var bDataCard = boardCache[t.id];
+    var insumosCardHtml = '';
+    if (boardHasInsumosPauta(t, bDataCard)) {
+      var insObjCard = (t.insumos && typeof t.insumos === 'object') ? t.insumos : ((bDataCard && bDataCard.insumos && typeof bDataCard.insumos === 'object') ? bDataCard.insumos : {});
+      var insEstCard = String(insObjCard.estado || 'pendiente').toLowerCase();
+      var insLabelCard = insEstCard === 'aprobada' ? 'Aprobada' : (insEstCard === 'cambios' ? 'Con cambios' : 'Pendiente');
+      var insColorCard = insEstCard === 'aprobada' ? '#5CB83E' : (insEstCard === 'cambios' ? '#E64A00' : '#94A3B8');
+      var insBgCard = insEstCard === 'aprobada' ? 'rgba(92,184,62,0.14)' : (insEstCard === 'cambios' ? 'rgba(230,74,0,0.14)' : 'rgba(148,163,184,0.12)');
+      var insBorderCard = insEstCard === 'aprobada' ? 'rgba(92,184,62,0.35)' : (insEstCard === 'cambios' ? 'rgba(230,74,0,0.35)' : 'rgba(148,163,184,0.25)');
+      insumosCardHtml = '<div class="board-card-insumos-ind" data-insumos-estado="' + escapeAttr(insEstCard) + '" style="margin-top:8px;padding:4px 10px;border-radius:8px;font-size:11.5px;font-weight:700;display:inline-flex;align-items:center;gap:6px;background:' + insBgCard + ';color:' + insColorCard + ';border:1px solid ' + insBorderCard + ';width:fit-content;">' +
+        '<span>Lista de pauta: ' + insLabelCard + '</span>' +
+      '</div>';
+    }
+
     return '' +
       '<div class="board-card ' + (isSecondary ? 'secondary' : '') + '" data-board-url="' + escapeAttr(t.url || '') + '" title="' + (t.url ? 'Clic para abrir espacio de trabajo' : '') + '">' +
         '<div class="card-top">' +
@@ -8037,6 +8224,7 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
             '<span>✓ ' + a + ' ok · ' + (c > 0 ? '⚠ ' + c + ' cambios' : '0 cambios') + '</span>' +
             '<span>' + p + ' pend.</span>' +
           '</div>' +
+          insumosCardHtml +
         '</div>' +
         '<div class="card-foot">' +
           '<div class="reviewer-info">' + revHtml + '</div>' +
@@ -8908,6 +9096,18 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
         sortOrder.value = curSortOrder;
         updateChipsUI();
         applyFiltersAndRender();
+        if (currentWorkspaceBoardId) {
+          renderBoardWorkspace();
+        }
+        allTableros.forEach(function(tb){
+          if (!tb || !tb.id || boardCache[tb.id] || tb.insumos) return;
+          getBoardData(tb, function(err, data){
+            if (data && data.insumosPauta) {
+              applyFiltersAndRender();
+              if (currentWorkspaceBoardId === tb.id) renderBoardWorkspace();
+            }
+          });
+        });
       }
       if (isManualRefresh && (activeTab === 'aprobaciones' || activeTab === 'hub')) toast('Tableros actualizados ✓');
     }, function(err){
@@ -9843,6 +10043,8 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
       '</div>' +
     '</div>';
 
+    html += buildInsumosDetailHtml(t, bData);
+
     // Banner destacado si estamos en corregidos o hay corregidos listos
     if (currentWorkspaceTab === 'corregidos' || (countCorregidos > 0 && currentWorkspaceTab === 'todos')) {
       var pluralText = countCorregidos === 1 ? '1 contenido corregido listo' : (countCorregidos + ' contenidos corregidos listos');
@@ -10196,6 +10398,15 @@ button:active, a.btn:active, .btn:active, .nav-btn:active, .pill-btn:active, .ta
         e.stopPropagation();
         var n = parseInt(cpb.getAttribute('data-n'), 10);
         copyPieceContent(t.id, n);
+      };
+    });
+
+    // Reabrir lista de pauta (Insumos)
+    var reabrirInsBtns = wsBodyContent.querySelectorAll('.btn-reabrir-lista-pauta');
+    reabrirInsBtns.forEach(function(rb){
+      rb.onclick = function(e){
+        e.stopPropagation();
+        reabrirListaPauta(rb.getAttribute('data-id') || t.id);
       };
     });
 

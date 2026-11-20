@@ -47,7 +47,7 @@ service cloud.firestore {
         request.resource.data.url == resource.data.url &&
         request.resource.data.total == resource.data.total &&
         request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-          'aprobados', 'cambios', 'pendientes', 'estado', 'revisadoPor', 'ultimaRevision', 'contenidos', 'actualizado'
+          'aprobados', 'cambios', 'pendientes', 'estado', 'revisadoPor', 'ultimaRevision', 'contenidos', 'actualizado', 'insumos'
         ])
       );
 

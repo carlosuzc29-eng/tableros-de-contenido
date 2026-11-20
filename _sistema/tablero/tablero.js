@@ -1442,6 +1442,15 @@
       var whoVal = getReviewerName();
       if (whoVal && whoVal.indexOf('Agencia (') === 0) whoVal = '';
       var o = { who: whoVal, items: {}, resetAt: DATA.resetAt || 0, sinEnviar: sinEnviar };
+      if (hasInsumosPautaData()) {
+        o.insumos = {
+          estado: insumosState.estado || 'pendiente',
+          aprobadoPor: insumosState.aprobadoPor || '',
+          fecha: insumosState.fecha || '',
+          productos: insumosState.productos || {},
+          sinEnviar: !!insumosState.sinEnviar
+        };
+      }
       items.forEach(function (it) {
         o.items[it.id] = {
           estado: it.estado,
@@ -1460,6 +1469,638 @@
         localStorage.setItem('nexo_reviewer_name_' + (DATA.id || 'board'), whoVal);
       }
     } catch (e) { }
+  }
+
+  var insumosState = {
+    estado: 'pendiente',
+    aprobadoPor: '',
+    fecha: '',
+    productos: {},
+    sinEnviar: false
+  };
+
+  function slugProducto(s) {
+    return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+
+  function hasInsumosPautaData() {
+    return !!(DATA && DATA.insumosPauta && typeof DATA.insumosPauta === 'object' && (
+      (Array.isArray(DATA.insumosPauta.productos) && DATA.insumosPauta.productos.length > 0) ||
+      (Array.isArray(DATA.insumosPauta.ingredientes) && DATA.insumosPauta.ingredientes.length > 0) ||
+      (Array.isArray(DATA.insumosPauta.utileria) && DATA.insumosPauta.utileria.length > 0) ||
+      (Array.isArray(DATA.insumosPauta.bloques) && DATA.insumosPauta.bloques.length > 0)
+    ));
+  }
+
+  function scrollToCardById(cid) {
+    if (!cid || !$('list')) return;
+    var normId = String(cid).trim();
+    var targetCard = document.getElementById(normId);
+    if (!targetCard && /^\d+$/.test(normId)) {
+      targetCard = document.getElementById('c' + normId);
+    }
+    if (targetCard) {
+      if (f !== 'all' || fc !== 'all') {
+        f = 'all';
+        fc = 'all';
+        applyFilter();
+      }
+      targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      targetCard.classList.add('highlight-pulse');
+      setTimeout(function () { targetCard.classList.remove('highlight-pulse'); }, 1500);
+    }
+  }
+
+  function createContentChip(cid) {
+    var normId = String(cid || '').trim();
+    var foundIdx = -1;
+    var foundItem = null;
+    items.forEach(function (it, idx) {
+      var itemId = it.id || ('c' + (idx + 1));
+      if (itemId === normId || ('c' + (idx + 1)) === normId || String(idx + 1) === normId) {
+        foundIdx = idx;
+        foundItem = it;
+      }
+    });
+    var chip = el('button', 'insumo-content-chip');
+    chip.type = 'button';
+    chip.dataset.targetId = foundItem ? (foundItem.id || ('c' + (foundIdx + 1))) : normId;
+    var numStr = foundIdx >= 0 ? ('#' + pad(foundIdx + 1)) : normId;
+    var numSpan = el('span', 'chip-num', numStr);
+    chip.appendChild(numSpan);
+    if (foundItem && foundItem.titulo) {
+      var tStr = String(foundItem.titulo).trim();
+      if (tStr.length > 34) tStr = tStr.slice(0, 32) + '…';
+      chip.appendChild(el('span', 'chip-title', '· ' + tStr));
+      chip.title = numStr + ' · ' + foundItem.titulo;
+    }
+    chip.onclick = function (e) {
+      e.preventDefault();
+      scrollToCardById(chip.dataset.targetId);
+    };
+    return chip;
+  }
+
+  function getInsumosProgress() {
+    var productos = (DATA && DATA.insumosPauta && Array.isArray(DATA.insumosPauta.productos)) ? DATA.insumosPauta.productos : [];
+    var total = productos.length;
+    var respondidos = 0;
+    var hasChanges = false;
+
+    productos.forEach(function (p, idx) {
+      var pid = p.id || slugProducto(p.producto || ('producto-' + idx));
+      var r = insumosState.productos && insumosState.productos[pid];
+      if (!r || !r.estado) return;
+      var est = r.estado;
+      var cam = typeof r.cambio === 'string' ? r.cambio.trim() : '';
+      if (p.porDefinir) {
+        if (cam.length > 0) {
+          respondidos++;
+          if (est === 'no') hasChanges = true;
+        }
+      } else {
+        if (est === 'ok') {
+          respondidos++;
+        } else if (est === 'no') {
+          respondidos++;
+          hasChanges = true;
+        } else if (est === 'cambio') {
+          hasChanges = true;
+          if (cam.length > 0) {
+            respondidos++;
+          }
+        }
+      }
+    });
+
+    return {
+      total: total,
+      respondidos: respondidos,
+      allAnswered: total > 0 && respondidos === total,
+      hasChanges: hasChanges
+    };
+  }
+
+  function buildInsumosPayload(revName, fechaIso, forceEstado) {
+    if (!hasInsumosPautaData()) return undefined;
+    var productos = (DATA.insumosPauta && Array.isArray(DATA.insumosPauta.productos)) ? DATA.insumosPauta.productos : [];
+    var prodsMap = {};
+    var prog = getInsumosProgress();
+
+    productos.forEach(function (p, idx) {
+      var pid = p.id || slugProducto(p.producto || ('producto-' + idx));
+      var r = insumosState.productos && insumosState.productos[pid];
+      if (!r || !r.estado) return;
+      var est = r.estado;
+      var cam = typeof r.cambio === 'string' ? r.cambio.trim() : '';
+      if (p.porDefinir) {
+        if (cam.length > 0) {
+          prodsMap[pid] = {
+            estado: est === 'no' ? 'no' : 'ok',
+            cambio: cam
+          };
+        }
+      } else {
+        if (est === 'ok' || est === 'no' || (est === 'cambio' && cam.length > 0)) {
+          prodsMap[pid] = {
+            estado: est,
+            cambio: est === 'cambio' ? cam : ''
+          };
+        }
+      }
+    });
+
+    var finalEstado = forceEstado || insumosState.estado || 'pendiente';
+    if (!forceEstado) {
+      if (prog.allAnswered) {
+        if (finalEstado === 'aprobada' || finalEstado === 'cambios') {
+          finalEstado = prog.hasChanges ? 'cambios' : 'aprobada';
+        }
+      } else {
+        finalEstado = 'pendiente';
+      }
+    }
+
+    return {
+      estado: finalEstado,
+      aprobadoPor: finalEstado !== 'pendiente' ? (revName || insumosState.aprobadoPor || 'Cliente') : '',
+      fecha: finalEstado !== 'pendiente' ? (fechaIso || insumosState.fecha || new Date().toISOString()) : '',
+      productos: prodsMap
+    };
+  }
+
+  function updateInsumosUI() {
+    var statsSec = document.querySelector('section.stats');
+    if (!hasInsumosPautaData()) {
+      if (statsSec) statsSec.classList.remove('has-insumos');
+      var oldStat = $('statInsumosPauta');
+      if (oldStat && oldStat.parentNode) oldStat.parentNode.removeChild(oldStat);
+      var oldSec = $('insumosPautaSection');
+      if (oldSec && oldSec.parentNode) oldSec.parentNode.removeChild(oldSec);
+      return;
+    }
+
+    var prog = getInsumosProgress();
+    var est = insumosState.estado || 'pendiente';
+    if (!prog.allAnswered && (est === 'aprobada' || est === 'cambios')) {
+      est = 'pendiente';
+      insumosState.estado = 'pendiente';
+    }
+
+    var estLabel = est === 'aprobada' ? 'Aprobada' : (est === 'cambios' ? 'Con cambios' : 'Pendiente');
+    var estIcon = est === 'aprobada' ? '✓' : (est === 'cambios' ? '✎' : '•');
+    var estStatCls = est === 'aprobada' ? 'ok' : (est === 'cambios' ? 'fix' : 'pend');
+
+    // 1. Resumen superior en section.stats
+    if (statsSec) {
+      statsSec.classList.add('has-insumos');
+      var stEl = $('statInsumosPauta');
+      if (!stEl) {
+        stEl = el('div', 'stat stat-insumos ' + estStatCls);
+        stEl.id = 'statInsumosPauta';
+        stEl.innerHTML = '<i id="iInsumos">' + estIcon + '</i><div><b id="sInsumos">' + estLabel + '</b><span>Lista de pauta</span></div>';
+        stEl.onclick = function () {
+          var sec = $('insumosPautaSection');
+          if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+        statsSec.appendChild(stEl);
+      }
+      stEl.className = 'stat stat-insumos ' + estStatCls;
+      if ($('iInsumos')) setTextIfChanged($('iInsumos'), estIcon);
+      if ($('sInsumos')) setTextIfChanged($('sInsumos'), isAwaitingFirestore ? '…' : estLabel);
+    }
+
+    // 2. Sección principal #insumosPautaSection
+    var sec = $('insumosPautaSection');
+    if (!sec) return;
+
+    sec.classList.toggle('state-aprobada', est === 'aprobada');
+    sec.classList.toggle('state-cambios', est === 'cambios');
+
+    var badge = $('insumosStatusBadge');
+    if (badge) {
+      if (isAwaitingFirestore) {
+        setTextIfChanged(badge, '…');
+        badge.className = 'insumos-status-badge';
+      } else {
+        badge.className = 'insumos-status-badge' + (est === 'aprobada' ? ' is-aprobada' : (est === 'cambios' ? ' is-cambios' : ''));
+        setTextIfChanged(badge, estIcon + ' ' + estLabel);
+      }
+    }
+
+    var metaApp = $('insumosMetaApproved');
+    if (metaApp) {
+      if (!isAwaitingFirestore && (est === 'aprobada' || est === 'cambios') && (insumosState.aprobadoPor || insumosState.fecha)) {
+        var whoTxt = insumosState.aprobadoPor || 'el cliente';
+        var whenTxt = insumosState.fecha ? (' · ' + formatRelTime(insumosState.fecha)) : '';
+        setTextIfChanged(metaApp, (est === 'aprobada' ? '✓ Lista aprobada por ' : '✎ Lista con cambios por ') + whoTxt + whenTxt);
+        metaApp.style.display = 'block';
+      } else {
+        metaApp.style.display = 'none';
+      }
+    }
+
+    var btnReabrir = $('btnReabrirInsumos');
+    if (btnReabrir) {
+      btnReabrir.style.display = (agencyUser && est !== 'pendiente') ? 'inline-flex' : 'none';
+    }
+
+    var counterEl = $('insumosCounter');
+    if (counterEl) {
+      setTextIfChanged(counterEl, prog.respondidos + ' de ' + prog.total + ' productos respondidos');
+    }
+
+    var btnAprobar = $('btnAprobarInsumos');
+    if (btnAprobar) {
+      var btnTxt = prog.hasChanges ? 'Enviar lista con cambios' : 'Aprobar lista';
+      setTextIfChanged(btnAprobar, btnTxt);
+      btnAprobar.classList.toggle('is-cambios-mode', prog.hasChanges);
+      var readOnly = isClosedMonth && !agencyUser;
+      btnAprobar.disabled = !prog.allAnswered || readOnly;
+    }
+
+    // Actualizar filas de productos
+    var rows = sec.querySelectorAll('.insumo-prod-row');
+    var readOnlyProd = isClosedMonth && !agencyUser;
+    [].forEach.call(rows, function (row) {
+      var pid = row.dataset.prodId;
+      var isPorDef = row.dataset.porDefinir === 'true';
+      var r = (insumosState.productos && insumosState.productos[pid]) || null;
+      var rEst = r ? r.estado : '';
+      var rCam = (r && typeof r.cambio === 'string') ? r.cambio : '';
+
+      row.classList.toggle('is-ok', isPorDef ? (rCam.trim().length > 0 && rEst !== 'no') : (rEst === 'ok'));
+      row.classList.toggle('is-no', rEst === 'no');
+      row.classList.toggle('is-cambio', !isPorDef && rEst === 'cambio');
+
+      var btns = row.querySelectorAll('.insumo-btn');
+      [].forEach.call(btns, function (b) {
+        var act = b.dataset.action;
+        var isOn = false;
+        if (act === 'elegir') {
+          isOn = !!(r && (rEst === 'ok' || rEst === 'cambio' || rCam.trim().length > 0));
+        } else {
+          isOn = (rEst === act);
+        }
+        b.classList.toggle('on', isOn);
+        b.setAttribute('aria-pressed', isOn ? 'true' : 'false');
+        b.disabled = readOnlyProd;
+      });
+
+      var wrap = row.querySelector('.insumo-cambio-wrap');
+      var inp = row.querySelector('.insumo-cambio-input');
+      if (wrap && inp) {
+        if (isPorDef) {
+          wrap.style.display = 'flex';
+        } else {
+          wrap.style.display = (rEst === 'cambio') ? 'flex' : 'none';
+        }
+        if (document.activeElement !== inp && inp.value !== rCam) {
+          inp.value = rCam;
+        }
+        inp.disabled = readOnlyProd;
+        inp.readOnly = readOnlyProd;
+      }
+    });
+  }
+
+  function reabrirInsumosAgencia() {
+    if (!agencyUser || !hasInsumosPautaData()) return;
+    insumosState.estado = 'pendiente';
+    insumosState.sinEnviar = false;
+    updateInsumosUI();
+    refresh();
+    saveDraft();
+    var payload = buildInsumosPayload('', '', 'pendiente');
+    if (FB && FB.projectId && DATA.id && payload) {
+      toast('Reabriendo lista de pauta…');
+      guardarPiezas({}, { tableroFields: { insumos: payload } }).then(function () {
+        toast('✓ Lista de pauta reabierta (Pendiente)');
+      }).catch(function (err) {
+        toast('No se pudo reabrir en la nube: ' + (err && err.message ? err.message : 'Error'));
+      });
+    } else {
+      toast('✓ Lista de pauta reabierta (Pendiente)');
+    }
+  }
+
+  function renderInsumosPauta() {
+    var listEl = $('list');
+    var mainEl = listEl ? listEl.parentNode : document.querySelector('main');
+    var existing = $('insumosPautaSection');
+
+    if (!hasInsumosPautaData()) {
+      if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+      updateInsumosUI();
+      return;
+    }
+
+    if (!mainEl) return;
+
+    var sec = existing || el('section', 'insumos-pauta-sec');
+    sec.id = 'insumosPautaSection';
+    sec.setAttribute('aria-labelledby', 'insumosPautaHeading');
+    sec.innerHTML = '';
+
+    var ip = DATA.insumosPauta || {};
+    var productos = Array.isArray(ip.productos) ? ip.productos : [];
+    var ingredientes = Array.isArray(ip.ingredientes) ? ip.ingredientes : [];
+    var utileria = Array.isArray(ip.utileria) ? ip.utileria : [];
+    var bloques = Array.isArray(ip.bloques) ? ip.bloques : [];
+
+    // 1. Cabecera de la sección
+    var head = el('div', 'insumos-head');
+    var headLeft = el('div', 'insumos-head-left');
+    headLeft.appendChild(el('div', 'insumos-eyebrow', '📋 Preparación del rodaje'));
+    var h2 = el('h2', 'insumos-title', 'Lo que necesitas para el día de pauta');
+    h2.id = 'insumosPautaHeading';
+    headLeft.appendChild(h2);
+    headLeft.appendChild(el('p', 'insumos-sub', 'Confirma cada producto para el día de grabación o indícanos si alguno no está disponible o prefieres cambiarlo.'));
+    var metaApproved = el('div', 'insumos-meta-approved');
+    metaApproved.id = 'insumosMetaApproved';
+    metaApproved.style.display = 'none';
+    headLeft.appendChild(metaApproved);
+
+    var headRight = el('div', 'insumos-head-right');
+    var statusBadge = el('span', 'insumos-status-badge', '• Pendiente');
+    statusBadge.id = 'insumosStatusBadge';
+    headRight.appendChild(statusBadge);
+
+    var btnReabrir = el('button', 'btn-reabrir-insumos', '↺ Reabrir lista');
+    btnReabrir.type = 'button';
+    btnReabrir.id = 'btnReabrirInsumos';
+    btnReabrir.style.display = 'none';
+    btnReabrir.onclick = function () {
+      reabrirInsumosAgencia();
+    };
+    headRight.appendChild(btnReabrir);
+
+    head.appendChild(headLeft);
+    head.appendChild(headRight);
+    sec.appendChild(head);
+
+    // 2. Filas de productos
+    if (productos.length > 0) {
+      var prodListEl = el('div', 'insumos-prod-list');
+      productos.forEach(function (p, idx) {
+        if (!p || !p.producto) return;
+        var pid = p.id || slugProducto(p.producto || ('producto-' + idx));
+        var isPorDef = !!p.porDefinir;
+
+        var row = el('div', 'insumo-prod-row' + (isPorDef ? ' is-por-definir' : ''));
+        row.dataset.prodId = pid;
+        row.dataset.porDefinir = isPorDef ? 'true' : 'false';
+
+        // Cantidad a la izquierda
+        var qtyBox = el('div', 'insumo-qty-box');
+        var qtyVal = (p.cantidad !== undefined && p.cantidad !== null && String(p.cantidad).trim() !== '') ? String(p.cantidad).trim() : '—';
+        qtyBox.appendChild(el('span', 'insumo-qty-num', qtyVal));
+        if (p.unidad) {
+          qtyBox.appendChild(el('span', 'insumo-qty-unit', String(p.unidad).trim()));
+        }
+        row.appendChild(qtyBox);
+
+        // Información y controles a la derecha
+        var mainCol = el('div', 'insumo-prod-main');
+        var prodHeader = el('div', 'insumo-prod-header');
+        prodHeader.appendChild(el('strong', 'insumo-prod-name', String(p.producto).trim()));
+        if (isPorDef) {
+          prodHeader.appendChild(el('span', 'tag tag-por-definir', 'Por definir'));
+        }
+        mainCol.appendChild(prodHeader);
+
+        if (p.nota && String(p.nota).trim()) {
+          mainCol.appendChild(el('p', 'insumo-prod-nota', String(p.nota).trim()));
+        }
+
+        if (Array.isArray(p.contenidos) && p.contenidos.length > 0) {
+          var chipsWrap = el('div', 'insumo-prod-chips');
+          p.contenidos.forEach(function (cid) {
+            chipsWrap.appendChild(createContentChip(cid));
+          });
+          mainCol.appendChild(chipsWrap);
+        }
+
+        // Botones de acción y campo de texto
+        var actionsWrap = el('div', 'insumo-prod-actions');
+        var btnGroup = el('div', 'insumo-btn-group');
+        var inpId = 'ins-inp-' + pid;
+        var cambioWrap = el('div', 'insumo-cambio-wrap');
+        var cambioLabel = el('label', 'insumo-cambio-label', isPorDef ? 'Indica tu elección (obligatorio):' : '¿Por cuál producto lo cambiamos? (obligatorio):');
+        cambioLabel.setAttribute('for', inpId);
+        var cambioInp = el('input', 'insumo-cambio-input');
+        cambioInp.type = 'text';
+        cambioInp.id = inpId;
+        cambioInp.name = inpId;
+        cambioInp.placeholder = isPorDef ? 'Escribe aquí tu elección…' : 'Escribe el producto por el que lo cambiarás…';
+
+        if (isPorDef) {
+          var btnElegir = el('button', 'insumo-btn btn-elegir', 'Elegir…');
+          btnElegir.type = 'button';
+          btnElegir.dataset.action = 'elegir';
+          btnElegir.onclick = function () {
+            if (isClosedMonth && !agencyUser) return;
+            var cur = (insumosState.productos && insumosState.productos[pid]) || {};
+            insumosState.productos[pid] = {
+              estado: 'ok',
+              cambio: typeof cur.cambio === 'string' ? cur.cambio : cambioInp.value
+            };
+            insumosState.sinEnviar = true;
+            updateInsumosUI();
+            saveDraft();
+            cambioInp.focus();
+          };
+          btnGroup.appendChild(btnElegir);
+          cambioWrap.style.display = 'flex';
+        } else {
+          var defsBtns = [
+            { action: 'ok', cls: 'btn-ok', label: 'Lo tengo' },
+            { action: 'no', cls: 'btn-no', label: 'No disponible' },
+            { action: 'cambio', cls: 'btn-cambio', label: 'Cambiar por…' }
+          ];
+          defsBtns.forEach(function (db) {
+            var b = el('button', 'insumo-btn ' + db.cls, db.label);
+            b.type = 'button';
+            b.dataset.action = db.action;
+            b.onclick = function () {
+              if (isClosedMonth && !agencyUser) return;
+              var cur = (insumosState.productos && insumosState.productos[pid]) || {};
+              var prevText = typeof cur.cambio === 'string' ? cur.cambio : '';
+              insumosState.productos[pid] = {
+                estado: db.action,
+                cambio: db.action === 'cambio' ? prevText : ''
+              };
+              if (insumosState.estado === 'aprobada' || insumosState.estado === 'cambios') {
+                var pNow = getInsumosProgress();
+                if (pNow.allAnswered) {
+                  insumosState.estado = pNow.hasChanges ? 'cambios' : 'aprobada';
+                } else {
+                  insumosState.estado = 'pendiente';
+                }
+              }
+              insumosState.sinEnviar = true;
+              updateInsumosUI();
+              refresh();
+              saveDraft();
+              if (db.action === 'cambio') {
+                cambioInp.focus();
+              }
+            };
+            btnGroup.appendChild(b);
+          });
+          cambioWrap.style.display = 'none';
+        }
+
+        cambioInp.addEventListener('input', function () {
+          if (isClosedMonth && !agencyUser) return;
+          var val = cambioInp.value;
+          insumosState.productos[pid] = {
+            estado: isPorDef ? 'ok' : 'cambio',
+            cambio: val
+          };
+          if (val.trim().length > 0) {
+            cambioInp.removeAttribute('aria-invalid');
+          }
+          if (insumosState.estado === 'aprobada' || insumosState.estado === 'cambios') {
+            var pNow = getInsumosProgress();
+            if (pNow.allAnswered) {
+              insumosState.estado = pNow.hasChanges ? 'cambios' : 'aprobada';
+            } else {
+              insumosState.estado = 'pendiente';
+            }
+          }
+          insumosState.sinEnviar = true;
+          updateInsumosUI();
+          refresh();
+          saveDraft();
+        });
+
+        cambioInp.addEventListener('blur', function () {
+          var r = insumosState.productos && insumosState.productos[pid];
+          var needText = isPorDef || (r && r.estado === 'cambio');
+          if (needText && !cambioInp.value.trim()) {
+            cambioInp.setAttribute('aria-invalid', 'true');
+          } else {
+            cambioInp.removeAttribute('aria-invalid');
+          }
+        });
+
+        cambioWrap.appendChild(cambioLabel);
+        cambioWrap.appendChild(cambioInp);
+        actionsWrap.appendChild(btnGroup);
+        actionsWrap.appendChild(cambioWrap);
+        mainCol.appendChild(actionsWrap);
+
+        row.appendChild(mainCol);
+        prodListEl.appendChild(row);
+      });
+      sec.appendChild(prodListEl);
+
+      // Barra de contador y botón Aprobar lista
+      var appBar = el('div', 'insumos-approval-bar');
+      var counterSpan = el('span', 'insumos-counter', '0 de ' + productos.length + ' productos respondidos');
+      counterSpan.id = 'insumosCounter';
+      appBar.appendChild(counterSpan);
+
+      var btnAprobar = el('button', 'btn-aprobar-insumos', 'Aprobar lista');
+      btnAprobar.type = 'button';
+      btnAprobar.id = 'btnAprobarInsumos';
+      btnAprobar.disabled = true;
+      btnAprobar.onclick = function () {
+        if (isClosedMonth && !agencyUser) return;
+        var prog = getInsumosProgress();
+        if (!prog.allAnswered) return;
+        insumosState.estado = prog.hasChanges ? 'cambios' : 'aprobada';
+        var revName = getReviewerName() || '';
+        if (revName) insumosState.aprobadoPor = revName;
+        insumosState.fecha = new Date().toISOString();
+        insumosState.sinEnviar = true;
+        updateInsumosUI();
+        refresh();
+        saveDraft();
+        toast(prog.hasChanges ? '✎ Lista de pauta con cambios lista para enviar con tu revisión' : '✓ Lista de pauta aprobada');
+      };
+      appBar.appendChild(btnAprobar);
+      sec.appendChild(appBar);
+    }
+
+    // 3. Ingredientes para armar frente a cámara & Utilería y espacio (solo lectura)
+    if (ingredientes.length > 0 || utileria.length > 0) {
+      var extraGrid = el('div', 'insumos-extra-grid');
+
+      if (ingredientes.length > 0) {
+        var ingBox = el('div', 'insumos-readonly-box');
+        ingBox.appendChild(el('h3', null, 'Ingredientes para armar frente a cámara'));
+        var ingUl = el('ul', 'insumos-readonly-list');
+        ingredientes.forEach(function (ing) {
+          if (!ing || !ing.nombre) return;
+          var li = el('li');
+          li.appendChild(el('strong', null, String(ing.nombre).trim()));
+          if (ing.nota && String(ing.nota).trim()) {
+            li.appendChild(el('span', null, String(ing.nota).trim()));
+          }
+          ingUl.appendChild(li);
+        });
+        ingBox.appendChild(ingUl);
+        extraGrid.appendChild(ingBox);
+      }
+
+      if (utileria.length > 0) {
+        var utBox = el('div', 'insumos-readonly-box');
+        utBox.appendChild(el('h3', null, 'Utilería y espacio'));
+        var utUl = el('ul', 'insumos-readonly-list');
+        utileria.forEach(function (ut) {
+          if (!ut || !ut.nombre) return;
+          var li = el('li');
+          li.appendChild(el('strong', null, String(ut.nombre).trim()));
+          if (ut.nota && String(ut.nota).trim()) {
+            li.appendChild(el('span', null, String(ut.nota).trim()));
+          }
+          utUl.appendChild(li);
+        });
+        utBox.appendChild(utUl);
+        extraGrid.appendChild(utBox);
+      }
+
+      sec.appendChild(extraGrid);
+    }
+
+    // 4. Orden de grabación (plegable)
+    if (bloques.length > 0) {
+      var details = el('details', 'insumos-orden-details');
+      var summary = el('summary', 'insumos-orden-summary', 'Orden de grabación (' + bloques.length + (bloques.length === 1 ? ' bloque)' : ' bloques)'));
+      details.appendChild(summary);
+
+      var ordenBody = el('div', 'insumos-orden-body');
+      bloques.forEach(function (b) {
+        if (!b) return;
+        var bCard = el('div', 'insumos-bloque-card');
+        if (b.titulo) {
+          bCard.appendChild(el('div', 'insumos-bloque-title', String(b.titulo).trim()));
+        }
+        if (Array.isArray(b.contenidos) && b.contenidos.length > 0) {
+          var bChips = el('div', 'insumo-prod-chips');
+          b.contenidos.forEach(function (cid) {
+            bChips.appendChild(createContentChip(cid));
+          });
+          bCard.appendChild(bChips);
+        }
+        if (b.nota && String(b.nota).trim()) {
+          bCard.appendChild(el('p', 'insumos-bloque-nota', String(b.nota).trim()));
+        }
+        ordenBody.appendChild(bCard);
+      });
+      details.appendChild(ordenBody);
+      sec.appendChild(details);
+    }
+
+    if (!existing) {
+      var canalBar = $('canalFilter');
+      var insertBeforeNode = (canalBar && canalBar.parentNode === mainEl) ? canalBar : listEl;
+      mainEl.insertBefore(sec, insertBeforeNode);
+    }
+
+    updateInsumosUI();
   }
 
   function marcarSinEnviar(it) {
@@ -1684,6 +2325,15 @@
       }
       if (saved && saved.items) {
         if (saved.sinEnviar && typeof saved.sinEnviar === 'object') sinEnviar = saved.sinEnviar;
+        if (saved.insumos && typeof saved.insumos === 'object' && hasInsumosPautaData()) {
+          insumosState = {
+            estado: saved.insumos.estado || 'pendiente',
+            aprobadoPor: saved.insumos.aprobadoPor || '',
+            fecha: saved.insumos.fecha || '',
+            productos: (saved.insumos.productos && typeof saved.insumos.productos === 'object') ? saved.insumos.productos : {},
+            sinEnviar: !!saved.insumos.sinEnviar
+          };
+        }
         var hasCorr = items.some(function (x) { return x.estado === 'corregido'; });
         items.forEach(function (it) {
           var s = saved.items[it.id];
@@ -1913,6 +2563,31 @@
       if (!hasCopy) cw.style.display = agencyUser ? 'block' : 'none';
       post.appendChild(pCopy); post.appendChild(pHash); cw.appendChild(post); body.appendChild(cw);
       card.appendChild(body);
+
+      if (Array.isArray(it.insumos) && it.insumos.length > 0) {
+        var cardInsBox = el('div', 'card-insumos');
+        cardInsBox.appendChild(el('span', 'lbl', 'Necesitas para este contenido'));
+        var cardInsUl = el('ul', 'card-insumos-list');
+        it.insumos.forEach(function (ins) {
+          if (!ins || !ins.producto) return;
+          var li = el('li', 'card-insumos-item');
+          var txt = '';
+          if (ins.cantidad !== undefined && ins.cantidad !== null && String(ins.cantidad).trim() !== '') {
+            txt += String(ins.cantidad).trim() + '× ';
+          }
+          txt += String(ins.producto).trim();
+          if (ins.uso && String(ins.uso).trim()) {
+            txt += ' · ' + String(ins.uso).trim();
+          }
+          li.appendChild(el('span', 'card-insumos-txt', txt));
+          if (ins.porDefinir) {
+            li.appendChild(el('span', 'tag tag-por-definir', 'Por definir'));
+          }
+          cardInsUl.appendChild(li);
+        });
+        cardInsBox.appendChild(cardInsUl);
+        card.appendChild(cardInsBox);
+      }
 
       var rv = el('div', 'review');
 
@@ -2831,6 +3506,7 @@
       if ($('pct')) setTextIfChanged($('pct'), '…');
       if ($('rOk')) $('rOk').setAttribute('stroke-opacity', '0');
       if ($('rFix')) $('rFix').setAttribute('stroke-opacity', '0');
+      updateInsumosUI();
       return;
     }
 
@@ -2850,6 +3526,7 @@
     var filterBtn = $('filterCorregidos');
     if (chipCount) setTextIfChanged(chipCount, String(k.corregido || 0));
     if (filterBtn) filterBtn.style.display = (k.corregido > 0) ? 'inline-flex' : 'none';
+    updateInsumosUI();
   }
 
   var f = 'all';
@@ -3091,10 +3768,16 @@
   function buildHTML() {
     commitAllDraftComments();
     DATA.contenidos = items;
+    if (hasInsumosPautaData()) {
+      var snapIns = buildInsumosPayload(getReviewerName() || (DATA.revision && DATA.revision.revisadoPor) || '', (DATA.revision && DATA.revision.fecha) || '');
+      if (snapIns) DATA.insumos = snapIns;
+    }
     var root = document.documentElement.cloneNode(true);
     root.className = root.className.replace(/\bjs\b/, 'no-js');
     var liveTa = document.querySelectorAll('#list textarea'), cloneTa = root.querySelectorAll('#list textarea');
     for (var i = 0; i < liveTa.length; i++) cloneTa[i].textContent = liveTa[i].value;
+    var liveInsInp = document.querySelectorAll('.insumo-cambio-input'), cloneInsInp = root.querySelectorAll('.insumo-cambio-input');
+    for (var m = 0; m < liveInsInp.length; m++) if (cloneInsInp[m]) cloneInsInp[m].setAttribute('value', liveInsInp[m].value);
     var liveSel = document.querySelectorAll('#list select'), cloneSel = root.querySelectorAll('#list select');
     for (var j = 0; j < liveSel.length; j++) { var v = liveSel[j].value;[].forEach.call(cloneSel[j].options, function (o) { if (o.value === v) o.setAttribute('selected', ''); else o.removeAttribute('selected'); }); }
     [].forEach.call(root.querySelectorAll('.card, #nav a'), function (n) { n.removeAttribute('style'); n.classList.remove('warn', 'card-agency-edit-mode', 'card-free-edit-mode', 'card-editing', 'card-unsaved'); });
@@ -3103,7 +3786,7 @@
     if (cloneBody) cloneBody.classList.remove('agency-active', 'free-edit-active');
     var cloneFreeBtn = root.querySelector('#btnFreeEditMode');
     if (cloneFreeBtn && cloneFreeBtn.parentNode) cloneFreeBtn.parentNode.removeChild(cloneFreeBtn);
-    [].forEach.call(root.querySelectorAll('.card-agency-bar, .card-free-edit-strip, .agency-refs-editor, .card-unsaved-badge, #agencyActiveBarWrap'), function (n) { n.style.display = 'none'; });
+    [].forEach.call(root.querySelectorAll('.card-agency-bar, .card-free-edit-strip, .agency-refs-editor, .card-unsaved-badge, #agencyActiveBarWrap, #btnReabrirInsumos'), function (n) { n.style.display = 'none'; });
     [].forEach.call(root.querySelectorAll('[contenteditable]'), function (n) { n.removeAttribute('contenteditable'); n.removeAttribute('spellcheck'); });
     root.querySelector('#empty').removeAttribute('style');
     root.querySelector('#modal').classList.remove('show');
@@ -3485,6 +4168,21 @@
     var revBanner = $('reviewed');
     if (revBanner) revBanner.classList.remove('is-reserving');
 
+    if (hasInsumosPautaData() && f.insumos && typeof f.insumos === 'object') {
+      if (agencyUser || !insumosState.sinEnviar) {
+        insumosState.estado = f.insumos.estado || 'pendiente';
+        insumosState.aprobadoPor = f.insumos.aprobadoPor || '';
+        insumosState.fecha = f.insumos.fecha || '';
+        insumosState.productos = (f.insumos.productos && typeof f.insumos.productos === 'object')
+          ? JSON.parse(JSON.stringify(f.insumos.productos))
+          : {};
+        DATA.insumos = JSON.parse(JSON.stringify(f.insumos));
+        updateInsumosUI();
+        refresh();
+        saveDraft();
+      }
+    }
+
     var hasReview = (f.aprobados > 0 || f.cambios > 0 || revPor || revFecha || (f.estado && f.estado !== 'Sin revisar') || fsContenidos.length > 0);
     if (!hasReview) {
       if (revBanner) revBanner.classList.remove('show');
@@ -3761,6 +4459,9 @@
 
     function ok() {
       evaluatedItems.forEach(function (it) { delete sinEnviar[it.id]; });
+      insumosState.sinEnviar = false;
+      updateInsumosUI();
+      refresh();
       btn.disabled = false; btn.textContent = 'Enviar revisión ✓'; saveDraft();
       var k = counts();
       modal({
@@ -3827,6 +4528,17 @@
         ultimaRevision: DATA.revision.fecha
       }
     };
+
+    if (hasInsumosPautaData()) {
+      var insPayload = buildInsumosPayload(revName, DATA.revision.fecha);
+      if (insPayload) {
+        opciones.tableroFields.insumos = insPayload;
+        insumosState.estado = insPayload.estado;
+        insumosState.aprobadoPor = insPayload.aprobadoPor;
+        insumosState.fecha = insPayload.fecha;
+        DATA.insumos = JSON.parse(JSON.stringify(insPayload));
+      }
+    }
 
     guardarPiezas(cambiosPorId, opciones).then(function () {
       ok();
@@ -4056,6 +4768,7 @@
     cards.forEach(function (cObj) {
       if (cObj.updateAgencyActions) cObj.updateAgencyActions(isAgency);
     });
+    updateInsumosUI();
   }
 
   // Modal Login de Agencia
@@ -4638,6 +5351,15 @@
     updateHeader();
     normalizeItems();
 
+    var initIns = (DATA && DATA.insumos && typeof DATA.insumos === 'object') ? DATA.insumos : {};
+    insumosState = {
+      estado: initIns.estado || 'pendiente',
+      aprobadoPor: initIns.aprobadoPor || '',
+      fecha: initIns.fecha || '',
+      productos: (initIns.productos && typeof initIns.productos === 'object') ? JSON.parse(JSON.stringify(initIns.productos)) : {},
+      sinEnviar: false
+    };
+
     if (!isClosedMonth && (!DATA.revision || !DATA.revision.fecha)) {
       recoverDraft();
     }
@@ -4666,6 +5388,7 @@
 
     buildAllCards();
     setupCanalFilter();
+    renderInsumosPauta();
 
     if (cachedDoc) {
       syncBoardWithFirestore(cachedDoc);

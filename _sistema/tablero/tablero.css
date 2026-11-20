@@ -3621,3 +3621,734 @@ body.is-closed-month.is-review-corregidos-closed:not(.agency-active) .fmt-sel {
     width: 100%
   }
 }
+
+/* ==========================================================================
+   INSUMOS DEL DÍA DE PAUTA (insumosPauta + insumos por tarjeta)
+   ========================================================================== */
+
+.stats.has-insumos {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.stat.stat-insumos {
+  cursor: pointer;
+  transition: transform .18s var(--ease), box-shadow .18s var(--ease);
+  min-width: 0;
+}
+
+.stat.stat-insumos:hover {
+  transform: translateY(-2px);
+}
+
+.stat.stat-insumos b {
+  font-size: 20px;
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.insumos-pauta-sec {
+  background: var(--paper);
+  border-radius: 28px;
+  padding: 28px;
+  margin-bottom: 28px;
+  box-shadow: 0 24px 50px -24px rgba(31, 53, 73, .14);
+  border: 1px solid rgba(31, 53, 73, .08);
+  position: relative;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+.insumos-pauta-sec.state-aprobada {
+  border-color: rgba(92, 184, 62, .45);
+}
+
+.insumos-pauta-sec.state-cambios {
+  border-color: rgba(230, 74, 0, .45);
+}
+
+.insumos-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 20px;
+}
+
+.insumos-head-left {
+  min-width: 0;
+  flex: 1 1 240px;
+}
+
+.insumos-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--verde-dk);
+  margin-bottom: 6px;
+}
+
+.insumos-title {
+  font-family: var(--font-head);
+  font-size: clamp(20px, 2.6vw, 26px);
+  font-weight: 700;
+  color: var(--azul);
+  line-height: 1.2;
+  margin: 0;
+}
+
+.insumos-sub {
+  font-size: 14px;
+  color: var(--ink-2);
+  margin: 6px 0 0 0;
+  line-height: 1.5;
+}
+
+.insumos-meta-approved {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--verde-dk);
+  margin-top: 6px;
+}
+
+.insumos-pauta-sec.state-cambios .insumos-meta-approved {
+  color: var(--naranja);
+}
+
+.insumos-head-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.insumos-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: var(--azul-soft);
+  color: var(--azul);
+  white-space: nowrap;
+}
+
+.insumos-status-badge.is-aprobada {
+  background: var(--verde-soft);
+  color: var(--verde-dk);
+}
+
+.insumos-status-badge.is-cambios {
+  background: var(--naranja-soft);
+  color: var(--naranja);
+}
+
+.btn-reabrir-insumos {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--paper);
+  color: var(--azul);
+  border: 1.5px solid rgba(31, 53, 73, .25);
+  border-radius: 999px;
+  padding: 6px 13px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .18s, border-color .18s;
+}
+
+.btn-reabrir-insumos:hover {
+  background: var(--azul-soft);
+  border-color: var(--azul);
+}
+
+/* LISTA DE PRODUCTOS */
+.insumos-prod-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.insumo-prod-row {
+  display: grid;
+  grid-template-columns: 76px 1fr;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 20px;
+  background: var(--bg);
+  border: 1.5px solid var(--line);
+  transition: border-color .2s, background .2s;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.insumo-prod-row.is-ok {
+  border-color: rgba(92, 184, 62, .45);
+  background: rgba(92, 184, 62, .04);
+}
+
+.insumo-prod-row.is-no,
+.insumo-prod-row.is-cambio {
+  border-color: rgba(230, 74, 0, .45);
+  background: rgba(230, 74, 0, .04);
+}
+
+.insumo-prod-row.is-por-definir:not(.is-ok) {
+  border-color: rgba(230, 74, 0, .35);
+}
+
+.insumo-qty-box {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 10px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  align-self: start;
+  min-height: 68px;
+  box-sizing: border-box;
+}
+
+.insumo-qty-num {
+  font-family: var(--font-head);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--azul);
+  line-height: 1;
+  letter-spacing: -.02em;
+}
+
+.insumo-qty-unit {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gris);
+  margin-top: 4px;
+  line-height: 1.15;
+  word-break: break-word;
+}
+
+.insumo-prod-main {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.insumo-prod-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.insumo-prod-name {
+  font-size: 16.5px;
+  font-weight: 700;
+  color: var(--azul);
+  line-height: 1.25;
+}
+
+.tag.tag-por-definir {
+  background: var(--naranja-soft);
+  color: var(--naranja);
+  border: 1px solid rgba(230, 74, 0, .32);
+  font-weight: 700;
+}
+
+.insumo-prod-nota {
+  font-size: 13.5px;
+  color: var(--ink-2);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.insumo-prod-row.is-por-definir .insumo-prod-nota {
+  color: var(--azul);
+  font-weight: 500;
+}
+
+.insumo-prod-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.insumo-content-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--paper);
+  border: 1px solid rgba(31, 53, 73, .16);
+  color: var(--azul);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background .18s, border-color .18s, color .18s;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.insumo-content-chip:hover {
+  background: var(--azul);
+  color: #fff;
+  border-color: var(--azul);
+}
+
+.insumo-content-chip .chip-num {
+  font-weight: 700;
+  color: var(--verde-dk);
+}
+
+.insumo-content-chip:hover .chip-num {
+  color: var(--verde);
+}
+
+/* BOTONES DE RESPUESTA DE PRODUCTO */
+.insumo-prod-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.insumo-btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.insumo-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 14px;
+  min-height: 38px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(31, 53, 73, .16);
+  background: var(--paper);
+  color: var(--azul);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .18s var(--ease);
+}
+
+.insumo-btn:hover:not(:disabled) {
+  border-color: var(--azul);
+  background: var(--azul-soft);
+}
+
+.insumo-btn:focus-visible {
+  outline: 2.5px solid var(--azul);
+  outline-offset: 2px;
+}
+
+.insumo-btn.btn-ok.on {
+  background: var(--verde);
+  border-color: var(--verde);
+  color: #fff;
+}
+
+.insumo-btn.btn-no.on {
+  background: var(--naranja);
+  border-color: var(--naranja);
+  color: #fff;
+}
+
+.insumo-btn.btn-cambio.on,
+.insumo-btn.btn-elegir.on {
+  background: var(--azul);
+  border-color: var(--azul);
+  color: #fff;
+}
+
+.insumo-btn:disabled {
+  opacity: .65;
+  cursor: default;
+}
+
+.insumo-cambio-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.insumo-cambio-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.insumo-cambio-input {
+  width: 100%;
+  box-sizing: border-box;
+  font: inherit;
+  font-size: max(1rem, 14px);
+  padding: 10px 13px;
+  min-height: 42px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(31, 53, 73, .22);
+  background: var(--paper);
+  color: var(--ink);
+  transition: border-color .18s, box-shadow .18s;
+}
+
+.insumo-cambio-input:focus-visible {
+  outline: none;
+  border-color: var(--azul);
+  box-shadow: 0 0 0 3px rgba(31, 53, 73, .12);
+}
+
+.insumo-cambio-input[aria-invalid="true"],
+.insumo-cambio-input:user-invalid {
+  border-color: var(--naranja);
+}
+
+.insumo-cambio-input:disabled,
+.insumo-cambio-input[readonly] {
+  background: rgba(31, 53, 73, .04);
+  color: var(--ink-2);
+}
+
+/* BARRA DE APROBACIÓN DE LA LISTA */
+.insumos-approval-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: var(--azul-soft);
+  border: 1px solid rgba(31, 53, 73, .12);
+}
+
+.insumos-counter {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--azul);
+}
+
+.btn-aprobar-insumos {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 22px;
+  min-height: 44px;
+  border-radius: 14px;
+  border: 0;
+  background: var(--verde);
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .18s, transform .18s, opacity .18s;
+}
+
+.btn-aprobar-insumos.is-cambios-mode {
+  background: var(--naranja);
+}
+
+.btn-aprobar-insumos:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.04);
+}
+
+.btn-aprobar-insumos:disabled {
+  background: rgba(31, 53, 73, .22);
+  color: rgba(31, 53, 73, .55);
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* INGREDIENTES Y UTILERÍA (SOLO LECTURA) */
+.insumos-extra-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.insumos-readonly-box {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 16px 18px;
+  min-width: 0;
+}
+
+.insumos-readonly-box h3 {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--azul);
+  margin: 0 0 12px 0;
+}
+
+.insumos-readonly-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.insumos-readonly-list li {
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--ink);
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--line);
+}
+
+.insumos-readonly-list li:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.insumos-readonly-list li strong {
+  color: var(--azul);
+  font-weight: 700;
+}
+
+.insumos-readonly-list li span {
+  display: block;
+  color: var(--ink-2);
+  font-size: 12.5px;
+  margin-top: 2px;
+}
+
+/* ORDEN DE GRABACIÓN (PLEGABLE CON DETAILS / SUMMARY) */
+.insumos-orden-details {
+  margin-top: 18px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  overflow: clip;
+}
+
+.insumos-orden-details::details-content {
+  contain: layout;
+  overflow: clip;
+}
+
+.insumos-orden-summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--azul);
+  cursor: pointer;
+  user-select: none;
+  transition: background .18s;
+}
+
+.insumos-orden-summary::-webkit-details-marker {
+  display: none;
+}
+
+.insumos-orden-summary:hover {
+  background: rgba(31, 53, 73, .04);
+}
+
+.insumos-orden-summary::before {
+  content: "▸";
+  display: inline-block;
+  font-size: 14px;
+  color: var(--verde-dk);
+  transition: transform .2s var(--ease);
+}
+
+.insumos-orden-details[open] > .insumos-orden-summary::before {
+  transform: rotate(90deg);
+}
+
+.insumos-orden-body {
+  padding: 4px 18px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.insumos-bloque-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.insumos-bloque-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--azul);
+}
+
+.insumos-bloque-nota {
+  font-size: 13px;
+  color: var(--ink-2);
+  margin: 0;
+  line-height: 1.45;
+}
+
+/* BLOQUE DE INSUMOS DENTRO DE CADA TARJETA */
+.card-insumos {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+}
+
+.card-insumos .lbl {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--azul);
+  margin-bottom: 8px;
+}
+
+.card-insumos-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.card-insumos-item {
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.45;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.card-insumos-item::before {
+  content: "•";
+  color: var(--verde-dk);
+  font-weight: 700;
+}
+
+/* RESPONSIVE MÓVIL (HASTA 360 PX SIN DESBORDE) */
+@media (max-width: 860px) {
+  .stats.has-insumos {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .stat.stat-insumos {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    justify-content: center;
+    padding: 10px 14px;
+    gap: 10px;
+  }
+
+  .stat.stat-insumos div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .stat.stat-insumos b {
+    font-size: 15px;
+  }
+
+  .stat.stat-insumos span {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .insumos-pauta-sec {
+    padding: 18px 14px;
+    border-radius: 22px;
+    margin-bottom: 22px;
+  }
+
+  .insumo-prod-row {
+    grid-template-columns: 62px 1fr;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 16px;
+  }
+
+  .insumo-qty-box {
+    min-height: 58px;
+    padding: 8px 4px;
+    border-radius: 12px;
+  }
+
+  .insumo-qty-num {
+    font-size: 22px;
+  }
+
+  .insumo-btn-group {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .insumo-btn {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 9px 12px;
+  }
+
+  .insumos-approval-bar {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    padding: 14px;
+  }
+
+  .btn-aprobar-insumos {
+    width: 100%;
+  }
+
+  .insumos-extra-grid {
+    grid-template-columns: 1fr;
+  }
+}

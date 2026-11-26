@@ -3,7 +3,7 @@
    Estrategia de caché gratuita y navegación offline para tableros e informes
    ========================================================================== */
 
-const CACHE_NAME = 'nexo-cache-v1';
+const CACHE_NAME = 'nexo-cache-v2'; // v2: tema Auros (nov 2026)
 const KILL_SWITCH = false; // Cambiar a true para desinstalar de inmediato en todos los clientes
 
 // Recursos estáticos versionados para precachear en install
@@ -11,6 +11,7 @@ const PRECACHE_ASSETS = [
   './',
   './index.html',
   './_sistema/fuentes/jost-var.woff2',
+  './_sistema/fuentes/inter-var.woff2',
   './_sistema/vendor/sortable.min.js',
   './_sistema/vendor/firebase-app-compat.js',
   './_sistema/vendor/firebase-auth-compat.js',

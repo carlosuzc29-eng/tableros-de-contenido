@@ -683,7 +683,8 @@
       var scrollY = isStatic ? 0 : currentScrollY;
 
       // Detectar si toda la superficie es oscura (ej. Banco de trabajo o Producción dark)
-      var isDarkPage = (document.documentElement.getAttribute('data-theme') === 'dark') ||
+      var isDarkPage = (window.__nexoTemaOscuro !== undefined ? window.__nexoTemaOscuro : (window.__nexoTemaOscuro = getComputedStyle(document.documentElement).getPropertyValue('--nexo-theme').trim() === 'dark')) ||
+        (document.documentElement.getAttribute('data-theme') === 'dark') ||
         (document.body && document.body.classList.contains('dark-theme')) ||
         (!document.querySelector('.hero') && !document.querySelector('.kanban-area[data-theme="light"]'));
 
@@ -1277,7 +1278,7 @@
     if (l.indexOf('org') === 0) return 'Orgánico';
     return '';
   }
-  function canalLabel(c) { return c === 'Ads' ? '📣 Ads' : (c === 'Orgánico' ? '🌱 Orgánico' : ''); }
+  function canalLabel(c) { return c === 'Ads' ? 'Ads' : (c === 'Orgánico' ? 'Orgánico' : ''); }
   var fc = 'all'; // filtro por canal
 
   function isValidHttpUrl(u) {
@@ -1811,7 +1812,7 @@
     // 1. Cabecera de la sección
     var head = el('div', 'insumos-head');
     var headLeft = el('div', 'insumos-head-left');
-    headLeft.appendChild(el('div', 'insumos-eyebrow', '📋 Preparación del rodaje'));
+    headLeft.appendChild(el('div', 'insumos-eyebrow', 'Preparación del rodaje'));
     var h2 = el('h2', 'insumos-title', 'Lo que necesitas para el día de pauta');
     h2.id = 'insumosPautaHeading';
     headLeft.appendChild(h2);
@@ -2230,7 +2231,6 @@
       }
     }
     wrap.innerHTML = '<label class="month-selector-pill" for="monthSelect" title="Seleccionar mes de parrilla">' +
-      '<span>🗓️</span>' +
       '<select id="monthSelect" class="month-select" aria-label="Seleccionar mes"></select>' +
       '</label>';
     var select = wrap.querySelector('#monthSelect');
@@ -2502,7 +2502,7 @@
       var pilarTag = el('span', 'tag tag-pilar', it.pilar || '');
       if (!it.pilar) pilarTag.style.display = 'none';
       tags.appendChild(pilarTag);
-      var dateTag = el('span', 'tag date', '📅 ' + (it.fechaPublicacion || ''));
+      var dateTag = el('span', 'tag date', (it.fechaPublicacion || ''));
       if (!it.fechaPublicacion) dateTag.style.display = 'none';
       tags.appendChild(dateTag);
 
@@ -2610,7 +2610,7 @@
       // 1. BLOQUE DE COMENTARIOS (ARRIBA)
       var cmBox = el('div', 'comment-box');
       var cmHead = el('div', 'cm-head');
-      cmHead.appendChild(el('h4', null, '💬 Comentarios y observaciones'));
+      cmHead.appendChild(el('h4', null, 'Comentarios y observaciones'));
       cmHead.appendChild(el('span', 'cm-sub', 'Cualquier persona del equipo puede dejar comentarios'));
       cmBox.appendChild(cmHead);
 
@@ -2721,10 +2721,10 @@
         var nCanal = items.filter(function (x) { return normalizeCanal(x.canal) === it.canal; }).length;
         var sh = el('div', 'canal-section-head ' + (it.canal === 'Ads' ? 'canal-ads' : 'canal-org'));
         sh.dataset.canal = it.canal;
-        sh.appendChild(el('span', 'csh-t', it.canal === 'Ads' ? '📣 Contenidos para Ads' : '🌱 Contenidos orgánicos'));
+        sh.appendChild(el('span', 'csh-t', it.canal === 'Ads' ? 'Contenidos para Ads' : 'Contenidos orgánicos'));
         sh.appendChild(el('span', 'csh-n', nCanal + (nCanal === 1 ? ' pieza' : ' piezas')));
         list.appendChild(sh);
-        var ns = el('div', 'nav-sec ' + (it.canal === 'Ads' ? 'canal-ads' : 'canal-org'), it.canal === 'Ads' ? '📣 Ads' : '🌱 Orgánicos');
+        var ns = el('div', 'nav-sec ' + (it.canal === 'Ads' ? 'canal-ads' : 'canal-org'), it.canal === 'Ads' ? 'Ads' : 'Orgánicos');
         ns.dataset.canal = it.canal;
         nav.appendChild(ns);
       }
@@ -3034,7 +3034,7 @@
       var canalLbl = el('label', 'agency-meta-field');
       canalLbl.appendChild(el('span', null, 'Canal'));
       var canalSel = el('select', 'agency-canal-sel');
-      [['', 'Sin definir'], ['Orgánico', '🌱 Orgánico'], ['Ads', '📣 Ads']].forEach(function (o) {
+      [['', 'Sin definir'], ['Orgánico', 'Orgánico'], ['Ads', 'Ads']].forEach(function (o) {
         var op = el('option', null, o[1]); op.value = o[0]; canalSel.appendChild(op);
       });
       canalSel.value = normalizeCanal(it.canal);
@@ -3087,7 +3087,7 @@
           cObj.pilarTag.style.display = it.pilar ? '' : 'none';
         }
         if (cObj.dateTag) {
-          cObj.dateTag.textContent = '📅 ' + (it.fechaPublicacion || '');
+          cObj.dateTag.textContent = (it.fechaPublicacion || '');
           cObj.dateTag.style.display = it.fechaPublicacion ? '' : 'none';
         }
         if (!cObj.editando) {
@@ -3705,7 +3705,7 @@
     }
     bar.style.display = '';
 
-    var defs = [['all', 'Todos', items.length], ['Orgánico', '🌱 Orgánicos', nOrg], ['Ads', '📣 Ads', nAds]];
+    var defs = [['all', 'Todos', items.length], ['Orgánico', 'Orgánicos', nOrg], ['Ads', 'Ads', nAds]];
     var existingBtns = bar.querySelectorAll('.canal-btn');
     if (existingBtns.length > 0) {
       defs.forEach(function (o) {
@@ -3715,6 +3715,9 @@
             b.style.display = 'none';
           } else {
             b.style.display = '';
+            // Cáscaras construidas antes del rediseño traen la etiqueta con emoji: se actualiza al texto actual
+            var lblEl = b.querySelector('span:not(.canal-cnt)');
+            if (lblEl) setTextIfChanged(lblEl, o[1]);
             var cnt = b.querySelector('.canal-cnt');
             if (cnt) setTextIfChanged(cnt, String(o[2]));
             b.classList.toggle('on', fc === o[0]);
@@ -4713,7 +4716,7 @@
 
     if (accessBtn) {
       accessBtn.classList.toggle('active', isAgency);
-      accessBtn.textContent = isAgency ? '✓ Modo Administrador activo' : '🔒 Acceso Administrador';
+      accessBtn.textContent = isAgency ? '✓ Modo Administrador activo' : 'Acceso administrador';
     }
 
     var freeBtn = $('btnFreeEditMode');

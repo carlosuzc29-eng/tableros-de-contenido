@@ -5,9 +5,9 @@
   const DATA = (typeof window !== 'undefined' && window.DATA) ? window.DATA : (typeof DATA !== 'undefined' ? DATA : { fecha: "", cliente: "", contenidos: [] });
     // Tipos de formato y paletas temáticas refinadas
     const TIPOS = {
-      reel: { label: 'Reel', bg: 'rgba(230, 74, 0, 0.14)', color: 'var(--nexo-orange)', border: 'rgba(230, 74, 0, 0.28)' },
-      carrusel: { label: 'Carrusel', bg: 'rgba(168, 85, 247, 0.14)', color: '#C084FC', border: 'rgba(168, 85, 247, 0.28)' },
-      tiktok: { label: 'TikTok', bg: 'rgba(56, 189, 248, 0.14)', color: 'var(--nexo-cyan)', border: 'rgba(56, 189, 248, 0.28)' },
+      reel: { label: 'Reel', bg: 'var(--nexo-orange-soft)', color: 'var(--nexo-orange)', border: 'rgba(230, 74, 0, 0.30)' },
+      carrusel: { label: 'Carrusel', bg: 'var(--chip-bg)', color: 'var(--text-main)', border: 'var(--pill-border)' },
+      tiktok: { label: 'TikTok', bg: 'var(--nexo-cyan-soft)', color: 'var(--nexo-cyan)', border: 'rgba(143, 179, 217, 0.28)' },
       foto: { label: 'Foto', bg: 'rgba(92, 184, 62, 0.14)', color: 'var(--nexo-green)', border: 'rgba(92, 184, 62, 0.28)' },
       otro: { label: 'Otro', bg: 'rgba(148, 163, 184, 0.14)', color: 'var(--text-muted)', border: 'rgba(148, 163, 184, 0.28)' }
     };

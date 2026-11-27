@@ -47,14 +47,14 @@
     };
 
     function toggleTheme() {
-      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      const current = document.documentElement.getAttribute('data-theme') || 'light';
       const next = current === 'dark' ? 'light' : 'dark';
       setTheme(next);
     }
 
     function setTheme(theme) {
       document.documentElement.setAttribute('data-theme', theme);
-      localStorage.setItem('nexo-tablero-theme', theme);
+      localStorage.setItem('nexo-tablero-tema-v4', theme);
       const icon = document.getElementById('theme-toggle-icon');
       if (icon) {
         icon.innerHTML = `<use href="#i-${theme === 'dark' ? 'sun' : 'moon'}"></use>`;
@@ -2915,8 +2915,8 @@
         Object.assign(DATA, window.DATA);
       }
       document.addEventListener('touchstart', function(){}, {passive:true});
-      // Tema por defecto: dark (Dark Studio creativo)
-      const savedTheme = localStorage.getItem('nexo-tablero-theme') || 'dark';
+      // Tema por defecto: claro (rediseño v4). Clave nueva para que la preferencia oscura anterior no se herede
+      const savedTheme = localStorage.getItem('nexo-tablero-tema-v4') || 'light';
       setTheme(savedTheme);
 
       const savedDensity = localStorage.getItem('nexo-tablero-density-v2') || 'comfortable';

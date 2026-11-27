@@ -3,7 +3,7 @@
    Estrategia de caché gratuita y navegación offline para tableros e informes
    ========================================================================== */
 
-const CACHE_NAME = 'nexo-cache-v2'; // v2: tema Auros (nov 2026)
+const CACHE_NAME = 'nexo-cache-v3'; // v3: diseño Nexo claro (nov 2026)
 const KILL_SWITCH = false; // Cambiar a true para desinstalar de inmediato en todos los clientes
 
 // Recursos estáticos versionados para precachear en install

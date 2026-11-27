@@ -3088,7 +3088,7 @@
 [data-theme="light"] {
   color-scheme: light;
   --on-accent: #ffffff;
-  --bg-base: #EEF1F4;
+  --bg-base: #F4F6F8;
   --bg-gradient: radial-gradient(circle at 85% 0%, rgba(0, 0, 0, .03), transparent 45%),
                  #EEF1F4;
   --surface: #ffffff;
@@ -3099,7 +3099,7 @@
   --border-color: rgba(13, 23, 34, .10);
   --border-subtle: rgba(13, 23, 34, .05);
   --border-hover: rgba(92, 184, 62, .45);
-  --text-main: #0D1722;
+  --text-main: #1F3549;
   --text-muted: #5B6B7A;
   --text-light: #6B7C8D;
   --nexo-blue: #16263A;
@@ -3524,3 +3524,6 @@ body .card.pc .pc-foot { border-top: 1px dashed var(--hr-perf) }
     box-shadow: none;
   }
 }
+
+/* Tema claro por defecto (nov 2026): isotipo sobre blanco */
+[data-theme="light"] .nexo-logo-badge { background: #ffffff; border-color: var(--border-color) }
